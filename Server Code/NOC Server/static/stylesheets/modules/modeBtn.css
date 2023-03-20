@@ -1,0 +1,49 @@
+/*
+ Diese Datei ist Teil der Bachelorarbeit von Fabian Schoettler
+ Martrikelnummer : 1111 0647
+ Stand : 13.03.2019
+*/
+.modeBtn{
+	height:100%;
+	width:100%;
+	background-color:var(--c-secondary);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size:contain;
+	box-shadow: none;
+	transform:none;
+}
+
+/*Fader Mode*/
+.modeBtn1{
+	background-image: url(../../icons/faderIcon_white.svg);
+}
+
+/*Fader Scene Mode*/
+.modeBtn2{
+	background-image: url(../../icons/sceneFaderIcon_white.svg);
+}
+
+/*Scene Mode*/
+.modeBtn3{
+	background-image: url(../../icons/sceneIcon_white.svg);
+}
+
+.modeBtn.activeMode{
+	background-color: var(--c-active);
+	color:white;
+}
+
+html.non-touch .modeBtn:hover{
+	background-color: var(--c-primary);
+	color: white;
+}
+
+
+
+@media only screen and (max-width: 600px){
+
+	.modeBtn2{
+		display: none;
+	}
+}

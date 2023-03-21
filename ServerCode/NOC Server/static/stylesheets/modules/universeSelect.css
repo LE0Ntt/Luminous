@@ -1,0 +1,38 @@
+/*
+ Diese Datei ist Teil der Bachelorarbeit von Fabian Schoettler
+ Martrikelnummer : 1111 0647
+ Stand : 13.03.2019
+*/
+.universeSelectBar{
+	height:100%;
+	width:100%;
+	grid-row: 2;
+	grid-column: first span/ end;
+	display:flex;
+}
+
+.universeTag{
+	background-color: var(--c-secondary);
+	color: #fff;
+	height:100%;
+	width:100px;
+	border:1px solid black;
+	float:left;
+	text-align: center;
+	box-shadow: none;
+}
+
+.universeTagFiller{
+	border-bottom: 1px solid #000;
+	width: 100%;
+	order: 999;
+}
+
+.is-activeUniverseTag{
+	border-bottom: none;
+	background-color: #fff;
+	color: #000;
+}
+
+.is-activeUniverse{display:block;}
+.is-hiddenUniverse{display:none;}

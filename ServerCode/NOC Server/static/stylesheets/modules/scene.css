@@ -1,0 +1,156 @@
+/*
+ Diese Datei ist Teil der Bachelorarbeit von Fabian Schoettler
+ Martrikelnummer : 1111 0647
+ Stand : 13.03.2019
+*/
+.sceneControlContainer{
+	height:100%;
+	width:100%;
+	display: grid;
+  grid-template-rows: minmax(60px,10%) minmax(100px, 0.125fr) 1fr;
+	grid-template-columns: 1fr 50px;
+	grid-gap: 5px;
+}
+
+.sceneControlBar{
+	grid-column:first span / end;
+	grid-row: 1 span / 2;
+	display: flex;
+	flex-direction: row;
+	height:100%;
+	width:100%;
+}
+
+.sceneControlOption{
+	font-size: 1rem;
+	margin-right: 2px;
+	margin-left: 2px;
+	width:100%;
+	height:100%;
+	display: block;
+}
+
+.scene{
+	z-index: 5;
+	text-align: center;
+  transition: all 50ms;
+	display: block;
+	height:150px;
+	width:100%;
+ 	box-shadow: 5px 5px 5px rgba(0,0,0,0.4);
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+}
+
+.scene.transitionInProgress{
+	border: 2px solid black;
+}
+
+@-webkit-keyframes blinker {
+  from {opacity: 1.0;}
+  to {opacity: 0.0;}
+}
+
+.sceneName.blink{
+	text-decoration: blink;
+-webkit-animation-name: blinker;
+-webkit-animation-duration: 0.2s;
+-webkit-animation-iteration-count:infinite;
+-webkit-animation-timing-function:ease-in-out;
+-webkit-animation-direction: alternate;
+}
+
+.sceneUniverses{
+	font-size:smaller;
+}
+
+html.non-touch .scene:hover{
+	box-sizing: border-box;
+	z-index: 10;
+	box-shadow: 10px 10px 10px rgba(0, 105, 237,0.8);
+}
+
+.scene.sceneTemplate{
+  display:none;
+}
+
+.sceneNameContainer{
+	display:grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: 1fr 1fr;
+
+	border-radius: 10px;
+	width:100%;
+	height:100%;
+
+ -ms-user-select: None;
+ -moz-user-select: None;
+ -webkit-user-select: None;
+}
+
+.sceneContainer{
+	grid-row: 3;
+	grid-column: first span / end;
+	width:100%;
+	display: grid;
+	overflow-y: auto;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	grid-template-rows: repeat(10, 1fr);
+	grid-gap: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.sceneContainer.is-enlarged{
+	grid-row:2 / 4;
+}
+
+.singleSceneContainer{
+	height:100%;
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+	align-items: center;
+	justify-content: center;
+}
+
+.modifySceneBtn{
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border-radius: 2px;
+	display: grid;
+	grid-template-columns: 4fr 1fr;
+	align-items: center;
+	grid-gap: 5px;
+	user-select: none;
+}
+
+.deleteSceneBtn{
+	background-color: #ed5e5e;
+}
+
+
+
+@media only screen and (max-width: 600px){
+
+  .sceneContainer{
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .scene{
+		border-radius: 0;
+    height:100px;
+    box-shadow: none;
+  }
+
+	.scene.is-inModMode{
+		height:200px;
+	}
+
+  /* .scene:hover{
+    box-sizing: border-box;
+    z-index: 10;
+    box-shadow: none;
+  } */
+}

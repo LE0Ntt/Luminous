@@ -437,7 +437,7 @@ def Universes(status, universes):
 
 if __name__ == '__main__':
     client = wrapper.Client()
-    global current_universes
+    current_universes
     client.FetchUniverses(Universes)
     # Turn on the green LED
     GPIO.setmode(GPIO.BCM)

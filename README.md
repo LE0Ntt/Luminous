@@ -4,7 +4,7 @@ PMPT and WEB3 Project
 
 Doku für electron-vite-project
 
-\---electron-vite-project
+---electron-vite-project
 |
 | .gitgnore
 | -was soll von git ignoriert werden... gut zu wissen
@@ -84,6 +84,6 @@ Doku für electron-vite-project
 | React modul
 | -für static stuff bei react (bilder, usw.)
 |
-\---src
++---src
 React modul
 -für code stuff bei react (components, assets, usw.)

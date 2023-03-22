@@ -20,3 +20,18 @@ const Progress: React.FC<React.PropsWithChildren<{
 }
 
 export default Progress
+
+/**
+ * This code defines a React functional component called 'Progress'. This component displays a progress bar with a 
+ * percentage and a label. The component receives a 'percent' prop, which is used to determine the width of the 
+ * progress bar and the displayed percentage.
+ * 
+ * The 'Progress' component renders a 'div' with a class name of 'progress', which contains another 'div' with a 
+ * class name of 'progress-pr'. The inner 'div' represents the progress bar and has a 'div' child with a class name 
+ * of 'progress-rate'. The width of the 'progress-rate' 'div' is determined by the 'percent' prop, which is passed 
+ * to the 'style' attribute as a percentage value.
+ * 
+ * The component also displays the percentage value as text, which is derived from the 'percent' prop. The value 
+ * is first converted to a string and then truncated to 4 characters. If the 'percent' prop is not provided, the 
+ * component defaults to a value of 0.
+ */

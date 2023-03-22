@@ -19,8 +19,8 @@ function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+        <p className='m-2'>
+          Edit <code>src/components/App.tsx</code> and save to test HMR
         </p>
       </div>
       <p className='read-the-docs'>
@@ -36,3 +36,18 @@ function App() {
 }
 
 export default App
+
+/**
+ * This is a React functional component named 'App'. It imports an SVG file ('nodeLogo') and the 'useState' hook from React. 
+ * It also imports an 'Update' component from a file in the 'components' directory and a SCSS file named 'App.scss'.
+ * 
+ * In the function body, it sets up a state variable 'count' using the 'useState' hook and initializes it to 0.
+ * 
+ * The component returns JSX, which renders an '<a>' tag with an '<img>' tag inside it, a '<h1>' tag, a '<div>' tag with a 
+ * class of 'card', a '<button>' tag that updates the 'count' state on click, a '<p>' tag with a class of 'read-the-docs', 
+ * another '<div>' tag with a class of 'flex-center' and an '<img>' tag inside it, and finally an instance of the 'Update' 
+ * component.
+ * 
+ * The component also includes some inline styling in the 'img' tag using the 'style' attribute, and refers to the imported 
+ * 'nodeLogo' and 'Update' components in the JSX code.
+ */

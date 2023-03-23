@@ -41,6 +41,10 @@ const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 
+/**
+ * Hier editiert man das Fenster von Electron.
+ * Code änderungen werden Markiert.
+ */
 async function createWindow() {
   win = new BrowserWindow({
     title: 'Main window',
@@ -53,6 +57,8 @@ async function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
     },
+    width: 1920,  //ändert Fenster breite
+    height: 1080, //"" höhe
   })
 
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
@@ -80,6 +86,7 @@ async function createWindow() {
 
 app.whenReady().then(createWindow)
 
+// win/linux quit app when all windows closed
 app.on('window-all-closed', () => {
   win = null
   if (process.platform !== 'darwin') app.quit()
@@ -93,6 +100,7 @@ app.on('second-instance', () => {
   }
 })
 
+// mac stuff neues window soweit ich verstehe
 app.on('activate', () => {
   const allWindows = BrowserWindow.getAllWindows()
   if (allWindows.length) {

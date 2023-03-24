@@ -1,8 +1,12 @@
 import nodeLogo from './assets/node.svg'
 import { useState } from 'react'
 import Update from '@/components/update'
-import './App.scss'
-//import Navbar from './components/Navbar.js'
+import './App.css'
+//new
+import Navbar from './components/Navbar'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Home from './Home'
+import Test from './Test1'
 
 console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}!`)
 
@@ -10,6 +14,14 @@ function App() {
   const [count, setCount] = useState(0)
   return (
     <div className='App'>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path='/Test1' element={<Test />} />
+        </Routes>
+      </Router>
+      {/** 
       <div>
         <a href='https://github.com/electron-vite/electron-vite-react' target='_blank'>
           <img src='./electron-vite.svg' className='logo' alt='Electron + Vite logo' />
@@ -32,6 +44,7 @@ function App() {
       </div>
 
       <Update />
+      */}
     </div>
   )
 }

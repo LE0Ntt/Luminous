@@ -57,8 +57,10 @@ async function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
     },
-    width: 1920,  //ändert Fenster breite
-    height: 1080, //"" höhe
+    width: 1800,  //ändert Fenster breite
+    height: 1000, //"         "    höhe
+    //titleBarStyle: 'hidden',
+    //titleBarOverlay: true
   })
 
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298

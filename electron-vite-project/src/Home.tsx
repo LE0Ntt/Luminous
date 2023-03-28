@@ -3,16 +3,19 @@ import nodeLogo from './assets/node.svg'
 import { useState } from 'react'
 import Update from '@/components/update'
 import './App.css'
+import './index.css'
 
 const Home = () => {
     const [count, setCount] = useState(0)
 
   return (
     <div>
-        <div>
-        <a href='https://github.com/electron-vite/electron-vite-react' target='_blank'>
+        <div className='bg-orange-300'>
+        <a>
+          test
           <img src='./electron-vite.svg' className='logo' alt='Electron + Vite logo' />
         </a>
+        hier noch mehr text
       </div>
       <h1>Electron + Vite + React</h1>
       <div className='card'>

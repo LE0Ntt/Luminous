@@ -12,34 +12,14 @@
     color: rgba(255, 255, 255, 0.87);
     background-color: #242424;
 
+    -webkit-user-select: none;
+    /* only maybe, vielleicht andere lösung */
+
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
-  }
-
-  a {
-    font-weight: 500;
-    color: #646cff;
-    text-decoration: inherit;
-  }
-
-  a:hover {
-    color: #535bf2;
-  }
-
-  body {
-    margin: 0;
-    display: flex;
-    /*place-items: center;*/
-    min-width: 320px;
-    min-height: 100vh;
-  }
-
-  h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
   }
 
   button {
@@ -63,22 +43,11 @@
     outline: 4px auto -webkit-focus-ring-color;
   }
 
-  code {
-    background-color: #1a1a1a;
-    padding: 2px 4px;
-    margin: 0 4px;
-    border-radius: 4px;
-  }
-
-  .card {
-    padding: 2em;
-  }
-
-  #app {
-    max-width: 1920px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
+  .titlebar {
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+    height: 30px;
+    background-color: #2f3241;
   }
 
   @media (prefers-color-scheme: light) {

@@ -59,8 +59,12 @@ async function createWindow() {
     },
     width: 1800,  //ändert Fenster breite
     height: 1000, //"         "    höhe
-    //titleBarStyle: 'hidden',
-    //titleBarOverlay: true
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#2f3241',
+      symbolColor: '#74b1be',
+      height: 30,
+    }
   })
 
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298

@@ -3,7 +3,7 @@ import mido
 
 class Driver:
     def __init__(self):
-        self.fader_values = [7]
+        self.fader_values = [7]#sicherstellen dass alle fader bei startup auf 0 sind!
         self.general_buffer = []
         self.left_button_flag = False
         self.right_button_flag = False
@@ -104,7 +104,7 @@ class Driver:
                 if (len(self.general_buffer) > 1):
                     position = self.parse_fader_position(self.general_buffer[0], self.general_buffer[1])
                     self.fader_values[0] = self.map_14bit_to_8bit(position)
-                    print(self.map_14bit_to_8bit(position))
+                    #print(self.map_14bit_to_8bit(position))
                     self.general_buffer.pop()
                     self.general_buffer.pop()
 

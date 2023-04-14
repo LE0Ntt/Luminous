@@ -18,13 +18,13 @@ def mein_endpunkt():
 def update_fader_value():
     faderValue = int(request.json['faderValue'])
     print(faderValue)
-    mmix.pushFader(0,faderValue)
+    driver.pushFader(0,faderValue)
     return jsonify({'success': True, 'fader_value': faderValue})
 
 
 def send_variable():
     while True: 
-        variable = 50
+        variable = driver.fader_values[0]
         socketio.emit('variable_update', {'variable': variable}, namespace='/test')
         time.sleep(1) 
 

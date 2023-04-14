@@ -24,7 +24,7 @@ def update_fader_value():
 
 def send_variable():
     while True: 
-        variable = 50
+        variable = driver.fader_values[0]
         socketio.emit('variable_update', {'variable': variable}, namespace='/test')
         time.sleep(1) 
 

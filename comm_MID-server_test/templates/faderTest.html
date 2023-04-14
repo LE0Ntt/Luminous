@@ -62,26 +62,19 @@
 		<script src="../static/js/main.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function() {
+				const socket = io.connect('/test');
+				// Handle slider input on the client side
 				$('.fader').on('input', function() {
 					var faderValue = $(this).val();
-					$.ajax({
-						url: '/update_fader_value',
-						type: 'POST',
-						data: JSON.stringify({'faderValue': faderValue}),
-						contentType: 'application/json'
-					});
+					socket.emit('fader_value', { value: faderValue });
 					$('#fader-value').text(faderValue);
 				});
-			});
-		</script>
-		<script type="text/javascript">
-			$(document).ready(function() {
-				const socket = io.connect('/test'); 
+				// Handle server-side updates on the client side
 				socket.on('variable_update', function(data) { 
 					console.log("The value is " + data.variable);
 					AppManager.getCurrentProfile().setMasterValue(data.variable);
 				}); 
 			}); 
-		</script>
+		</script>		
 	</body>
 </html>

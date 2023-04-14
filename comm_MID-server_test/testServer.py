@@ -1,8 +1,9 @@
 from flask import Flask, jsonify, request, render_template
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 import threading
 import time
 from MOTORMIX_driver import Driver
+
 driver = Driver()
 
 app = Flask(__name__)
@@ -13,34 +14,26 @@ socketio = SocketIO(app)
 def mein_endpunkt():
     return render_template('faderTest.html')
 
-
-@app.route('/update_fader_value', methods=['POST'])
-def update_fader_value():
-    faderValue = int(request.json['faderValue'])
-    print(faderValue)
-    driver.pushFader(0,faderValue)
-    return jsonify({'success': True, 'fader_value': faderValue})
-
-
-def send_variable():
-    while True: 
-        variable = driver.fader_values[0]
-        socketio.emit('variable_update', {'variable': variable}, namespace='/test')
-        time.sleep(1) 
-
-
-@socketio.on('message')
-def handle_message(message):
-    print('received message: ' + message)
-
+@socketio.on('fader_value', namespace='/test')
+def handle_fader_value(data):
+    faderValue = int(data['value'])
+    #print(faderValue)
+    driver.pushFader(0, faderValue)
 
 @socketio.on('connect', namespace='/test') 
 def test_connect(): 
     print('Client connected')
 
+def send_variable():
+    old_variable = None
+    while True: 
+        variable = driver.fader_values[0]
+        if variable != old_variable:
+            socketio.emit('variable_update', {'variable': variable}, namespace='/test')
+            old_variable = variable
+        time.sleep(0.01) #je niedriger, desto flüssiger der Fader, aber höher die CPU-Last
 
 if __name__ == '__main__':
     variable_thread = threading.Thread(target=send_variable) 
     variable_thread.start() 
     socketio.run(app)
-

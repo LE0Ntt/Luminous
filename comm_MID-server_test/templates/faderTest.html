@@ -29,7 +29,6 @@
 
 	<!-- This meta tag is for displaying the app correctly on mobile devices-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 	<body>
 		<div id="masterContainer" class="control-unit" >
@@ -59,8 +58,10 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 				const socket = io.connect('/test');
+				const fader = $('.fader');
+				
 				// Handle slider input on the client side
-				$('.fader').on('input', function() {
+				fader.on('input', function() {
 					var faderValue = $(this).val();
 					socket.emit('fader_value', { value: faderValue });
 					$('#fader-value').text(faderValue);
@@ -70,7 +71,28 @@
 					console.log("The value is " + data.variable);
 					AppManager.getCurrentProfile().setMasterValue(data.variable);
 				}); 
+
+				const faderStep = fader.prop('step') || 30; // Scroll-Geschwindigkeit
+				
+				// Handle mousewheel event over the master container
+				$('#masterContainer').on('mousewheel', function(e) {
+					e.preventDefault();
+					var faderValue = fader.val();
+					const direction = e.originalEvent.deltaY < 0 ? 1 : -1;
+					faderValue = parseInt(faderValue) + (direction * faderStep);
+					faderValue = Math.max(fader.prop('min'), Math.min(fader.prop('max'), faderValue));
+					//fader.val(Math.round(faderValue)).trigger('input');
+					//AppManager.getCurrentProfile().setMasterValue(faderValue);
+					$({ value: fader.val() }).stop().animate({ value: faderValue }, { // smooth steps
+						duration: 100,
+						easing: 'linear',
+						step: function() {
+							fader.val(Math.round(this.value)).trigger('input');
+							AppManager.getCurrentProfile().setMasterValue(Math.round(this.value));
+						}
+					});
+				});
 			}); 
-		</script>		
+		</script>	
 	</body>
 </html>

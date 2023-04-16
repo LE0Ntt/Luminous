@@ -31,21 +31,39 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 	<body>
-		<div id="masterContainer" class="control-unit" >
-			<div class="masterUnitWrapper">
-				<a class="slider-heading masterHeading" style="height:5%;order: 2; ">Fader</a>
-				<br/>
-
-				<div class="masterValueContainer" style=" width: 100%;height:5%; order:4">
-					<input class="masterValueTag faderValueTag"  style="display:inline-block;width:70%; height:100%;" type="number" value="0" min="0" max="100" name="amount"/>
-					<a style="display:inline-block; width:20%; height:100%; color: #fff">%</a>
-				</div>
-
-				<div class="masterSliderContainer" style="height:80%; order: 4; position:relative; display:flex; justify-content:center; align-items:center;">
-					<input class="fader master-fader" min="0" max="255" type="range"/>
+		<div class="fader-container" style=" width: 100%;height:100%; order:4">
+			<div id="masterContainer" class="control-unit" >
+				<div class="masterUnitWrapper">
+					<a class="slider-heading masterHeading" style="height:5%;order: 2; ">Fader 1</a>
+					<br/>
+	
+					<div class="masterValueContainer" style=" width: 100%;height:5%; order:4">
+						<input class="masterValueTag faderValueTag"  style="display:inline-block;width:70%; height:100%;" type="number" value="0" min="0" max="100" name="amount"/>
+						<a style="display:inline-block; width:20%; height:100%; color: #fff">%</a>
+					</div>
+	
+					<div class="masterSliderContainer" style="height:80%; order: 1; position:relative; display:flex; justify-content:center; align-items:center;">
+						<input class="fader master-fader" min="0" max="255" type="range"/>
+					</div>
 				</div>
 			</div>
-		</div>
+			<div id="masterContainer" class="control-unit" >
+				<div class="masterUnitWrapper">
+					<a class="slider-heading masterHeading" style="height:5%;order: 2; ">Fader 2</a>
+					<br/>
+	
+					<div class="masterValueContainer" style=" width: 100%;height:5%; order:4">
+						<input class="masterValueTag faderValueTag"  style="display:inline-block;width:70%; height:100%;" type="number" value="0" min="0" max="100" name="amount"/>
+						<a style="display:inline-block; width:20%; height:100%; color: #fff">%</a>
+					</div>
+	
+					<div class="masterSliderContainer" style="height:80%; order: 1; position:relative; display:flex; justify-content:center; align-items:center;">
+						<input style="width:1000px; background-color: rgb(101, 150, 255);" class="fader master-fader" min="0" max="255" type="range"/>
+					</div>
+				</div>
+			</div>
+			
+		
 
 		<!-- Load the Javscscript files -->
 		<script src="../static/js/scene.js"></script>

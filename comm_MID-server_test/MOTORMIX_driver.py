@@ -4,9 +4,18 @@ import time
 
 '''
 Todo:
--make signal fader dependent
--fix button while fader active
--second value skipped, glaube nach stunden des verzweifelns es liegt am pult :]
+-start interpolation earlier if possible?
+-send fader value to client again
+-multi-fader support
+    -make signal fader dependent
+    -fix button while fader active
+-second value skipped, midi light check
+-fader start position
+    -every client-fader to 0, except master > 100, midi gets tose values
+-midi fader signals in intervals necessary? -> starting motormix after server... not necessary if there is a "motormix ready" signal
+    -check for signal
+    -alternativly ping?
+-toggle button light when pressed
 '''
 
 class Driver:
@@ -57,7 +66,7 @@ class Driver:
                     self.general_buffer.pop()
                     self.general_buffer.pop()
 
-                    # interpolate to simulate the double resolution (7 bit to 8 bit)
+                    # interpolation to simulate double the resolution (7 to 8 bit)
                     value = self.fader_values[0]
                     self.current_time = time.monotonic()
                     if self.last_time is not None:
@@ -134,7 +143,9 @@ class Driver:
                 break
             time.sleep(0.01)
         if value == self.fader_values[0]:
-            self.fader_values[0] = max(0, min(255, self.fader_values[0] + (value - self.last_value) / 2))
+            #self.fader_values[0] = max(0, min(255, self.fader_values[0] + (value - self.last_value) / 2)) # +- half the difference of last step
+            # +-1, depending on fader direction (to avoid fader mismatch after quick moves)
+            self.fader_values[0] = max(0, min(255, self.fader_values[0] + (1 if value > self.last_value else (-1 if value < self.last_value else 0))))
         self.last_time = self.current_time
         self.last_value = value
 

@@ -20,6 +20,7 @@ def handle_fader_value(data):
     faderValue = int(data['value'])
     #print(faderValue)
     driver.pushFader(0, faderValue)
+    #socketio.emit('variable_update', {'variable': faderValue}, namespace='/test') # update fader for other clients
 
 
 @socketio.on('connect', namespace='/test') 

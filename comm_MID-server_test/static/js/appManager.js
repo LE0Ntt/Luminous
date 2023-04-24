@@ -3,6 +3,14 @@ Diese Datei ist Teil der Bachelorarbeit von Fabian Schoettler
 Martrikelnummer : 1111 0647
 Stand : 13.03.2019
 */
+
+/*
+GPT:
+Der Code definiert eine AppManager-Funktion, die einige Variablen und Methoden zum Verwalten von Profilen, Universen, 
+Szenen und Fadern enthält. Der Code verwendet auch die Fetch-API, um Daten von einem Server abzurufen oder zu senden. 
+Der Code wird ausgeführt, wenn die AppManager-Funktion aufgerufen wird.
+ */
+
 const AppManager = (function(){
   var profileList;
   var currentProfile;

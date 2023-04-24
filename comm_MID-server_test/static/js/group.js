@@ -4,6 +4,13 @@ Martrikelnummer : 1111 0647
 Stand : 13.03.2019
 */
 
+/*
+GPT:
+Der Code definiert eine Klasse namens Group, die eine Gruppe von Fadern repräsentiert. 
+Eine Gruppe hat eine ID, einen Namen, einen Gruppenfaderwert, einen Erweiterungszustand und eine Liste von Fadern. 
+Eine Gruppe kann auch DOM-Elemente erstellen und aktualisieren, Event-Listener hinzufügen, Faderwerte ändern oder löschen und sich selbst aus der Datenbankdaten erstellen. 
+Der Code wird ausgeführt, wenn ein Group-Objekt instanziiert wird.
+*/
 
 var highestGroupID = 1;
 

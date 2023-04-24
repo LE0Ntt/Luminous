@@ -4,6 +4,11 @@ Martrikelnummer : 1111 0647
 Stand : 13.03.2019
 */
 
+/*
+GPT:
+The class has various methods to create and modify the profile, including parsing data from a database, setting and getting fader values, and manipulating scenes and groups.
+*/
+
 class Profile{
   constructor (universes, dbData){
     this.masterFader = new MasterFader($("#masterContainer"),this);

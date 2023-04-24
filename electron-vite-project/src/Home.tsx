@@ -9,8 +9,24 @@ const Home = () => {
     console.log('Button clicked!');
   };
 
-  const handleVolumeChange = (volume: number) => {
-    console.log(`Volume changed to ${volume}%`);
+  const [sliders, setSliders] = useState<SliderConfig[]>([
+    { id: 1, initialVolume: 50 },
+    { id: 2, initialVolume: 50 },
+    { id: 3, initialVolume: 50 },
+  ]);
+
+  const handleVolumeChange = (id: number, volume: number) => {
+    console.log(`Slider ${id} volume changed to ${volume}%`);
+  };
+
+  const addSlider = () => {
+    setSliders([
+      ...sliders,
+      {
+        id: sliders.length + 1,
+        initialVolume: 50,
+      },
+    ]);
   };
   
 
@@ -20,10 +36,19 @@ const Home = () => {
       <div>
         Home site.
         <Button onClick={handleClick}>Click me</Button>
-        <div>
-          <h1>Volume Slider</h1>
-          <Fader initialVolume={50} onVolumeChange={handleVolumeChange} />
-        </div>
+        <h1>Volume Sliders</h1>
+      <button onClick={addSlider}>Add Slider</button>
+      <div className="sliders">
+        {sliders.map((slider) => (
+          <div key={slider.id}>
+            <h2>Slider {slider.id}</h2>
+            <Fader
+              initialVolume={slider.initialVolume}
+              onVolumeChange={(volume) => handleVolumeChange(slider.id, volume)}
+            />
+          </div>
+        ))}
+      </div>
       </div>
     </div>
   )

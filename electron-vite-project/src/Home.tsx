@@ -9,6 +9,11 @@ const Home = () => {
     console.log('Button clicked!');
   };
 
+  interface SliderConfig {
+    id: number;
+    initialVolume: number;
+  }
+
   const [sliders, setSliders] = useState<SliderConfig[]>([
     { id: 1, initialVolume: 50 },
     { id: 2, initialVolume: 50 },

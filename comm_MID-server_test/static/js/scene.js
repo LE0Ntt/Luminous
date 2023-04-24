@@ -4,6 +4,13 @@ Martrikelnummer : 1111 0647
 Stand : 13.03.2019
 */
 
+/*
+GPT:
+Der Code definiert eine Klasse namens Scene, die eine einzelne Szene repräsentiert. 
+Eine Szene hat eine ID, einen Namen, eine Farbe, einen Satz von Faderwerten und eine Liste von Universen, die sie verfolgen soll. 
+Eine Szene kann auch DOM-Elemente erstellen und aktualisieren, Event-Listener hinzufügen, Werte an den Socket-Server senden und sich selbst bearbeiten, 
+überschreiben oder löschen. Der Code wird ausgeführt, wenn ein Scene-Objekt instanziiert wird.
+*/
 
 // This class represents a single class.
 class Scene{

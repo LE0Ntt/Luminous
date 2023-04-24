@@ -4,6 +4,13 @@ Martrikelnummer : 1111 0647
 Stand : 13.03.2019
 */
 
+/*
+GPT:
+Der Code definiert einige Klassen, die verschiedene Arten von Fadern repräsentieren, wie ChannelFader, MasterFader, GroupFader und TransitionTimeFader. 
+Jede Klasse erbt von der Fader-Klasse und implementiert einige spezifische Methoden zum Erstellen und Aktualisieren der DOM-Elemente, zum Hinzufügen von Event-Listenern, 
+zum Senden von Werten an den Socket-Server und zum Klonen der Objekte. Der Code wird ausgeführt, wenn die Fader-Objekte instanziiert werden.
+*/
+
 // Some constants
 var COLOR_ACTIVE  = "#0069ed";
 var COLOR_INACTIVE= "rgba(100,100,100,1)";

@@ -5,6 +5,14 @@ Martrikelnummer : 1111 0647
 Stand : 13.03.2019
 */
 
+/*
+GPT:
+Der Code definiert einige Konstanten und Variablen, erstellt eine Verbindung zu einem Socket-Server, 
+fügt einige Event-Listener hinzu, definiert einige Funktionen zum Umschalten von Modi, 
+Anpassen von Fadern, Verwalten von Szenen und Profilen und Öffnen und Schließen von Modals. 
+Der Code wird ausgeführt, wenn das Dokument geladen ist.
+*/
+
 const FADER_NUMBER = 4;
 const FADER_AMOUNT = 512;
 

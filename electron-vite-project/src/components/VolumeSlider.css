@@ -1,0 +1,21 @@
+/* VolumeSlider.css */
+.volume-slider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider {
+    writing-mode: bt-lr;
+    /* IE */
+    -webkit-appearance: slider-vertical;
+    /* WebKit */
+    width: 8px;
+    height: 150px;
+    padding: 0;
+    margin: 0 5px;
+    background: transparent;
+    outline: none;
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}

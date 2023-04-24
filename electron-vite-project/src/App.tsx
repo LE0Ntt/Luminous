@@ -1,6 +1,3 @@
-import nodeLogo from './assets/node.svg'
-import { useState } from 'react'
-import Update from '@/components/update'
 import './App.css'
 //new
 import Navbar from './components/Navbar'
@@ -11,10 +8,10 @@ import Test from './Test1'
 console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}!`)
 
 function App() {
-  const [count, setCount] = useState(0)
   return (
-    <div className='App'>
-      <div className='titlebar'></div>
+    <div className='App relative'>
+      <div className='titlebar fixed top-0 left-0 w-full'>
+      </div>
       <Router>
         <Navbar />
         <Routes>
@@ -22,30 +19,6 @@ function App() {
           <Route path='/Test1' element={<Test />} />
         </Routes>
       </Router>
-      {/** 
-      <div>
-        <a href='https://github.com/electron-vite/electron-vite-react' target='_blank'>
-          <img src='./electron-vite.svg' className='logo' alt='Electron + Vite logo' />
-        </a>
-      </div>
-      <h1>Electron + Vite + React</h1>
-      <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p className='m-2'>
-          Edit <code>src/components/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className='read-the-docs'>
-        Click on the Electron + Vite logo to learn more
-      </p>
-      <div className='flex-center'>
-        Place static files into the<code>/public</code> folder <img style={{ width: '5em' }} src={nodeLogo} alt='Node logo' />
-      </div>
-
-      <Update />
-      */}
     </div>
   )
 }

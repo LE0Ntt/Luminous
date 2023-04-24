@@ -12,8 +12,17 @@
     color: rgba(255, 255, 255, 0.87);
     background-color: #242424;
 
+    /* Standard-Eigenschaft mit Browser-Präfixen */
     -webkit-user-select: none;
-    /* only maybe, vielleicht andere lösung */
+    /* für Safari und Chrome */
+    -moz-user-select: none;
+    /* für Firefox */
+    -ms-user-select: none;
+    /* für Internet Explorer */
+    user-select: none;
+    /* Standard-Eigenschaft */
+
+    /* only maybe, vielleicht andere lösung. macht es so, dass  */
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;

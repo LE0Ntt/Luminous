@@ -23,12 +23,12 @@ function Navbar() {
               </Link>
             </li>
             <li>
-              <Link to="/Test2" className={location.pathname === '/Map' ? 'is-active-black' : ''}>
+              <Link to="/Test2" className={location.pathname === '/Test2' ? 'is-active-black' : ''}>
                 Test2
               </Link>
             </li>
             <li>
-              <Link to="/Test3" className={location.pathname === '/Information' ? 'is-active-white' : ''}>
+              <Link to="/Test3" className={location.pathname === '/Test3' ? 'is-active-white' : ''}>
                 Test3
               </Link>
             </li>

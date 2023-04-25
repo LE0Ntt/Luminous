@@ -31,6 +31,12 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  .background {
+    background-image: url('./assets/bgTest.png');
+    background-size: cover;
+    min-height: 100vh;
+  }
+
   button {
     border-radius: 8px;
     border: 1px solid transparent;
@@ -53,10 +59,8 @@
   }
 
   .titlebar {
-    -webkit-user-select: none;
+    /* -webkit-user-select: none; */
     -webkit-app-region: drag;
-    height: 30px;
-    background-color: #2f3241;
   }
 
   @media (prefers-color-scheme: light) {

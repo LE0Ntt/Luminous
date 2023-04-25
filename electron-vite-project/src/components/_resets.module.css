@@ -1,3 +1,7 @@
+/*
+ * Code nicht von mir, ggf. nicht nötig (export von figma)
+ */
+
 :where(.storybrainResets),
 :where(.storybrainResets) * {
   box-sizing: border-box;

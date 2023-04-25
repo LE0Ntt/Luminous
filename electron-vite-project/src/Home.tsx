@@ -5,35 +5,40 @@ import './index.css'
 import React, { useState } from 'react';
 
 const Home = () => {
+
+  // Button test
   const handleClick = () => {
     console.log('Button clicked!');
   };
 
+
+  // <- Slider:
   interface SliderConfig {
     id: number;
     initialVolume: number;
   }
 
+  // erstellt Slider am anfang (momentan einen Test Slider)
   const [sliders, setSliders] = useState<SliderConfig[]>([
     { id: 1, initialVolume: 50 },
-    { id: 2, initialVolume: 50 },
-    { id: 3, initialVolume: 50 },
   ]);
 
+  // gibt Slider Wert in der Console aus
   const handleVolumeChange = (id: number, volume: number) => {
     console.log(`Slider ${id} volume changed to ${volume}%`);
   };
 
+  // erstellt neuen Slider
   const addSlider = () => {
     setSliders([
       ...sliders,
       {
         id: sliders.length + 1,
-        initialVolume: 50,
+        initialVolume: 50,        // muss vom server vorgegeben werden
       },
     ]);
   };
-  
+  // :Slider End ->
 
   return (
     <div>

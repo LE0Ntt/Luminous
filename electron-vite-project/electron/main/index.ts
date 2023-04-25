@@ -57,11 +57,11 @@ async function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
     },
-    width: 1800,  //ändert Fenster breite
-    height: 1000, //"         "    höhe
+    width: 1920,  //ändert Fenster breite
+    height: 1080, //"         "    höhe
     titleBarStyle: 'hidden',
     titleBarOverlay: {
-      color: '#2f3241',
+      color: 'rgba(246, 246, 246, 0.0)',
       symbolColor: '#74b1be',
       height: 30,
     }

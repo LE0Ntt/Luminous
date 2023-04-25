@@ -1,23 +1,31 @@
-import './App.css'
-//new
-import Navbar from './components/Navbar'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import './App.css'
+import './index.css'
 import Home from './Home'
-import Test from './Test1'
+import Header from './components/Header'
+import Show from './Show'
+import Control from './Control'
+import Scenes from './Scenes'
 
 console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}!`)
 
 function App() {
   return (
-    <div className='App relative'>
-      <div className='titlebar fixed top-0 left-0 w-full'>
-      </div>
+    <div className='App relative background'>
+      <div className='titlebar h-[30px] w-full'></div>
       <Router>
-        <Navbar />
+      {/* draußen, weil maybe nicht benötigt
+      <div className='titlebar fixed top-0 left-0 w-full'>*/}
+      <Header/>
+      {/*</div>*/}
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path='/Test1' element={<Test />} />
+          <Route path="/Home" element={<Home />} />
+          <Route path='/Control' element={<Control />} />
+          <Route path='/Scenes' element={<Scenes />} />
+          <Route path='/Show' element={<Show />} />
         </Routes>
+        
       </Router>
     </div>
   )

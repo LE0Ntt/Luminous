@@ -2,9 +2,22 @@ import './App.css'
 import Button from './components/Button'
 import Fader from './components/Fader';
 import './index.css'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Home = () => {
+
+  const [data, setData] = useState([{}])
+
+  useEffect(() => {
+    fetch("http://localhost:5000/members").then(
+      res => res.json()
+    ).then(
+      data => {
+        setData(data)
+        console.log(data)
+      }
+    )
+  },  [])
 
   // Button test
   const handleClick = () => {

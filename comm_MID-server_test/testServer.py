@@ -14,6 +14,9 @@ socketio = SocketIO(app)
 def mein_endpunkt():
     return render_template('faderTest.html')
 
+@app.route('/members')
+def home():
+    return {"test": ["test1", "test2"]}
 
 @socketio.on('fader_value', namespace='/test')
 def handle_fader_value(data):

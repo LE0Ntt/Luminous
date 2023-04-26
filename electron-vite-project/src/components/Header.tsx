@@ -52,7 +52,7 @@ function Header() {
           </ul>
         </div>
         <div className='w-90px bg-pink-200 flex justify-center items-center h-full'>
-            <Button onClick={handleClick}>Click me</Button>
+            <Button onClick={handleClick}>Darkmode</Button>
         </div>
     </div>
   )

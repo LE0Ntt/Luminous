@@ -30,4 +30,24 @@
     }
   }
 
+  .window {
+    box-sizing: border-box;
+    /* Fill Medium
+
+    Window Fill
+    */
+    background: rgba(246, 246, 246, 0.6);
+    /* 1p Stroke fffff
+    
+    window 
+    */
+    border: 1px solid #FFFFFF;
+    /* Shadow 2
+    
+    new design Leon
+    */
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1), 0px -3px 10px rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+  }
+
 }

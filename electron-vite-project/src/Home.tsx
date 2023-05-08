@@ -1,14 +1,15 @@
-import './App.css'
-import Button from './components/Button'
+import './App.css';
+import Button from './components/Button';
 import Fader from './components/Fader';
-import './index.css'
-import React, { useState, useEffect } from 'react';
+import './index.css';
+import { useState, useEffect } from 'react';
+import { io, Socket } from 'socket.io-client';
 
 const Home = () => {
 
-  const [data, setData] = useState([{}])
+  const [data, setData] = useState([{}]);
 
-  useEffect(() => {
+  useEffect(() => { //test um direkt was Ã¼ber api abzurufen
     fetch("http://localhost:5000/members").then(
       res => res.json()
     ).then(
@@ -17,31 +18,81 @@ const Home = () => {
         console.log(data)
       }
     )
-  },  [])
+  },  []);
 
   // Button test
   const handleClick = () => {
     console.log('Button clicked!');
   };
 
-
   // <- Slider:
   interface SliderConfig {
     id: number;
     initialVolume: number;
-  }
-
-  // erstellt Slider am anfang (momentan einen Test Slider)
-  const [sliders, setSliders] = useState<SliderConfig[]>([
-    { id: 1, initialVolume: 50 },
-  ]);
-
-  // gibt Slider Wert in der Console aus
-  const handleVolumeChange = (id: number, volume: number) => {
-    console.log(`Slider ${id} volume changed to ${volume}%`);
   };
 
-  // erstellt neuen Slider
+  const [sliders, setSliders] = useState<SliderConfig[]>([{ id: 1, initialVolume: 50 }]);
+
+  const [socketInstance, setSocketInstance] = useState<Socket>();
+  // Connect to the socket.io server on the backend
+  useEffect(() => {
+    const socket = io("http://localhost:5000/test", {
+      transports: ["websocket"],
+      withCredentials: true
+    });
+
+    setSocketInstance(socket);
+
+    socket.on("value_update", (data) => {
+      console.log(data);
+    });
+
+    return function cleanup() {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (socketInstance) 
+    socketInstance.on("value_update", (data) => {
+      console.log(data);
+    });
+
+    return function cleanup() {
+      if (socketInstance) 
+      socketInstance.off("value_update");
+    };
+  }, [socketInstance]);
+
+/*
+  // When the component mounts, get the initial slider data from the server
+  useEffect(() => {
+    socket.on('initial_sliders', (initialSliders: SliderConfig[]) => {
+      setSliders(initialSliders);
+    });
+  }, []);
+*/
+  // When a slider value changes, emit an event to the server with the updated value
+  const handleVolumeChange = (id: number, volume: number) => {
+    console.log({volume});
+    if (socketInstance) 
+      socketInstance.emit('slider_change', { id, volume });
+  };
+
+  // When the server sends an update for a slider value, update the corresponding slider
+  useEffect(() => {
+    console.log("update")
+    if (socketInstance) 
+      socketInstance.on('variable_update', (updatedSlider: SliderConfig) => {
+        setSliders((prevSliders) =>
+          prevSliders.map((slider) =>
+            slider.id === updatedSlider.id ? updatedSlider : slider
+          )
+        );
+      });
+  }, [socketInstance]);
+
+  // Add a new slider to the server and update the client with the new slider data
   const addSlider = () => {
     setSliders([
       ...sliders,
@@ -75,6 +126,6 @@ const Home = () => {
       </div>
     </div>
   )
-}
+};
 
-export default Home
+export default Home;

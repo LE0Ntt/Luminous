@@ -43,7 +43,7 @@ const Home = () => {
 
     setSocketInstance(socket);
 
-    socket.on("value_update", (data) => {
+    socket.on("variable_update", (data) => {
       console.log(data);
     });
 
@@ -54,13 +54,13 @@ const Home = () => {
 
   useEffect(() => {
     if (socketInstance) 
-    socketInstance.on("value_update", (data) => {
+    socketInstance.on("variable_update", (data) => {
       console.log(data);
     });
 
     return function cleanup() {
       if (socketInstance) 
-      socketInstance.off("value_update");
+      socketInstance.off("variable_update");
     };
   }, [socketInstance]);
 

@@ -1,3 +1,7 @@
+/**
+ * Control.tsx
+ * @author Leon Hölzel, Darwin Pietas
+ */
 import './App.css';
 import Button from './components/Button';
 import Fader from './components/Fader';

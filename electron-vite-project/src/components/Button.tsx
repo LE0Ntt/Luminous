@@ -1,3 +1,7 @@
+/**
+ * Button.tsx
+ * @author Leon Hölzel
+ */
 import React from 'react';
 
 interface ButtonProps {

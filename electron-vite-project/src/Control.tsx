@@ -1,3 +1,7 @@
+/**
+ * Control.tsx
+ * @author Leon Hölzel
+ */
 import React from 'react'
 
 function Control() {

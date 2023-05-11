@@ -1,3 +1,7 @@
+/**
+ * App.tsx
+ * @author Leon Hölzel
+ */
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import './index.css'

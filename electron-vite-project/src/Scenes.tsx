@@ -1,3 +1,7 @@
+/**
+ * Scenes.tsx
+ * @author Leon Hölzel
+ */
 import React from 'react'
 import './App.css'
 

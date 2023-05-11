@@ -1,4 +1,8 @@
-// VolumeSlider.tsx
+/**
+ * Fader.tsx
+ * heißt nur VolumeSlider, weil ich das mal so gemacht habe und es jetzt zu viel Aufwand wäre, das zu ändern
+ * @author Leon Hölzel
+ */
 import React, { useState, ChangeEvent } from "react";
 import "./VolumeSlider.css";
 
@@ -22,17 +26,19 @@ const Fader: React.FC<VolumeSliderProps> = ({
   };
 
   return (
-    <div className="volume-slider">
-      <input
-        type="range"
-        min="0"
-        max="100"
-        step="1"
-        value={volume}
-        onChange={handleVolumeChange}
-        className="slider"
-      />
-      <span>{volume}%</span>
+    <div>
+      <div className="volume-slider h-[300px]">
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          value={volume}
+          onChange={handleVolumeChange}
+          className="slider"
+        />
+        <span>{volume}%</span>
+      </div>
     </div>
   );
 };

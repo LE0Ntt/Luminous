@@ -1,3 +1,7 @@
+/**
+ * Header.tsx
+ * @author Leon Hölzel
+ */
 import React, { useState } from 'react'
 import "./Header.modules.css";
 import { Link, useLocation } from 'react-router-dom';

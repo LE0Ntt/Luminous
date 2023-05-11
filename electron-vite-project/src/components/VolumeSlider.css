@@ -1,21 +1,57 @@
-/* VolumeSlider.css */
+/**
+ * VolumeSlider.css
+ * @author Leon Hölzel
+ */
 .volume-slider {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+
 .slider {
-    writing-mode: bt-lr;
-    /* IE */
-    -webkit-appearance: slider-vertical;
-    /* WebKit */
-    width: 8px;
-    height: 150px;
-    padding: 0;
-    margin: 0 5px;
-    background: transparent;
+    appearance: none;
+    transform: rotate(270deg);
+    -webkit-appearance: none;
+    -webkit-transform: rotate(270deg);
+    width: 260px;
+    height: 13px;
+    border-radius: 5px;
+    background: #d3d3d3;
     outline: none;
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    width: 260px;
+    height: 13px;
+    cursor: pointer;
+    background: rgba(40, 40, 40, 0.7);
+    box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+}
+
+.slider::-webkit-slider-thumb {
+    margin-top: -15px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-appearance: none;
+
+
+    background: rgba(246, 246, 246, 0.84);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(50px);
+    /* Note: backdrop-filter has minimal browser support */
+
+    border-radius: 50px;
+}
+
+.slider::-webkit-slider-thumb:hover {
+    background: rgba(246, 246, 246, 0.94);
 }

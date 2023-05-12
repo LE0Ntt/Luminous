@@ -1,5 +1,4 @@
 :root {
-
     /* Light Mode */
     --primary: rgba(0, 0, 0, 0.85);
     --secondary: rgba(0, 0, 0, 0.5);
@@ -48,19 +47,19 @@
     --windowShadow: 0px 18px 50px rgba(0, 0, 0, 0.15);
     --windowBackdrop: blur(15px);
 
+}
 
-    @media (prefers-color-scheme: dark) {
-        /* Dark Mode */
-        --primary: rgba(255, 255, 255, 0.85);
-        --secondary: rgba(255, 255, 255, 0.5);
-        --tertiary: rgba(255, 255, 255, 0.25);
+.dark {
+    /* Dark Mode */
+    --primary: rgba(255, 255, 255, 0.85);
+    --secondary: rgba(255, 255, 255, 0.5);
+    --tertiary: rgba(255, 255, 255, 0.25);
 
-        --fillUltraLight: rgba(40, 40, 40, 0.4);
-        --fillLight: rgba(40, 40, 40, 0.5);
-        --fillMedium: rgba(40, 40, 40, 0.6);
-        --fillThick: rgba(40, 40, 40, 0.7);
-        --fillUltraThick: rgba(40, 40, 40, 0.8);
+    --fillUltraLight: rgba(40, 40, 40, 0.4);
+    --fillLight: rgba(40, 40, 40, 0.5);
+    --fillMedium: rgba(40, 40, 40, 0.6);
+    --fillThick: rgba(40, 40, 40, 0.7);
+    --fillUltraThick: rgba(40, 40, 40, 0.8);
 
-        --mainColor: #B9BCFF;
-    }
+    --mainColor: #B9BCFF;
 }

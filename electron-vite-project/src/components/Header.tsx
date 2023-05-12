@@ -2,7 +2,7 @@
  * Header.tsx
  * @author Leon Hölzel
  */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import "./Header.modules.css";
 import { Link, useLocation } from 'react-router-dom';
 import Button from './Button';
@@ -10,8 +10,18 @@ import Button from './Button';
 function Header() {
     let location = useLocation();
 
-    const handleClick = () => {
-      console.log('Changed to Darkmode! (nicht wirklich)');
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+      document.body.classList.toggle('dark', isDark);
+    });
+
+    useEffect(() => {
+      localStorage.setItem('isDark', `${isDark}`);
+    }, [isDark]);
+
+    const toggleTheme = () => {
+      setIsDark(!isDark);
     };
   
   return (
@@ -56,7 +66,7 @@ function Header() {
           </ul>
         </div>
         <div className='w-90px bg-pink-200 flex justify-center items-center h-full'>
-            <Button onClick={handleClick}>Darkmode</Button>
+            <Button onClick={toggleTheme}>Darkmode</Button>
         </div>
     </div>
   )

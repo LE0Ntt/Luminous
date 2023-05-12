@@ -132,6 +132,7 @@
 .slider::-ms-thumb:hover {
     /* Specific styling for Microsoft Edge */
     background: rgba(246, 246, 246, 0.94);
+    cursor:ns-resize;
 }
 
 .inputNum {

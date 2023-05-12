@@ -122,17 +122,19 @@
 .slider::-webkit-slider-thumb:hover {
     /* Specific styling for WebKit/Blink */
     background: rgba(246, 246, 246, 0.94);
+    cursor: ns-resize;
 }
 
 .slider.slider::-moz-range-thumb:hover {
     /* Specific styling for Firefox */
     background: rgba(246, 246, 246, 0.94);
+    cursor: ns-resize;
 }
 
 .slider::-ms-thumb:hover {
     /* Specific styling for Microsoft Edge */
     background: rgba(246, 246, 246, 0.94);
-    cursor:ns-resize;
+    cursor: ns-resize;
 }
 
 .inputNum {

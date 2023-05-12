@@ -2,9 +2,10 @@
  * VolumeSlider.css
  * @author Leon Hölzel
  */
+@import url(../Color.css);
 
 :root {
-    --sliderHeight: 460px;
+    --sliderHeight: 260px;
     /* Height of the slider (width im code) */
 }
 
@@ -13,8 +14,8 @@
     width: 82px;
     font-weight: 700;
     position: relative;
-    color: rgba(0, 0, 0, 0.85);
-    background-color: rgba(246, 246, 246, 0.48);
+    color: var(--primary);
+    background-color: var(--fillLight);
     /* background-color nur für testzwecke */
 }
 

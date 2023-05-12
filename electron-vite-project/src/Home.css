@@ -1,0 +1,22 @@
+@import url(./Color.css);
+
+.faders {
+    box-sizing: border-box;
+    position: absolute;
+    width: 870px;
+    height: 445px;
+    left: 40px;
+    top: 595px;
+    background-color: var(--fillMedium);
+    border: 1px solid var(--onepStroke);
+    border-radius: 10px;
+
+    overflow-x: auto;
+}
+
+.sliders {
+    width: 82px;
+    height: auto;
+    background-color: brown;
+    float: left;
+}

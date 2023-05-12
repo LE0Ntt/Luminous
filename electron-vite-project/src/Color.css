@@ -1,0 +1,66 @@
+:root {
+
+    /* Light Mode */
+    --primary: rgba(0, 0, 0, 0.85);
+    --secondary: rgba(0, 0, 0, 0.5);
+    --tertiary: rgba(0, 0, 0, 0.25);
+
+    --fillUltraLight: rgba(246, 246, 246, 0.36);
+    --fillLight: rgba(246, 246, 246, 0.48);
+    --fillMedium: rgba(246, 246, 246, 0.6);
+    --fillThick: rgba(246, 246, 246, 0.72);
+    --fillUltraThick: rgba(246, 246, 246, 0.84);
+
+    --mainColor: #4F53B1;
+
+    --colorButton: #ffffff;
+
+    --onepStroke: #ffffff;
+    --onepStrokeDark: #000000;
+
+    --primaryDark: rgba(255, 255, 255, 0.85);
+    --secondaryDark: rgba(255, 255, 255, 0.5);
+    --tertiaryDark: rgba(255, 255, 255, 0.25);
+
+    --fillUltraLightDark: rgba(40, 40, 40, 0.4);
+    --fillLightDark: rgba(40, 40, 40, 0.5);
+    --fillMediumDark: rgba(40, 40, 40, 0.6);
+    --fillThickDark: rgba(40, 40, 40, 0.7);
+    --fillUltraThickDark: rgba(40, 40, 40, 0.8);
+
+    --blue: rgba(150, 180, 226, 0.5);
+    --cyan: rgba(170, 232, 236, 0.5);
+    --green: rgba(172, 229, 152, 0.5);
+    --purple: rgba(236, 163, 238, 0.5);
+    --red: rgba(240, 174, 174, 0.5);
+    --yellow: rgba(241, 243, 145, 0.5);
+
+    --color7B7B7C: #7B7B7C;
+    --colorB7B7B7: #B7B7B7;
+    --colorFFFFFF50: rgba(255, 255, 255, 0.5);
+    --colorFFFFFF40: rgba(255, 255, 255, 0.4);
+    --color00000025: rgba(0, 0, 0, 0.25);
+    --color00000020: rgba(0, 0, 0, 0.2);
+    --color00000010: rgba(0, 0, 0, 0.1);
+    --color00000008: rgba(0, 0, 0, 0.08);
+    --color00000003: rgba(0, 0, 0, 0.03);
+
+    --windowShadow: 0px 18px 50px rgba(0, 0, 0, 0.15);
+    --windowBackdrop: blur(15px);
+
+
+    @media (prefers-color-scheme: dark) {
+        /* Dark Mode */
+        --primary: rgba(255, 255, 255, 0.85);
+        --secondary: rgba(255, 255, 255, 0.5);
+        --tertiary: rgba(255, 255, 255, 0.25);
+
+        --fillUltraLight: rgba(40, 40, 40, 0.4);
+        --fillLight: rgba(40, 40, 40, 0.5);
+        --fillMedium: rgba(40, 40, 40, 0.6);
+        --fillThick: rgba(40, 40, 40, 0.7);
+        --fillUltraThick: rgba(40, 40, 40, 0.8);
+
+        --mainColor: #B9BCFF;
+    }
+}

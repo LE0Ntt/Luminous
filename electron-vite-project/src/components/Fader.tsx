@@ -26,7 +26,8 @@ const Fader: React.FC<VolumeSliderProps> = ({
   };
 
   return (
-    <div className="h-[340px] w-[82px] bg-purple-400 p-4 m-4 relative">
+    <div className="fader">
+      <div className="midPoint"></div>
       <div className="volume-slider">
         <input
           type="range"
@@ -46,9 +47,8 @@ const Fader: React.FC<VolumeSliderProps> = ({
         onChange={handleVolumeChange}
         className="inputNum w-12 h-8 text-right bg-transparent"
         />
-        <div className="absolute right-[28px] bottom-[30px]">%</div>
+        <span className="absolute right-[28px] bottom-[30px] font-extrabold">%</span>
       </div>
-      
     </div>
   );
 };

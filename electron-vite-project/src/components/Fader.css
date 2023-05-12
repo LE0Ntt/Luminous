@@ -2,12 +2,27 @@
  * VolumeSlider.css
  * @author Leon Hölzel
  */
+
+:root {
+    --sliderHeight: 460px;
+    /* Height of the slider (width im code) */
+}
+
+.fader {
+    height: calc(var(--sliderHeight) + 100px);
+    width: 82px;
+    font-weight: 700;
+    position: relative;
+    color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(246, 246, 246, 0.48);
+    /* background-color nur für testzwecke */
+}
+
 .volume-slider {
     transform: rotate(270deg);
     -webkit-transform: rotate(270deg);
-
     position: absolute;
-    bottom: 20.06%;
+    bottom: 70px;
     left: 41.46%;
 }
 
@@ -15,7 +30,7 @@
 .slider {
     appearance: none;
     -webkit-appearance: none;
-    width: 260px;
+    width: var(--sliderHeight);
     height: 13px;
     border-radius: 5px;
     background: #d3d3d3;
@@ -26,7 +41,9 @@
     top: 50%;
 }
 
+/* Slider Track - all Browsers */
 .slider::-webkit-slider-runnable-track {
+    /* Specific styling for WebKit/Blink */
     -webkit-appearance: none;
     width: 260px;
     height: 13px;
@@ -36,7 +53,30 @@
     border-radius: 50px;
 }
 
+.slider::-moz-range-progress {
+    /* Specific styling for Firefox track */
+    background-color: #4F53B1;
+    height: 13px;
+    border-radius: 50px;
+}
+
+.slider::-ms-fill-lower {
+    /* Specific styling for Microsoft Edge track */
+    background-color: #4F53B1;
+    height: 13px;
+    border-radius: 50px;
+}
+
+.slider::-ms-fill-upper {
+    /* Specific styling for Microsoft Edge track */
+    background-color: #4F53B1;
+    height: 13px;
+    border-radius: 50px;
+}
+
+/* Slider Thumb - all Browsers */
 .slider::-webkit-slider-thumb {
+    /* Specific styling for WebKit/Blink */
     margin-top: -15px;
     width: 44px;
     height: 44px;
@@ -54,12 +94,74 @@
     -webkit-backdrop-filter: blur(50px);
 }
 
+.slider::-moz-range-thumb {
+    /* Specific styling for Firefox */
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    background: rgba(246, 246, 246, 0.84);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: -15px;
+}
+
+.slider::-ms-thumb {
+    /* Specific styling for Microsoft Edge */
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    background: rgba(246, 246, 246, 0.84);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    height: 20px;
+    margin-top: -15px;
+}
+
 .slider::-webkit-slider-thumb:hover {
+    /* Specific styling for WebKit/Blink */
+    background: rgba(246, 246, 246, 0.94);
+}
+
+.slider.slider::-moz-range-thumb:hover {
+    /* Specific styling for Firefox */
+    background: rgba(246, 246, 246, 0.94);
+}
+
+.slider::-ms-thumb:hover {
+    /* Specific styling for Microsoft Edge */
     background: rgba(246, 246, 246, 0.94);
 }
 
 .inputNum {
     position: absolute;
-    right: 28px;
+    right: 50%;
     bottom: 27px;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.inputNum::-webkit-outer-spin-button,
+.inputNum::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.percentSymbol {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.midPoint {
+    position: absolute;
+    bottom: calc(var(--sliderHeight) / 2 + 70px);
+    left: 50%;
+    transform: translateX(-50%);
+
+    height: 1px;
+    width: 50px;
+    background: #b7b7b7;
 }

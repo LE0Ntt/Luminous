@@ -39,7 +39,7 @@ def test_connect():
     print('Client connected')
 
 @socketio.on('disconnect', namespace='/test') 
-def test_connect(): 
+def test_disconnect(): 
     print('Client disconnected')
 
 def send_variable():

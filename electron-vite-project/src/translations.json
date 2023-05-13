@@ -1,0 +1,10 @@
+{
+    "en": {
+      "greeting": "Hello!",
+      "buttonLabel": "Click me!"
+    },
+    "de": {
+      "greeting": "Hallo!",
+      "buttonLabel": "Klick mich!"
+    }
+  }

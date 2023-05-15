@@ -34,6 +34,12 @@
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
   }
+  
+  /* Prevent dragging  */
+  *, *::after, *::before {
+    -webkit-user-drag: none;
+    -webkit-app-region: no-drag;
+  }
 
   .background {
     background-image: url('./assets/bgTest.png');

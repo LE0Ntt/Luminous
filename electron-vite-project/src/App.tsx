@@ -10,6 +10,8 @@ import Header from './components/Header'
 import Show from './Show'
 import Control from './Control'
 import Scenes from './Scenes'
+import { TranslationProvider } from "./TranslationContext";
+import translations from "./translations.json";
 
 console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}!`)
 
@@ -22,6 +24,7 @@ function App() {
       <div className='titlebar fixed top-0 left-0 w-full'>*/}
       <Header/>
       {/*</div>*/}
+      <TranslationProvider translations={translations} defaultLanguage="en">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/Home" element={<Home />} />
@@ -29,7 +32,7 @@ function App() {
           <Route path='/Scenes' element={<Scenes />} />
           <Route path='/Show' element={<Show />} />
         </Routes>
-        
+        </TranslationProvider>
       </Router>
     </div>
   )

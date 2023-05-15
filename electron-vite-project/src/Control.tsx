@@ -1,34 +1,33 @@
-/**
- * Control.tsx
- * @author Leon Hölzel
- */
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
+import { TranslationContext } from "./TranslationContext";
 
 function Control() {
-  const [isDark, setIsDark] = useState(false);
+  const { t, language, setLanguage } = useContext(TranslationContext);
 
-  useEffect(() => {
-    if(isDark)
-      document.body.className = 'dark';
-    else
-      document.body.className = '';
-  }, [isDark]);
-
-  const toggleTheme = () => {
-    setIsDark(!isDark);
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLanguage(e.target.value as "en" | "de");
+  };
+  
+  const toggleLanguage = () => {
+    setLanguage(language === "en" ? "de" : "en");
   };
 
   return (
     <div>
-      <h1>Hier ist test text</h1>
-      <h1>Hier ist test text</h1>
-      <h1>Hier ist test text</h1>
-      <h1>Hier ist test text</h1>
-      <h1>Hier ist test text</h1>
-      <h1 >Hier ist test text!a</h1>
-      <button onClick={toggleTheme}>Toggle Theme</button>
+      <h1>{t("testText")}</h1>
+      <h1>{t("testText")}</h1>
+      <h1>{t("testText")}</h1>
+      <h1>{t("testText")}</h1>
+      <h1>{t("testText")}</h1>
+      <h1>{t("greeting")}</h1>
+      <button onClick={toggleLanguage}>{t("buttonLabel")}</button>
+      <select value={language} onChange={handleLanguageChange}>
+        <option value="en">{t("english")}</option>
+        <option value="de">{t("german")}</option>
+      </select>
     </div>
   );
 }
 
-export default Control
+
+export default Control;

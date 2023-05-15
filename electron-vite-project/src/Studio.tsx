@@ -6,7 +6,7 @@ import './App.css';
 import Button from './components/Button';
 import Fader from './components/Fader';
 import './index.css';
-import './Home.css';
+import './Studio.css';
 import { useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 
@@ -26,8 +26,8 @@ const Home = () => {
   },  []);
 
   // Button test
-  const handleClick = () => {
-    console.log('Button clicked!');
+  const handleClick = (id: number) => {
+    console.log('Button clicked!' + id);
   };
 
   // <- Slider:
@@ -113,11 +113,9 @@ const Home = () => {
     <div>
       <div className='h-20 w-20'></div>
       <div>
-        Home site.
-        <Button onClick={handleClick}>Click me</Button>
         <h1>Volume Sliders</h1>
       <button onClick={addSlider}>Add Slider</button>
-      <div className='faders'>
+      <div className='faders window'>
         <div className="sliders">
           {sliders.map((slider) => (
             <div key={slider.id}>
@@ -126,6 +124,7 @@ const Home = () => {
                 initialVolume={slider.initialVolume}
                 onVolumeChange={(volume) => handleVolumeChange(slider.id, volume)}
               />
+              <Button onClick={() => handleClick(slider.id)}>Button</Button>
             </div>
           ))}
         </div>

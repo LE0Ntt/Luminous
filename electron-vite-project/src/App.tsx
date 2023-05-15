@@ -5,7 +5,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import './index.css'
-import Home from './Home'
+import Home from './Studio'
 import Header from './components/Header'
 import Show from './Show'
 import Control from './Control'

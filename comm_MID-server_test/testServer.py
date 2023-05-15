@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
-#from flask_cors import CORS
+from flask_cors import CORS
 import threading
 import time
 from MOTORMIX_driver import Driver
@@ -8,7 +8,7 @@ from MOTORMIX_driver import Driver
 driver = Driver()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-#CORS(app, resources = {r"/*": {"origins": "*"}})
+CORS(app, resources = {r"/*": {"origins": "*"}})
 socketio = SocketIO(app, cors_allowed_origins = "*")
 
 @app.route('/')
@@ -24,7 +24,7 @@ def handle_fader_value(data):
     faderValue = int(data['value'])
     #print(faderValue)
     driver.pushFader(0, faderValue)
-    socketio.emit('variable_update', {'variable': faderValue}, namespace='/test') # update fader for other clients
+    #socketio.emit('variable_update', {'variable': faderValue}, namespace='/test') # update fader for other clients
 
 @socketio.on("slider_change", namespace='/test') #test für react
 def on_volume_change(data):
@@ -47,7 +47,6 @@ def send_variable():
     while True: 
         variable = driver.fader_values[0]
         if variable != old_variable:
-            print("nu")
             socketio.emit('variable_update', {'variable': variable}, namespace='/test')
             old_variable = variable
         time.sleep(0.01) #je niedriger, desto flüssiger der Fader, aber höher die CPU-Last

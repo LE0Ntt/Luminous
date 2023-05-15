@@ -13,7 +13,7 @@ import { io, Socket } from 'socket.io-client';
 const Studio = () => {
 
   const [data, setData] = useState([{}]);
-
+/*
   useEffect(() => { //test um direkt was Ã¼ber api abzurufen
     fetch("http://localhost:5000/members").then(
       res => res.json()
@@ -24,7 +24,7 @@ const Studio = () => {
       }
     )
   },  []);
-
+*/
   // Button test
   const handleClick = (id: number) => {
     console.log('Button clicked!' + id);
@@ -36,12 +36,12 @@ const Studio = () => {
     initialVolume: number;
   };
 
-  const [sliders, setSliders] = useState<SliderConfig[]>([{ id: 1, initialVolume: 50 }]);
+  const [sliders, setSliders] = useState<SliderConfig[]>([{ id: 1, initialVolume: 0 }]);
 
   const [socketInstance, setSocketInstance] = useState<Socket>();
   // Connect to the socket.io server on the backend
   useEffect(() => {
-    const socket = io("http://localhost:5000/test", {
+    const socket = io("http://127.0.0.1:5000/test", {
       transports: ["websocket"],
       withCredentials: true
     });
@@ -62,6 +62,16 @@ const Studio = () => {
     socketInstance.on("variable_update", (data) => {
       console.log(data);
     });
+    // When the server sends an update for a slider value, update the corresponding slider
+    console.log("update")
+    if (socketInstance) 
+      socketInstance.on('variable_update', (updatedSlider: SliderConfig) => {
+        setSliders((prevSliders) =>
+          prevSliders.map((slider) =>
+            slider.id === updatedSlider.id ? updatedSlider : slider
+          )
+        );
+      });
 
     return function cleanup() {
       if (socketInstance) 
@@ -83,19 +93,6 @@ const Studio = () => {
     if (socketInstance) 
       socketInstance.emit('slider_change', { id, volume });
   };
-
-  // When the server sends an update for a slider value, update the corresponding slider
-  useEffect(() => {
-    console.log("update")
-    if (socketInstance) 
-      socketInstance.on('variable_update', (updatedSlider: SliderConfig) => {
-        setSliders((prevSliders) =>
-          prevSliders.map((slider) =>
-            slider.id === updatedSlider.id ? updatedSlider : slider
-          )
-        );
-      });
-  }, [socketInstance]);
 
   // Add a new slider to the server and update the client with the new slider data
   const addSlider = () => {

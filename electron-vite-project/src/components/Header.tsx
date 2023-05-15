@@ -32,7 +32,7 @@ function Header() {
         <div className='w-20 h-full flex-auto'>
           <ul className="hidden md:flex justify-center items-center h-full ">
             <li>
-              <Link to="/Home" className={location.pathname === '/Home' ? 'is-active' : ''}>
+              <Link to="/Studio" className={location.pathname === '/Studio' ? 'is-active' : ''}>
                 <div className='button flex items-center justify-center'>
                     <div className='fill'></div>
                     <div className='buttonFont'>Studio</div>

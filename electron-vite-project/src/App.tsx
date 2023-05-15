@@ -5,7 +5,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import './index.css'
-import Home from './Studio'
+import Studio from './Studio'
 import Header from './components/Header'
 import Show from './Show'
 import Control from './Control'
@@ -26,8 +26,8 @@ function App() {
       {/*</div>*/}
       <TranslationProvider translations={translations} defaultLanguage="en">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/Home" element={<Home />} />
+          <Route path="/" element={<Studio />} />
+          <Route path="/Studio" element={<Studio />} />
           <Route path='/Control' element={<Control />} />
           <Route path='/Scenes' element={<Scenes />} />
           <Route path='/Show' element={<Show />} />

@@ -10,7 +10,7 @@ import './Studio.css';
 import { useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-const Home = () => {
+const Studio = () => {
 
   const [data, setData] = useState([{}]);
 
@@ -134,4 +134,4 @@ const Home = () => {
   )
 };
 
-export default Home;
+export default Studio;

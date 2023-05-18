@@ -1,17 +1,34 @@
-from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
+from flask import Flask
+from flask_socketio import SocketIO
+from flask_cors import CORS
+import time
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+CORS(app)
+socketio = SocketIO(app, cors_allowed_origins='*')
+
+volume = 0
+
 
 @app.route('/')
 def index():
-    return "Hello, World!"
+    return 'volume: ' + str(volume)
 
-@socketio.on('message')
-def handle_message(data):
-    print('received message: ' + data)
-    emit('message', data, broadcast=True)
+
+@socketio.on('volume')
+def handle_volume(new_volume):
+    global volume
+    volume = new_volume
+    print('Received volume:', volume)
+    # Do something with the volume...
+
+@socketio.on('volume')
+def sendvariable():
+    while True:
+        socketio.emit('volume', volume, broadcast=True)
+        print('Sent volume:', volume)
+        time.sleep(1)
+
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='127.0.0.1', port=5000)
+    socketio.run(app, host='127.0.0.1', port=5000)

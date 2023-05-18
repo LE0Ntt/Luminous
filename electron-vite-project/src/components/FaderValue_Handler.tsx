@@ -1,10 +1,12 @@
 // FaderValue_Handler.tsx
-import React, { createContext, useContext, ReactNode, FC } from 'react';
+import React, { createContext, useContext, ReactNode, FC, useState, useEffect } from 'react';
+import io from 'socket.io-client';
 
-const FLASK_SERVER_URL = 'http://localhost:5000'; // Replace with your Flask server URL
+const socket = io('http://localhost:5000'); // Replace with your Flask server URL
 
 type VolumeContextType = {
-  sendVolumeToServer: (volume: number) => Promise<any>;
+  volume: number;
+  sendVolumeToServer: (volume: number) => void;
 }
 
 const VolumeContext = createContext<VolumeContextType | null>(null);
@@ -22,17 +24,21 @@ interface VolumeProviderProps {
 }
 
 export const VolumeProvider: FC<VolumeProviderProps> = ({ children }) => {
-  const sendVolumeToServer = async (volume: number) => {
-    try {
-      const response = await axios.post(`${FLASK_SERVER_URL}/volume`, { volume });
-      return response.data;
-    } catch (error) {
-      console.error('Failed to send volume to server:', error);
-    }
+  const [volume, setVolume] = useState<number>(0);
+
+  const sendVolumeToServer = (volume: number) => {
+    socket.emit('volume', volume);
   };
 
+  useEffect(() => {
+    socket.on('volume', (volume: number) => {
+      setVolume(volume);
+      console.log('Received volume from server:' + volume);
+    });
+  }, []);
+
   return (
-    <VolumeContext.Provider value={{ sendVolumeToServer }}>
+    <VolumeContext.Provider value={{ volume, sendVolumeToServer }}>
       {children}
     </VolumeContext.Provider>
   );

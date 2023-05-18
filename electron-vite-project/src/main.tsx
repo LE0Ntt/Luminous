@@ -7,10 +7,13 @@ import ReactDOM from 'react-dom/client'
 import App from '@/App'
 import './samples/node-api'
 import './index.css'
+import { VolumeProvider } from './components/FaderValue_Handler'; // Test dazu gehört <VolumeProvider> in ReactDOM.createRoot().render() unten
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <VolumeProvider>
+      <App />
+    </VolumeProvider>
   </React.StrictMode>,
 )
 

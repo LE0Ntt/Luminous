@@ -10,7 +10,6 @@
     background-color: var(--fillMedium);
     border: 1px solid var(--onepStroke);
     border-radius: 10px;
-
     overflow-x: auto;
 }
 
@@ -59,6 +58,8 @@
     width: 82px;
     height: auto;
     background-color: brown;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .studio_overview {

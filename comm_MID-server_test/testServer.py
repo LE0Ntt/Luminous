@@ -1,14 +1,16 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
-from flask_cors import CORS
+#from flask_cors import CORS
 import threading
 import time
 from MOTORMIX_driver import Driver
+#from engineio.payload import Payload
 
+#Payload.max_decode_packets = 50
 driver = Driver()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-CORS(app, resources = {r"/*": {"origins": "*"}})
+#CORS(app, resources = {r"/*": {"origins": "*"}})
 socketio = SocketIO(app, cors_allowed_origins = "*")
 
 @app.route('/')
@@ -24,8 +26,7 @@ def handle_fader_value(data):
     faderValue = int(data['value'])
     #print(faderValue)
     driver.pushFader(0, faderValue)
-    #socketio.emit('variable_update', {'variable': faderValue}, namespace='/test') # update fader for other clients
-
+    
 @socketio.on("slider_change", namespace='/test') #test für react
 def on_volume_change(data):
     #print(f"Slider {data['id']} volume changed to {data['volume']}%")
@@ -33,6 +34,7 @@ def on_volume_change(data):
     driver.pushFader(0, faderValue)
     # Sende geänderte Werte an alle verbundenen Clients
     #socketio.emit("volume_change", data)
+    #socketio.emit('variable_update', {'variable': faderValue}, namespace='/test') # update fader for other clients
 
 @socketio.on('connect', namespace='/test') 
 def test_connect(): 

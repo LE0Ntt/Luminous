@@ -11,19 +11,20 @@ interface VolumeSliderProps {
   onVolumeChange?: (volume: number) => void;
 }
 
+
 const Fader: React.FC<VolumeSliderProps> = ({
-  initialVolume = 50,
+  initialVolume = 0,
   onVolumeChange,
 }) => {
   const [volume, setVolume] = useState<number>(initialVolume);
 
   const handleVolumeChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(event.target.value);
+    let newVolume = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
     setVolume(newVolume);
-    if (onVolumeChange) {
-      onVolumeChange(newVolume);
-    }
+    onVolumeChange?.(newVolume);
   };
+
+  const displayVolume = Math.round((volume / 255) * 100);
 
   return (
     <div className="fader">
@@ -32,20 +33,24 @@ const Fader: React.FC<VolumeSliderProps> = ({
         <input
           type="range"
           min="0"
-          max="100"
+          max="255"
           step="1"
           value={volume}
           onChange={handleVolumeChange}
-          style={{ background: `linear-gradient(to right, #4F53B1 0%, #4F53B1 ${volume}%, rgba(40, 40, 40, 0.7) ${volume}%, rgba(40, 40, 40, 0.7) 100%)`}}
+          style={{
+            background: `linear-gradient(to right, #4F53B1 0%, #4F53B1 ${displayVolume}%, rgba(40, 40, 40, 0.7) ${displayVolume}%, rgba(40, 40, 40, 0.7) 100%)`,
+          }}
           className="slider"
         />
       </div>
       <div>
         <input
-        type="number"
-        value={volume}
-        onChange={handleVolumeChange}
-        className="inputNum w-12 h-8 text-right bg-transparent"
+          type="number"
+          value={displayVolume}
+          onChange={handleVolumeChange}
+          className="inputNum w-12 h-8 text-right bg-transparent"
+          min="0"
+          max="100"
         />
         <span className="absolute right-[28px] bottom-[30px] font-extrabold">%</span>
       </div>

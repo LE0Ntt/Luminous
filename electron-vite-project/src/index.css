@@ -73,6 +73,31 @@
     -webkit-app-region: drag;
   }
 
+  /* Breite und Farbe der Scrollleiste */
+  /* Breite und Höhe der Scrollleiste */
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+
+  /* Hintergrundfarbe der Scrollleiste */
+  ::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+  }
+
+  /* Farbe des Scrollleisten-Griffs */
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    border: solid .5px rgba(0, 0, 0, 0.25)
+  }
+
+  /* Dunklerer Strich auf der Scrollleiste beim Scrollen */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+
   @media (prefers-color-scheme: light) {
     :root {
       color: #213547;

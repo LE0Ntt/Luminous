@@ -10,7 +10,8 @@
     background-color: var(--fillMedium);
     border: 1px solid var(--onepStroke);
     border-radius: 10px;
-    overflow-x: auto;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .scenes {
@@ -55,11 +56,11 @@
 }
 
 .sliders {
-    width: 82px;
+    width: 100%;
     height: auto;
-    background-color: brown;
     display: flex;
     justify-content: flex-start;
+    overflow-x: auto;
 }
 
 .studio_overview {
@@ -74,3 +75,4 @@
 
     background-size: contain;
 }
+  

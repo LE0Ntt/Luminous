@@ -109,6 +109,12 @@ const Studio = () => {
   return (
     <div>
       <div className='h-20 w-20'></div>
+      <div className='scenes'>
+        <h1>Scenes</h1>
+      </div>
+      <div className='overview'>
+        <div className='studio_overview window'></div>
+      </div>
       <div>
         <h1>Volume Sliders</h1>
       <button onClick={addSlider}>Add Slider</button>

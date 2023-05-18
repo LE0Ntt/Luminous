@@ -14,8 +14,62 @@
     overflow-x: auto;
 }
 
+.scenes {
+    box-sizing: border-box;
+    position: absolute;
+    height: 445px;
+    width: 974px;
+    left: 40px;
+    top: 130px;
+    border-radius: 10px;
+
+    background-color: var(--fillMedium);
+    border: 1px solid var(--onepStroke);
+
+    overflow-x: auto;
+}
+
+.overview {
+    box-sizing: border-box;
+    position: absolute;
+    height: 910px;
+    width: 844px;
+    left: 1034px;
+    top: 130px;
+    border-radius: 10px;
+
+    background-color: var(--fillMedium);
+    border: 1px solid var(--onepStroke);
+}
+
+.mainfader {
+    box-sizing: border-box;
+    position: absolute;
+    height: 445px;
+    width: 84px;
+    left: 930px;
+    top: 595px;
+    border-radius: 10px;
+
+    background-color: var(--fillMedium);
+    border: 1px solid var(--onepStroke);
+}
+
 .sliders {
     width: 82px;
     height: auto;
     background-color: brown;
+}
+
+.studio_overview {
+    background-image: url('./assets/studio_overview.png');
+    height: 870px;
+    width: 804px;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 6px;
+
+    background-size: contain;
 }

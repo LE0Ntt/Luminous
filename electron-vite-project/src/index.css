@@ -36,7 +36,7 @@
   }
   
   /* Prevent dragging  */
-  *, *::after, *::before {
+  a, a::after, a::before {
     -webkit-user-drag: none;
     -webkit-app-region: no-drag;
   }

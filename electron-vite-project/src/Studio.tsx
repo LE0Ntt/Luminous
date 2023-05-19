@@ -9,6 +9,7 @@ import Button from './components/Button';
 import Fader from './components/Fader';
 import { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { useConnectionContext } from "./ConnectionContext";
 
 const Studio = () => {
   // Button test
@@ -21,9 +22,9 @@ const Studio = () => {
     id: number;
     initialVolume: number;
   };
-
+  const { connected, emit, on } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([{ id: 1, initialVolume: 0 }]);
-
+/*
   //const [socketInstance, setSocketInstance] = useState<Socket>();
   const socketInstance = useRef<Socket>();
   // Connect to the socket.io server on the backend
@@ -44,7 +45,7 @@ const Studio = () => {
   const handleVolumeChange = (id: number, volume: number) => {
     socketInstance.current?.emit('fader_value', { value: volume });
   };
-
+*/
   // Add a new slider to the server and update the client with the new slider data
   const addSlider = () => {
     setSliders([
@@ -56,6 +57,23 @@ const Studio = () => {
     ]);
   };
   // :Slider End ->
+
+
+  const handleVolumeChange = (volume: number) => {
+    emit("fader_value", {value: volume });
+  };
+
+  useEffect(() => {
+    const eventListener = (data: any) => {
+      console.log("Received data from server:", data);
+    };
+  
+    on("variable_update", eventListener);
+  
+    return () => {
+      on("variable_update", eventListener);
+    };
+  }, [on]);
 
   return (
     <div>
@@ -72,14 +90,14 @@ const Studio = () => {
         <h1>Volume Sliders</h1>
         <button onClick={addSlider}>Add Slider</button>
         <div className='faders window'>
-        { socketInstance ? (
+        { connected ? (
           <div className="sliders">
             {sliders.map((slider) => (
               <div key={slider.id}>
                 <h2>Slider {slider.id}</h2>
                 <Fader
                   initialVolume={slider.initialVolume}
-                  onVolumeChange={(volume) => handleVolumeChange(slider.id, volume)}
+                  onVolumeChange={(volume) => handleVolumeChange(volume)}
                 />
                 <Button onClick={() => handleClick(slider.id)}>Button</Button>
               </div>

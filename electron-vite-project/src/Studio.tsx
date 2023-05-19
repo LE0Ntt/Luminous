@@ -74,7 +74,8 @@ const Studio = () => {
         <div className='studio_overview window'></div>
       </div>
       <div className='mainfader window'>
-        <Fader
+        <Fader 
+          height={340}
           initialVolume={255}
           id={0}
         />

@@ -10,7 +10,7 @@
 }
 
 .fader {
-    height: calc(var(--sliderHeight) + 100px);
+    height: 360px;
     width: 102px;
     font-weight: 700;
     top: -4%;
@@ -18,7 +18,20 @@
     color: var(--primary);
     border-right: 1px solid var(--color00000010);
     transform: translateX(-10px);
+}
 
+.faderMaster {
+    height: calc(var(--sliderHeight) + 100px) !important;
+    border: none !important;
+    top: 5px;
+}
+
+.faderMaster > .midPoint {
+    bottom: calc(var(--sliderHeight) / 2 + 70px) !important;
+}
+
+.faderMaster > .volume-slider > .slider {
+    width: var(--sliderHeight) !important;
 }
 
 .volume-slider {
@@ -32,7 +45,7 @@
 .slider {
     appearance: none;
     -webkit-appearance: none;
-    width: var(--sliderHeight);
+    width: 260px;
     height: 13px;
     border-radius: 5px;
     background: #d3d3d3;
@@ -173,7 +186,7 @@
 
 .midPoint {
     position: absolute;
-    bottom: calc(var(--sliderHeight) / 2 + 70px);
+    bottom: calc(260px / 2 + 70px);
     left: 50%;
     transform: translateX(-50%);
 

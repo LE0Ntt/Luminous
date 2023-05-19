@@ -6,17 +6,20 @@ interface VolumeSliderProps {
   initialVolume?: number;
   id?: number;
   onVolumeChange?: (volume: number) => void;
+  height?: number;
 }
 
 const Fader: React.FC<VolumeSliderProps> = ({
   initialVolume = 0,
   id,
   onVolumeChange,
+  height,
 }) => {
   const { emit } = useConnectionContext();
   const [volume, setVolume] = useState<number>(initialVolume);
   const volumeRef = useRef<number>(initialVolume);
   const isDataSentRef = useRef(false);
+  const faderClassName = height ? "fader faderMaster" : "fader";
 
   useEffect(() => {
     setVolume(initialVolume);
@@ -54,8 +57,14 @@ const Fader: React.FC<VolumeSliderProps> = ({
 
   const displayVolume = Math.round((volume / 255) * 100);
 
+  useEffect(() => {
+    // Setze den Wert der CSS-Variable basierend auf der übergebenen Höhe
+    if(height)
+      document.documentElement.style.setProperty("--sliderHeight", `${height}px`);
+  }, [height]);
+
   return (
-    <div className="fader">
+    <div className={faderClassName}>
       <div className="midPoint"></div>
       <div className="volume-slider">
         <input

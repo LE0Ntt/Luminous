@@ -7,7 +7,7 @@ import './index.css';
 import './Studio.css';
 import Button from './components/Button';
 import Fader from './components/Fader';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useConnectionContext } from "./components/ConnectionContext";
 
 const Studio = () => {
@@ -22,7 +22,7 @@ const Studio = () => {
     initialVolume: number;
   };
 
-  const { connected } = useConnectionContext();
+  const { connected, on, off } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
 
   // Add a new slider to the server and update the client with the new slider data
@@ -36,6 +36,29 @@ const Studio = () => {
     ]);
   };
   // :Slider End ->
+
+  useEffect(() => {
+    const eventListener = (data: any) => {
+      console.log("Received data from server:", data.variable);
+      // Hier kannst du den Slider-Wert aktualisieren
+      const updatedSliders = sliders.map((slider, index) => {
+        if (index === 0) {
+          slider.initialVolume = data.variable;
+        }
+        return slider;
+      });
+      setSliders(updatedSliders);
+    };
+    
+    on("variable_update", eventListener);
+  
+    // Funktion zum Entfernen des Event-Listeners
+    const removeEventListener = () => {
+      off("variable_update", eventListener);
+    };
+  
+    return removeEventListener;
+  }, [on, off]);
 
   return (
     <div>

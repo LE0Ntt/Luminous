@@ -56,11 +56,11 @@
 }
 
 .sliders {
-    width: 100%;
+    min-width: 100%;
     height: auto;
     display: flex;
     justify-content: flex-start;
-    overflow-x: auto;
+    overflow-x: scroll;
 }
 
 .studio_overview {
@@ -75,4 +75,3 @@
 
     background-size: contain;
 }
-  

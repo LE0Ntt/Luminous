@@ -52,6 +52,13 @@ const Fader: React.FC<VolumeSliderProps> = ({
     onVolumeChange?.(newVolume);
   };
 
+  const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
+    let value = Math.min(Math.max(parseInt(event.target.value, 10), 0), 100);
+    let newVolume = Math.round((value / 100) * 255);
+    setVolume(newVolume);
+    onVolumeChange?.(newVolume);
+  };
+
   const displayVolume = Math.round((volume1 / 255) * 100);
 
   return (
@@ -75,7 +82,7 @@ const Fader: React.FC<VolumeSliderProps> = ({
         <input
           type="number"
           value={displayVolume}
-          onChange={handleVolumeChange}
+          onChange={handleInput}
           className="inputNum w-12 h-8 text-right bg-transparent"
           min="0"
           max="100"

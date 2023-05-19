@@ -3,10 +3,10 @@
  * @author Leon Hölzel, Darwin Pietas
  */
 import './App.css';
-import Button from './components/Button';
-import Fader from './components/Fader';
 import './index.css';
 import './Studio.css';
+import Button from './components/Button';
+import Fader from './components/Fader';
 import { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 

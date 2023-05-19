@@ -1,58 +1,35 @@
 @import url(./Color.css);
 
 .faders {
-    box-sizing: border-box;
-    position: absolute;
     width: 870px;
     height: 445px;
     left: 40px;
     top: 595px;
-    background-color: var(--fillMedium);
-    border: 1px solid var(--onepStroke);
-    border-radius: 10px;
     padding-left: 20px;
     padding-right: 20px;
 }
 
 .scenes {
-    box-sizing: border-box;
-    position: absolute;
     height: 445px;
     width: 974px;
     left: 40px;
     top: 130px;
-    border-radius: 10px;
-
-    background-color: var(--fillMedium);
-    border: 1px solid var(--onepStroke);
-
     overflow-x: auto;
 }
 
 .overview {
-    box-sizing: border-box;
-    position: absolute;
     height: 910px;
     width: 844px;
     left: 1034px;
     top: 130px;
     border-radius: 10px;
-
-    background-color: var(--fillMedium);
-    border: 1px solid var(--onepStroke);
 }
 
 .mainfader {
-    box-sizing: border-box;
-    position: absolute;
     height: 445px;
     width: 84px;
     left: 930px;
     top: 595px;
-    border-radius: 10px;
-
-    background-color: var(--fillMedium);
-    border: 1px solid var(--onepStroke);
 }
 
 .sliders {

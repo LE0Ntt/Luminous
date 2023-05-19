@@ -61,5 +61,7 @@
     --fillThick: rgba(40, 40, 40, 0.7);
     --fillUltraThick: rgba(40, 40, 40, 0.8);
 
+    --onepStroke: #000000;
+
     --mainColor: #B9BCFF;
 }

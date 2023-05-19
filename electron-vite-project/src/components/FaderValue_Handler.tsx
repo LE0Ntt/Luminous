@@ -1,8 +1,10 @@
 // FaderValue_Handler.tsx
 import React, { createContext, useContext, ReactNode, FC, useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import { useSocket } from './Connection';
 
 const socket = io('http://localhost:5000'); // Replace with your Flask server URL
+//const socket = useSocket();
 
 type VolumeContextType = {
   volume: number;

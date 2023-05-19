@@ -10,7 +10,7 @@ import Header from './components/Header'
 import Show from './Show'
 import Control from './Control'
 import Scenes from './Scenes'
-import { TranslationProvider } from "./TranslationContext";
+import { TranslationProvider } from "./components/TranslationContext";
 import translations from "./translations.json";
 
 console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}!`)

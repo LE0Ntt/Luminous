@@ -8,14 +8,14 @@ import App from '@/App'
 import './samples/node-api'
 import './index.css'
 import { VolumeProvider } from './components/FaderValue_Handler'; // Test dazu gehört <VolumeProvider> in ReactDOM.createRoot().render() unten
-import { ConnectionProvider } from "./ConnectionContext";
+import { ConnectionProvider } from "./components/ConnectionContext";
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ConnectionProvider url="http://localhost:5000/test">
-      <VolumeProvider>
+    
+      <ConnectionProvider url="http://localhost:5000/test">
         <App />
-      </VolumeProvider>
-    </ConnectionProvider>
+      </ConnectionProvider>
+   
   </React.StrictMode>,
 )
 

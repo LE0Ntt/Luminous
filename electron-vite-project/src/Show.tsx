@@ -3,7 +3,7 @@
  * @author Leon Hölzel
  */
 import React from "react";
-import { useConnectionContext } from "./ConnectionContext";
+import { useConnectionContext } from "./components/ConnectionContext";
 
 
 function Show() {

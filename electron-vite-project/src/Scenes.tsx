@@ -4,7 +4,7 @@
  */
 import React, { useContext } from 'react'
 import './App.css'
-import { TranslationContext } from "./TranslationContext";
+import { TranslationContext } from "./components/TranslationContext";
 
 function Scenes() {
   const { t } = useContext(TranslationContext);

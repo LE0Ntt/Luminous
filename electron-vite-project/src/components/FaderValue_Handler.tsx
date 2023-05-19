@@ -1,10 +1,12 @@
 // FaderValue_Handler.tsx
+
+
+//NOT USED
+
+
 import React, { createContext, useContext, ReactNode, FC, useState, useEffect } from 'react';
 import io from 'socket.io-client';
-import { useSocket } from './Connection';
-
-const socket = io('http://localhost:5000'); // Replace with your Flask server URL
-//const socket = useSocket();
+import { useConnectionContext } from "./ConnectionContext";
 
 type VolumeContextType = {
   volume: number;
@@ -12,6 +14,7 @@ type VolumeContextType = {
 }
 
 const VolumeContext = createContext<VolumeContextType | null>(null);
+const { emit, on } = useConnectionContext();
 
 export const useVolume = () => {
   const context = useContext(VolumeContext);
@@ -29,15 +32,21 @@ export const VolumeProvider: FC<VolumeProviderProps> = ({ children }) => {
   const [volume, setVolume] = useState<number>(0);
 
   const sendVolumeToServer = (volume: number) => {
-    socket.emit('volume', volume);
+    emit("fader_value", {value: volume });
   };
 
   useEffect(() => {
-    socket.on('volume', (volume: number) => {
+    const eventListener = (data: any) => {
       setVolume(volume);
-      console.log('Received volume from server:' + volume);
-    });
-  }, []);
+      console.log("Received data from server:", data);
+    };
+  
+    on("variable_update", eventListener);
+  
+    return () => {
+      on("variable_update", eventListener);
+    };
+  }, [on]);
 
   return (
     <VolumeContext.Provider value={{ volume, sendVolumeToServer }}>

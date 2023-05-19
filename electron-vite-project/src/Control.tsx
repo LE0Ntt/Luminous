@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { TranslationContext } from "./TranslationContext";
+import { TranslationContext } from "./components/TranslationContext";
 
 function Control() {
   const { t, language, setLanguage } = useContext(TranslationContext);

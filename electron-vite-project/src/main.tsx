@@ -7,15 +7,13 @@ import ReactDOM from 'react-dom/client'
 import App from '@/App'
 import './samples/node-api'
 import './index.css'
-import { VolumeProvider } from './components/FaderValue_Handler'; // Test dazu gehört <VolumeProvider> in ReactDOM.createRoot().render() unten
 import { ConnectionProvider } from "./components/ConnectionContext";
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    
-      <ConnectionProvider url="http://localhost:5000/">
+      <ConnectionProvider url="http://localhost:5000/test">
         <App />
       </ConnectionProvider>
-   
   </React.StrictMode>,
 )
 

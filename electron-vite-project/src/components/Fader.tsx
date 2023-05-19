@@ -11,7 +11,7 @@ const Fader: React.FC<VolumeSliderProps> = ({
   initialVolume = 0,
   onVolumeChange,
 }) => {
-  const { emit, on, off } = useConnectionContext();
+  const { emit } = useConnectionContext();
   const [volume, setVolume] = useState<number>(initialVolume);
   const volumeRef = useRef<number>(initialVolume);
   const isDataSentRef = useRef(false);
@@ -36,23 +36,6 @@ const Fader: React.FC<VolumeSliderProps> = ({
     }, 33);
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    const eventListener = (data: any) => {
-      console.log("Received data from server:", data);
-      // Hier kannst du den Slider-Wert aktualisieren
-      setVolume(data.value);
-    };
-    
-    on("variable_update", eventListener);
-  
-    // Funktion zum Entfernen des Event-Listeners
-    const removeEventListener = () => {
-      off("variable_update", eventListener);
-    };
-  
-    return removeEventListener;
-  }, [on]);
   
   const handleVolumeChange = (event: ChangeEvent<HTMLInputElement>) => {
     let newVolume = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);

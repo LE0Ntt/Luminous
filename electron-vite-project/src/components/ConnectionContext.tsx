@@ -3,11 +3,13 @@ import { io, Socket } from "socket.io-client";
 
 type EmitFunction = (event: string, data?: any) => void;
 type OnFunction = (event: string, callback: (data?: any) => void) => void;
+type OffFunction = (event: string, callback: (data?: any) => void) => void;
 
 interface ConnectionContextType {
   connected: boolean;
   emit: EmitFunction;
   on: OnFunction;
+  off: OffFunction;
 }
 
 const ConnectionContext = createContext<ConnectionContextType | null>(null);
@@ -50,10 +52,15 @@ export function ConnectionProvider({ children, url }: ConnectionProviderProps) {
     socket?.on(event, callback);
   };
 
+  const off: OffFunction = (event, callback) => {
+    socket?.off(event, callback);
+  };
+
   const contextValue: ConnectionContextType = {
     connected,
     emit,
     on,
+    off,
   };
 
   return (

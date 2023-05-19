@@ -16,6 +16,10 @@ const Studio = () => {
     console.log('Button clicked!' + id);
   };
 
+  const openBigView = () => {
+    console.log('Big View opened!');
+  };
+
   // <- Slider:
   interface SliderConfig {
     id: number;
@@ -52,19 +56,26 @@ const Studio = () => {
         <h1>Volume Sliders</h1>
         <button onClick={addSlider}>Add Slider</button>
         <div className='faders window'>
+          <Button
+            onClick={() => openBigView()}
+            className="buttonBigView"
+          >
+            O
+          </Button>
         { connected ? (
           <div className="sliders">
             {sliders.map((slider) => (
-              <div key={slider.id}>
+              <div key={slider.id} className='slidersHeight'>
                 <h2 className='faderText'>{slider.id}</h2>
                 <Fader
                   initialVolume={slider.initialVolume}
+              
                 />
                 <Button 
                   onClick={() => handleClick(slider.id)} 
                   className="buttonOpenControl"
                 >
-                  B
+                  C
                 </Button>
 
               </div>

@@ -11,11 +11,14 @@
 
 .fader {
     height: calc(var(--sliderHeight) + 100px);
-    width: 82px;
+    width: 102px;
     font-weight: 700;
+    top: -4%;
     position: relative;
     color: var(--primary);
-    margin-right: 20px;
+    border-right: 1px solid var(--color00000010);
+    transform: translateX(-10px);
+
 }
 
 .volume-slider {
@@ -23,7 +26,7 @@
     -webkit-transform: rotate(270deg);
     position: absolute;
     bottom: 70px;
-    left: 41.46%;
+    left: 44%;
 }
 
 .slider {
@@ -143,7 +146,7 @@
     background: transparent;
     position: absolute;
     right: 50%;
-    bottom: 27px;
+    bottom: 37px;
     appearance: textfield;
     -moz-appearance: textfield;
 }
@@ -151,7 +154,7 @@
 .inputNumPercent {
     font-weight: 800;
     position: absolute;
-    bottom: 30px;
+    bottom: 40px;
     left: 50%;
 }
 
@@ -177,4 +180,17 @@
     height: 1px;
     width: 50px;
     background: #b7b7b7;
+}
+
+.faderName {
+    position: absolute;
+    text-align: center;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0em;
+    text-align: center;
 }

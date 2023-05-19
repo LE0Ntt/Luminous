@@ -38,6 +38,7 @@
     display: flex;
     justify-content: flex-start;
     overflow-x: scroll;
+    overflow-y: hidden;
 }
 
 .studio_overview {
@@ -58,13 +59,27 @@
     height: 35px;
     border-radius: 5px;
     position: relative;
-    left: calc(50% - 10px);
-    transform: translate(-50%, 0);
+    left: 50%;
+    top: -2%;
+    transform: translate(calc(-50% - 10px), -50%);
+}
+
+.buttonOpenControl:hover {
+    background: hotpink;
+    cursor: pointer;
+}
+
+.buttonBigView {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    position: absolute;
+    right: 10px;
+    top: 10px;
 }
 
 .faderText {
     padding-top: 20px;
-    padding-right: 20px;
     font-size: 18px;
     font-weight: 700;
     color: var(--primary);
@@ -72,4 +87,9 @@
     line-height: 22px;
     letter-spacing: 0em;
     margin-bottom: 0;
+    transform: translateX(-10px);
+}
+
+.slidersHeight {
+    height: 425px;
 }

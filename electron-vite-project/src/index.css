@@ -46,9 +46,22 @@
   }
 
   .background {
-    background-image: url('./assets/bgTest.png');
+    background-image: var(--backgroundImage);
     background-size: cover;
     min-height: 100vh;
+  }
+
+  .centerIcon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    fill: var(--primary);
+  }
+
+  .rotateIcon {
+    transform: rotate(90deg) translate(0%, -15%);
+    fill: var(--primary);
   }
 
   .window {

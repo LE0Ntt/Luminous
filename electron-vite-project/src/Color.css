@@ -13,6 +13,7 @@
     --mainColor: #4F53B1;
 
     --colorButton: #ffffff;
+    --colorButtonHover: #dfdfdf;
 
     --onepStroke: #ffffff;
     --onepStrokeDark: #000000;
@@ -47,6 +48,8 @@
     --windowShadow: 0px 18px 50px rgba(0, 0, 0, 0.15);
     --windowBackdrop: blur(15px);
 
+
+    --backgroundImage: url('./assets/bgTest.png');
 }
 
 .dark {
@@ -63,7 +66,9 @@
 
     --onepStroke: #000000;
 
-    --colorButton: #000000;
+    --colorButton: rgba(72, 72, 72, 0.5);
 
     --mainColor: #B9BCFF;
+
+    --backgroundImage: url('./assets/Unbenannt-5b.png');
 }

@@ -4,11 +4,13 @@ import { useConnectionContext } from './ConnectionContext';
 
 interface VolumeSliderProps {
   initialVolume?: number;
+  id?: number;
   onVolumeChange?: (volume: number) => void;
 }
 
 const Fader: React.FC<VolumeSliderProps> = ({
   initialVolume = 0,
+  id,
   onVolumeChange,
 }) => {
   const { emit } = useConnectionContext();
@@ -31,7 +33,7 @@ const Fader: React.FC<VolumeSliderProps> = ({
       if (!isDataSentRef.current) {
         isDataSentRef.current = true;
         emit("fader_value", { value: volumeRef.current });
-        console.log('volumeRef.current: ' + volumeRef.current, 'isDataSent: ' + isDataSentRef.current);
+        console.log('id:' + id, 'volumeRef.current:' + volumeRef.current, 'isDataSent:' + isDataSentRef.current);
       }
     }, 33);
     return () => clearInterval(interval);
@@ -79,7 +81,7 @@ const Fader: React.FC<VolumeSliderProps> = ({
           max="100"
         />
         <span className="inputNumPercent">%</span>
-        <span className="faderName">Fader</span>
+        <span className="faderName">Name</span>
       </div>
     </div>
   );

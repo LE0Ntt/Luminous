@@ -2,6 +2,8 @@
  * Header.modules.css
  * @author Leon Hölzel
  */
+@import url(../Color.css);
+
 .root {
     position: relative;
     width: 1920px;
@@ -10,17 +12,13 @@
 }
 
 .header {
-    /* -webkit-user-select: none; */
-    /* wird ggf. nicht benötigt, da schon in index.css @baselayer :root ist */
-    /* -webkit-app-region: drag; */
-    /* nicht implementiert, da Probleme mit Buttons, usw.*/
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
-    background: rgba(246, 246, 246, 0.72);
-    border-bottom: 1px solid #FFFFFF;
+    background: var(--fillThick);
+    border-bottom: 1px solid var(--onepStroke);
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
     backdrop-filter: blur(15px);
     height: 90px;

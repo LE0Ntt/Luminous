@@ -15,8 +15,7 @@
     font-weight: 700;
     position: relative;
     color: var(--primary);
-    background-color: var(--fillLight);
-    /* background-color nur für testzwecke */
+    margin-right: 20px;
 }
 
 .volume-slider {
@@ -26,7 +25,6 @@
     bottom: 70px;
     left: 41.46%;
 }
-
 
 .slider {
     appearance: none;
@@ -139,11 +137,22 @@
 }
 
 .inputNum {
+    width: 3rem;
+    height: 2rem;
+    text-align: right;
+    background: transparent;
     position: absolute;
     right: 50%;
     bottom: 27px;
     appearance: textfield;
     -moz-appearance: textfield;
+}
+
+.inputNumPercent {
+    font-weight: 800;
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
 }
 
 .inputNum::-webkit-outer-spin-button,

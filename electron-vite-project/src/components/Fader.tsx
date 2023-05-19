@@ -91,11 +91,11 @@ const Fader: React.FC<VolumeSliderProps> = ({
           type="number"
           value={displayVolume}
           onChange={handleInput}
-          className="inputNum w-12 h-8 text-right bg-transparent"
+          className="inputNum"
           min="0"
           max="100"
         />
-        <span className="absolute right-[28px] bottom-[30px] font-extrabold">%</span>
+        <span className="inputNumPercent">%</span>
       </div>
     </div>
   );

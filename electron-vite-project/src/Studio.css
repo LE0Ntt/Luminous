@@ -50,5 +50,26 @@
     transform: translate(-50%, -50%);
     border-radius: 6px;
 
-    background-size: contain;
+    background-size: cover;
+}
+
+.buttonOpenControl {
+    width: 35px;
+    height: 35px;
+    border-radius: 5px;
+    position: relative;
+    left: calc(50% - 10px);
+    transform: translate(-50%, 0);
+}
+
+.faderText {
+    padding-top: 20px;
+    padding-right: 20px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+    text-align: center;
+    line-height: 22px;
+    letter-spacing: 0em;
+    margin-bottom: 0;
 }

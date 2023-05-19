@@ -1,0 +1,7 @@
+@import url(../Color.css);
+
+.buttonDesign {
+    background: var(--colorButton);
+    color: var(--primary);
+    border: 1px solid var(--color00000010);
+}

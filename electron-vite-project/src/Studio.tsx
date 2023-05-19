@@ -56,11 +56,17 @@ const Studio = () => {
           <div className="sliders">
             {sliders.map((slider) => (
               <div key={slider.id}>
-                <h2>Slider {slider.id}</h2>
+                <h2 className='faderText'>{slider.id}</h2>
                 <Fader
                   initialVolume={slider.initialVolume}
                 />
-                <Button onClick={() => handleClick(slider.id)}>Button</Button>
+                <Button 
+                  onClick={() => handleClick(slider.id)} 
+                  className="buttonOpenControl"
+                >
+                  B
+                </Button>
+
               </div>
             ))}
           </div>

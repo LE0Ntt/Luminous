@@ -1,10 +1,38 @@
 {
     "en": {
       "greeting": "Hello!",
-      "buttonLabel": "Click me!"
+      "buttonLabel": "Click me!",
+      "studio": "Studio",
+      "scenes": "Scenes",
+      "control": "Control",
+      "settings": "Settings",
+      "help": "Help",
+      "about": "About Luminous",
+      "show": "Show",
+      "notConnected": "Sorry, you're currently not connected to the server. If the problem persists, please reach out to someone from the Studio department for assistance.",
+      "language": "Language",
+      "view": "View",
+      "fullscreen": "Full Screen",
+      "exitFullscreen": "Exit Full Screen",
+      "documentation": "Documentation",
+      "editLights": "Edit Lights"
     },
     "de": {
       "greeting": "Hallo!",
-      "buttonLabel": "Klick mich!"
+      "buttonLabel": "Klick mich!",
+      "studio": "Studio",
+      "scenes": "Szenen",
+      "control": "Steuerung",
+      "settings": "Einstellungen",
+      "help": "Hilfe",
+      "about": "Über Luminous",
+      "show": "Show",
+      "notConnected": "Entschuldigung, Sie sind derzeit nicht mit dem Server verbunden. Sollte das Problem fortbestehen, bitten wir Sie, sich an jemanden aus dem Studio-Bereich zu wenden, um Unterstützung zu erhalten.",
+      "language": "Sprache",
+      "view": "Ansicht",
+      "fullscreen": "Vollbild",
+      "exitFullscreen": "Vollbild beenden",
+      "documentation": "Dokumentation",
+      "editLights": "Lichter bearbeiten"
     }
   }

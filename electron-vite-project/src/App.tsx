@@ -18,22 +18,22 @@ console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}
 function App() {
   return (
     <div className='App relative background'>
-      <div className='titlebar h-[30px] w-full'></div>
-      <Router>
-      {/* draußen, weil maybe nicht benötigt
-      <div className='titlebar fixed top-0 left-0 w-full'>*/}
-      <Header/>
-      {/*</div>*/}
-      <TranslationProvider translations={translations} defaultLanguage="en">
-        <Routes>
-          <Route path="/" element={<Studio />} />
-          <Route path="/Studio" element={<Studio />} />
-          <Route path='/Control' element={<Control />} />
-          <Route path='/Scenes' element={<Scenes />} />
-          <Route path='/Show' element={<Show />} />
-        </Routes>
-        </TranslationProvider>
-      </Router>
+      <TranslationProvider translations={translations} defaultLanguage="de">
+        <div className='titlebar h-[30px] w-full'></div>
+        <Router>
+        {/* draußen, weil maybe nicht benötigt
+        <div className='titlebar fixed top-0 left-0 w-full'>*/}
+        <Header/>
+        {/*</div>*/}
+          <Routes>
+            <Route path="/" element={<Studio />} />
+            <Route path="/Studio" element={<Studio />} />
+            <Route path='/Control' element={<Control />} />
+            <Route path='/Scenes' element={<Scenes />} />
+            <Route path='/Show' element={<Show />} />
+          </Routes>
+        </Router>
+      </TranslationProvider>
     </div>
   )
 }

@@ -70,14 +70,14 @@
 
 .slider::-moz-range-progress {
     /* Specific styling for Firefox track */
-    background-color: #4F53B1;
+    background-color: var(--mainColor);
     height: 13px;
     border-radius: 50px;
 }
 
 .slider::-ms-fill-lower {
     /* Specific styling for Microsoft Edge track */
-    background-color: #4F53B1;
+    background-color: var(--mainColor);
     height: 13px;
     border-radius: 50px;
 }

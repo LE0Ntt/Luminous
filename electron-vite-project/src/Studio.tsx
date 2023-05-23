@@ -7,10 +7,14 @@ import './index.css';
 import './Studio.css';
 import Button from './components/Button';
 import Fader from './components/Fader';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useConnectionContext } from "./components/ConnectionContext";
+import { TranslationContext } from './components/TranslationContext';
 
 const Studio = () => {
+  
+  // Language
+  const { t } = useContext(TranslationContext);
   // Button test
   const handleClick = (id: number) => {
     console.log('Button clicked!' + id);
@@ -92,6 +96,7 @@ const Studio = () => {
                 <Fader
                   initialVolume={slider.initialVolume}
                   id={slider.id}
+                  name="Master"
                 />
                 <Button 
                   onClick={() => handleClick(slider.id)} 
@@ -115,7 +120,7 @@ const Studio = () => {
             ))}
           </div>
           ) : (
-            <div>Not Connected</div>
+            <div className='notConnected'>{t("notConnected")}</div>
           )}
                     <Button
             onClick={() => openBigView()}

@@ -61,8 +61,8 @@ async function createWindow() {
     height: 1080, //"         "    höhe
     titleBarStyle: 'hidden',
     titleBarOverlay: {
-      color: 'rgba(246, 246, 246, 0.0)',
-      symbolColor: '#74b1be',
+      color: 'rgb(236, 237, 241)',
+      symbolColor: '#4F53B1',
       height: 30,
     }
   })
@@ -91,6 +91,17 @@ async function createWindow() {
 }
 
 app.whenReady().then(createWindow)
+  .then(() => {
+    ipcMain.handle('toggle-full-screen', (event) => {
+      console.log('toggle-full-screen event received');
+      if (win?.isFullScreen()) {
+        win.setFullScreen(false);
+      } else {
+        win?.setFullScreen(true);
+      }
+      return 'Received';
+    });
+  })
 
 // win/linux quit app when all windows closed
 app.on('window-all-closed', () => {
@@ -132,4 +143,3 @@ ipcMain.handle('open-win', (_, arg) => {
     childWindow.loadFile(indexHtml, { hash: arg })
   }
 })
-

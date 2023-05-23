@@ -22,6 +22,34 @@
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
     backdrop-filter: blur(15px);
     height: 90px;
+
+    display: flex;
+    color: var(--primary);
+}
+
+.settings {
+    margin-left: 0.5rem;
+    margin-top: 0.25rem;
+    height: 100%;
+}
+
+.containerHeader {
+    width: 5rem;
+    height: 100%;
+    flex: 1 1 auto;
+}
+
+.unorderedList {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+@media (min-width: 768px) {
+    .unorderedList {
+        display: flex;
+    }
 }
 
 .button {
@@ -31,6 +59,26 @@
     height: 39px;
     align-items: flex-start;
     pointer-events: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.divTheme {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.buttonTheme {
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+    background-color: var(--tertiarySwitched);
+    border: none;
+    position: absolute;
+    right: 20px;
+    box-shadow: inset 0px 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .fill {
@@ -40,12 +88,12 @@
     top: 0;
     bottom: 0;
     border-radius: 50px;
-    background-color: #ffffff40;
-    box-shadow: inset 0px 3px 10px 0px #0000001a;
+    background-color: var(--tertiarySwitched);
+    box-shadow: inset 0px 3px 10px 0px rgba(0, 0, 0, 0.102);
 }
 
 .buttonFont {
-    color: #000000d9;
+    color: var(--primary);
     font-size: 24px;
     font-weight: 500;
     font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
@@ -57,14 +105,52 @@
 }
 
 .is-active {
-    color: rgba(246, 246, 246, 0.72);
-    background: #4F53B1;
+    color: var(--primarySwitched);
+    background: var(--mainColor);
 }
 
 .is-active .fill {
-    background-color: #4F53B1;
+    background-color: var(--mainColor);
 }
 
 .is-active .buttonFont {
-    color: rgba(246, 246, 246, 0.72);
+    color: var(--primarySwitched);
+}
+
+nav {
+    margin-left: 10px;
+    position: absolute;
+}
+
+nav ul {
+    float: right;
+}
+
+nav ul li {
+    float: left;
+    list-style: none;
+    position: relative;
+}
+
+nav ul li a {
+    color: var(--primary);
+    display: block;
+    padding-right: 10px;
+}
+
+nav ul li ul {
+    display: none;
+    position: absolute;
+    background-color: var(--fillUltraThick);
+    /* border: 1px solid var(--onepStroke);     // geht nicht aus irgendeinem Grund
+    border-radius: 5px;
+    padding: 5px; */
+    box-shadow: var(--shadowLight);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    width: auto;
+}
+
+nav ul li:hover ul {
+    display: block;
 }

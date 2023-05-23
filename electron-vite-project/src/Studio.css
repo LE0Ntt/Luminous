@@ -93,3 +93,13 @@
 .slidersHeight {
     height: 425px;
 }
+
+.notConnected {
+    position: relative;
+    top: 50%;
+    transform: translate(0, -50%);
+    color: var(--primary);
+    text-align: center;
+    font-weight: 600;
+    font-size: 18px;
+}

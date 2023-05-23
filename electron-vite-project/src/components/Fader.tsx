@@ -5,6 +5,7 @@ import { useConnectionContext } from './ConnectionContext';
 interface VolumeSliderProps {
   initialVolume?: number;
   id?: number;
+  name?: string;
   onVolumeChange?: (volume: number) => void;
   height?: number;
 }
@@ -12,6 +13,7 @@ interface VolumeSliderProps {
 const Fader: React.FC<VolumeSliderProps> = ({
   initialVolume = 0,
   id,
+  name,
   onVolumeChange,
   height,
 }) => {
@@ -20,6 +22,10 @@ const Fader: React.FC<VolumeSliderProps> = ({
   const volumeRef = useRef<number>(initialVolume);
   const isDataSentRef = useRef(false);
   const faderClassName = height ? "fader faderMaster" : "fader";
+
+  // Farben für den Fader, lightmode und darkmode
+  const mainColorLight = "#4F53B1";
+  const mainColorDark = "#B9BCFF";
 
   useEffect(() => {
     setVolume(initialVolume);
@@ -77,7 +83,7 @@ const Fader: React.FC<VolumeSliderProps> = ({
           style={{
             background: `linear-gradient(to right, #4F53B1 0%, #4F53B1 ${displayVolume}%, rgba(40, 40, 40, 0.7) ${displayVolume}%, rgba(40, 40, 40, 0.7) 100%)`,
           }}
-          className="slider"
+          className="slider sliderTrackColor"
         />
       </div>
       <div>
@@ -90,7 +96,7 @@ const Fader: React.FC<VolumeSliderProps> = ({
           max="100"
         />
         <span className="inputNumPercent">%</span>
-        <span className="faderName">Name</span>
+        <span className="faderName">{name}</span>
       </div>
     </div>
   );

@@ -108,6 +108,14 @@
     background-color: rgba(0, 0, 0, 0.15);
   }
 
+  .flex {
+    display: flex;
+  }
+
+  .align-right {
+    align-items: flex-end;
+  }
+
   @media (prefers-color-scheme: light) {
     :root {
       color: #213547;

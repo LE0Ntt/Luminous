@@ -5,12 +5,6 @@ import time
 '''
 Todo:
 -start interpolation earlier if possible?
--send fader value to client again
-    -active fader may not be updated again, best after multi fader support
--multi-fader support
-    -make signal fader dependent
-    -assign a midi to a web fader
-    -fix midi button while fader active (automatically done)
 -second value skipped, midi light check
 -fader start position
     -every client-fader to 0, except master > 100, midi gets these values
@@ -19,7 +13,6 @@ Todo:
         > 8 signal send on start: B04156 B04267 B0402B B04145 B04207 B04317 B04443 B0454B. Looks like Rotary values
     -alternativly ping?
 -toggle button light when pressed
-
 '''
 
 class Driver:
@@ -31,7 +24,7 @@ class Driver:
         self.fader_touch = [False] * 8
         self.outport = mido.open_output('USB MIDI Interface 1')
         self.inport = mido.open_input('USB MIDI Interface 0')
-
+        self.callback = None
         self.last_value = [0] * 8
         self.last_time = [float()] * 8
         self.current_time = [float()] * 8
@@ -66,13 +59,12 @@ class Driver:
             elif hex_message.startswith('B00') & hex_message[3].isdigit(): # Fader movement
                 fader = int(hex_message[3])
                 self.fader_values[fader] = int(hex_message[-2:], 16) * 2
-
+                self.callback(fader, self.fader_values[fader])
                 # interpolation to simulate 7 to 8 bit
                 self.current_time[fader] = time.monotonic()
                 time_to_sleep = (self.current_time[fader] - self.last_time[fader]) / 2.0 - 0.001
                 if time_to_sleep > 0:
                     threading.Thread(target=self.interpolate_thread, args=(self.fader_values[fader], time_to_sleep, fader)).start()
-
                 continue
                 #Fader end
             elif hex_message.startswith('B02') & hex_message[3].isdigit(): # Unnecessary LSB
@@ -97,9 +89,7 @@ class Driver:
                     print("SUS pressed")
                 elif hex_message == 'B02F47':
                     print("ENBL pressed")
-                
                 self.left_button_flag = False
-
             elif hex_message == 'B00F09': # right Button-Block
                 self.right_button_flag = True
             elif self.right_button_flag:
@@ -119,7 +109,6 @@ class Driver:
                     print("STOP pressed")
                 elif hex_message == 'B02F47':
                     print("PLAY pressed")
-                
                 self.right_button_flag = False
             else:
                 print("Unknown: " + hex_message)    
@@ -145,8 +134,12 @@ class Driver:
             #self.fader_values[0] = max(0, min(255, self.fader_values[0] + (value - self.last_value) / 2)) # +- half the difference of last step
             # +-1 instead of half value, depending on fader direction (to avoid fader mismatch after quick moves)
             self.fader_values[fader] = max(0, min(255, self.fader_values[fader] + (1 if value > self.last_value[fader] else (-1 if value < self.last_value[fader] else 0))))
+            self.callback(fader, self.fader_values[fader])
         self.last_time[fader] = self.current_time[fader]
         self.last_value[fader] = value
+
+    def set_callback(self, callback):
+            self.callback = callback
 
     def map_8bit_to_14bit(self, value_8bit):
         value_14bit = value_8bit << 6

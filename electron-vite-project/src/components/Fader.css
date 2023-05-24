@@ -1,5 +1,5 @@
 /**
- * VolumeSlider.css
+ * Fader.css
  * @author Leon Hölzel
  */
 @import url(../Color.css);
@@ -30,11 +30,11 @@
     bottom: calc(var(--sliderHeight) / 2 + 70px) !important;
 }
 
-.faderMaster > .volume-slider > .slider {
+.faderMaster > .value-slider > .slider {
     width: var(--sliderHeight) !important;
 }
 
-.volume-slider {
+.value-slider {
     transform: rotate(270deg);
     -webkit-transform: rotate(270deg);
     position: absolute;

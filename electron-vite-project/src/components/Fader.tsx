@@ -2,66 +2,67 @@ import React, { useState, ChangeEvent, useEffect, useRef } from "react";
 import "./Fader.css";
 import { useConnectionContext } from './ConnectionContext';
 
-interface VolumeSliderProps {
-  initialVolume?: number;
+interface SliderProps {
+  sliderValue?: number;
   id?: number;
   name?: string;
-  onVolumeChange?: (volume: number) => void;
+  onSliderChange?: (value: number) => void;
   height?: number;
 }
 
-const Fader: React.FC<VolumeSliderProps> = ({
-  initialVolume = 0,
+const Fader: React.FC<SliderProps> = ({
+  sliderValue = 0,
   id,
   name,
-  onVolumeChange,
+  onSliderChange,
   height,
 }) => {
   const { emit } = useConnectionContext();
-  const [volume, setVolume] = useState<number>(initialVolume);
-  const volumeRef = useRef<number>(initialVolume);
+  const [value, setValue] = useState<number>(sliderValue);
+  const valueRef = useRef<number>(sliderValue);
   const isDataSentRef = useRef(false);
   const faderClassName = height ? "fader faderMaster" : "fader";
+  const [isDragging, setIsDragging] = useState(false);
 
   // Farben für den Fader, lightmode und darkmode
   const mainColorLight = "#4F53B1";
   const mainColorDark = "#B9BCFF";
 
   useEffect(() => {
-    setVolume(initialVolume);
-  }, [initialVolume]);
+    setValue(sliderValue);
+  }, [sliderValue]);
 
   useEffect(() => {
-    volumeRef.current = volume;
+    valueRef.current = value;
     isDataSentRef.current = false;
-    //console.log('volumeRef.current: ' + volumeRef.current);
-  }, [volume]);
+    //console.log('valueRef.current: ' + valueRef.current);
+  }, [value]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (!isDataSentRef.current) {
         isDataSentRef.current = true;
-        emit("fader_value", { value: volumeRef.current });
-        console.log('id:' + id, 'volumeRef.current:' + volumeRef.current, 'isDataSent:' + isDataSentRef.current);
+        emit("fader_value", { value: valueRef.current });
+        console.log('id:' + id, 'valueRef.current:' + valueRef.current, 'isDataSent:' + isDataSentRef.current);
       }
     }, 33);
     return () => clearInterval(interval);
   }, []);
   
-  const handleVolumeChange = (event: ChangeEvent<HTMLInputElement>) => {
-    let newVolume = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
-    setVolume(newVolume);
-    onVolumeChange?.(newVolume);
+  const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
+    let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
+    setValue(newValue);
+    onSliderChange?.(newValue);
   };
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
-    let value = Math.min(Math.max(parseInt(event.target.value, 10), 0), 100);
-    let newVolume = Math.round((value / 100) * 255);
-    setVolume(newVolume);
-    onVolumeChange?.(newVolume);
+    let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 100);
+    newValue = Math.round((newValue / 100) * 255);
+    setValue(newValue);
+    onSliderChange?.(newValue);
   };
 
-  const displayVolume = Math.round((volume / 255) * 100);
+  const displayValue = Math.round((value / 255) * 100);
 
   useEffect(() => {
     // Setze den Wert der CSS-Variable basierend auf der übergebenen Höhe
@@ -72,16 +73,18 @@ const Fader: React.FC<VolumeSliderProps> = ({
   return (
     <div className={faderClassName}>
       <div className="midPoint"></div>
-      <div className="volume-slider">
+      <div className="value-slider">
         <input
           type="range"
           min="0"
           max="255"
           step="1"
-          value={volume}
-          onChange={handleVolumeChange}
+          value={value}
+          onChange={handleSliderChange}
+          onMouseDown={() => setIsDragging(true)}
+          onMouseUp={() => setIsDragging(false)}
           style={{
-            background: `linear-gradient(to right, #4F53B1 0%, #4F53B1 ${displayVolume}%, rgba(40, 40, 40, 0.7) ${displayVolume}%, rgba(40, 40, 40, 0.7) 100%)`,
+            background: `linear-gradient(to right, #4F53B1 0%, #4F53B1 ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
           }}
           className="slider sliderTrackColor"
         />
@@ -89,7 +92,7 @@ const Fader: React.FC<VolumeSliderProps> = ({
       <div>
         <input
           type="number"
-          value={displayVolume}
+          value={displayValue}
           onChange={handleInput}
           className="inputNum"
           min="0"

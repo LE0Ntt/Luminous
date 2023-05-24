@@ -15,7 +15,7 @@
     font-weight: 400;
 
     color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
+    color: var(--primary);
     background-color: #242424;
 
     /* Standard-Eigenschaft mit Browser-Präfixen */

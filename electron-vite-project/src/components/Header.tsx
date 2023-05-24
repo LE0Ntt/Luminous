@@ -41,6 +41,7 @@ function Header() {
     <div className='header'>
         <nav>
           <ul>
+            <li><p className='mr-2'>Luminous</p></li>{/* mr-2 ist Tailwind, muss noch geändert werden :) */}
             <li><a href="#">{t("settings")}</a>
               <ul>
                 <li><a href="#">{t("language")}</a></li>

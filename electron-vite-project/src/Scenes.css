@@ -1,0 +1,126 @@
+@import url(./Color.css);
+
+/* Layer */
+.scenesLayer {
+    height: 73px;
+    width: 124px;
+    left: 1756px;
+    top: 130px;
+    border-radius: 10px;
+    color: var(--primary);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+.scenesLayerAlign {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+}
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.layerToggle {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border: solid 1px var(--primary);
+}
+
+.layerToggle:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--primary);
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .layerToggle {
+    background-color: var(--mainColor);
+}
+
+input:focus + .layerToggle {
+    box-shadow: 0 0 1px var(--mainColor);
+}
+
+input:checked + .layerToggle:before {
+    -webkit-transform: translateX(21px);
+    -ms-transform: translateX(21px);
+    transform: translateX(21px);
+}
+
+/* Rounded sliders */
+.layerToggle.round {
+    border-radius: 12px;
+}
+
+.layerToggle.round:before {
+    border-radius: 50%;
+}
+
+/* Layer End */
+
+
+/* Scenes */
+.scenesMain {
+    height: 910px;
+    width: 1696px;
+    left: 40px;
+    top: 130px;
+    border-radius: 10px;
+}
+
+.scenesMainAlign {
+    background-color: aquamarine;
+    /* For testing */
+    margin-top: 20px;
+    margin-left: 20px;
+    height: 870px;
+    width: 1656px;
+}
+
+/* Scenes End */
+
+/* Master Fader */
+.scenesMaster {
+    height: 818px;
+    width: 124px;
+    left: 1756px;
+    top: 222px;
+    border-radius: 10px;
+
+}
+
+.scenesMasterAlign {
+    position: relative;
+    left: 20px;
+}
+
+/* Master Fader End */

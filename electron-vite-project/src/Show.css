@@ -1,0 +1,76 @@
+@import url(./Color.css);
+
+/* Scenes */
+
+.showScenes {
+    height: 449px;
+    width: 1352px;
+    left: 40px;
+    top: 130px;
+    border-radius: 10px;
+
+}
+
+/* Scenes End */
+
+/* Saves */
+
+.showSaves {
+    height: 449px;
+    width: 468px;
+    left: 1412px;
+    top: 130px;
+    border-radius: 10px;
+
+}
+
+/* Saves End */
+
+/* Controls */
+
+.showControls {
+    height: 441px;
+    width: 1840px;
+    left: 40px;
+    top: 599px;
+    border-radius: 10px;
+}
+
+.showControlButtons {
+    position: relative;
+    height: 54px;
+    width: 1800px;
+    border-radius: 5px;
+    margin: 20px;
+    background-color: var(--primaryDark);
+    box-shadow: var(--shadowLight);
+}
+
+.showControlTimeline {
+    position: relative;
+    height: 327px;
+    width: 1675px;
+    border-radius: 5px;
+    margin: 20px;
+    background-color: var(--primaryDark);
+    box-shadow: var(--shadowLight);
+}
+
+.showControlMaster {
+    position: relative;
+    height: 327px;
+    width: 105px;
+    border-radius: 5px;
+    margin: 20px;
+    background-color: var(--primaryDark);
+    box-shadow: var(--shadowLight);
+    bottom: calc(327px + 20px);
+    left: calc(1675px + 20px);
+}
+
+.showMasterAlign {
+    position: relative;
+    left: 10px;
+}
+
+/* Controls End */

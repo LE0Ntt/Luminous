@@ -27,7 +27,7 @@ const Studio = () => {
   // <- Slider:
   interface SliderConfig {
     id: number;
-    initialVolume: number;
+    sliderValue: number;
   };
 
   const { connected, on, off } = useConnectionContext();
@@ -39,7 +39,7 @@ const Studio = () => {
       ...sliders,
       {
         id: sliders.length + 1,
-        initialVolume: 0,        // muss vom server vorgegeben werden
+        sliderValue: 0,        // muss vom server vorgegeben werden
       },
     ]);
   };
@@ -48,14 +48,14 @@ const Studio = () => {
   useEffect(() => {
     const eventListener = (data: any) => {
       console.log("Received data from server:", data.variable);
-      // Hier kannst du den Slider-Wert aktualisieren
-      const updatedSliders = sliders.map((slider, index) => {
-        if (index === 0) {
-          slider.initialVolume = data.variable;
-        }
-        return slider;
+      setSliders((prevSliders) => {
+        return prevSliders.map((slider, index) => {
+          if (index === 1) {
+            return { ...slider, sliderValue: data.variable };
+          }
+          return slider;
+        });
       });
-      setSliders(updatedSliders);
     };
     
     on("variable_update", eventListener);
@@ -80,12 +80,11 @@ const Studio = () => {
       <div className='mainfader window'>
         <Fader 
           height={340}
-          initialVolume={255}
+          sliderValue={255}
           id={0}
         />
       </div>
       <div>
-        <h1>Volume Sliders</h1>
         <button onClick={addSlider}>Add Slider</button>
         <div className='faders window'>
         { connected ? (
@@ -94,7 +93,7 @@ const Studio = () => {
               <div key={slider.id} className='slidersHeight'>
                 <h2 className='faderText'>{slider.id}</h2>
                 <Fader
-                  initialVolume={slider.initialVolume}
+                  sliderValue={slider.sliderValue}
                   id={slider.id}
                   name="Master"
                 />

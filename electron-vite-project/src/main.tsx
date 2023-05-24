@@ -9,9 +9,11 @@ import './samples/node-api'
 import './index.css'
 import { ConnectionProvider } from "./components/ConnectionContext";
 
+/* http://192.168.0.251:5000/test */
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-      <ConnectionProvider url="http://192.168.0.251:5000/test">
+      <ConnectionProvider url="http://192.168.178.24:5000/socket">
         <App />
       </ConnectionProvider>
   </React.StrictMode>,

@@ -1,13 +1,28 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 #from flask_cors import CORS
-import threading
+#import threading
 import time
 from MOTORMIX_driver import Driver
 #from engineio.payload import Payload
 
+'''
+Todo:
+-send fader value to client again
+    -active fader may not be updated again
+-assign a midi to a web fader 
+-fader start position (server ord driver?)
+    -every client-fader to 0, except master > 100, midi gets these values
+'''
+
 #Payload.max_decode_packets = 50
 driver = Driver()
+
+def callback(index, value):
+    print("Eintrag", index, "wurde geändert:", value)
+    socketio.emit('variable_update', {'variable': value}, namespace='/test')
+
+driver.set_callback(callback)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 #CORS(app, resources = {r"/*": {"origins": "*"}})
@@ -44,6 +59,7 @@ def test_connect():
 def test_disconnect(): 
     print('Client disconnected')
 
+''' use Getter and Setter instead of Threading
 def send_variable():
     old_variable = None
     while True: 
@@ -52,7 +68,8 @@ def send_variable():
             socketio.emit('variable_update', {'variable': variable}, namespace='/test')
             old_variable = variable
         time.sleep(0.01) #je niedriger, desto flüssiger der Fader, aber höher die CPU-Last
+'''
 
 if __name__ == '__main__':
-    threading.Thread(target=send_variable).start() 
+    #threading.Thread(target=send_variable).start() 
     socketio.run(app)

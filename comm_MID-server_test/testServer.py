@@ -17,7 +17,7 @@ Todo:
 # Mutator method to get updates from driver
 def callback(index, value):
     print("Eintrag", index, "wurde geändert:", value)
-    socketio.emit('variable_update', {'variable': value}, namespace='/socket')
+    socketio.emit('variable_update', {'id': index, 'value': value}, namespace='/socket')
     
 driver = Driver()
 driver.set_callback(callback)
@@ -33,18 +33,13 @@ def mein_endpunkt():
 def home():
     return {"test": ["test1", "test2"]}
 
-@socketio.on('fader_value', namespace='/test') #test für faderTest.js
+@socketio.on('fader_value', namespace='/socket')
 def handle_fader_value(data):
     faderValue = int(data['value'])
-    driver.pushFader(0, faderValue)
-    
-@socketio.on("slider_change", namespace='/socket') #test für react
-def on_volume_change(data):
-    #print(f"Slider {data['id']} volume changed to {data['volume']}%")
-    faderValue = int(data['volume'])
-    driver.pushFader(0, faderValue)
+    fader = int(data['id'])
+    driver.pushFader(fader, faderValue)
     # Sende geänderte Werte an alle verbundenen Clients
-    socketio.emit('variable_update', {'variable': faderValue}, namespace='/socket') # update fader for other clients
+    socketio.emit('variable_update', {'id': fader, 'value': faderValue}, namespace='/socket')
 
 @socketio.on('connect', namespace='/socket') 
 def test_connect(): 

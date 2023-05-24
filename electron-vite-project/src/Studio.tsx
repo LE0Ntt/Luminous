@@ -28,6 +28,7 @@ const Studio = () => {
   interface SliderConfig {
     id: number;
     sliderValue: number;
+    name: string;
   };
 
   const { connected, on, off } = useConnectionContext();
@@ -40,6 +41,7 @@ const Studio = () => {
       {
         id: sliders.length + 1,
         sliderValue: 0,        // muss vom server vorgegeben werden
+        name: "",
       },
     ]);
   };
@@ -65,11 +67,11 @@ const Studio = () => {
 
   useEffect(() => {
     const eventListener = (data: any) => {
-      console.log("Received data from server:", data.variable);
+      console.log("Received data from server:", data.value);
       setSliders((prevSliders) => {
         return prevSliders.map((slider, index) => {
-          if (index === 1) {
-            return { ...slider, sliderValue: data.variable };
+          if (index === data.id) {
+            return { ...slider, sliderValue: data.value };
           }
           return slider;
         });
@@ -102,26 +104,27 @@ const Studio = () => {
         <div className='studio_overview window'></div>
       </div>
       <div className='mainfader window'>
+        {/* MASTER */}
         <Fader 
           height={340}
           sliderValue={255}
           id={0}
+          name="Master"
         />
       </div>
       <div>
-        <h1>Volume Sliders</h1>
         <button onClick={addSlider}>Add Slider</button><br/>
         <button onClick={addScene}>Add Scene</button>
         <div className='faders window'>
         { connected ? (
           <div className="sliders">
-            {sliders.map((slider) => (
+            { sliders.map((slider) => (
               <div key={slider.id} className='slidersHeight'>
                 <h2 className='faderText'>{slider.id}</h2>
                 <Fader
                   sliderValue={slider.sliderValue}
                   id={slider.id}
-                  name="Master"
+                  name={slider.name}
                 />
                 <Button 
                   onClick={() => handleClick(slider.id)} 

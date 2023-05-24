@@ -6,7 +6,6 @@ interface SliderProps {
   sliderValue?: number;
   id?: number;
   name?: string;
-  onSliderChange?: (value: number) => void;
   height?: number;
 }
 
@@ -14,7 +13,6 @@ const Fader: React.FC<SliderProps> = ({
   sliderValue = 0,
   id,
   name,
-  onSliderChange,
   height,
 }) => {
   const { emit } = useConnectionContext();
@@ -29,7 +27,8 @@ const Fader: React.FC<SliderProps> = ({
   const mainColorDark = "#B9BCFF";
 
   useEffect(() => {
-    setValue(sliderValue);
+    if(!isDragging)
+      setValue(sliderValue);
   }, [sliderValue]);
 
   useEffect(() => {
@@ -42,7 +41,7 @@ const Fader: React.FC<SliderProps> = ({
     const interval = setInterval(() => {
       if (!isDataSentRef.current) {
         isDataSentRef.current = true;
-        emit("fader_value", { value: valueRef.current });
+        emit("fader_value", { id: id, value: valueRef.current });
         console.log('id:' + id, 'valueRef.current:' + valueRef.current, 'isDataSent:' + isDataSentRef.current);
       }
     }, 33);
@@ -52,14 +51,14 @@ const Fader: React.FC<SliderProps> = ({
   const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
     setValue(newValue);
-    onSliderChange?.(newValue);
+    //onSliderChange?.(newValue);
   };
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 100);
     newValue = Math.round((newValue / 100) * 255);
     setValue(newValue);
-    onSliderChange?.(newValue);
+    //onSliderChange?.(newValue);
   };
 
   const displayValue = Math.round((value / 255) * 100);

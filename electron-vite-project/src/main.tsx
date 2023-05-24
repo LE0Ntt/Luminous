@@ -11,7 +11,8 @@ import { ConnectionProvider } from "./components/ConnectionContext";
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-      <ConnectionProvider url="http://192.168.0.251:5000/test">
+      {/* <ConnectionProvider url="http://192.168.0.251:5000/test"> */}
+      <ConnectionProvider url="http://127.0.0.1:5000/test">
         <App />
       </ConnectionProvider>
   </React.StrictMode>,

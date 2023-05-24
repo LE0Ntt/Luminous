@@ -45,6 +45,24 @@ const Studio = () => {
   };
   // :Slider End ->
 
+  // <- Scene:
+  interface SceneConfig {
+    id: number;
+    name: string;
+  };
+
+  const [scenes, setScenes] = useState<SceneConfig[]>([]);
+  const addScene = () => {
+    setScenes([
+      ...scenes,
+      {
+        id: scenes.length + 1,
+        name: 'Scene ' + scenes.length,
+      },
+    ]);
+  };
+  // :Scene End ->
+
   useEffect(() => {
     const eventListener = (data: any) => {
       console.log("Received data from server:", data.variable);
@@ -72,7 +90,13 @@ const Studio = () => {
     <div>
       <div className='h-20 w-20'></div>
       <div className='scenes window'>
-        <h1>Scenes</h1>
+        <div className=''>
+          {scenes.map((scene) => (
+            <div key={scene.id} className='scenesBox'>
+              <h2>{scene.name}</h2>
+            </div>
+          ))}
+        </div>
       </div>
       <div className='overview window'>
         <div className='studio_overview window'></div>
@@ -86,7 +110,8 @@ const Studio = () => {
       </div>
       <div>
         <h1>Volume Sliders</h1>
-        <button onClick={addSlider}>Add Slider</button>
+        <button onClick={addSlider}>Add Slider</button><br/>
+        <button onClick={addScene}>Add Scene</button>
         <div className='faders window'>
         { connected ? (
           <div className="sliders">

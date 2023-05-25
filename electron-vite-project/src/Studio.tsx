@@ -48,6 +48,20 @@ const Studio = () => {
   // :Slider End ->
 
   useEffect(() => {
+    const fetchSliders = async () => {
+      try {
+        const response = await fetch('http://192.168.178.24:5000/fader');
+        const data = await response.json();
+        setSliders(JSON.parse(data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchSliders();
+  }, []);
+
+  useEffect(() => {
     const eventListener = (data: any) => {
       console.log("Received data from server:", data.value);
       setSliders((prevSliders) => {
@@ -96,6 +110,7 @@ const Studio = () => {
               <div key={slider.id} className='slidersHeight'>
                 <h2 className='faderText'>{slider.id}</h2>
                 <Fader
+                  key={slider.id}
                   sliderValue={slider.sliderValue}
                   id={slider.id}
                   name={slider.name}

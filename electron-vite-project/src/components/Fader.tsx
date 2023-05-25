@@ -21,7 +21,7 @@ const Fader: React.FC<SliderProps> = ({
   const isDataSentRef = useRef(false);
   const faderClassName = height ? "fader faderMaster" : "fader";
   const [isDragging, setIsDragging] = useState(false);
-
+  const displayValue = Math.round((value / 255) * 100);
   // Farben für den Fader, lightmode und darkmode
   const mainColorLight = "#4F53B1";
   const mainColorDark = "#B9BCFF";
@@ -36,10 +36,11 @@ const Fader: React.FC<SliderProps> = ({
     isDataSentRef.current = false;
     //console.log('valueRef.current: ' + valueRef.current);
   }, [value]);
-
+/*
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!isDataSentRef.current) {
+      console.log(isDragging)
+      if (!isDataSentRef.current && isDragging) {
         isDataSentRef.current = true;
         emit("fader_value", { id: id, value: valueRef.current });
         console.log('id:' + id, 'valueRef.current:' + valueRef.current, 'isDataSent:' + isDataSentRef.current);
@@ -51,17 +52,23 @@ const Fader: React.FC<SliderProps> = ({
   const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
     setValue(newValue);
-    //onSliderChange?.(newValue);
+  };
+*/
+
+  const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
+    let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
+    setValue(newValue);
+    if (!isDataSentRef.current) {
+      isDataSentRef.current = true;
+      emit("fader_value", { id: id, value: value });
+    }
   };
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 100);
     newValue = Math.round((newValue / 100) * 255);
     setValue(newValue);
-    //onSliderChange?.(newValue);
   };
-
-  const displayValue = Math.round((value / 255) * 100);
 
   useEffect(() => {
     // Setze den Wert der CSS-Variable basierend auf der übergebenen Höhe

@@ -29,13 +29,21 @@ CORS(app, resources = {r"/*": {"origins": "*"}})
 socketio = SocketIO(app, cors_allowed_origins = "*")
 connections = 0
 
-def create_sliders(num_sliders):
+def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
     sliders = []
+
+    master = {
+        "id": 0,
+        "sliderValue": 255,
+        "name": "Master"
+    }
+    sliders.append(master)
+
     for i in range(num_sliders):
         slider = {
             "id": i + 1,
             "sliderValue": 0,
-            "name": "fader"
+            "name": "Fader"
         }
         sliders.append(slider)
     return json.dumps(sliders)
@@ -46,7 +54,7 @@ def mein_endpunkt():
 
 @app.route('/fader')
 def get_faders():
-    sliders = create_sliders(7)
+    sliders = create_sliders(10)
     return jsonify(sliders)
 
 @socketio.on('fader_value', namespace='/socket')

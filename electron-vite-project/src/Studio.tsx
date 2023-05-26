@@ -40,7 +40,7 @@ const Studio = () => {
       ...sliders,
       {
         id: sliders.length + 1,
-        sliderValue: 0,        // muss vom server vorgegeben werden
+        sliderValue: 0,
         name: "",
       },
     ]);
@@ -96,8 +96,8 @@ const Studio = () => {
         {/* MASTER */}
         <Fader 
           height={340}
-          sliderValue={255}
-          id={0}
+          sliderValue={sliders[0]?.sliderValue}
+          id={sliders[0]?.id}
           name="Master"
         />
       </div>
@@ -106,7 +106,7 @@ const Studio = () => {
         <div className='faders window'>
         { connected ? (
           <div className="sliders">
-            { sliders.map((slider) => (
+            { sliders.slice(1).map((slider) => (
               <div key={slider.id} className='slidersHeight'>
                 <h2 className='faderText'>{slider.id}</h2>
                 <Fader

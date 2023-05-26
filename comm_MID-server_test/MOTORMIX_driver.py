@@ -17,22 +17,29 @@ Todo:
 
 class Driver:
     def __init__(self):
-        self.fader_values = [0] * 8
-        self.general_buffer = []
-        self.left_button_flag = False
+        self.fader_values      = [0] * 8 # values of MotorMix faders
+        self.left_button_flag  = False
         self.right_button_flag = False
-        self.fader_touch = [False] * 8
+        self.fader_touch       = [False] * 8
+        
         self.outport = mido.open_output('USB MIDI Interface 1')
-        self.inport = mido.open_input('USB MIDI Interface 0')
+        self.inport  = mido.open_input( 'USB MIDI Interface 0')
+        
+        self.current_page = 1
+        #self.mode = "light"
+        self.light_mode = True # False: Scene mode
         self.callback = None
-        self.last_value = [0] * 8
-        self.last_time = [float()] * 8
+        self.last_value   = [0] * 8
+        self.last_time    = [float()] * 8
         self.current_time = [float()] * 8
         self.thread_interpolation = None
-        self.lastActive = None
-
-        thread = threading.Thread(target=self.input)
-        thread.start() 
+        self.lastActive           = None
+        
+        #self.device_values = [] # brightness for every device               
+        self.slider_values = [] # value for every channel                   könnte man besser in eigene datei machen
+        self.dmx_values    = [] # actual channel brightness                 könnte man besser in eigene datei machen
+        
+        threading.Thread(target=self.input).start() 
         print("Driver Initiated")
 
 
@@ -59,7 +66,8 @@ class Driver:
             elif hex_message.startswith('B00') & hex_message[3].isdigit(): # Fader movement
                 fader = int(hex_message[3])
                 self.fader_values[fader] = int(hex_message[-2:], 16) * 2
-                self.callback(fader, self.fader_values[fader])
+                self.fader_mapping(fader, self.fader_values[fader])
+                
                 # interpolation to simulate 7 to 8 bit
                 self.current_time[fader] = time.monotonic()
                 time_to_sleep = (self.current_time[fader] - self.last_time[fader]) / 2.0 - 0.001
@@ -134,7 +142,7 @@ class Driver:
             #self.fader_values[0] = max(0, min(255, self.fader_values[0] + (value - self.last_value) / 2)) # +- half the difference of last step
             # +-1 instead of half value, depending on fader direction (to avoid fader mismatch after quick moves)
             self.fader_values[fader] = max(0, min(255, self.fader_values[fader] + (1 if value > self.last_value[fader] else (-1 if value < self.last_value[fader] else 0))))
-            self.callback(fader, self.fader_values[fader])
+            self.fader_mapping(fader, self.fader_values[fader])
         self.last_time[fader] = self.current_time[fader]
         self.last_value[fader] = value
 
@@ -145,11 +153,22 @@ class Driver:
         value_14bit = value_8bit << 6
         return value_14bit
 
-    def pushFader(self,faderIndex, value):
+    def pushFader(self, faderIndex, value):
+        # Fader mapping
+        start_index = (self.current_page - 1) * 7
+        end_index = self.current_page * 7
+        
+        if faderIndex == 0:
+            faderIndex = 7
+        elif start_index < faderIndex <= end_index:
+            faderIndex = faderIndex - start_index - 1 #(faderIndex % 7) - 1
+        else: 
+            return    
+        
         msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
         lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
         faderIndex = int(str(faderIndex), 16)
-        msg1 = mido.Message('control_change', channel=0, control=int(str(faderIndex), 16), value=msb, time=0)
+        msg1 = mido.Message('control_change', channel=0, control=int(      str(faderIndex), 16), value=msb, time=0)
         msg2 = mido.Message('control_change', channel=0, control=int("2" + str(faderIndex), 16), value=lsb, time=0)
         self.outport.send(msg1)
         self.outport.send(msg2)
@@ -162,3 +181,11 @@ class Driver:
         msb_hex = format(msb, '02X')
         lsb_hex = format(lsb, '02X')
         return msb_hex, lsb_hex
+    
+    def fader_mapping(self, fader, value):
+        if fader == 7:
+            faderNew = 0
+        else:
+            faderNew = (self.current_page - 1) * 7 + fader + 1
+            
+        self.callback(faderNew, self.fader_values[fader])

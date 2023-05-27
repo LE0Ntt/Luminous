@@ -10,19 +10,23 @@ from flask_cors import CORS
 
 '''
 Todo:
--assign a midi to a web fader (server or driver?)
 -fader start position (server or driver?)
     -every client-fader to 0, except master > 100, midi gets these values
--double aufruf von /fader ein problem?
+-ist double aufruf von /fader ein problem?
 '''
 
 # Mutator method to get updates from driver
 def callback(index, value):
     print("Eintrag", index, "wurde geändert:", value)
     socketio.emit('variable_update', {'id': index, 'value': value}, namespace='/socket')
+
+try:
+    driver = Driver()
+    driver.set_callback(callback)
+except OSError as e:
+    print("Fehler beim Initialisieren des Drivers:", str(e))
+    driver = None
     
-driver = Driver()
-driver.set_callback(callback)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 CORS(app, resources = {r"/*": {"origins": "*"}})
@@ -61,7 +65,7 @@ def get_faders():
 def handle_fader_value(data):
     faderValue = int(data['value'])
     fader = int(data['id'])
-    driver.pushFader(fader, faderValue)
+    driver.pushFader(fader, faderValue) if driver is not None else None
     # Sende geänderte Werte an alle verbundenen Clients
     global connections
     if connections > 1:
@@ -80,4 +84,4 @@ def test_disconnect():
     print('Client disconnected')
 
 if __name__ == '__main__': 
-    socketio.run(app, host='192.168.178.24', port=5000)
+    socketio.run(app) #, host='192.168.178.24', port=5000)

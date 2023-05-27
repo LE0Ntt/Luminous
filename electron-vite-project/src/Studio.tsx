@@ -50,7 +50,7 @@ const Studio = () => {
   useEffect(() => {
     const fetchSliders = async () => {
       try {
-        const response = await fetch('http://192.168.178.24:5000/fader');
+        const response = await fetch('http://127.0.0.1:5000/fader');
         const data = await response.json();
         setSliders(JSON.parse(data));
       } catch (error) {

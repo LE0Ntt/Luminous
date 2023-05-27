@@ -6,8 +6,6 @@ import time
 Todo:
 -start interpolation earlier if possible?
 -second value skipped, midi light check
--fader start position
-    -every client-fader to 0, except master > 100, midi gets these values
 -midi fader signals in intervals necessary? -> starting motormix after server... not necessary if there is a "motormix ready" signal
     -check for signal
         > 8 signal send on start: B04156 B04267 B0402B B04145 B04207 B04317 B04443 B0454B. Looks like Rotary values
@@ -41,7 +39,7 @@ class Driver:
         
         threading.Thread(target=self.input).start() 
         print("Driver Initiated")
-
+        self.pushFader(0, 255) # set master to 255
 
     def input(self):
         for message in self.inport:

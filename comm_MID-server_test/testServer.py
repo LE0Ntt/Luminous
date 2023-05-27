@@ -10,8 +10,6 @@ from flask_cors import CORS
 
 '''
 Todo:
--fader start position (server or driver?)
-    -every client-fader to 0, except master > 100, midi gets these values
 -ist double aufruf von /fader ein problem?
 '''
 

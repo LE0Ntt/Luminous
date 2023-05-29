@@ -13,7 +13,7 @@ import { ConnectionProvider } from "./components/ConnectionContext";
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-      <ConnectionProvider url="http://192.168.178.24:5000/socket">
+      <ConnectionProvider url="http://127.0.0.1:5000/socket">
         <App />
       </ConnectionProvider>
   </React.StrictMode>,

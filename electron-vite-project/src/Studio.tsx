@@ -41,7 +41,7 @@ const Studio = () => {
       ...sliders,
       {
         id: sliders.length + 1,
-        sliderValue: 0,        // muss vom server vorgegeben werden
+        sliderValue: 0,
         name: "",
       },
     ]);
@@ -51,7 +51,7 @@ const Studio = () => {
   useEffect(() => {
     const fetchSliders = async () => {
       try {
-        const response = await fetch('http://192.168.178.24:5000/fader');
+        const response = await fetch('http://127.0.0.1:5000/fader');
         const data = await response.json();
         setSliders(JSON.parse(data));
       } catch (error) {
@@ -95,20 +95,21 @@ const Studio = () => {
         <div className='studio_overview window'></div>
       </div>
       <div className='mainfader window'>
-        {/* MASTER */}
-        <Fader 
-          height={340}
-          sliderValue={255}
-          id={0}
-          name="Master"
-        />
+        { sliders[0] && (
+          <Fader
+            height={340}
+            sliderValue={sliders[0].sliderValue}
+            id={0}
+            name="Master"
+          />
+        )}
       </div>
       <div>
         <button onClick={addSlider}>Add Slider</button>
         <div className='faders window'>
         { connected ? (
           <div className="sliders">
-            { sliders.map((slider) => (
+            { sliders.slice(1).map((slider) => (
               <div key={slider.id} className='slidersHeight'>
                 <h2 className='faderText'>{slider.id}</h2>
                 <Fader

@@ -7,6 +7,7 @@ import './App.css';
 import './Scenes.css';
 import { TranslationContext } from "./components/TranslationContext";
 import Fader from './components/Fader';
+import ScenesComponent from './components/ScenesComponent';
 
 function Scenes() {
   const { t } = useContext(TranslationContext);
@@ -14,9 +15,7 @@ function Scenes() {
   return (
     <div>
       <div className='window scenesMain'>
-        <div className='scenesMainAlign'>
-          Hier sind dann die Szenen
-        </div>
+          <ScenesComponent />
       </div>
       <div className='window scenesMaster mainfader'>
         <div className='scenesMasterAlign'>

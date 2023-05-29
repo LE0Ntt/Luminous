@@ -14,7 +14,7 @@ def index():
     return 'volume: ' + str(volume)
 
 
-@socketio.on('volume', namespace='/test')
+@socketio.on('volume', namespace='/socket')
 def handle_volume(new_volume):
     global volume
     volume = new_volume
@@ -22,12 +22,12 @@ def handle_volume(new_volume):
     # Do something with the volume...
 
 
-@socketio.on('connect', namespace='/test')
+@socketio.on('connect', namespace='/socket')
 def test_connect():
     print('Client connected')
 
 
-@socketio.on('disconnect', namespace='/test')
+@socketio.on('disconnect', namespace='/socket')
 def test_disconnect():
     print('Client disconnected')
 

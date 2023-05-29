@@ -1,0 +1,47 @@
+@import url(../Color.css);
+
+/* ScenesContainer */
+
+.scenesContainer {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.AddSceneButton {
+    height: 200px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: var(--fillLight);
+    border: 0.5px solid;
+    border-color: var(--tertiarySwitched);
+}
+
+.scenesBox {
+    background-color: var(--cyan);
+    height: 200px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid var(--onepStroke);
+    box-shadow: var(--shadowLight);
+}
+
+.scenesAlign {
+    margin-top: 20px;
+    margin-left: 20px;
+    height: calc(100% - 30px);
+    width: calc(100% - 30px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-right: 10px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 20px;
+    justify-items: start;
+}

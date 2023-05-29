@@ -1,5 +1,5 @@
-import React from 'react'
 import { useState } from 'react'
+import './ScenesComponent.css';
 
 function ScenesComponent() {
 
@@ -22,14 +22,16 @@ function ScenesComponent() {
   // :Scene End ->
   
   return (
-    <div>ScenesComponent
-        <button onClick={addScene}>Add Scene</button>
-        <div className=''>
+    <div className='scenesAlign'>
+        <div className='grid-container'>
           {scenes.map((scene) => (
             <div key={scene.id} className='scenesBox'>
               <h2>{scene.name}</h2>
             </div>
           ))}
+          <button 
+        className='AddSceneButton'
+        onClick={addScene}>Add Scene</button>
         </div>
     </div>
   )

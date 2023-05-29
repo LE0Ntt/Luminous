@@ -17,19 +17,6 @@
     overflow-x: auto;
 }
 
-.scenesBox {
-    background-color: rgba(172, 229, 152, 0.5);
-    height: 105px;
-    width: 169px;
-    border-radius: 5px;
-    margin: 0px;
-    margin-top: 20px;
-    margin-left: 20px;
-    display: inline-flex;
-    border: 1px solid var(--onepStroke);
-    box-shadow: var(--shadowLight);
-}
-
 .overview {
     height: 910px;
     width: 844px;

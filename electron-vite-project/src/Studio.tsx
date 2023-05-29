@@ -10,6 +10,7 @@ import Fader from './components/Fader';
 import { useState, useEffect, useContext } from 'react';
 import { useConnectionContext } from "./components/ConnectionContext";
 import { TranslationContext } from './components/TranslationContext';
+import ScenesComponent from './components/ScenesComponent';
 
 const Studio = () => {
   
@@ -86,8 +87,9 @@ const Studio = () => {
 
   return (
     <div>
-      <div className='h-20 w-20'></div>
+      <div className='h-20 w-20'></div> {/* Tailwind code, muss noch geändert werden */}
       <div className='scenes window'>
+        <ScenesComponent />
       </div>
       <div className='overview window'>
         <div className='studio_overview window'></div>

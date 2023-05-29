@@ -17,57 +17,43 @@ const Fader: React.FC<SliderProps> = ({
 }) => {
   const { emit } = useConnectionContext();
   const [value, setValue] = useState<number>(sliderValue);
-  const valueRef = useRef<number>(sliderValue);
-  const isDataSentRef = useRef(false);
   const faderClassName = height ? "fader faderMaster" : "fader";
   const [isDragging, setIsDragging] = useState(false);
   const displayValue = Math.round((value / 255) * 100);
   // Farben für den Fader, lightmode und darkmode
   const mainColorLight = "#4F53B1";
   const mainColorDark = "#B9BCFF";
+  const [timerRunning, setTimerRunning] = useState<boolean | null>(null);
+  const [cacheValue, setCacheValue] = useState<number | null>(null);
 
   useEffect(() => {
     if(!isDragging)
       setValue(sliderValue);
   }, [sliderValue]);
-
-  useEffect(() => {
-    valueRef.current = value;
-    isDataSentRef.current = false;
-    //console.log('valueRef.current: ' + valueRef.current);
-  }, [value]);
-/*
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log(isDragging)
-      if (!isDataSentRef.current && isDragging) {
-        isDataSentRef.current = true;
-        emit("fader_value", { id: id, value: valueRef.current });
-        console.log('id:' + id, 'valueRef.current:' + valueRef.current, 'isDataSent:' + isDataSentRef.current);
-      }
-    }, 33);
-    return () => clearInterval(interval);
-  }, []);
   
   const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
     setValue(newValue);
-  };
-*/
-
-  const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
-    let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
-    setValue(newValue);
-    if (!isDataSentRef.current) {
-      isDataSentRef.current = true;
-      emit("fader_value", { id: id, value: value });
+    setCacheValue(newValue);
+    if(!timerRunning) {
+      setTimerRunning(true);
+      emit("fader_value", { id: id, value: newValue });
+      setTimeout(() => {
+        setTimerRunning(false);
+      }, 20); // Timeout in ms
     }
   };
+
+  useEffect(() => {
+    if(!timerRunning && cacheValue != null)
+    emit("fader_value", { id: id, value: cacheValue });
+  }, [timerRunning]);
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 100);
     newValue = Math.round((newValue / 100) * 255);
     setValue(newValue);
+    emit("fader_value", { id: id, value: newValue });
   };
 
   useEffect(() => {

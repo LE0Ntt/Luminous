@@ -93,13 +93,14 @@ const Studio = () => {
         <div className='studio_overview window'></div>
       </div>
       <div className='mainfader window'>
-        {/* MASTER */}
-        <Fader 
-          height={340}
-          sliderValue={sliders[0]?.sliderValue}
-          id={sliders[0]?.id}
-          name="Master"
-        />
+        { sliders[0] && (
+          <Fader
+            height={340}
+            sliderValue={sliders[0].sliderValue}
+            id={0}
+            name="Master"
+          />
+        )}
       </div>
       <div>
         <button onClick={addSlider}>Add Slider</button>

@@ -6,7 +6,7 @@ from flask import jsonify
 from MOTORMIX_driver import Driver
 from flask_cors import CORS
 #from engineio.payload import Payload
-#Payload.max_decode_packets = 50
+#Payload.max_decode_packets = 25
 
 '''
 Todo:
@@ -17,7 +17,11 @@ Todo:
 def callback(index, value):
     print("Eintrag", index, "wurde geändert:", value)
     socketio.emit('variable_update', {'id': index, 'value': value}, namespace='/socket')
-
+    global sliders
+    sliders = json.loads(sliders)
+    sliders[index]["sliderValue"] = value
+    sliders = json.dumps(sliders)
+    
 try:
     driver = Driver()
     driver.set_callback(callback)
@@ -29,7 +33,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 CORS(app, resources = {r"/*": {"origins": "*"}})
 socketio = SocketIO(app, cors_allowed_origins = "*")
-connections = 0
+
+connections = 0 
 
 def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
     sliders = []
@@ -50,19 +55,26 @@ def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
         sliders.append(slider)
     return json.dumps(sliders)
 
+sliders = create_sliders(10)
+
 @app.route('/')
 def mein_endpunkt():
     return render_template('faderTest.html')
 
 @app.route('/fader')
 def get_faders():
-    sliders = create_sliders(10)
+    global sliders
     return jsonify(sliders)
 
 @socketio.on('fader_value', namespace='/socket')
 def handle_fader_value(data):
     faderValue = int(data['value'])
     fader = int(data['id'])
+    print(fader, faderValue)
+    global sliders
+    sliders = json.loads(sliders)
+    sliders[fader]["sliderValue"] = faderValue
+    sliders = json.dumps(sliders)
     driver.pushFader(fader, faderValue) if driver is not None else None
     # Sende geänderte Werte an alle verbundenen Clients
     global connections

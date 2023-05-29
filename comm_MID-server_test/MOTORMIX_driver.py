@@ -6,9 +6,7 @@ import time
 Todo:
 -start interpolation earlier if possible?
 -second value skipped, midi light check
--midi fader signals in intervals necessary? -> starting motormix after server... not necessary if there is a "motormix ready" signal
-    -check for signal
-        > 8 signal send on start: B04156 B04267 B0402B B04145 B04207 B04317 B04443 B0454B. Looks like Rotary values
+-midi fader signals in intervals necessary? -> starting motormix after server... min. 3 Rotary values send on start
     -alternativly ping?
 -toggle button light when pressed
 '''
@@ -19,47 +17,62 @@ class Driver:
         self.left_button_flag  = False
         self.right_button_flag = False
         self.fader_touch       = [False] * 8
+        self.fader_touch_flag  = False
         
         self.outport = mido.open_output('USB MIDI Interface 1')
         self.inport  = mido.open_input( 'USB MIDI Interface 0')
         
         self.current_page = 1
-        #self.mode = "light"
         self.light_mode = True # False: Scene mode
         self.callback = None
         self.last_value   = [0] * 8
         self.last_time    = [float()] * 8
         self.current_time = [float()] * 8
         self.thread_interpolation = None
-        self.lastActive           = None
-        
-        #self.device_values = [] # brightness for every device               
-        self.slider_values = [] # value for every channel                   könnte man besser in eigene datei machen
-        self.dmx_values    = [] # actual channel brightness                 könnte man besser in eigene datei machen
+        self.last_active          = None
         
         threading.Thread(target=self.input).start() 
         print("Driver Initiated")
+        
+        # !!! HIER MUSS AUCH ALLES ANDEREZURÜCKGESETZT WERDEN !!!
+        # Reset fader positions in case server got restarted
         self.pushFader(0, 255) # set master to 255
+        for index in range(1, 8): # every other fader to 0
+            self.pushFader(index, 0)
+            
+        #self.outport.send(mido.Message.from_hex('90 00 00')) # ping
 
     def input(self):
         for message in self.inport:
             hex_message = ''.join(format(byte, '02X') for byte in message.bytes())
 
             print(hex_message)
-
-            if hex_message.startswith('B00F0'): # Fader
-                #print(hex_message[-1:])
-                if self.lastActive != int(hex_message[-1:]):
-                    self.lastActive = int(hex_message[-1:])
+            
+            if hex_message.startswith('B04'): # Rotory message but potentially startup -> push faders, pages, display, button lights ??? Maybe not best practice
+                for faderIndex, value in enumerate(self.fader_values):
+                    msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
+                    lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
+                    faderIndex = int(str(faderIndex), 16)
+                    msg1 = mido.Message('control_change', channel=0, control=int(      str(faderIndex), 16), value=msb, time=0)
+                    msg2 = mido.Message('control_change', channel=0, control=int("2" + str(faderIndex), 16), value=lsb, time=0)
+                    self.outport.send(msg1)
+                    self.outport.send(msg2)
+                
+            if hex_message.startswith('B00F0') and int(hex_message[5], 16) < 8: # Fader
+                self.fader_touch_flag = True
+                if self.last_active != int(hex_message[-1:]):
+                    self.last_active = int(hex_message[-1:])
                 continue
-            elif hex_message.startswith('B02F4'):
-                self.fader_touch[self.lastActive] = True
-                self.last_time[self.lastActive] = time.monotonic() - 0.01
-                print(f"FADER {self.lastActive} ACTIVE")
+            elif (hex_message == 'B02F40') & self.fader_touch_flag:
+                self.fader_touch[self.last_active] = True
+                self.fader_touch_flag = False
+                self.last_time[self.last_active] = time.monotonic() - 0.01
+                print(f"FADER {self.last_active} ACTIVE")
                 continue
-            elif hex_message.startswith('B02F0'):
-                self.fader_touch[self.lastActive] = False
-                print(f"FADER {self.lastActive} INACTIVE")
+            elif (hex_message == 'B02F00') & self.fader_touch_flag:
+                self.fader_touch[self.last_active] = False
+                self.fader_touch_flag = False
+                print(f"FADER {self.last_active} INACTIVE")
                 continue
             elif hex_message.startswith('B00') & hex_message[3].isdigit(): # Fader movement
                 fader = int(hex_message[3])
@@ -159,10 +172,11 @@ class Driver:
         if faderIndex == 0:
             faderIndex = 7
         elif start_index < faderIndex <= end_index:
-            faderIndex = faderIndex - start_index - 1 #(faderIndex % 7) - 1
+            faderIndex = faderIndex - start_index - 1
         else: 
             return    
         
+        self.fader_values[faderIndex] = value
         msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
         lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
         faderIndex = int(str(faderIndex), 16)

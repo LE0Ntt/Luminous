@@ -15,8 +15,6 @@
     width: 100%;
     border-radius: 5px;
     background-color: var(--fillLight);
-    border: 0.5px solid;
-    border-color: var(--tertiarySwitched);
 }
 
 .scenesBox {
@@ -42,4 +40,12 @@
     grid-template-columns: repeat(6, 1fr);
     grid-gap: 20px;
     justify-items: start;
+}
+
+.scenesEmpty {
+    background-color: var(--fillLight);
+    border-color: var(--tertiary);
+    border-style: dotted;
+    border-radius: 5px;
+    width: 100%;
 }

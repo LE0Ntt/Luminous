@@ -30,9 +30,29 @@ function ScenesComponent({ height }: { height: number }) {
             </div>
           ))}
           <button 
-        className='AddSceneButton '
-        style={{ height: `${height}px` }}
-        onClick={addScene}>Add Scene</button>
+            className='AddSceneButton '
+            style={{ height: `${height}px` }}
+            onClick={addScene}
+          >Add Scene</button>
+          <div 
+            className='scenesEmpty'
+            style={{ height: `${height}px` }}
+          >
+            <svg width="100%" height={`${height}px`}>
+              <rect  
+                  width="100%" 
+                  height={`${height}px`}
+                  style={{
+                      fill: "none", 
+                      stroke: "black", 
+                      strokeWidth: 1, 
+                      strokeDasharray: "30,30",
+                  }}
+                  rx="5"
+                  ry="5"
+              />
+            </svg>
+          </div>
         </div>
     </div>
   )

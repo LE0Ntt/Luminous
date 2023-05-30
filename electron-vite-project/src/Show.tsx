@@ -31,7 +31,7 @@ function Show() {
         <div className="showControlMaster">
           <div className="showMasterAlign">
           <Fader
-            height={214}
+            height={290}
             sliderValue={255}
             id={0}
             name='Master'

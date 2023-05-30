@@ -15,7 +15,7 @@ function Scenes() {
   return (
     <div>
       <div className='window scenesMain'>
-          <ScenesComponent />
+          <ScenesComponent height={202} />
       </div>
       <div className='window scenesMaster mainfader'>
         <div className='scenesMasterAlign'>

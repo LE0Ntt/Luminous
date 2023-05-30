@@ -89,7 +89,7 @@ const Studio = () => {
     <div>
       <div className='h-20 w-20'></div> {/* Tailwind code, muss noch geändert werden */}
       <div className='scenes window'>
-        <ScenesComponent />
+        <ScenesComponent height={105} />
       </div>
       <div className='overview window'>
         <div className='studio_overview window'></div>

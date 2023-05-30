@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './ScenesComponent.css';
 
-function ScenesComponent() {
+function ScenesComponent({ height }: { height: number }) {
 
     // <- Scene:
   interface SceneConfig {
@@ -25,12 +25,13 @@ function ScenesComponent() {
     <div className='scenesAlign'>
         <div className='grid-container'>
           {scenes.map((scene) => (
-            <div key={scene.id} className='scenesBox'>
+            <div key={scene.id} className='scenesBox' style={{ height: `${height}px` }}>
               <h2>{scene.name}</h2>
             </div>
           ))}
           <button 
-        className='AddSceneButton'
+        className='AddSceneButton '
+        style={{ height: `${height}px` }}
         onClick={addScene}>Add Scene</button>
         </div>
     </div>

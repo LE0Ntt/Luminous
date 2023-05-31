@@ -2,7 +2,6 @@
  * Control.tsx
  * @author Leon Hölzel, Darwin Pietas
  */
-import './App.css';
 import './index.css';
 import './Studio.css';
 import Button from './components/Button';

@@ -3,11 +3,12 @@ import './ScenesComponent.css';
 import '../assets/GridLines';
 import GridLines from '../assets/GridLines';
 import { TranslationContext } from "./TranslationContext";
+import Add from '@/assets/Add';
 
 
 function ScenesComponent({ sideId }: { sideId: number }) {
 
-  console.log('sideId: ' + sideId);
+  //console.log('sideId: ' + sideId); // 0: Studio, 1: Scenes, 2: Show // Debug
   const { t } = useContext(TranslationContext);
 
     // <- Scene:
@@ -81,6 +82,7 @@ function ScenesComponent({ sideId }: { sideId: number }) {
             onClick={addScene}
           >
             <GridLines height={height} />
+            <Add />
             <div className='AddSceneButtonFont'>{buttonText}</div>
           </button>
           {emptyScenes.map((scene) => (

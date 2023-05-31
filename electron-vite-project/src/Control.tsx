@@ -1,6 +1,5 @@
 import React, {  useRef, useContext, useEffect, useState } from "react";
 import { TranslationContext } from "./components/TranslationContext";
-import './App.css';
 import './Control.css';
 import Fader from './components/Fader';
 

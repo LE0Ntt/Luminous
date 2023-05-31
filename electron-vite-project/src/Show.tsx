@@ -2,10 +2,8 @@
  * Show.tsx
  * @author Leon Hölzel
  */
-import React from "react";
 import { useConnectionContext } from "./components/ConnectionContext";
 import "./Show.css";
-import "./App.css";
 import "./Color.css";
 import Fader from "./components/Fader";
 import ScenesComponent from "./components/ScenesComponent";

@@ -20,7 +20,7 @@
     --colorButtonHover: #dfdfdf;
 
     --onepStroke: #ffffff;
-    --onepStrokeDark: #000000;
+    --onepStrokeSwitched: #000000;
 
     --primaryDark: rgba(255, 255, 255, 0.85);
     --secondaryDark: rgba(255, 255, 255, 0.5);
@@ -74,6 +74,7 @@
     --fillUltraThick: rgba(40, 40, 40, 0.8);
 
     --onepStroke: #000000;
+    --onepStrokeSwitched: #ffffff;
 
     --colorButton: rgba(72, 72, 72, 0.5);
 

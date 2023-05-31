@@ -15,7 +15,9 @@
       "fullscreen": "Full Screen",
       "exitFullscreen": "Exit Full Screen",
       "documentation": "Documentation",
-      "editLights": "Edit Lights"
+      "editLights": "Edit Lights",
+      "SaveCurrentConfiguration": "Save Current Configuration",
+      "AddNewScene": "Add New Scene"
     },
     "de": {
       "greeting": "Hallo!",
@@ -33,6 +35,8 @@
       "fullscreen": "Vollbild",
       "exitFullscreen": "Vollbild beenden",
       "documentation": "Dokumentation",
-      "editLights": "Lichter bearbeiten"
+      "editLights": "Lichter bearbeiten",
+      "SaveCurrentConfiguration": "Aktuelle Konfiguration speichern",
+      "AddNewScene": "Neue Szene hinzufügen"
     }
   }

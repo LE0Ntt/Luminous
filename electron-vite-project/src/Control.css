@@ -1,0 +1,17 @@
+@import url(./Color.css);
+
+.devices {
+    height: 500px;
+    width: 384px;
+    left: 40px;
+    top: 540px;
+    border-radius: 10px;
+    z-index: 3;
+}
+
+.controlMain {
+    /* border: 1px solid #d3d3d3; */
+    top: 123px;
+    left: 30px;
+    position: absolute;
+}

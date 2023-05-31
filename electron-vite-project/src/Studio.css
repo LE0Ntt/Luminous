@@ -19,7 +19,7 @@
 
 .overview {
     height: 910px;
-    width: 844px;
+    width: 846px;
     left: 1034px;
     top: 130px;
     border-radius: 10px;
@@ -44,7 +44,7 @@
 .studio_overview {
     background-image: url('./assets/studio_overview.png');
     height: 870px;
-    width: 804px;
+    width: 806px;
     position: relative;
     left: 50%;
     top: 50%;

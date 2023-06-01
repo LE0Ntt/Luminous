@@ -50,12 +50,12 @@ def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
         slider = {
             "id": i + 1,
             "sliderValue": 0,
-            "name": "Fader"
+            "name": "Fader" + str(i + 1)
         }
         sliders.append(slider)
     return json.dumps(sliders)
 
-sliders = create_sliders(10)
+sliders = create_sliders(7)
 
 @app.route('/')
 def mein_endpunkt():

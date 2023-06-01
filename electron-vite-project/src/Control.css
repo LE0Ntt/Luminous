@@ -1,12 +1,23 @@
 @import url(./Color.css);
 
 .devices {
-    height: 500px;
+    border-top-right-radius:5px !important;
     width: 384px;
     left: 40px;
-    top: 540px;
+    bottom: 40px;
     border-radius: 10px;
     z-index: 3;
+    padding: 20px;
+}
+
+.devicesBig {
+    width: 384px;
+    height: 910px;
+    left: 40px;
+    bottom: 40px;
+    border-radius: 10px;
+    z-index: 3;
+    padding: 20px;
 }
 
 .controlMain {
@@ -14,4 +25,24 @@
     top: 123px;
     left: 30px;
     position: absolute;
+}
+
+.selectedDevices {
+    width: 384px;
+    left: 40px;
+    top: 130px;
+    border-radius: 10px;
+    z-index: 2;
+    position: absolute;
+    padding: 20px;
+    border: "solid 1px red" 
+}
+
+.noSelectWindow {
+    width: 1436px;
+    height: 910px;
+    left: 444px;
+    bottom: 40px;
+    border-radius: 10px;
+    z-index: 3;
 }

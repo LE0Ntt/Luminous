@@ -3,7 +3,6 @@
  * @author Leon Hölzel
  */
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import './App.css'
 import './index.css'
 import Studio from './Studio'
 import Header from './components/Header'

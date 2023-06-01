@@ -2,7 +2,6 @@
  * Control.tsx
  * @author Leon Hölzel, Darwin Pietas
  */
-import './App.css';
 import './index.css';
 import './Studio.css';
 import Button from './components/Button';
@@ -89,7 +88,7 @@ const Studio = () => {
     <div>
       <div className='h-20 w-20'></div> {/* Tailwind code, muss noch geändert werden */}
       <div className='scenes window'>
-        <ScenesComponent height={105} />
+        <ScenesComponent sideId={0} />
       </div>
       <div className='overview window'>
         <div className='studio_overview window'></div>
@@ -105,7 +104,6 @@ const Studio = () => {
         )}
       </div>
       <div>
-        <button onClick={addSlider}>Add Slider</button>
         <div className='faders window'>
         { connected ? (
           <div className="sliders">

@@ -17,6 +17,12 @@
     background-color: var(--fillLight);
 }
 
+.AddSceneButtonFont {
+    position: relative;
+    top: -56%;
+}
+
+
 .scenesBox {
     background-color: var(--cyan);
     width: 100%;
@@ -37,7 +43,6 @@
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
     grid-gap: 20px;
     justify-items: start;
 }

@@ -2,12 +2,11 @@
  * Show.tsx
  * @author Leon Hölzel
  */
-import React from "react";
 import { useConnectionContext } from "./components/ConnectionContext";
 import "./Show.css";
-import "./App.css";
 import "./Color.css";
 import Fader from "./components/Fader";
+import ScenesComponent from "./components/ScenesComponent";
 
 
 function Show() {
@@ -23,7 +22,9 @@ function Show() {
 
   return (
     <div>
-      <div className="window showScenes"></div>
+      <div className="window showScenes">
+        <ScenesComponent sideId={2} />
+      </div>
       <div className="window showSaves"></div>
       <div className="window showControls">
         <div className="showControlButtons"></div>

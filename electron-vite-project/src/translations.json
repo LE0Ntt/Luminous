@@ -4,7 +4,7 @@
       "buttonLabel": "Click me!",
       "studio": "Studio",
       "scenes": "Scenes",
-      "control": "Control",
+      "control": "LightFX",
       "settings": "Settings",
       "help": "Help",
       "about": "About Luminous",
@@ -15,14 +15,16 @@
       "fullscreen": "Full Screen",
       "exitFullscreen": "Exit Full Screen",
       "documentation": "Documentation",
-      "editLights": "Edit Lights"
+      "editLights": "Edit Lights",
+      "SaveCurrentConfiguration": "Save Current Configuration",
+      "AddNewScene": "Add New Scene"
     },
     "de": {
       "greeting": "Hallo!",
       "buttonLabel": "Klick mich!",
       "studio": "Studio",
       "scenes": "Szenen",
-      "control": "Steuerung",
+      "control": "LightFX",
       "settings": "Einstellungen",
       "help": "Hilfe",
       "about": "Über Luminous",
@@ -33,6 +35,8 @@
       "fullscreen": "Vollbild",
       "exitFullscreen": "Vollbild beenden",
       "documentation": "Dokumentation",
-      "editLights": "Lichter bearbeiten"
+      "editLights": "Lichter bearbeiten",
+      "SaveCurrentConfiguration": "Aktuelle Konfiguration speichern",
+      "AddNewScene": "Neue Szene hinzufügen"
     }
   }

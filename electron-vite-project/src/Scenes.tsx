@@ -2,8 +2,7 @@
  * Scenes.tsx
  * @author Leon Hölzel
  */
-import React, { useContext } from 'react'
-import './App.css';
+import { useContext } from 'react'
 import './Scenes.css';
 import { TranslationContext } from "./components/TranslationContext";
 import Fader from './components/Fader';
@@ -15,7 +14,7 @@ function Scenes() {
   return (
     <div>
       <div className='window scenesMain'>
-          <ScenesComponent height={202} />
+          <ScenesComponent sideId={1} />
       </div>
       <div className='window scenesMaster mainfader'>
         <div className='scenesMasterAlign'>

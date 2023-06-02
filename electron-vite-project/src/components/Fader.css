@@ -192,7 +192,7 @@
 
     height: 1px;
     width: 50px;
-    background: #b7b7b7;
+    background: var(--midLine);
 }
 
 .faderName {

@@ -14,6 +14,7 @@ function Control() {
   const [firstLoad, setFirstLoad] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState("#F6F6F6");
   const [stroke, setStroke] = useState("#FFF");
+  const [isDark, setIsDark] = useState(document.body.classList.contains('dark'));
 
   // <- Device:
   interface DeviceConfig {
@@ -22,11 +23,9 @@ function Control() {
     name: string;
   };
 
-  const [isDark, setIsDark] = useState(document.body.classList.contains('dark'));
-
   useEffect(() => {
     const fetchDevices = async () => {
-      try {
+      try { 
         const response = await fetch('http://127.0.0.1:5000/fader');
         const data = await response.json();
         const parsedData = JSON.parse(data);
@@ -47,7 +46,7 @@ function Control() {
     setUnselectedDevices(savedUnselectedDevices);
     setFirstLoad(true)
 
-    // Dark mode
+    // Dark mode event listener
     const handleDarkModeChange = () => setIsDark(document.body.classList.contains('dark'));
     document.body.addEventListener('class-change', handleDarkModeChange);
     return () => document.body.removeEventListener('class-change', handleDarkModeChange);
@@ -103,8 +102,6 @@ function Control() {
   const pathStroke = `M1849.5 17v890a9.5 9.5 0 01-9.5 9.5H424a9.5 9.5 0 01-9.5-9.5V${height}c0-5.8-4.7-10.5-10.5-10.5H20a9.5 9.5 0 01-9.5-9.5V17A9.5 9.5 0 0120 7.5h1820a9.5 9.5 0 019.5 9.5z`;
   var devicesHeight = 907 - height;
 
-  
-  
   return (
     <div className="containerControl">
       { selectedDevices[0] && devices.length > 0 ? (

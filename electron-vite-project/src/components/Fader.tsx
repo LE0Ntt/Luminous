@@ -20,11 +20,21 @@ const Fader: React.FC<SliderProps> = ({
   const faderClassName = height ? "fader faderMaster" : "fader";
   const [isDragging, setIsDragging] = useState(false);
   const displayValue = Math.round((value / 255) * 100);
-  // Farben für den Fader, lightmode und darkmode
-  const mainColorLight = "#4F53B1";
-  const mainColorDark = "#B9BCFF";
   const [timerRunning, setTimerRunning] = useState<boolean | null>(null);
   const [cacheValue, setCacheValue] = useState<number | null>(null);
+  const [mainColor, setMainColor] = useState("#4F53B1");
+  const [isDark, setIsDark] = useState(document.body.classList.contains('dark'));
+
+  useEffect(() => {
+    // Dark mode event listener
+    const handleDarkModeChange = () => setIsDark(document.body.classList.contains('dark'));
+    document.body.addEventListener('class-change', handleDarkModeChange);
+    return () => document.body.removeEventListener('class-change', handleDarkModeChange);
+  }, []);
+
+  useEffect(() => {
+    isDark ? setMainColor("#B9BCFF") : setMainColor("#4F53B1");
+  }, [isDark]);
 
   useEffect(() => {
     if(!isDragging)
@@ -76,7 +86,7 @@ const Fader: React.FC<SliderProps> = ({
           onMouseDown={() => setIsDragging(true)}
           onMouseUp={() => setIsDragging(false)}
           style={{
-            background: `linear-gradient(to right, #4F53B1 0%, #4F53B1 ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
+            background: `linear-gradient(to right, ${mainColor} 0%, ${mainColor} ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
           }}
           className="slider sliderTrackColor"
         />

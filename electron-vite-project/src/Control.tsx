@@ -106,7 +106,7 @@ function Control() {
         <svg className="controlMain" width="1860" height="930" viewBox="0 0 1860 930" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g filter="url(#filter0_b_873_8277)">
             <g filter="url(#filter1_d_873_8277)" shapeRendering="geometricPrecision">
-              <path d={pathFill} fill="var(--fillMedium)" fillOpacity=".6"/>
+              <path d={pathFill} fill="var(--fillMedium)"/>
               <path d={pathStroke} stroke="var(--onepStroke)"/>
             </g>
           </g>

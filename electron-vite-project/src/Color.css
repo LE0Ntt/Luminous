@@ -73,10 +73,11 @@
     --fillUltraLight: rgba(40, 40, 40, 0.4);
     --fillLight: rgba(40, 40, 40, 0.5);
     --fillMedium: rgba(40, 40, 40, 0.6);
-    --fillThick: rgba(40, 40, 40, 0.7);
+    --fillThick: rgba(63, 63, 63, 0.60);
     --fillUltraThick: rgba(40, 40, 40, 0.8);
 
     --onepStroke: #000000;
+    /*  --onepStroke: rgba(255, 255, 255, 0.10); */
     --onepStrokeSwitched: #ffffff;
 
     --midLine: #484848;

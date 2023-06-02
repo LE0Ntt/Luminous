@@ -3,46 +3,53 @@
 .devices {
     border-top-right-radius:5px !important;
     width: 384px;
-    left: 40px;
-    bottom: 40px;
+    left: 0;
+    bottom: 0;
     border-radius: 10px;
     z-index: 3;
-    padding: 20px;
+    padding: 20px 0 20px 20px;
 }
 
 .devicesBig {
     width: 384px;
     height: 910px;
-    left: 40px;
-    bottom: 40px;
+    left: 0;
+    bottom: 0;
     border-radius: 10px;
     z-index: 3;
-    padding: 20px;
+    padding: 20px 0 20px 20px;
 }
 
 .controlMain {
     /* border: 1px solid #d3d3d3; */
-    top: 123px;
-    left: 30px;
+    top:-7px;
+    left:-10px;
     position: absolute;
 }
 
 .selectedDevices {
-    width: 384px;
-    left: 40px;
-    top: 130px;
+    width: 383px;
     border-radius: 10px;
     z-index: 2;
     position: absolute;
-    padding: 20px;
-    border: "solid 1px red" 
+    padding: 20px 0 20px 20px;
+    /* border: solid 1px red; */
 }
 
 .noSelectWindow {
     width: 1436px;
     height: 910px;
-    left: 444px;
-    bottom: 40px;
+    left: 404px;
+    bottom: 0;
     border-radius: 10px;
     z-index: 3;
+}
+
+.containerControl {
+    height: 910px;
+    width: 1840px;
+    top: 100px;
+    left: 40px;
+    position: relative;
+    padding: 0;
 }

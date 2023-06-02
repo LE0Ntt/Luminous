@@ -3,6 +3,7 @@ import { TranslationContext } from "./components/TranslationContext";
 import { useConnectionContext } from "./components/ConnectionContext";
 import './Control.css';
 import Fader from './components/Fader';
+import DeviceList from './components/DeviceList';
 
 function Control() {
   const { t } = useContext(TranslationContext);
@@ -24,7 +25,9 @@ function Control() {
       try {
         const response = await fetch('http://127.0.0.1:5000/fader');
         const data = await response.json();
-        setSliders(JSON.parse(data));
+        const parsedData = JSON.parse(data);
+        parsedData.shift(); // remove master
+        setSliders(parsedData);
       } catch (error) {
         console.log(error);
       }
@@ -32,9 +35,9 @@ function Control() {
 
     fetchSliders();
 
-    // Load saved selection from local storage
-    const savedSelectedSliders = JSON.parse(localStorage.getItem('selectedSliders') || '[]');
-    const savedUnselectedSliders = JSON.parse(localStorage.getItem('unselectedSliders') || '[]');
+    // Load saved selection from session storage
+    const savedSelectedSliders = JSON.parse(sessionStorage.getItem('selectedSliders') || '[]');
+    const savedUnselectedSliders = JSON.parse(sessionStorage.getItem('unselectedSliders') || '[]');
 
     setSelectedSliders(savedSelectedSliders);
     setUnselectedSliders(savedUnselectedSliders);
@@ -42,12 +45,12 @@ function Control() {
   }, []);
 
   useEffect(() => {
-    // Save selection in local storage
+    // Save selection in session storage
     if(firstLoad && sliders.length > 0) {
-      localStorage.setItem('unselectedSliders', JSON.stringify(unselectedSliders));
-      localStorage.setItem('selectedSliders', JSON.stringify(selectedSliders));
+      sessionStorage.setItem('unselectedSliders', JSON.stringify(unselectedSliders));
+      sessionStorage.setItem('selectedSliders', JSON.stringify(selectedSliders));
 
-      setHeight(selectedSliders.length * 70 + 60);
+      setHeight(Math.min(selectedSliders.length * 71 + 36, 462));
 
       //Check if sliders got changed on the server
       const isDifferent = sliders.every((slider) => {
@@ -60,9 +63,9 @@ function Control() {
         console.log("sliders changed")
       }
     }
-      
-    //localStorage.setItem('selectedSliders', JSON.stringify(JSON.parse('[]'))) // zum reseten
-    //localStorage.setItem('unselectedSliders', JSON.stringify(JSON.parse('[]'))) // zum reseten
+    
+    //sessionStorage.setItem('selectedSliders', JSON.stringify(JSON.parse('[]'))) // zum reseten
+    //sessionStorage.setItem('unselectedSliders', JSON.stringify(JSON.parse('[]'))) // zum reseten
   }, [selectedSliders, unselectedSliders, sliders]);
 
   const handleAddSlider = (slider: SliderConfig) => {
@@ -76,52 +79,21 @@ function Control() {
   };
 
   // Since the more complex shape of the main window here cannot be displayed with normal divs due to the translucency and the height-adjustable property, we had to use an SVG. Hence also the following paths.
-  const [height, setHeight] = useState(200);
+  const [height, setHeight] = useState(107);
   const pathFill   = `M10 17A10 10 0 0120 7h1820a10 10 0 0110 10v890a10 10 0 01-10 10H424a10 10 0 01-10-10V${height}a10 10 0 00-10-10H20a10 10 0 01-10-10V17z`;
   const pathStroke = `M1849.5 17v890a9.5 9.5 0 01-9.5 9.5H424a9.5 9.5 0 01-9.5-9.5V${height}c0-5.8-4.7-10.5-10.5-10.5H20a9.5 9.5 0 01-9.5-9.5V17A9.5 9.5 0 0120 7.5h1820a9.5 9.5 0 019.5 9.5z`;
   var devicesHeight = 907 - height;
 
   return (
-    <div>
-      { selectedSliders[0] ? (
+    <div className="containerControl">
+      { selectedSliders[0] && sliders.length > 0 ? (
       <div>
         <div className="devices window" style={{ height: devicesHeight + 'px' }}>
-          <ul>
-            {unselectedSliders.map((slider, index) => (
-              <React.Fragment key={slider.id}>
-                <li style={{ borderBottom: '1px solid black', height: '70px', display: 'flex', alignItems: 'center' }}>
-                  <span>{slider.name}</span>
-                  <button
-                    style={{ marginLeft: 'auto' }}
-                    onClick={() => handleAddSlider(slider)}
-                  >
-                    +
-                  </button>
-                </li>
-                {index !== unselectedSliders.length - 1 && <hr />}
-              </React.Fragment>
-            ))}
-          </ul>
+          <DeviceList sliders={unselectedSliders} isAddButton={true} onDeviceButtonClick={handleAddSlider} />
         </div>
         <div className="selectedDevices" style={{ height: height - 17 + 'px' }}>
-        <ul>
-            {selectedSliders.map((slider, index) => (
-              <React.Fragment key={slider.id}>
-                <li style={{ borderBottom: '1px solid black', height: '70px', display: 'flex', alignItems: 'center' }}>
-                  <span>{slider.name}</span>
-                  <button
-                    style={{ marginLeft: 'auto' }}
-                    onClick={() => handleRemoveSlider(slider)}
-                  >
-                    -
-                  </button>
-                </li>
-                {index !== selectedSliders.length - 1 && <hr />}
-              </React.Fragment>
-            ))}
-          </ul>
+          <DeviceList sliders={selectedSliders} isAddButton={false} onDeviceButtonClick={handleRemoveSlider} />
         </div>
-
         <svg className="controlMain" width="1860" height="930" viewBox="0 0 1860 930" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g filter="url(#filter0_b_873_8277)">
             <g filter="url(#filter1_d_873_8277)" shapeRendering="geometricPrecision">
@@ -154,28 +126,12 @@ function Control() {
           <div className="noSelectWindow window">
           </div>
           <div className="devicesBig window">
-          <ul>
-            {unselectedSliders.map((slider, index) => (
-              <React.Fragment key={slider.id}>
-                <li style={{ borderBottom: '1px solid black', height: '70px', display: 'flex', alignItems: 'center' }}>
-                  <span>{slider.name}</span>
-                  <button
-                    style={{ marginLeft: 'auto' }}
-                    onClick={() => handleAddSlider(slider)}
-                  >
-                    +
-                  </button>
-                </li>
-                {index !== unselectedSliders.length - 1 && <hr />}
-              </React.Fragment>
-            ))}
-          </ul>
-        </div>
+            <DeviceList sliders={unselectedSliders} isAddButton={true} onDeviceButtonClick={handleAddSlider} />
+          </div>
       </div>
       )}
     </div>
   );
 }
-
 
 export default Control;

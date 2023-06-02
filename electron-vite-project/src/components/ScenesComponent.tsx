@@ -39,7 +39,7 @@ function ScenesComponent({ sideId }: { sideId: number }) {
       setRepeatNumber(7);
       setButtonDisabled(true);
     }
-  }, [sideId]);
+  }, [sideId, t]);
 
   const [scenes, setScenes] = useState<SceneConfig[]>([]);
   const addScene = () => {

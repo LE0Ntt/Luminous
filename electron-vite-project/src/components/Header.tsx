@@ -16,13 +16,16 @@ function Header() {
     const { t } = useContext(TranslationContext);
     const [isDark, setIsDark] = useState(false);
     const [isFullScreen, setIsFullScreen] = useState(false);
-
+  
+    useEffect(() => {
+      const storedIsDark = localStorage.getItem('isDark');
+      setIsDark(storedIsDark === 'true');
+    }, []);
+    
     useEffect(() => {
       document.body.classList.toggle('dark', isDark);
-    });
-
-    useEffect(() => {
       localStorage.setItem('isDark', `${isDark}`);
+      document.body.dispatchEvent(new Event('class-change'))
     }, [isDark]);
 
     const toggleTheme = () => {

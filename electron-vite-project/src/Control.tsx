@@ -8,74 +8,93 @@ import DeviceList from './components/DeviceList';
 function Control() {
   const { t } = useContext(TranslationContext);
   const { connected, on, off } = useConnectionContext();
-  const [sliders, setSliders] = useState<SliderConfig[]>([]);
-  const [selectedSliders, setSelectedSliders] = useState<SliderConfig[]>([]);
-  const [unselectedSliders, setUnselectedSliders] = useState<SliderConfig[]>([]);
+  const [devices, setDevices] = useState<DeviceConfig[]>([]);
+  const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
+  const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
   const [firstLoad, setFirstLoad] = useState(false);
-  
-  // <- Slider:
-  interface SliderConfig {
+  const [backgroundColor, setBackgroundColor] = useState("#F6F6F6");
+  const [stroke, setStroke] = useState("#FFF");
+
+  // <- Device:
+  interface DeviceConfig {
     id: number;
-    sliderValue: number;
+    deviceValue: number;
     name: string;
   };
 
+  const [isDark, setIsDark] = useState(document.body.classList.contains('dark'));
+
   useEffect(() => {
-    const fetchSliders = async () => {
+    const fetchDevices = async () => {
       try {
         const response = await fetch('http://127.0.0.1:5000/fader');
         const data = await response.json();
         const parsedData = JSON.parse(data);
         parsedData.shift(); // remove master
-        setSliders(parsedData);
+        setDevices(parsedData);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchSliders();
+    fetchDevices();
 
     // Load saved selection from session storage
-    const savedSelectedSliders = JSON.parse(sessionStorage.getItem('selectedSliders') || '[]');
-    const savedUnselectedSliders = JSON.parse(sessionStorage.getItem('unselectedSliders') || '[]');
+    const savedSelectedDevices = JSON.parse(sessionStorage.getItem('selectedDevices') || '[]');
+    const savedUnselectedDevices = JSON.parse(sessionStorage.getItem('unselectedDevices') || '[]');
 
-    setSelectedSliders(savedSelectedSliders);
-    setUnselectedSliders(savedUnselectedSliders);
+    setSelectedDevices(savedSelectedDevices);
+    setUnselectedDevices(savedUnselectedDevices);
     setFirstLoad(true)
+
+    // Dark mode
+    const handleDarkModeChange = () => setIsDark(document.body.classList.contains('dark'));
+    document.body.addEventListener('class-change', handleDarkModeChange);
+    return () => document.body.removeEventListener('class-change', handleDarkModeChange);
   }, []);
 
   useEffect(() => {
+    if(isDark) {
+      setBackgroundColor("#282828") 
+      setStroke("#000")
+    } else {
+      setBackgroundColor("#F6F6F6");
+      setStroke("#FFF")
+    }
+  }, [isDark]);
+
+  useEffect(() => {
     // Save selection in session storage
-    if(firstLoad && sliders.length > 0) {
-      sessionStorage.setItem('unselectedSliders', JSON.stringify(unselectedSliders));
-      sessionStorage.setItem('selectedSliders', JSON.stringify(selectedSliders));
+    if(firstLoad && devices.length > 0) {
+      sessionStorage.setItem('unselectedDevices', JSON.stringify(unselectedDevices));
+      sessionStorage.setItem('selectedDevices', JSON.stringify(selectedDevices));
 
-      setHeight(Math.min(selectedSliders.length * 71 + 36, 462));
+      setHeight(Math.min(selectedDevices.length * 71 + 36, 462));
 
-      //Check if sliders got changed on the server
-      const isDifferent = sliders.every((slider) => {
-        return unselectedSliders.includes(slider) && selectedSliders.includes(slider);
+      //Check if devices got changed on the server
+      const isDifferent = devices.every((device) => {
+        return unselectedDevices.includes(device) && selectedDevices.includes(device);
       });
       
-      if(isDifferent || unselectedSliders.length + selectedSliders.length !== sliders.length) {
-        setUnselectedSliders(sliders); 
-        setSelectedSliders([])
-        console.log("sliders changed")
+      if(isDifferent || unselectedDevices.length + selectedDevices.length !== devices.length) {
+        setUnselectedDevices(devices); 
+        setSelectedDevices([])
+        console.log("devices changed")
       }
     }
     
-    //sessionStorage.setItem('selectedSliders', JSON.stringify(JSON.parse('[]'))) // zum reseten
-    //sessionStorage.setItem('unselectedSliders', JSON.stringify(JSON.parse('[]'))) // zum reseten
-  }, [selectedSliders, unselectedSliders, sliders]);
+    //sessionStorage.setItem('selectedDevices', JSON.stringify(JSON.parse('[]'))) // zum reseten
+    //sessionStorage.setItem('unselectedDevices', JSON.stringify(JSON.parse('[]'))) // zum reseten
+  }, [selectedDevices, unselectedDevices, devices]);
 
-  const handleAddSlider = (slider: SliderConfig) => {
-    setSelectedSliders([...selectedSliders, slider]);
-    setUnselectedSliders(unselectedSliders.filter(item => item.id !== slider.id));
+  const handleAddDevice = (device: DeviceConfig) => {
+    setSelectedDevices([...selectedDevices, device]);
+    setUnselectedDevices(unselectedDevices.filter(item => item.id !== device.id));
   };
 
-  const handleRemoveSlider = (slider: SliderConfig) => {
-    setSelectedSliders(selectedSliders.filter((s) => s.id !== slider.id));
-    setUnselectedSliders([...unselectedSliders, slider]);
+  const handleRemoveDevice = (device: DeviceConfig) => {
+    setSelectedDevices(selectedDevices.filter((s) => s.id !== device.id));
+    setUnselectedDevices([...unselectedDevices, device]);
   };
 
   // Since the more complex shape of the main window here cannot be displayed with normal divs due to the translucency and the height-adjustable property, we had to use an SVG. Hence also the following paths.
@@ -84,21 +103,23 @@ function Control() {
   const pathStroke = `M1849.5 17v890a9.5 9.5 0 01-9.5 9.5H424a9.5 9.5 0 01-9.5-9.5V${height}c0-5.8-4.7-10.5-10.5-10.5H20a9.5 9.5 0 01-9.5-9.5V17A9.5 9.5 0 0120 7.5h1820a9.5 9.5 0 019.5 9.5z`;
   var devicesHeight = 907 - height;
 
+  
+  
   return (
     <div className="containerControl">
-      { selectedSliders[0] && sliders.length > 0 ? (
+      { selectedDevices[0] && devices.length > 0 ? (
       <div>
         <div className="devices window" style={{ height: devicesHeight + 'px' }}>
-          <DeviceList sliders={unselectedSliders} isAddButton={true} onDeviceButtonClick={handleAddSlider} />
+          <DeviceList devices={unselectedDevices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />
         </div>
         <div className="selectedDevices" style={{ height: height - 17 + 'px' }}>
-          <DeviceList sliders={selectedSliders} isAddButton={false} onDeviceButtonClick={handleRemoveSlider} />
+          <DeviceList devices={selectedDevices} isAddButton={false} onDeviceButtonClick={handleRemoveDevice} />
         </div>
         <svg className="controlMain" width="1860" height="930" viewBox="0 0 1860 930" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g filter="url(#filter0_b_873_8277)">
             <g filter="url(#filter1_d_873_8277)" shapeRendering="geometricPrecision">
-              <path d={pathFill} fill="#F6F6F6" fillOpacity=".6"/>
-              <path d={pathStroke} stroke="#fff"/>
+              <path d={pathFill} fill={backgroundColor} fillOpacity=".6"/>
+              <path d={pathStroke} stroke={stroke}/>
             </g>
           </g>
           <defs>
@@ -126,7 +147,7 @@ function Control() {
           <div className="noSelectWindow window">
           </div>
           <div className="devicesBig window">
-            <DeviceList sliders={unselectedSliders} isAddButton={true} onDeviceButtonClick={handleAddSlider} />
+            <DeviceList devices={unselectedDevices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />
           </div>
       </div>
       )}

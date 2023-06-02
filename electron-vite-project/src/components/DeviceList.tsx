@@ -1,20 +1,20 @@
 import React from "react";
 import './DeviceList.css';
 
-type SliderConfig = {
+type DeviceConfig = {
   id: number;
-  sliderValue: number;
+  deviceValue: number;
   name: string;
 };
 
 type DeviceListProps = {
-  sliders: SliderConfig[];
-  onDeviceButtonClick: (slider: SliderConfig) => void;
+  devices: DeviceConfig[];
+  onDeviceButtonClick: (device: DeviceConfig) => void;
   isAddButton: boolean;
 };
 
 const DeviceList: React.FC<DeviceListProps> = ({
-  sliders,
+  devices,
   onDeviceButtonClick,
   isAddButton,
 }) => {
@@ -23,29 +23,29 @@ const DeviceList: React.FC<DeviceListProps> = ({
   if(isAddButton) {
     deviceListClass = "deviceList overflow-scroll";
   } else {
-    deviceListClass = sliders.length > 6 ? "deviceList overflow-scroll" : "deviceList overflow-hidden right-padding";
+    deviceListClass = devices.length > 6 ? "deviceList overflow-scroll" : "deviceList overflow-hidden right-padding";
   }
 
   return (
     <div className={deviceListClass}>
       <ul>
-        {sliders.map((slider, index) => (
-          <React.Fragment key={slider.id}>
+        {devices.map((device, index) => (
+          <React.Fragment key={device.id}>
             <li style={{ /* Make the first and last element smaller but still arrange the content correctly */
-            height: index === 0 || index === sliders.length - 1 ? '50px' : '70px',
+            height: index === 0 || index === devices.length - 1 ? '50px' : '70px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: index === 0 || index === sliders.length - 1 ? 'flex-start' : 'center',
-            marginBottom: index === 0 && sliders.length > 1 ? '10px' : '0',
-            marginTop: index === sliders.length - 1 && sliders.length > 1 ? '10px' : '0',
+            justifyContent: index === 0 || index === devices.length - 1 ? 'flex-start' : 'center',
+            marginBottom: index === 0 && devices.length > 1 ? '10px' : '0',
+            marginTop: index === devices.length - 1 && devices.length > 1 ? '10px' : '0',
             }}>
               <div className="circle"></div>
-              <span>{slider.name}</span>
-              <button style={{ marginLeft: 'auto' }} onClick={() => onDeviceButtonClick(slider)}>
+              <span>{device.name}</span>
+              <button style={{ marginLeft: 'auto' }} onClick={() => onDeviceButtonClick(device)}>
                 <span>{isAddButton ? "+" : "-"}</span>
               </button>
             </li>
-            {index !== sliders.length - 1 && <hr />} {/* Separator line for all elements except the last */}
+            {index !== devices.length - 1 && <hr />} {/* Separator line for all elements except the last */}
           </React.Fragment>
         ))}
       </ul>

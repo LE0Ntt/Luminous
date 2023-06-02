@@ -8,11 +8,6 @@ from flask_cors import CORS
 #from engineio.payload import Payload
 #Payload.max_decode_packets = 25
 
-'''
-Todo:
--ist double aufruf von /fader ein problem?
-'''
-
 # Mutator method to get updates from driver
 def callback(index, value):
     print("Eintrag", index, "wurde geändert:", value)

@@ -12,9 +12,6 @@ function Control() {
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
   const [firstLoad, setFirstLoad] = useState(false);
-  const [backgroundColor, setBackgroundColor] = useState("#F6F6F6");
-  const [stroke, setStroke] = useState("#FFF");
-  const [isDark, setIsDark] = useState(document.body.classList.contains('dark'));
 
   // <- Device:
   interface DeviceConfig {
@@ -45,22 +42,7 @@ function Control() {
     setSelectedDevices(savedSelectedDevices);
     setUnselectedDevices(savedUnselectedDevices);
     setFirstLoad(true)
-
-    // Dark mode event listener
-    const handleDarkModeChange = () => setIsDark(document.body.classList.contains('dark'));
-    document.body.addEventListener('class-change', handleDarkModeChange);
-    return () => document.body.removeEventListener('class-change', handleDarkModeChange);
   }, []);
-
-  useEffect(() => {
-    if(isDark) {
-      setBackgroundColor("#282828") 
-      setStroke("#000")
-    } else {
-      setBackgroundColor("#F6F6F6");
-      setStroke("#FFF")
-    }
-  }, [isDark]);
 
   useEffect(() => {
     // Save selection in session storage
@@ -124,8 +106,8 @@ function Control() {
         <svg className="controlMain" width="1860" height="930" viewBox="0 0 1860 930" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g filter="url(#filter0_b_873_8277)">
             <g filter="url(#filter1_d_873_8277)" shapeRendering="geometricPrecision">
-              <path d={pathFill} fill={backgroundColor} fillOpacity=".6"/>
-              <path d={pathStroke} stroke={stroke}/>
+              <path d={pathFill} fill="var(--fillMedium)" fillOpacity=".6"/>
+              <path d={pathStroke} stroke="var(--onepStroke)"/>
             </g>
           </g>
           <defs>

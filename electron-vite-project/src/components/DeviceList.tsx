@@ -18,7 +18,7 @@ const DeviceList: React.FC<DeviceListProps> = ({
   onDeviceButtonClick,
   isAddButton,
 }) => {
-  // No scrollbar for selected list
+  // No scrollbar for selected list until devices exceed max height
   var deviceListClass = "deviceList";
   if(isAddButton) {
     deviceListClass = "deviceList overflow-scroll";
@@ -26,10 +26,13 @@ const DeviceList: React.FC<DeviceListProps> = ({
     deviceListClass = devices.length > 6 ? "deviceList overflow-scroll" : "deviceList overflow-hidden right-padding";
   }
 
+  // Sort list by ID
+  const sortedDevices = [...devices].sort((a, b) => a.id - b.id);
+
   return (
     <div className={deviceListClass}>
       <ul>
-        {devices.map((device, index) => (
+        {sortedDevices.map((device, index) => (
           <React.Fragment key={device.id}>
             <li style={{ /* Make the first and last element smaller but still arrange the content correctly */
             height: index === 0 || index === devices.length - 1 ? '50px' : '70px',

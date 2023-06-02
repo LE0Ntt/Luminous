@@ -73,6 +73,15 @@
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   }
 
+  .innerWindow {
+    background-color: var(--primarySwitched);
+    box-shadow: var(--shadowLight);
+    border-radius: 5px;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    position: absolute;
+  }
+
   button:focus,
   input:focus {
     outline: none;

@@ -112,6 +112,15 @@ function Control() {
         <div className="selectedDevices" style={{ height: height - 17 + 'px' }}>
           <DeviceList devices={selectedDevices} isAddButton={false} onDeviceButtonClick={handleRemoveDevice} />
         </div>
+
+        <div className="innerContainer">
+          <div className="lightFader innerWindow"></div>
+          <div className="controlButtons innerWindow"></div>
+          <div className="controlBiColor innerWindow"></div>
+          <div className="controlRGB innerWindow"></div>
+          <div className="controlEffects innerWindow"></div>
+        </div>
+        
         <svg className="controlMain" width="1860" height="930" viewBox="0 0 1860 930" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g filter="url(#filter0_b_873_8277)">
             <g filter="url(#filter1_d_873_8277)" shapeRendering="geometricPrecision">
@@ -142,6 +151,11 @@ function Control() {
       ) : (
         <div>
           <div className="noSelectWindow window">
+            <div className="lightFader innerWindow"></div>
+            <div className="controlButtons innerWindow"></div>
+            <div className="controlBiColor innerWindow"></div>
+            <div className="controlRGB innerWindow"></div>
+            <div className="controlEffects innerWindow"></div>
           </div>
           <div className="devicesBig window">
             <DeviceList devices={unselectedDevices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />

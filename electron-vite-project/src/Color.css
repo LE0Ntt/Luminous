@@ -22,7 +22,7 @@
     --onepStroke: #ffffff;
     --onepStrokeSwitched: #000000;
 
-    --primaryDark: rgba(255, 255, 255, 0.85);
+    --primaryDark: rgba(255, 255, 255, 0.85); /* Unused? */
     --secondaryDark: rgba(255, 255, 255, 0.5);
     --tertiaryDark: rgba(255, 255, 255, 0.25);
 
@@ -63,7 +63,7 @@
     --secondary: rgba(255, 255, 255, 0.5);
     --tertiary: rgba(255, 255, 255, 0.25);
 
-    --primarySwitched: rgba(0, 0, 0, 0.85);
+    --primarySwitched: rgba(255, 255, 255, 0.1);
     --secondarySwitched: rgba(0, 0, 0, 0.5);
     --tertiarySwitched: rgba(0, 0, 0, 0.25);
 

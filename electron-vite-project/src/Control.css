@@ -43,6 +43,19 @@
     bottom: 0;
     border-radius: 10px;
     z-index: 3;
+    padding: 20px;
+}
+
+.innerContainer{
+    width: 1436px;
+    height: 910px;
+    left: 404px;
+    bottom: 0;
+    border-radius: 10px;
+    z-index: 3;
+    padding: 20px;
+    border: 1px solid rgba(0, 0, 0, 0);
+    position: absolute;
 }
 
 .containerControl {
@@ -52,4 +65,34 @@
     left: 40px;
     position: relative;
     padding: 0;
+}
+
+.lightFader {
+    height: 495px;
+    width: 82px;
+}
+
+.controlButtons {
+    height: 90px;
+    width: 553px;
+    left: 122px;
+}
+
+.controlBiColor {
+    height: 385px;
+    width: 553px;
+    top: 130px;
+    left: 122px;
+}
+
+.controlRGB {
+    height: 495px;
+    width: 721px;
+    right: 20px;
+}
+
+.controlEffects {
+    height: 355px;
+    width: 1396px;
+    top: 535px;
 }

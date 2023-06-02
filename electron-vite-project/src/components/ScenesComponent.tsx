@@ -82,7 +82,7 @@ function ScenesComponent({ sideId }: { sideId: number }) {
             onClick={addScene}
           >
             <GridLines height={height} />
-            <Add />
+            {!buttonDisabled && <Add />}
             <div className='AddSceneButtonFont'>{buttonText}</div>
           </button>
           {emptyScenes.map((scene) => (

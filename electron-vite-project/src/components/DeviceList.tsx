@@ -43,9 +43,9 @@ const DeviceList: React.FC<DeviceListProps> = ({
             marginTop: index === devices.length - 1 && devices.length > 1 ? '10px' : '0',
             }}>
               <div className="circle"></div>
-              <span>{device.name}</span>
+              <span className="name">{device.name}</span>
               <button style={{ marginLeft: 'auto' }} onClick={() => onDeviceButtonClick(device)}>
-                <span>{isAddButton ? "+" : "-"}</span>
+                <span className="name">{isAddButton ? "+" : "-"}</span>
               </button>
             </li>
             {index !== devices.length - 1 && <hr />} {/* Separator line for all elements except the last */}

@@ -22,7 +22,14 @@
 
 .AddSceneButtonFont {
     position: relative;
-    top: -100%;
+    top: -50%;
+}
+
+.AddSceneIcon {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 37%;
 }
 
 .scenesBox {

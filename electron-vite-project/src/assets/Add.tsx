@@ -1,3 +1,6 @@
+/**
+ * maybe überflüssig
+ */
 import '../Color.css';
 import '../index.css';
 

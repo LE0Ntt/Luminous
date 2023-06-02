@@ -16,7 +16,7 @@
       "exitFullscreen": "Exit Full Screen",
       "documentation": "Documentation",
       "editLights": "Edit Lights",
-      "SaveCurrentConfiguration": "Save Current Configuration",
+      "SaveCurrentConfiguration": "Save as Scene",
       "AddNewScene": "Add New Scene"
     },
     "de": {
@@ -36,7 +36,7 @@
       "exitFullscreen": "Vollbild beenden",
       "documentation": "Dokumentation",
       "editLights": "Lichter bearbeiten",
-      "SaveCurrentConfiguration": "Aktuelle Konfiguration speichern",
+      "SaveCurrentConfiguration": "Als Szene speichern",
       "AddNewScene": "Neue Szene hinzufügen"
     }
   }

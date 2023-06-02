@@ -15,7 +15,10 @@ import BigView from './components/BigView';
 const Studio = () => {
   
   // Language
-  const { t } = useContext(TranslationContext);
+  const { t, language, setLanguage } = useContext(TranslationContext);
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLanguage(e.target.value as "en" | "de");
+  };
   // Button test
   const handleClick = (id: number) => {
     console.log('Button clicked!' + id);
@@ -99,6 +102,10 @@ const Studio = () => {
   return (
     <div>
       <div className='h-20 w-20'></div> {/* Tailwind code, muss noch geändert werden */}
+      <select value={language} onChange={handleLanguageChange}>
+          <option value="en">{t("english")}</option>
+          <option value="de">{t("german")}</option>
+        </select>
       <div className='scenes window'>
         <ScenesComponent sideId={0} />
       </div>

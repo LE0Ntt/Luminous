@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import './BigView.css';
 import Button from './Button';
-import CloseIcon from '../assets/IconRemove.svg'
 import '../index.css';
 
 interface BigViewProps {
@@ -28,7 +27,7 @@ function BigView({ onClose }: BigViewProps) {
             onClick={() => handleClose()}
             className="buttonBigView"
           >
-            <img src={CloseIcon} alt="Close" className='centerIcon'/>
+            <div className='removeIcon centerIcon'></div>
           </Button>
         <div className='BigViewContent innerWindow'>
           Text 1

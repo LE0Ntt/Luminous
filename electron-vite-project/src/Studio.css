@@ -55,8 +55,8 @@
 }
 
 .buttonOpenControl {
-    width: 35px;
-    height: 35px;
+    width: 36px;
+    height: 36px;
     border-radius: 5px;
     position: relative;
     left: 50%;
@@ -72,7 +72,7 @@
 .buttonBigView {
     width: 36px;
     height: 36px;
-    border-radius: 50%;
+    border-radius: 5px;
     position: absolute;
     right: 10px;
     top: 10px;

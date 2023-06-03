@@ -57,9 +57,22 @@
     fill: var(--primary);
   }
 
-  .rotateIcon {
-    transform: rotate(90deg) translate(0%, -15%);
-    fill: var(--primary);
+  .addIcon {
+    height: 21px;
+    width: 21px;
+    mask: url(./assets/IconAdd.svg);
+    mask-repeat: no-repeat;
+    background: var(--primary);
+    ;
+  }
+
+  .removeIcon {
+    height: 18px;
+    width: 18px;
+    mask: url(./assets/IconRemove.svg);
+    mask-repeat: no-repeat;
+    background: var(--primary);
+    mask-position: center;
   }
 
   .window {

@@ -96,7 +96,14 @@ function Control() {
         </div>
 
         <div className="innerContainer">
-          <div className="lightFader innerWindow"></div>
+          <div className="lightFader innerWindow">
+          <Fader
+            height={397}
+            sliderValue={50}  // muss nätürlich geändert werden
+            id={0}            // muss geändert werden zu gruppe aller ausgewählten devices
+            name={t("group")}
+          />
+          </div>
           <div className="controlButtons innerWindow"></div>
           <div className="controlBiColor innerWindow"></div>
           <div className="controlRGB innerWindow"></div>
@@ -138,6 +145,9 @@ function Control() {
             <div className="controlBiColor innerWindow"></div>
             <div className="controlRGB innerWindow"></div>
             <div className="controlEffects innerWindow"></div>
+            <div className="noDevice">
+            <p dangerouslySetInnerHTML={{ __html: t("noDevices") }}></p>
+            </div>
           </div>
           <div className="devicesBig window">
             <DeviceList devices={unselectedDevices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />

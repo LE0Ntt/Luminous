@@ -45,9 +45,6 @@ const DeviceList: React.FC<DeviceListProps> = ({
             }}>
               <div className="circle"></div>
               <span className="name">{device.name}</span>
-{/*               <button style={{ marginLeft: 'auto' }} onClick={() => onDeviceButtonClick(device)}>
-                <span className="name">{isAddButton ? "+" : "-"}</span>
-              </button> */}
               <Button
                 onClick={() => onDeviceButtonClick(device)}
                 className="addremoveButton"

@@ -17,7 +17,9 @@
       "documentation": "Documentation",
       "editLights": "Edit Lights",
       "SaveCurrentConfiguration": "Save as Scene",
-      "AddNewScene": "Add New Scene"
+      "AddNewScene": "Add New Scene",
+      "group": "Group",
+      "noDevices": "No device selected.<br> Please choose at least one device to continue."
     },
     "de": {
       "greeting": "Hallo!",
@@ -37,6 +39,8 @@
       "documentation": "Dokumentation",
       "editLights": "Lichter bearbeiten",
       "SaveCurrentConfiguration": "Szene speichern",
-      "AddNewScene": "Neue Szene hinzufügen"
+      "AddNewScene": "Neue Szene hinzufügen",
+      "group": "Gruppe",
+      "noDevices": "Kein Gerät ausgewählt.<br> Bitte wählen Sie mindestens ein Gerät aus, um fortzufahren."
     }
   }

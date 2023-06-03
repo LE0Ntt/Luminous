@@ -1,7 +1,7 @@
 @import url(./Color.css);
 
 .devices {
-    border-top-right-radius:5px !important;
+    border-top-right-radius: 5px !important;
     width: 384px;
     left: 0;
     bottom: 0;
@@ -22,8 +22,8 @@
 
 .controlMain {
     /* border: 1px solid #d3d3d3; */
-    top:-7px;
-    left:-10px;
+    top: -7px;
+    left: -10px;
     position: absolute;
 }
 
@@ -46,7 +46,22 @@
     padding: 20px;
 }
 
-.innerContainer{
+.noDevice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--fillMediumDark);
+    position: relative;
+    height: calc(100% + 2px);
+    width: 100%;
+    border-radius: 5px;
+    color: var(--primary);
+    text-align: center;
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.innerContainer {
     width: 1436px;
     height: 910px;
     left: 404px;

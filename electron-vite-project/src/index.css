@@ -93,6 +93,15 @@
     position: absolute;
   }
 
+  .buttonClose {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
   button:focus,
   input:focus {
     outline: none;
@@ -134,24 +143,5 @@
 
   .align-right {
     align-items: flex-end;
-  }
-
-  @media (prefers-color-scheme: light) {
-    :root {
-      color: #213547;
-      background-color: #ffffff;
-    }
-
-    a:hover {
-      color: #747bff;
-    }
-
-    button {
-      background-color: #f9f9f9;
-    }
-
-    code {
-      background-color: #f9f9f9;
-    }
   }
 }

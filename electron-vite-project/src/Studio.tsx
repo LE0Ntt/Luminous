@@ -105,6 +105,9 @@ const Studio = () => {
         <select value={language} onChange={handleLanguageChange}>
           <option value="en">{t("english")}</option>
           <option value="de">{t("german")}</option>
+          <option value="fr">{t("french")}</option>
+          <option value="cn">{t("chinese")}</option>
+          <option value="ru">{t("russian")}</option>
         </select>
       <div className='scenes window'>
         <ScenesComponent sideId={0} />

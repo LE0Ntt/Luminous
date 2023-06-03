@@ -15,9 +15,9 @@
     position: fixed;
     z-index: 9999;
     /* Stelle sicher, dass der Dialog über anderen Inhalten liegt */
-    height: 967px;
+    height: 957px;
     width: 1840px;
-    top: 72px;
+    bottom: 40px;
     left: 40px;
     border-radius: 10px;
     background-color: var(--fillMedium);
@@ -32,7 +32,7 @@
     height: 428px;
     width: 1797px;
     left: 20px;
-    top: 71px;
+    top: 61px;
     margin-bottom: 20px;
     overflow: hidden;
 }

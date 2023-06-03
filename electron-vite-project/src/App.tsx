@@ -17,7 +17,7 @@ console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}
 function App() {
   return (
     <div className='App relative background'>
-      <TranslationProvider translations={translations} defaultLanguage="de">
+      <TranslationProvider translations={translations} defaultLanguage="cn">
         <div className='titlebar h-[30px] w-full'></div>
         <Router>
         {/* draußen, weil maybe nicht benötigt

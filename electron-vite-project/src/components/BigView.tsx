@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './BigView.css';
 import Button from './Button';
 import '../index.css';
+import Toggle from './Toggle';
 
 interface BigViewProps {
   onClose: () => void;
@@ -25,13 +26,14 @@ function BigView({ onClose }: BigViewProps) {
       <div className="BigViewContainer">
         <Button
             onClick={() => handleClose()}
-            className="buttonBigView"
+            className="buttonClose"
           >
             <div className='removeIcon centerIcon'></div>
           </Button>
+        <Toggle/>
         <div className='BigViewContent innerWindow'>
           Text 1
-        </div>
+        BT</div>
         <div className='BigViewContent innerWindow'>
           Text 2
         </div>

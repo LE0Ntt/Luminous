@@ -150,12 +150,14 @@ nav ul li ul {
     display: none;
     position: absolute;
     background-color: var(--fillUltraThick);
-    /* border: 1px solid var(--onepStroke);     // geht nicht aus irgendeinem Grund
     border-radius: 5px;
-    padding: 5px; */
+    /*border: 1px solid var(--onepStroke);   /*geht nicht aus irgendeinem Grund*/  
+    /*padding: 5px; */
     box-shadow: var(--shadowLight);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
+    width: 400px;
+    height: 300px;
 }
 
 nav ul li:hover ul {

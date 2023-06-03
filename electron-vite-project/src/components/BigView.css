@@ -34,9 +34,5 @@
     left: 20px;
     top: 71px;
     margin-bottom: 20px;
-    border-radius: 5px;
     overflow: hidden;
-    border-radius: 10px;
-    box-shadow: var(--shadowLight);
-    background-color: var(--primarySwitched);
 }

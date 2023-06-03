@@ -3,8 +3,6 @@ import './ScenesComponent.css';
 import '../assets/GridLines';
 import GridLines from '../assets/GridLines';
 import { TranslationContext } from "./TranslationContext";
-import AddIcon from '../assets/IconAdd.svg'
-
 
 function ScenesComponent({ sideId }: { sideId: number }) {
 
@@ -82,7 +80,7 @@ function ScenesComponent({ sideId }: { sideId: number }) {
             onClick={addScene}
           >
             <GridLines height={height} />
-            {!buttonDisabled && <img src={AddIcon} alt="Close" className='AddSceneIcon'/>}
+            {!buttonDisabled && <div className='AddSceneIcon'></div>}
             <div className='AddSceneButtonFont'>{buttonText}</div>
           </button>
           {emptyScenes.map((scene) => (

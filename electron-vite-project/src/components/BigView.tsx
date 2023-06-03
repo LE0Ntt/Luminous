@@ -30,10 +30,10 @@ function BigView({ onClose }: BigViewProps) {
           >
             <img src={CloseIcon} alt="Close" className='centerIcon'/>
           </Button>
-        <div className='BigViewContent'>
+        <div className='BigViewContent innerWindow'>
           Text 1
         </div>
-        <div className='BigViewContent'>
+        <div className='BigViewContent innerWindow'>
           Text 2
         </div>
       </div>

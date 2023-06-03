@@ -84,7 +84,7 @@
 
 .slider::-ms-fill-upper {
     /* Specific styling for Microsoft Edge track */
-    background-color: #4F53B1;
+    background-color: var(--mainColor);
     height: 13px;
     border-radius: 50px;
 }
@@ -95,15 +95,11 @@
     margin-top: -15px;
     width: 44px;
     height: 44px;
-
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--faderBorder);
     border-radius: 50%;
-
     cursor: pointer;
     -webkit-appearance: none;
-
-    background: rgba(246, 246, 246, 0.84);
-
+    background: var(--faderThumb);
     box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(50px);
     -webkit-backdrop-filter: blur(50px);
@@ -113,10 +109,10 @@
     /* Specific styling for Firefox */
     width: 44px;
     height: 44px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--faderBorder);
     border-radius: 50%;
     cursor: pointer;
-    background: rgba(246, 246, 246, 0.84);
+    background: var(--faderThumb);
     box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
     margin-top: -15px;
 }
@@ -125,10 +121,10 @@
     /* Specific styling for Microsoft Edge */
     width: 44px;
     height: 44px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--faderBorder);
     border-radius: 50%;
     cursor: pointer;
-    background: rgba(246, 246, 246, 0.84);
+    background: var(--faderThumb);
     box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
     height: 20px;
     margin-top: -15px;
@@ -136,19 +132,19 @@
 
 .slider::-webkit-slider-thumb:hover {
     /* Specific styling for WebKit/Blink */
-    background: rgba(246, 246, 246, 0.94);
+    background: var(--faderThumbHover);
     cursor: ns-resize;
 }
 
 .slider.slider::-moz-range-thumb:hover {
     /* Specific styling for Firefox */
-    background: rgba(246, 246, 246, 0.94);
+    background: var(--faderThumbHover);
     cursor: ns-resize;
 }
 
 .slider::-ms-thumb:hover {
     /* Specific styling for Microsoft Edge */
-    background: rgba(246, 246, 246, 0.94);
+    background: var(--faderThumbHover);
     cursor: ns-resize;
 }
 

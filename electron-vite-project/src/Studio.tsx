@@ -102,7 +102,7 @@ const Studio = () => {
   return (
     <div>
       <div className='h-20 w-20'></div> {/* Tailwind code, muss noch geändert werden */}
-      <select value={language} onChange={handleLanguageChange}>
+        <select value={language} onChange={handleLanguageChange}>
           <option value="en">{t("english")}</option>
           <option value="de">{t("german")}</option>
         </select>

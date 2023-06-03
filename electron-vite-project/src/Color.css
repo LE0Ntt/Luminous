@@ -17,15 +17,14 @@
     --mainColor: #4F53B1;
 
     --colorButton: #ffffff;
-    --colorButtonHover: #dfdfdf;
+    --colorButtonHover: #ececec; /*#dfdfdf*/
 
     --onepStroke: #ffffff;
     --onepStrokeSwitched: #000000;
 
     --midLine: #b7b7b7;
 
-    --primaryDark: rgba(255, 255, 255, 0.85);
-    /* Unused? */
+    --primaryDark: rgb(255, 255, 255);
     --secondaryDark: rgba(255, 255, 255, 0.5);
     --tertiaryDark: rgba(255, 255, 255, 0.25);
 
@@ -66,6 +65,8 @@
     --secondary: rgba(255, 255, 255, 0.5);
     --tertiary: rgba(255, 255, 255, 0.25);
 
+    --primaryDark: rgb(0, 0, 0);
+
     --primarySwitched: rgba(255, 255, 255, 0.1);
     --secondarySwitched: rgba(0, 0, 0, 0.5);
     --tertiarySwitched: rgba(0, 0, 0, 0.25);
@@ -76,13 +77,14 @@
     --fillThick: rgba(63, 63, 63, 0.60);
     --fillUltraThick: rgba(40, 40, 40, 0.8);
 
-    --onepStroke: #000000;
+    --onepStroke: rgba(255, 255, 255, 0.1);
     /*  --onepStroke: rgba(255, 255, 255, 0.10); */
     --onepStrokeSwitched: #ffffff;
 
-    --midLine: #484848;
+    --midLine: #5c5c5c;
 
     --colorButton: rgba(72, 72, 72, 0.5);
+    --colorButtonHover: rgba(100, 100, 100, 0.5);;
 
     --mainColor: #B9BCFF;
 

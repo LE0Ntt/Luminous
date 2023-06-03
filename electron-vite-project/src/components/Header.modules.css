@@ -67,10 +67,14 @@
     font-weight: 500;
 }
 
-.is-active .headerButton {
-    background-color: var(--mainColor);
+.headerButton:hover {
+    background: var(--colorButtonHover);
 }
 
+.is-active .headerButton {
+    background-color: var(--mainColor);
+    cursor: default;
+}
 
 .divTheme {
     display: flex;
@@ -80,13 +84,13 @@
 }
 
 .buttonTheme {
-    width: 43px;
-    height: 43px;
+    width: 39px;
+    height: 39px;
     border-radius: 50%;
     background-color: var(--tertiarySwitched);
     border: none;
     position: absolute;
-    right: 20px;
+    right: 40px;
     box-shadow: inset 0px 3px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -109,16 +113,16 @@
 }
 
 .is-active {
-    color: var(--onepStroke);
+    color: var(--primaryDark);
     background: var(--mainColor);
 }
 
 .is-active .headerIcon {
-    fill: var(--onepStroke);
+    fill: var(--primaryDark);
 }
 
 .is-active .rotateHeaderIcon {
-    fill: var(--onepStroke);
+    fill: var(--primaryDark);
 }
 
 nav {

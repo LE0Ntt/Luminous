@@ -33,8 +33,7 @@
     top: 37%;
     height: 21px;
     width: 21px;
-    mask-image: url(../assets/IconAdd.svg);
-    -webkit-mask: url(../assets/IconAdd.svg);
+    mask: url(../assets/IconAdd.svg);
     mask-repeat: no-repeat;
     background: var(--secondary);
 }

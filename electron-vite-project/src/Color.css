@@ -17,7 +17,8 @@
     --mainColor: #4F53B1;
 
     --colorButton: #ffffff;
-    --colorButtonHover: #ececec; /*#dfdfdf*/
+    --colorButtonHover: #ececec;
+    /*#dfdfdf*/
 
     --onepStroke: #ffffff;
     --onepStrokeSwitched: #000000;
@@ -58,6 +59,7 @@
     --windowBackdrop: blur(15px);
 
     --shadowLight: 0px 3px 10px rgba(0, 0, 0, 0.1);
+    --shadowButton: 0px 1px 5px rgba(0, 0, 0, 0.1);
 
     --backgroundImage: url('./assets/bgLight.png');
 }
@@ -90,7 +92,8 @@
     --faderBorder: rgba(255, 255, 255, 0.25);
 
     --colorButton: rgba(72, 72, 72, 0.5);
-    --colorButtonHover: rgba(100, 100, 100, 0.5);;
+    --colorButtonHover: rgba(100, 100, 100, 0.5);
+    ;
 
     --mainColor: #B9BCFF;
 

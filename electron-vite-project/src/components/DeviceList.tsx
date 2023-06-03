@@ -1,5 +1,6 @@
 import React from "react";
 import './DeviceList.css';
+import Button from "./Button";
 
 type DeviceConfig = {
   id: number;
@@ -44,9 +45,15 @@ const DeviceList: React.FC<DeviceListProps> = ({
             }}>
               <div className="circle"></div>
               <span className="name">{device.name}</span>
-              <button style={{ marginLeft: 'auto' }} onClick={() => onDeviceButtonClick(device)}>
+{/*               <button style={{ marginLeft: 'auto' }} onClick={() => onDeviceButtonClick(device)}>
                 <span className="name">{isAddButton ? "+" : "-"}</span>
-              </button>
+              </button> */}
+              <Button
+                onClick={() => onDeviceButtonClick(device)}
+                className="addremoveButton"
+              >
+                <div className={`centerIcon ${isAddButton ? 'addIcon' : 'removeIcon'}`}></div>
+              </Button>
             </li>
             {index !== devices.length - 1 && <hr />} {/* Separator line for all elements except the last */}
           </React.Fragment>

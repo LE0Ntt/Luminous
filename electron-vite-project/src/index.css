@@ -58,8 +58,8 @@
   }
 
   .addIcon {
-    height: 21px;
-    width: 21px;
+    height: 22px;
+    width: 22px;
     mask: url(./assets/IconAdd.svg);
     mask-repeat: no-repeat;
     background: var(--primary);

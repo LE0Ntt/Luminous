@@ -36,7 +36,7 @@
     mask-image: url(../assets/IconAdd.svg);
     -webkit-mask: url(../assets/IconAdd.svg);
     mask-repeat: no-repeat;
-    background: var(--secondary);;
+    background: var(--secondary);
 }
 
 .scenesBox {

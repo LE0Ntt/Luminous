@@ -20,7 +20,7 @@
     --colorButtonHover: #ececec;
     /*#dfdfdf*/
 
-    --onepStroke: #ffffff;
+    --onepStroke: #fff;
     --onepStrokeSwitched: #000000;
 
     --midLine: #b7b7b7;
@@ -83,7 +83,6 @@
     --fillUltraThick: rgba(40, 40, 40, 0.8);
 
     --onepStroke: rgba(255, 255, 255, 0.1);
-    /*  --onepStroke: rgba(255, 255, 255, 0.10); */
     --onepStrokeSwitched: #ffffff;
 
     --midLine: #5c5c5c;

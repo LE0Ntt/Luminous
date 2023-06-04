@@ -12,6 +12,7 @@ function Control() {
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
   const [firstLoad, setFirstLoad] = useState(false);
+  const [animiation, setAnimiation] = useState(false);
 
   // <- Device:
   interface DeviceConfig {
@@ -42,6 +43,13 @@ function Control() {
     setSelectedDevices(savedSelectedDevices);
     setUnselectedDevices(savedUnselectedDevices);
     setFirstLoad(true)
+
+    // Prevent transition animation before hight has loaded
+    const timer = setTimeout(() => {
+      setAnimiation(true);
+    }, 200);
+
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -50,7 +58,11 @@ function Control() {
       sessionStorage.setItem('unselectedDevices', JSON.stringify(unselectedDevices));
       sessionStorage.setItem('selectedDevices', JSON.stringify(selectedDevices));
 
-      setHeight(Math.min(selectedDevices.length * 71 + 36, 462));
+      if(selectedDevices.length == 0) {
+        setHeight(-3);
+      } else {
+        setHeight(Math.min(selectedDevices.length * 71 + 36, 462));
+      }
 
       //Check if devices got changed on the server
       const isDifferent = devices.every((device) => {
@@ -79,18 +91,20 @@ function Control() {
   };
 
   // Since the more complex shape of the main window here cannot be displayed with normal divs due to the translucency and the height-adjustable property, we had to use an SVG. Hence also the following paths.
-  const [height, setHeight] = useState(107);
+  const [height, setHeight] = useState(-3);
   const pathFill   = `M10 17A10 10 0 0120 7h1820a10 10 0 0110 10v890a10 10 0 01-10 10H424a10 10 0 01-10-10V${height}a10 10 0 00-10-10H20a10 10 0 01-10-10V17z`;
   const pathStroke = `M1849.5 17v890a9.5 9.5 0 01-9.5 9.5H424a9.5 9.5 0 01-9.5-9.5V${height}c0-5.8-4.7-10.5-10.5-10.5H20a9.5 9.5 0 01-9.5-9.5V17A9.5 9.5 0 0120 7.5h1820a9.5 9.5 0 019.5 9.5z`;
   var devicesHeight = 907 - height;
 
+  const selected = selectedDevices[0] && devices.length > 0;
+  var deviceWindow = 'devices window' + (selected ? ' devicesSmall' : ''); // 5px upper right corner if selected
+  deviceWindow = animiation ? (deviceWindow + ' devicesAnimation') : deviceWindow
+  const hide   = 'noSelectWindow window' + (selected ? ' hide' : '');
+
   return (
     <div className="containerControl">
-      { selectedDevices[0] && devices.length > 0 ? (
+      { selected ? (
       <div>
-        <div className="devices window" style={{ height: devicesHeight + 'px' }}>
-          <DeviceList devices={unselectedDevices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />
-        </div>
         <div className="selectedDevices" style={{ height: height - 17 + 'px' }}>
           <DeviceList devices={selectedDevices} isAddButton={false} onDeviceButtonClick={handleRemoveDevice} />
         </div>
@@ -139,21 +153,22 @@ function Control() {
       </div>
       ) : (
         <div>
-          <div className="noSelectWindow window">
+          <div className="noSelectWindow">
             <div className="lightFader innerWindow"></div>
             <div className="controlButtons innerWindow"></div>
             <div className="controlBiColor innerWindow"></div>
             <div className="controlRGB innerWindow"></div>
             <div className="controlEffects innerWindow"></div>
             <div className="noDevice">
-            <p dangerouslySetInnerHTML={{ __html: t("noDevices") }}></p>
+              <p dangerouslySetInnerHTML={{ __html: t("noDevices") }}></p>
             </div>
-          </div>
-          <div className="devicesBig window">
-            <DeviceList devices={unselectedDevices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />
           </div>
       </div>
       )}
+      <div className={deviceWindow} style={{ height: devicesHeight + 'px' }}>
+        <DeviceList devices={unselectedDevices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />
+      </div>
+      <div className={hide}></div>
     </div>
   );
 }

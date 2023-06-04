@@ -37,6 +37,9 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  * {
+    transition: border-color 300ms ease-out, background 300ms ease-out ;
+  }
   /* Prevent dragging  */
   a,
   a::after,

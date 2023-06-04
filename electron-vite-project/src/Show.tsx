@@ -27,9 +27,9 @@ function Show() {
       </div>
       <div className="window showSaves"></div>
       <div className="window showControls">
-        <div className="showControlButtons"></div>
-        <div className="showControlTimeline"></div>
-        <div className="showControlMaster">
+        <div className="showControlButtons innerWindow"></div>
+        <div className="showControlTimeline innerWindow"></div>
+        <div className="showControlMaster innerWindow">
           <div className="showMasterAlign">
           <Fader
             height={290}

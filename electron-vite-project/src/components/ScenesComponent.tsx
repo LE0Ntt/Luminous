@@ -3,8 +3,6 @@ import './ScenesComponent.css';
 import '../assets/GridLines';
 import GridLines from '../assets/GridLines';
 import { TranslationContext } from "./TranslationContext";
-import Add from '@/assets/Add';
-
 
 function ScenesComponent({ sideId }: { sideId: number }) {
 
@@ -39,7 +37,7 @@ function ScenesComponent({ sideId }: { sideId: number }) {
       setRepeatNumber(7);
       setButtonDisabled(true);
     }
-  }, [sideId]);
+  }, [sideId, t]);
 
   const [scenes, setScenes] = useState<SceneConfig[]>([]);
   const addScene = () => {
@@ -82,7 +80,7 @@ function ScenesComponent({ sideId }: { sideId: number }) {
             onClick={addScene}
           >
             <GridLines height={height} />
-            <Add />
+            {!buttonDisabled && <div className='AddSceneIcon'></div>}
             <div className='AddSceneButtonFont'>{buttonText}</div>
           </button>
           {emptyScenes.map((scene) => (

@@ -37,6 +37,9 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  * {
+    transition: border-color 300ms ease-out, background 300ms ease-out ;
+  }
   /* Prevent dragging  */
   a,
   a::after,
@@ -52,16 +55,27 @@
   }
 
   .centerIcon {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    display: block;
+    margin: auto;
     fill: var(--primary);
   }
 
-  .rotateIcon {
-    transform: rotate(90deg) translate(0%, -15%);
-    fill: var(--primary);
+  .addIcon {
+    height: 22px;
+    width: 22px;
+    mask: url(./assets/IconAdd.svg);
+    mask-repeat: no-repeat;
+    background: var(--primary);
+    ;
+  }
+
+  .removeIcon {
+    height: 18px;
+    width: 18px;
+    mask: url(./assets/IconRemove.svg);
+    mask-repeat: no-repeat;
+    background: var(--primary);
+    mask-position: center;
   }
 
   .window {
@@ -71,6 +85,24 @@
     box-sizing: border-box;
     position: absolute;
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .innerWindow {
+    background-color: var(--primarySwitched);
+    box-shadow: var(--shadowLight);
+    border-radius: 5px;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    position: absolute;
+  }
+
+  .buttonClose {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    position: absolute;
+    right: 10px;
+    top: 10px;
   }
 
   button:focus,
@@ -114,24 +146,5 @@
 
   .align-right {
     align-items: flex-end;
-  }
-
-  @media (prefers-color-scheme: light) {
-    :root {
-      color: #213547;
-      background-color: #ffffff;
-    }
-
-    a:hover {
-      color: #747bff;
-    }
-
-    button {
-      background-color: #f9f9f9;
-    }
-
-    code {
-      background-color: #f9f9f9;
-    }
   }
 }

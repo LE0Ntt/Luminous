@@ -7,6 +7,7 @@ import './Scenes.css';
 import { TranslationContext } from "./components/TranslationContext";
 import Fader from './components/Fader';
 import ScenesComponent from './components/ScenesComponent';
+import Toggle from './components/Toggle';
 
 function Scenes() {
   const { t } = useContext(TranslationContext);
@@ -28,10 +29,7 @@ function Scenes() {
       </div>
       <div className='window scenesLayer'>
         <div className='scenesLayerAlign'>
-          <label className="switch">
-            <input type="checkbox"/>
-            <span className="layerToggle round"></span>
-          </label>
+          <Toggle/>
           LAYER
         </div>
       </div>

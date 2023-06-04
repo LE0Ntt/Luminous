@@ -1,0 +1,38 @@
+@import url(../Color.css);
+
+.BigViewOverlay {
+    position: fixed;
+    z-index: 9998;
+    /* Stelle sicher, dass der Dialog über anderen Inhalten liegt */
+    height: 100%;
+    width: 100%;
+    left: 0px;
+    top: 0px;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.BigViewContainer {
+    position: fixed;
+    z-index: 9999;
+    /* Stelle sicher, dass der Dialog über anderen Inhalten liegt */
+    height: 957px;
+    width: 1840px;
+    bottom: 40px;
+    left: 40px;
+    border-radius: 10px;
+    background-color: var(--fillMedium);
+    color: var(--primary);
+    -webkit-backdrop-filter: var(--windowBackdrop);
+    backdrop-filter: var(--windowBackdrop);
+    border: var(--onepStroke) 1px solid;
+}
+
+.BigViewContent {
+    position: relative;
+    height: 428px;
+    width: 1797px;
+    left: 20px;
+    top: 61px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}

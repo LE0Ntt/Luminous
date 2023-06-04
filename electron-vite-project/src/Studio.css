@@ -50,13 +50,13 @@
     top: 50%;
     transform: translate(-50%, -50%);
     border-radius: 6px;
-
+    background-repeat: no-repeat;
     background-size: cover;
 }
 
 .buttonOpenControl {
-    width: 35px;
-    height: 35px;
+    width: 36px;
+    height: 36px;
     border-radius: 5px;
     position: relative;
     left: 50%;
@@ -70,9 +70,9 @@
 }
 
 .buttonBigView {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    border-radius: 5px;
     position: absolute;
     right: 10px;
     top: 10px;

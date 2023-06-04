@@ -8,11 +8,6 @@ from flask_cors import CORS
 #from engineio.payload import Payload
 #Payload.max_decode_packets = 25
 
-'''
-Todo:
--ist double aufruf von /fader ein problem?
-'''
-
 # Mutator method to get updates from driver
 def callback(index, value):
     print("Eintrag", index, "wurde geändert:", value)
@@ -50,12 +45,12 @@ def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
         slider = {
             "id": i + 1,
             "sliderValue": 0,
-            "name": "Fader"
+            "name": "Fader" + str(i + 1)
         }
         sliders.append(slider)
     return json.dumps(sliders)
 
-sliders = create_sliders(10)
+sliders = create_sliders(16)
 
 @app.route('/')
 def mein_endpunkt():

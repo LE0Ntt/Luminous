@@ -1,17 +1,114 @@
 @import url(./Color.css);
 
 .devices {
-    height: 500px;
+    border-top-right-radius: 5px !important;
     width: 384px;
-    left: 40px;
-    top: 540px;
+    left: 0;
+    bottom: 0;
     border-radius: 10px;
     z-index: 3;
+    padding: 20px 0 20px 20px;
+}
+
+.devicesBig {
+    width: 384px;
+    height: 910px;
+    left: 0;
+    bottom: 0;
+    border-radius: 10px;
+    z-index: 3;
+    padding: 20px 0 20px 20px;
 }
 
 .controlMain {
     /* border: 1px solid #d3d3d3; */
-    top: 123px;
-    left: 30px;
+    top: -7px;
+    left: -10px;
     position: absolute;
+}
+
+.selectedDevices {
+    width: 383px;
+    border-radius: 10px;
+    z-index: 2;
+    position: absolute;
+    padding: 20px 0 20px 20px;
+    /* border: solid 1px red; */
+}
+
+.noSelectWindow {
+    width: 1436px;
+    height: 910px;
+    left: 404px;
+    bottom: 0;
+    border-radius: 10px;
+    z-index: 3;
+    padding: 20px;
+}
+
+.noDevice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: var(--fillUltraLight); */
+    position: relative;
+    height: calc(100% + 2px);
+    width: 100%;
+    border-radius: 5px;
+    color: var(--primary);
+    text-align: center;
+    font-size: 25px;
+    font-weight: 500;
+    backdrop-filter: blur(5px);
+}
+
+.innerContainer {
+    width: 1436px;
+    height: 910px;
+    left: 404px;
+    bottom: 0;
+    border-radius: 10px;
+    z-index: 3;
+    padding: 20px;
+    border: 1px solid rgba(0, 0, 0, 0);
+    position: absolute;
+}
+
+.containerControl {
+    height: 910px;
+    width: 1840px;
+    top: 100px;
+    left: 40px;
+    position: relative;
+    padding: 0;
+}
+
+.lightFader {
+    height: 495px;
+    width: 82px;
+}
+
+.controlButtons {
+    height: 90px;
+    width: 553px;
+    left: 122px;
+}
+
+.controlBiColor {
+    height: 385px;
+    width: 553px;
+    top: 130px;
+    left: 122px;
+}
+
+.controlRGB {
+    height: 495px;
+    width: 719px;
+    right: 20px;
+}
+
+.controlEffects {
+    height: 355px;
+    width: 1394px;
+    top: 535px;
 }

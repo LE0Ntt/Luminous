@@ -3,7 +3,8 @@
 .buttonDesign {
     background: var(--colorButton);
     color: var(--primary);
-    border: 1px solid var(--color00000010);
+    border: 1px solid var(--onepStroke);
+    box-shadow: var(--shadowButton);
 }
 
 .buttonDesign:hover {

@@ -48,6 +48,7 @@ input:focus + .defaultToggle {
 }
 
 input:checked + .defaultToggle:before {
+    background-color: var(--primaryDark);
     -webkit-transform: translateX(21px);
     -ms-transform: translateX(21px);
     transform: translateX(21px);

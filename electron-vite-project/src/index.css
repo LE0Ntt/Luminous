@@ -38,8 +38,9 @@
   }
 
   * {
-    transition: border-color 300ms ease-out, background 300ms ease-out ;
+    transition: border-color 200ms ease-out, background 200ms ease-out;
   }
+  
   /* Prevent dragging  */
   a,
   a::after,
@@ -52,6 +53,10 @@
     background-image: var(--backgroundImage);
     background-size: cover;
     min-height: 100vh;
+  }
+
+  .hide {
+    visibility: hidden;
   }
 
   .centerIcon {

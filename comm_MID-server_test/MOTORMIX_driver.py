@@ -34,11 +34,19 @@ class Driver:
         threading.Thread(target=self.input).start() 
         print("Driver Initiated")
         
-        # !!! HIER MUSS AUCH ALLES ANDEREZURÜCKGESETZT WERDEN !!!
-        # Reset fader positions in case server got restarted
+        #-------------------- SETUP --------------------
         self.pushFader(0, 255) # set master to 255
         for index in range(1, 8): # every other fader to 0
             self.pushFader(index, 0)
+        self.clearDisplay()
+        self.displayASCII_perChannel(7,0,"MSTER")
+        self.displayASCII(34,0,"|")
+        self.displayASCII(34,1,"|")
+        self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
+        self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
+        #-------------------- SETUP END --------------------
+        
+        
             
         #self.outport.send(mido.Message.from_hex('90 00 00')) # ping
 
@@ -96,8 +104,10 @@ class Driver:
                     print("SHIFT pressed")
                 elif hex_message == 'B02F41':
                     print("UNDO pressed")
+                    self.clearDisplay()
                 elif hex_message == 'B02F42':
                     print("DEF pressed")
+                    self.clearChannel(2)
                 elif hex_message == 'B02F43':
                     print("ALL pressed")
                 elif hex_message == 'B02F44':
@@ -108,8 +118,6 @@ class Driver:
                     print("SUS pressed")
                 elif hex_message == 'B02F47':
                     print("MIDO message send")
-                    hex_message = ['F0', '00', '01', '0F', '00', '11', '00', '10', '0F', '4B', '69', '63', '6B', '20', 'F7']
-                    self.send_control_change_messages(hex_message)
 
                 self.left_button_flag = False
             elif hex_message == 'B00F09': # right Button-Block
@@ -131,6 +139,9 @@ class Driver:
                     print("STOP pressed")
                 elif hex_message == 'B02F47':
                     print("PLAY pressed")
+                    self.button_LED("LEFT", 0, 0)
+                    self.button_LED("RIGHT", 2, 1)
+
                 self.right_button_flag = False
             
             else:
@@ -188,11 +199,79 @@ class Driver:
         msg2 = mido.Message('control_change', channel=0, control=int("2" + str(faderIndex), 16), value=lsb, time=0)
         self.outport.send(msg1)
         self.outport.send(msg2)
+        self.displayFaderValues(faderIndex, value)
 
+    #-------------------- LCD Display --------------------
+    def displayASCII_perChannel(self, channel, row, text):
+        HEADER = "F0 00 01 0F 00 11 00"
+        END = "F7"
+
+        # Calculate the starting address based on channel and row
+        ADDRESS = row * 40 + (channel*5)
+
+        # Convert the text to ASCII character values
+        ascii_values = " ".join("{:02X}".format(ord(c)) for c in text)
+
+        # Construct the final HEX string
+        hex_string = f"{HEADER} 10 {ADDRESS:02X} {ascii_values} {END}"
+
+        # Send the MIDI message
+        self.outport.send(mido.Message.from_hex(hex_string))
     
+    def displayASCII(self, channel, row, text):
+        HEADER = "F0 00 01 0F 00 11 00"
+        END = "F7"
 
+        # Calculate the starting address based on channel and row
+        ADDRESS = row * 40 + channel
+
+        # Convert the text to ASCII character values
+        ascii_values = " ".join("{:02X}".format(ord(c)) for c in text)
+
+        # Construct the final HEX string
+        hex_string = f"{HEADER} 10 {ADDRESS:02X} {ascii_values} {END}"
+
+        # Send the MIDI message
+        self.outport.send(mido.Message.from_hex(hex_string))
+
+    def clearDisplay(self):
+        # Clear both rows by sending spaces to all character positions
+        for row in range(2):
+            for channel in range(40):
+                self.displayASCII(channel, row, " ")
     
+    def clearChannel(self, channel):
+        # Clear both rows by sending spaces to all character positions
+        for row in range(2):
+            self.displayASCII_perChannel(channel, row, "     ")
 
+    def displayFaderValues(self, channel, value):
+        value = (value / 255) * 100
+        self.displayASCII_perChannel(channel, 1, ( str(int(value))) )
+    #-------------------- LCD Display END --------------------
+    
+    #-------------------- Button LED --------------------
+    def button_LED(self, buttonGroup, buttonIndex, state):
+        syntax_on = "B0 2C 4"
+        syntax_off = "B0 2C 0"
+        
+        if buttonGroup == "LEFT":
+            prefix = "B0 0C 08"
+            if state == 1:
+                message = syntax_on + str(buttonIndex)
+            if state == 0:
+                message = syntax_off + str(buttonIndex)
+            self.outport.send(mido.Message.from_hex(prefix))
+            self.outport.send(mido.Message.from_hex(message))
+        if buttonGroup == "RIGHT":
+            prefix = "B0 0C 09"
+            if state == 1:
+                message = syntax_on + str(buttonIndex)
+            if state == 0:
+                message = syntax_off + str(buttonIndex)
+            self.outport.send(mido.Message.from_hex(prefix))
+            self.outport.send(mido.Message.from_hex(message))    
+    #-------------------- Button LED END --------------------
     def to_msb_lsb(self, num):
         # Split number into two 7-bit parts
         msb = num >> 7 
@@ -209,3 +288,4 @@ class Driver:
             faderNew = (self.current_page - 1) * 7 + fader + 1
             
         self.callback(faderNew, self.fader_values[fader])
+        self.displayFaderValues(fader,value)

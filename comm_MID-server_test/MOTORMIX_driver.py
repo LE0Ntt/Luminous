@@ -107,7 +107,10 @@ class Driver:
                 elif hex_message == 'B02F46':
                     print("SUS pressed")
                 elif hex_message == 'B02F47':
-                    print("ENBL pressed")
+                    print("MIDO message send")
+                    hex_message = ['F0', '00', '01', '0F', '00', '11', '00', '10', '0F', '4B', '69', '63', '6B', '20', 'F7']
+                    self.send_control_change_messages(hex_message)
+
                 self.left_button_flag = False
             elif hex_message == 'B00F09': # right Button-Block
                 self.right_button_flag = True
@@ -129,6 +132,7 @@ class Driver:
                 elif hex_message == 'B02F47':
                     print("PLAY pressed")
                 self.right_button_flag = False
+            
             else:
                 print("Unknown: " + hex_message)    
             
@@ -184,6 +188,10 @@ class Driver:
         msg2 = mido.Message('control_change', channel=0, control=int("2" + str(faderIndex), 16), value=lsb, time=0)
         self.outport.send(msg1)
         self.outport.send(msg2)
+
+    
+
+    
 
     def to_msb_lsb(self, num):
         # Split number into two 7-bit parts

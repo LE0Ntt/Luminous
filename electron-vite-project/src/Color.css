@@ -72,7 +72,7 @@
 
     --primaryDark: rgb(0, 0, 0);
 
-    --primarySwitched: rgba(0, 0, 0, 0.85);
+    --primarySwitched: rgba(65, 65, 65, 0.85);
     --secondarySwitched: rgba(0, 0, 0, 0.5);
     --tertiarySwitched: rgba(0, 0, 0, 0.25);
 

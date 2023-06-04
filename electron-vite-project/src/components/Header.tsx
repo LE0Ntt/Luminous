@@ -45,14 +45,10 @@ function Header() {
         <nav>
           <ul>
             <li><p className='mr-2'>Luminous</p></li>{/* mr-2 ist Tailwind, muss noch geändert werden :) */}
-            <li><a href="#">{t("settings")}</a>
+            <li><a href="#">=</a>
               <ul>
                 <li><a href="#">{t("language")}</a></li>
                 <li><a href="#">{t("editLights")}</a></li>
-              </ul>
-            </li>
-            <li><a href="#">{t("view")}</a>
-              <ul>
                 <li><a href="#">{t("small")}</a></li>
                 <li>
                 <button onClick={toggleFullScreen} className='flex'>
@@ -60,10 +56,6 @@ function Header() {
                 <div className='align-right'>F11</div>
                 </button>
                 </li>
-              </ul>
-            </li>
-            <li><a href="#">{t("help")}</a>
-              <ul>
                 <li><a href="#">{t("documentation")}</a></li>
                 <li><a href="#">{t("about")}</a></li>
               </ul>

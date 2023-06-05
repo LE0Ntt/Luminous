@@ -11,6 +11,7 @@ import Control from './Control'
 import Scenes from './Scenes'
 import { TranslationProvider } from "./components/TranslationContext";
 import translations from "./translations.json";
+import Titlebar from './components/Titlebar'
 
 console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}!`)
 
@@ -19,6 +20,7 @@ function App() {
     <div className='App relative background'>
       <TranslationProvider translations={translations} defaultLanguage="de">
         <div className='titlebar h-[20px] w-full'></div>  {/* tailwind, muss noch rausgenommen werden */}
+        <Titlebar/>
         <Router>
         {/* draußen, weil maybe nicht benötigt
         <div className='titlebar fixed top-0 left-0 w-full'>*/}

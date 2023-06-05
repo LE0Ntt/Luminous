@@ -8,14 +8,13 @@ import "../index.css";
 import { Link, useLocation } from 'react-router-dom';
 import Button from './Button';
 import { TranslationContext } from './TranslationContext';
-import { ipcRenderer } from 'electron';
+
 
 function Header() {
     let location = useLocation();
 
     const { t } = useContext(TranslationContext);
     const [isDark, setIsDark] = useState(false);
-    const [isFullScreen, setIsFullScreen] = useState(false);
   
     useEffect(() => {
       const storedIsDark = localStorage.getItem('isDark');
@@ -32,36 +31,11 @@ function Header() {
       setIsDark(!isDark);
     };
 
-    const toggleFullScreen = async () => {
-      //console.log('Sending toggle-full-screen event'); // DEBUG
-      const response = await ipcRenderer.invoke('toggle-full-screen');
-      setIsFullScreen(!isFullScreen);
-      //console.log(response); // DEBUG
-    }
+
     
 
   return (
     <div className='header'>
-        <nav>
-          <ul>
-            <li><p className='mr-2'>Luminous</p></li>{/* mr-2 ist Tailwind, muss noch geändert werden :) */}
-            <li><a href="#">=</a>
-              <ul>
-                <li><a href="#">{t("language")}</a></li>
-                <li><a href="#">{t("editLights")}</a></li>
-                <li><a href="#">{t("small")}</a></li>
-                <li>
-                <button onClick={toggleFullScreen} className='flex'>
-                <div>{isFullScreen ? t("exitFullscreen") : t("fullscreen")}</div>
-                <div className='align-right'>F11</div>
-                </button>
-                </li>
-                <li><a href="#">{t("documentation")}</a></li>
-                <li><a href="#">{t("about")}</a></li>
-              </ul>
-            </li>
-          </ul>
-        </nav>
         <div className='containerHeader'>
           <ul className="unorderedList">
             <li>

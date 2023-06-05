@@ -1,1 +1,50 @@
 @import url(../Color.css);
+
+.titlebarComp {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 23px;
+    background-color: hotpink;
+    z-index: 9999999;
+}
+
+nav {
+    margin-left: 10px;
+    position: absolute;
+}
+
+nav ul {
+    float: right;
+}
+
+nav ul li {
+    float: left;
+    list-style: none;
+    position: relative;
+}
+
+nav ul li a {
+    color: var(--primary);
+    display: block;
+    padding-right: 10px;
+}
+
+nav ul li ul {
+    display: none;
+    position: absolute;
+    background-color: var(--fillUltraThick);
+    border-radius: 5px;
+    /*border: 1px solid var(--onepStroke);   /*geht nicht aus irgendeinem Grund*/
+    /*padding: 5px; */
+    box-shadow: var(--shadowLight);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    width: 200px;
+    height: 300px;
+}
+
+nav ul li:hover ul {
+    display: block;
+}

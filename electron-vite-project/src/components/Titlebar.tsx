@@ -49,10 +49,8 @@ function Titlebar() {
             <div className="min"></div>
           </button>
           <button className="titlebar-button close" onClick={handleClose}>
-            <div className="xFrame">
-              <div className="x">
-                <div className="x xi"></div>
-              </div>
+            <div className="x">
+              <div className="x xi"></div>
             </div>
           </button>
         </div>

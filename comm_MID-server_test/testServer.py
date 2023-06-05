@@ -52,6 +52,20 @@ def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
 
 sliders = create_sliders(16)
 
+def create_scenes(num_scenes): # wird nachher ersetzt durch db abfrage
+    scenes = []
+
+    for i in range(num_scenes):
+        scene = {
+            "id": i,
+            "statusOn": False,
+            "name": "Scene" + str(i + 1)
+        }
+        scenes.append(scene)
+    return json.dumps(scenes)
+
+scenes = create_scenes(6)
+
 @app.route('/')
 def mein_endpunkt():
     return render_template('faderTest.html')
@@ -60,6 +74,11 @@ def mein_endpunkt():
 def get_faders():
     global sliders
     return jsonify(sliders)
+
+@app.route('/scenes')
+def get_scenes():
+    global scenes
+    return jsonify(scenes)
 
 @socketio.on('fader_value', namespace='/socket')
 def handle_fader_value(data):

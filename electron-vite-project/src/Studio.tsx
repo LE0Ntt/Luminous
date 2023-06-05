@@ -39,7 +39,6 @@ const Studio = () => {
   };
   // :Big View End ->
 
-  // <- Slider:
   interface SliderConfig {
     id: number;
     sliderValue: number;
@@ -48,19 +47,6 @@ const Studio = () => {
 
   const { connected, on, off } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
-
-  // Add a new slider to the server and update the client with the new slider data
-  const addSlider = () => {
-    setSliders([
-      ...sliders,
-      {
-        id: sliders.length + 1,
-        sliderValue: 0,
-        name: "",
-      },
-    ]);
-  };
-  // :Slider End ->
 
   useEffect(() => {
     const fetchSliders = async () => {
@@ -91,12 +77,8 @@ const Studio = () => {
     
     on("variable_update", eventListener);
   
-    // Funktion zum Entfernen des Event-Listeners
-    const removeEventListener = () => {
-      off("variable_update", eventListener);
-    };
-  
-    return removeEventListener;
+    // Entfernen des Event-Listeners
+    return () => off("variable_update", eventListener);
   }, [on, off]);
 
   return (

@@ -11,28 +11,25 @@ import { TranslationContext } from './TranslationContext';
 
 
 function Header() {
-    let location = useLocation();
+  let location = useLocation();
 
-    const { t } = useContext(TranslationContext);
-    const [isDark, setIsDark] = useState(false);
+  const { t } = useContext(TranslationContext);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const storedIsDark = localStorage.getItem('isDark');
+    setIsDark(storedIsDark === 'true');
+  }, []);
   
-    useEffect(() => {
-      const storedIsDark = localStorage.getItem('isDark');
-      setIsDark(storedIsDark === 'true');
-    }, []);
-    
-    useEffect(() => {
-      document.body.classList.toggle('dark', isDark);
-      localStorage.setItem('isDark', `${isDark}`);
-      document.body.dispatchEvent(new Event('class-change'))
-    }, [isDark]);
+  useEffect(() => {
+    document.body.classList.toggle('dark', isDark);
+    localStorage.setItem('isDark', `${isDark}`);
+    document.body.dispatchEvent(new Event('class-change'))
+  }, [isDark]);
 
-    const toggleTheme = () => {
-      setIsDark(!isDark);
-    };
-
-
-    
+  const toggleTheme = () => {
+    setIsDark(!isDark);
+  };
 
   return (
     <div className='header'>
@@ -86,6 +83,6 @@ function Header() {
         </div>
     </div>
   )
-}
+};
 
-export default Header
+export default Header;

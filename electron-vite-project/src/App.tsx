@@ -18,7 +18,7 @@ function App() {
   return (
     <div className='App relative background'>
       <TranslationProvider translations={translations} defaultLanguage="de">
-        <div className='titlebar h-[30px] w-full'></div>
+        <div className='titlebar h-[20px] w-full'></div>  {/* tailwind, muss noch rausgenommen werden */}
         <Router>
         {/* draußen, weil maybe nicht benötigt
         <div className='titlebar fixed top-0 left-0 w-full'>*/}

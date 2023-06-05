@@ -115,11 +115,6 @@
     outline: none;
   }
 
-  .titlebar {
-    /* -webkit-user-select: none; */
-    -webkit-app-region: drag;
-  }
-
   /* Breite und Farbe der Scrollleiste */
   /* Breite und Höhe der Scrollleiste */
   ::-webkit-scrollbar {

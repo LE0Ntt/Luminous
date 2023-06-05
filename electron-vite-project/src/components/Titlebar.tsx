@@ -4,7 +4,6 @@ import { TranslationContext } from './TranslationContext';
 import './Titlebar.css';
 
 function Titlebar() {
-
   const [isFullScreen, setIsFullScreen] = useState(false);
   const { t } = useContext(TranslationContext);
 
@@ -14,6 +13,14 @@ function Titlebar() {
     setIsFullScreen(!isFullScreen);
     //console.log(response); // DEBUG
   }
+
+  const handleClose = () => {
+    window.close();
+  };
+
+  const handleMinimize = () => {
+    ipcRenderer.send('minimize');
+  };
 
   return (
     <div className='titlebarComp'>
@@ -37,6 +44,18 @@ function Titlebar() {
             </li>
           </ul>
         </nav>
+        <div className='buttonContainer'>
+          <button className="titlebar-button minimize" onClick={handleMinimize}>
+            <div className="min"></div>
+          </button>
+          <button className="titlebar-button close" onClick={handleClose}>
+            <div className="xFrame">
+              <div className="x">
+                <div className="x xi"></div>
+              </div>
+            </div>
+          </button>
+        </div>
     </div>
   )
 }

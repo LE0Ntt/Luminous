@@ -138,3 +138,8 @@ ipcMain.handle('open-win', (_, arg) => {
     childWindow.loadFile(indexHtml, { hash: arg })
   }
 })
+
+// Minimize
+ipcMain.on('minimize', () => {
+  win.minimize()
+})

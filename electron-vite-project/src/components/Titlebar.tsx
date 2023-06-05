@@ -27,7 +27,7 @@ function Titlebar() {
         <nav>
           <ul>
             <li><p className='mr-2'>Luminous</p></li>{/* mr-2 ist Tailwind, muss noch geändert werden :) */}
-            <li><a href="#">=</a>
+            <li><a href="#">⚙️</a>
               <ul>
                 <li><a href="#">{t("language")}</a></li>
                 <li><a href="#">{t("editLights")}</a></li>

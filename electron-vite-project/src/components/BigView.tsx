@@ -25,15 +25,15 @@ function BigView({ onClose }: BigViewProps) {
       <div className="BigViewOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
       <div className="BigViewContainer">
         <Button
-            onClick={() => handleClose()}
-            className="buttonClose"
-          >
-            <div className='removeIcon centerIcon'></div>
-          </Button>
-        <Toggle/>
+          onClick={() => handleClose()}
+          className="buttonClose"
+        >
+          <div className='removeIcon centerIcon'></div>
+        </Button>
+        <span>Devices</span> <div className='toggleUniverse'><Toggle /></div><span>DMX Channel</span>
         <div className='BigViewContent innerWindow'>
           Text 1
-        BT</div>
+        </div>
         <div className='BigViewContent innerWindow'>
           Text 2
         </div>

@@ -19,12 +19,11 @@ function App() {
   return (
     <div className='App relative background'>
       <TranslationProvider translations={translations} defaultLanguage="de">
-        <Titlebar />
-        <Router>
-        {/* draußen, weil maybe nicht benötigt
-        <div className='titlebar fixed top-0 left-0 w-full'>*/}
-        <Header/>
-        {/*</div>*/}
+      <Router>
+        <header style={{height: "90px"}}>
+          <Titlebar />
+          <Header/>
+        </header>
           <Routes>
             <Route path="/" element={<Studio />} />
             <Route path="/Studio" element={<Studio />} />

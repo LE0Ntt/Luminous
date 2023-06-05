@@ -60,11 +60,6 @@ async function createWindow() {
     width: 1920,  //ändert Fenster breite
     height: 1080, //"         "    höhe
     titleBarStyle: 'hidden',
-    titleBarOverlay: {
-      color: 'rgb(236, 237, 241)',
-      symbolColor: '#4F53B1',
-      height: 30,
-    }
   })
 
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298

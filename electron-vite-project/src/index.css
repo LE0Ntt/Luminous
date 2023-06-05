@@ -74,6 +74,15 @@
     ;
   }
 
+  select {
+    background-color: transparent;
+    color: var(--primary);
+  }
+
+  select:focus {
+    background-color: var(--primarySwitched);
+  }
+
   .removeIcon {
     height: 18px;
     width: 18px;

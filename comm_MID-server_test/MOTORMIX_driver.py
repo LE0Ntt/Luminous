@@ -19,8 +19,11 @@ class Driver:
         self.fader_touch       = [False] * 8
         self.fader_touch_flag  = False
         
-        self.outport = mido.open_output('USB MIDI Interface 1')
-        self.inport  = mido.open_input( 'USB MIDI Interface 0')
+        #self.outport = mido.open_output('USB MIDI Interface 1')
+        #self.inport  = mido.open_input( 'USB MIDI Interface 0')
+        #--MMix Config - DONT CHANGE -
+        self.outport = mido.open_output('USB MIDI Interface MIDI 1')
+        self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
         
         self.current_page = 1
         self.light_mode = True # False: Scene mode
@@ -247,7 +250,8 @@ class Driver:
 
     def displayFaderValues(self, channel, value):
         value = (value / 255) * 100
-        self.displayASCII_perChannel(channel, 1, ( str(int(value))) )
+        self.displayASCII_perChannel(channel, 1, "     ")
+        self.displayASCII_perChannel(channel, 1, ( str(int(value))) + "%" )
     #-------------------- LCD Display END --------------------
     
     #-------------------- Button LED --------------------

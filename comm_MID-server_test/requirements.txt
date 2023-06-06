@@ -1,4 +1,5 @@
-# pip freeze > requirements.txt
+# pip freeze > requirements.txt zum aktualisieren
+# pip install -r requirements.txt zum installieren
 
 
 bidict==0.22.1

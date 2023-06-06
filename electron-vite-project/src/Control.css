@@ -117,3 +117,22 @@
     width: 1394px;
     top: 535px;
 }
+
+.controlTitle {
+    margin-left: 20px;
+    font-size: 50px;
+    color: var(--tertiary);
+}
+
+.noSupport {
+    text-align: center;
+    color: var(--secondary);
+    font-size: 20px;
+}
+
+.centered-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

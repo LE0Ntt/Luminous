@@ -19,7 +19,9 @@
       "SaveCurrentConfiguration": "Save as Scene",
       "AddNewScene": "Add New Scene",
       "group": "Group",
-      "noDevices": "No device selected.<br> Please choose at least one device to continue."
+      "noDevices": "No device selected.<br> Please choose at least one device to continue.",
+      "effects" : "Effects",
+      "noSupport" : "Effects are not supported by the selection."
     },
     "de": {
       "greeting": "Hallo!",
@@ -41,7 +43,9 @@
       "SaveCurrentConfiguration": "Szene speichern",
       "AddNewScene": "Neue Szene hinzufügen",
       "group": "Gruppe",
-      "noDevices": "Kein Gerät ausgewählt.<br> Bitte wählen Sie mindestens ein Gerät aus, um fortzufahren."
+      "noDevices": "Kein Gerät ausgewählt.<br> Bitte wählen Sie mindestens ein Gerät aus, um fortzufahren.",
+      "effects" : "Effekte",
+      "noSupport" : "Effekte werden von der Auswahl nicht unterstützt."
     },
     "fr": {
       "greeting": "Bonjour !",

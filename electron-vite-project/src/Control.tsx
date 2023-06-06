@@ -111,17 +111,26 @@ function Control() {
 
         <div className="innerContainer">
           <div className="lightFader innerWindow">
-          <Fader
-            height={397}
-            sliderValue={50}  // muss nätürlich geändert werden
-            id={0}            // muss geändert werden zu gruppe aller ausgewählten devices
-            name={t("group")}
-          />
+            <Fader
+              height={397}
+              sliderValue={50}  // muss natürlich geändert werden
+              id={0}            // muss geändert werden zu gruppe aller ausgewählten devices
+              name={t("group")}
+            />
           </div>
           <div className="controlButtons innerWindow"></div>
-          <div className="controlBiColor innerWindow"></div>
-          <div className="controlRGB innerWindow"></div>
-          <div className="controlEffects innerWindow"></div>
+          <div className="controlBiColor innerWindow">
+            <span className="controlTitle">Bi-Color</span>
+          </div>
+          <div className="controlRGB innerWindow">
+            <span className="controlTitle">RGB</span>
+          </div>
+          <div className="controlEffects innerWindow">
+            <span className="controlTitle">{t("effects")}</span>
+            <div className="centered-wrapper">
+              <span className="noSupport">{t("noSupport")}</span>
+            </div>
+          </div>
         </div>
         
         <svg className="controlMain" width="1860" height="930" viewBox="0 0 1860 930" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -156,9 +165,15 @@ function Control() {
           <div className="noSelectWindow">
             <div className="lightFader innerWindow"></div>
             <div className="controlButtons innerWindow"></div>
-            <div className="controlBiColor innerWindow"></div>
-            <div className="controlRGB innerWindow"></div>
-            <div className="controlEffects innerWindow"></div>
+            <div className="controlBiColor innerWindow">
+              <span className="controlTitle">Bi-Color</span>
+            </div>
+            <div className="controlRGB innerWindow">
+              <span className="controlTitle">RGB</span>
+            </div>
+            <div className="controlEffects innerWindow">
+              <span className="controlTitle">{t("effects")}</span>
+            </div>
             <div className="noDevice">
               <p dangerouslySetInnerHTML={{ __html: t("noDevices") }}></p>
             </div>

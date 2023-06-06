@@ -45,13 +45,13 @@ const Studio = () => {
     name: string;
   };
 
-  const { connected, on, off } = useConnectionContext();
+  const { connected, on, off, url } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
 
   useEffect(() => {
     const fetchSliders = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5000/fader');
+        const response = await fetch(url + '/fader');
         const data = await response.json();
         setSliders(JSON.parse(data));
       } catch (error) {

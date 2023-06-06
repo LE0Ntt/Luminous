@@ -10,6 +10,7 @@ interface ConnectionContextType {
   emit: EmitFunction;
   on: OnFunction;
   off: OffFunction;
+  url: string;
 }
 
 const ConnectionContext = createContext<ConnectionContextType | null>(null);
@@ -32,7 +33,7 @@ export function ConnectionProvider({ children, url }: ConnectionProviderProps) {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const socketInstance = io(url);
+    const socketInstance = io(url + '/socket');
     setSocket(socketInstance);
     socketInstance.on("connect", () => {
       setConnected(true);
@@ -61,6 +62,7 @@ export function ConnectionProvider({ children, url }: ConnectionProviderProps) {
     emit,
     on,
     off,
+    url,
   };
 
   return (

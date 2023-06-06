@@ -9,7 +9,7 @@ function ScenesComponent({ sideId }: { sideId: number }) {
 
   //console.log('sideId: ' + sideId); // 0: Studio, 1: Scenes, 2: Show // Debug
   const { t } = useContext(TranslationContext);
-  const { connected, on, off } = useConnectionContext();
+  const { connected, on, off, url } = useConnectionContext();
 
     // <- Scene:
   interface SceneConfig {
@@ -25,7 +25,7 @@ function ScenesComponent({ sideId }: { sideId: number }) {
   useEffect(() => {
     const fetchScenes = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5000/scenes');
+        const response = await fetch(url + '/scenes');
         const data = await response.json();
         setScenes(JSON.parse(data));
       } catch (error) {

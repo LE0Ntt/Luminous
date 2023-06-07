@@ -7,7 +7,7 @@ import DeviceList from './components/DeviceList';
 
 function Control() {
   const { t } = useContext(TranslationContext);
-  const { connected, on, off } = useConnectionContext();
+  const { connected, on, off, url } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
@@ -24,7 +24,7 @@ function Control() {
   useEffect(() => {
     const fetchDevices = async () => {
       try { 
-        const response = await fetch('http://127.0.0.1:5000/fader');
+        const response = await fetch(url + '/fader');
         const data = await response.json();
         const parsedData = JSON.parse(data);
         parsedData.shift(); // remove master
@@ -47,7 +47,7 @@ function Control() {
     // Prevent transition animation before hight has loaded
     const timer = setTimeout(() => {
       setAnimiation(true);
-    }, 200);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, []);

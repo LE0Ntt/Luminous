@@ -5,8 +5,10 @@ import json
 from flask import jsonify
 from MOTORMIX_driver import Driver
 from flask_cors import CORS
-from ola.ClientWrapper import ClientWrapper
+
+import sys
 import array
+from ola.ClientWrapper import ClientWrapper
 
 # from engineio.payload import Payload
 # Payload.max_decode_packets = 25
@@ -14,15 +16,20 @@ import array
 # OLA-Client-Setup
 
 wrapper = None
-client = None
 
 
-def DmxSent(state):
-    if not state.Succeeded():
+def DmxSent(status):
+    if status.Succeeded():
+        print('Success!')
+    else:
+        print('Error: %s' % status.message, file=sys.stderr)
+
+    global wrapper
+    if wrapper:
         wrapper.Stop()
 
 
-def setup():
+""" def setup():
     print("Setting up...")
     global wrapper
     global client
@@ -31,19 +38,28 @@ def setup():
         wrapper = ClientWrapper()
         client = wrapper.Client()
     except Exception as e:
-        print("Failed to set up: " + str(e))
+        print("Failed to set up: " + str(e)) """
 
 # DMX-Daten senden
 
 
-def send_dmx(universe, data):
-    # Umwandeln der Liste in ein Array von Bytes
-    data_array = array.array('B', data)
-    # Verwenden der tobytes Methode
-    data_bytes = data_array.tobytes()
+def send_dmx(fader, faderValue):
+    universe = 2
+    data = array.array('B')
+    # append first dmx-value
+    data.append(faderValue)
+    print("Value changed: ", faderValue)
+    # append second dmx-value
+    # data.append(50)
+    # append third dmx-value
+    # data.append(255)
 
-    client.SendDmx(universe, data_bytes, DmxSent)
-    print("DMX send")
+    global wrapper
+    wrapper = ClientWrapper()
+    client = wrapper.Client()
+    # send 1 dmx frame with values for channels 1-3
+    client.SendDmx(universe, data, DmxSent)
+    wrapper.Run()
 
 
 # Mutator method to get updates from driver
@@ -147,7 +163,7 @@ def handle_fader_value(data):
                       'id': fader, 'value': faderValue}, namespace='/socket')
 
     driver.pushFader(fader, faderValue) if driver is not None else None
-    send_dmx(2, [faderValue])  # DMX-Daten an Universum 2 senden
+    send_dmx(fader, faderValue)  # DMX-Daten an Universum 2 senden
 
 
 @socketio.on('connect', namespace='/socket')

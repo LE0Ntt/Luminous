@@ -19,11 +19,11 @@ class Driver:
         self.fader_touch       = [False] * 8
         self.fader_touch_flag  = False
         
-        #self.outport = mido.open_output('USB MIDI Interface 1')
-        #self.inport  = mido.open_input( 'USB MIDI Interface 0')
+        self.outport = mido.open_output('USB MIDI Interface 1')
+        self.inport  = mido.open_input( 'USB MIDI Interface 0')
         #--MMix Config - DONT CHANGE -
-        self.outport = mido.open_output('USB MIDI Interface MIDI 1')
-        self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
+        #self.outport = mido.open_output('USB MIDI Interface MIDI 1')
+        #self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
         
         self.current_page = 1
         self.light_mode = True # False: Scene mode
@@ -47,6 +47,7 @@ class Driver:
         self.displayASCII(34,1,"|")
         self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
         self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
+        self.displayPageNumber(str(self.current_page))
         #-------------------- SETUP END --------------------
         
         
@@ -108,11 +109,13 @@ class Driver:
                 elif hex_message == 'B02F41':
                     print("UNDO pressed")
                     self.clearDisplay()
+                    self.clear_pageNumber()
                 elif hex_message == 'B02F42':
                     print("DEF pressed")
                     self.clearChannel(2)
                 elif hex_message == 'B02F43':
                     print("ALL pressed")
+                    self.sevenSegment("AB")
                 elif hex_message == 'B02F44':
                     print("WIND pressed")
                 elif hex_message == 'B02F45':
@@ -254,6 +257,25 @@ class Driver:
         self.displayASCII_perChannel(channel, 1, ( str(int(value))) + "%" )
     #-------------------- LCD Display END --------------------
     
+    #-------------------- page Display --------------------
+    def displayPageNumber(self, pageNumber):
+        hex_string = "F0 00 01 0F 00 11 00 12 "
+        
+        if(int(pageNumber) <10): hex_string += "00 00 "
+        
+        for char in pageNumber:
+            ascii_val = ord(char)
+            hi_nibble = ascii_val >> 4
+            lo_nibble = ascii_val & 0x0F
+            hex_string += format(hi_nibble, '02X')+ " " + format(lo_nibble, '02X') + " "
+        hex_string += "F7"
+        print(hex_string)
+        self.outport.send(mido.Message.from_hex(hex_string))
+    
+    def clear_pageNumber(self):
+        self.outport.send(mido.Message.from_hex("  "))
+    #-------------------- page Display END --------------------
+
     #-------------------- Button LED --------------------
     def button_LED(self, buttonGroup, buttonIndex, state):
         syntax_on = "B0 2C 4"

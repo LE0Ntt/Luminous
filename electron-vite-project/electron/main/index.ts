@@ -47,7 +47,7 @@ const indexHtml = join(process.env.DIST, 'index.html')
  */
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'Main window',
+    title: 'Luminous',
     icon: join(process.env.PUBLIC, 'favicon.ico'),
     webPreferences: {
       preload,
@@ -59,6 +59,8 @@ async function createWindow() {
     },
     width: 1920,  //ändert Fenster breite
     height: 1080, //"         "    höhe
+    minWidth: 1024,  // Mindestbreite des Fensters
+    minHeight: 618, // Mindesthöhe    "      "
     titleBarStyle: 'hidden',
   })
 

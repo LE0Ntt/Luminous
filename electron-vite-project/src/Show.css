@@ -5,8 +5,8 @@
 .showScenes {
     height: 449px;
     width: 1352px;
-    left: 40px;
-    top: 130px;
+    left: 0;
+    top: 0;
 }
 
 /* Scenes End */
@@ -16,8 +16,8 @@
 .showSaves {
     height: 449px;
     width: 468px;
-    left: 1412px;
-    top: 130px;
+    left: 1372px;
+    top: 0;
 }
 
 /* Saves End */
@@ -27,8 +27,8 @@
 .showControls {
     height: 441px;
     width: 1840px;
-    left: 40px;
-    top: 599px;
+    left: 0;
+    top: 469px;
 }
 
 .showControlButtons {

@@ -41,6 +41,30 @@
     transition: border-color 200ms ease-out, background 200ms ease-out;
   }
   
+  .mainContainer {
+    position: absolute;
+    top: 90px; /* Header hight */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .mainContent {
+    height: 910px;
+    width: 1840px;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    padding: 0;
+    transform: translate(-50%, -50%);
+    min-width: calc(100% - 80px);
+    min-height: calc(100% - 80px);
+  }
+
   /* Prevent dragging  */
   a,
   a::after,

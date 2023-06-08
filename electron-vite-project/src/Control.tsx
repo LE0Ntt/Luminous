@@ -1,4 +1,4 @@
-import React, {  useRef, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TranslationContext } from "./components/TranslationContext";
 import { useConnectionContext } from "./components/ConnectionContext";
 import './Control.css';
@@ -102,7 +102,7 @@ function Control() {
   const hide   = 'noSelectWindow window' + (selected ? ' hide' : '');
 
   return (
-    <div className="containerControl">
+    <div>
       { selected ? (
       <div>
         <div className="selectedDevices" style={{ height: height - 17 + 'px' }}>

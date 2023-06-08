@@ -4,8 +4,8 @@
 .scenesLayer {
     height: 73px;
     width: 124px;
-    left: 1756px;
-    top: 130px;
+    left: 1716px;
+    top: 0x;
     border-radius: 10px;
     color: var(--primary);
     font-size: 18px;
@@ -28,8 +28,8 @@
 .scenesMain {
     height: 910px;
     width: 1696px;
-    left: 40px;
-    top: 130px;
+    left: 0;
+    top: 0;
     border-radius: 10px;
 }
 
@@ -48,8 +48,8 @@
 .scenesMaster {
     height: 818px;
     width: 124px;
-    left: 1756px;
-    top: 222px;
+    left: 1716px;
+    top: 92px;
     border-radius: 10px;
 
 }

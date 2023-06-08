@@ -81,15 +81,6 @@
     position: absolute;
 }
 
-.containerControl {
-    height: 910px;
-    width: 1840px;
-    top: 40px;
-    left: 40px;
-    position: relative;
-    padding: 0;
-}
-
 .lightFader {
     height: 495px;
     width: 82px;

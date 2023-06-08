@@ -1,24 +1,24 @@
 @import url(../Color.css);
 
 .BigViewOverlay {
-    position: fixed;
+    position: relative;
     z-index: 9998;
-    /* Stelle sicher, dass der Dialog über anderen Inhalten liegt */
-    height: 100%;
-    width: 100%;
-    left: 0px;
-    top: 0px;
+    /* Infinite background hack */
+    height: 10000vh;
+    width: 10000vw;
+    left: -5000vw;
+    top: -5000vh;
     background-color: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
 }
 
 .BigViewContainer {
     position: fixed;
-    z-index: 9999;
-    /* Stelle sicher, dass der Dialog über anderen Inhalten liegt */
+    z-index: 9999; /* Above everything */
     height: 910px;
     width: 1840px;
-    top: 130px;
-    left: 40px;
+    top: 0;
+    left: 0;
     border-radius: 10px;
     background-color: var(--fillMedium);
     color: var(--primary);

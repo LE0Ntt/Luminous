@@ -3,8 +3,8 @@
 .faders {
     width: 870px;
     height: 445px;
-    left: 40px;
-    top: 595px;
+    left: 0;
+    top: 465px;
     padding-left: 20px;
     padding-right: 20px;
 }
@@ -12,24 +12,23 @@
 .scenes {
     height: 445px;
     width: 974px;
-    left: 40px;
-    top: 130px;
+    top: 0;
     overflow-x: auto;
 }
 
 .overview {
     height: 910px;
     width: 846px;
-    left: 1034px;
-    top: 130px;
+    left: 994px;
+    top: 0;
     border-radius: 10px;
 }
 
 .mainfader {
     height: 445px;
     width: 84px;
-    left: 930px;
-    top: 595px;
+    left: 890px;
+    top: 465px;
 }
 
 .sliders {
@@ -102,4 +101,9 @@
     text-align: center;
     font-weight: 600;
     font-size: 18px;
+}
+
+select { /* !!!!!!!! -------- Kommt weg ---------- !!!!!!!! */
+    top:-40px;
+    position: absolute;
 }

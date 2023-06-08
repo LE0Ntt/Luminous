@@ -1,27 +1,103 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
-import threading
 import time
-from ola.ClientWrapper import ClientWrapper
+import json
+from flask import jsonify
 from MOTORMIX_driver import Driver
+from flask_cors import CORS
+from ola.ClientWrapper import ClientWrapper
 
-driver = Driver()
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, cors_allowed_origins="*")
+# from engineio.payload import Payload
+# Payload.max_decode_packets = 25
 
-# add OLA variables
-OLA_UNIVERSE = 1  # replace with your OLA universe
-dmx_data = [0]*512
+# OLA-Client-Setup
+
+wrapper = None
+client = None
 
 
 def DmxSent(state):
-    wrapper.Stop()
+    if not state.Succeeded():
+        wrapper.Stop()
 
 
-def send_dmx_data():
-    # This will call the DmxSent method when complete
-    wrapper.Client().SendDmx(OLA_UNIVERSE, dmx_data, DmxSent)
+def setup():
+    global wrapper
+    global client
+    wrapper = ClientWrapper()
+    client = wrapper.Client()
+
+# DMX-Daten senden
+
+
+def send_dmx(universe, data):
+    client.SendDmx(universe, data, DmxSent)
+
+# Mutator method to get updates from driver
+
+
+def callback(index, value):
+    print("Eintrag", index, "wurde geändert:", value)
+    socketio.emit('variable_update', {
+                  'id': index, 'value': value}, namespace='/socket')
+    global sliders
+    sliders = json.loads(sliders)
+    sliders[index]["sliderValue"] = value
+    sliders = json.dumps(sliders)
+
+
+try:
+    driver = Driver()
+    driver.set_callback(callback)
+except OSError as e:
+    print("Fehler beim Initialisieren des Drivers:", str(e))
+    driver = None
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+CORS(app, resources={r"/*": {"origins": "*"}})
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+connections = 0
+
+
+def create_sliders(num_sliders):  # wird nachher ersetzt durch db abfrage
+    sliders = []
+
+    master = {
+        "id": 0,
+        "sliderValue": 255,
+        "name": "Master"
+    }
+    sliders.append(master)
+
+    for i in range(num_sliders):
+        slider = {
+            "id": i + 1,
+            "sliderValue": 0,
+            "name": "Fader" + str(i + 1)
+        }
+        sliders.append(slider)
+    return json.dumps(sliders)
+
+
+sliders = create_sliders(16)
+
+
+def create_scenes(num_scenes):  # wird nachher ersetzt durch db abfrage
+    scenes = []
+
+    for i in range(num_scenes):
+        scene = {
+            "id": i,
+            "statusOn": False,
+            "name": "Scene" + str(i + 1)
+        }
+        scenes.append(scene)
+    return json.dumps(scenes)
+
+
+scenes = create_scenes(6)
 
 
 @app.route('/')
@@ -29,53 +105,51 @@ def mein_endpunkt():
     return render_template('faderTest.html')
 
 
-@app.route('/members')
-def home():
-    return {"test": ["test1", "test2"]}
+@app.route('/fader')
+def get_faders():
+    global sliders
+    return jsonify(sliders)
 
 
-@socketio.on('fader_value', namespace='/test')  # test für faderTest.js
+@app.route('/scenes')
+def get_scenes():
+    global scenes
+    return jsonify(scenes)
+
+
+@socketio.on('fader_value', namespace='/socket')
 def handle_fader_value(data):
     faderValue = int(data['value'])
-    driver.pushFader(0, faderValue)
+    fader = int(data['id'])
+    print(fader, faderValue)
+    global sliders
+    sliders = json.loads(sliders)
+    sliders[fader]["sliderValue"] = faderValue
+    sliders = json.dumps(sliders)
+    driver.pushFader(fader, faderValue) if driver is not None else None
+    # Sende geänderte Werte an alle verbundenen Clients
+    global connections
+    if connections > 1:
+        socketio.emit('variable_update', {
+                      'id': fader, 'value': faderValue}, namespace='/socket')
 
-    # update DMX data and send
-    dmx_data[0] = faderValue
-    send_dmx_data()
+    driver.pushFader(fader, faderValue) if driver is not None else None
+    send_dmx(2, [faderValue])  # DMX-Daten an Universum 2 senden
 
 
-@socketio.on("slider_change", namespace='/test')  # test für react
-def on_volume_change(data):
-    faderValue = int(data['volume'])
-    driver.pushFader(0, faderValue)
-
-    # update DMX data and send
-    dmx_data[0] = faderValue
-    send_dmx_data()
-
-
-@socketio.on('connect', namespace='/test')
+@socketio.on('connect', namespace='/socket')
 def test_connect():
-    print('Client connected')
+    global connections
+    connections += 1
+    print('Client connected', connections)
 
 
-@socketio.on('disconnect', namespace='/test')
+@socketio.on('disconnect', namespace='/socket')
 def test_disconnect():
+    global connections
+    connections = max(connections - 1, 0)
     print('Client disconnected')
 
 
-def send_variable():
-    old_variable = None
-    while True:
-        variable = driver.fader_values[0]
-        if variable != old_variable:
-            socketio.emit('variable_update', {
-                          'variable': variable}, namespace='/test')
-            old_variable = variable
-        time.sleep(0.01)
-
-
 if __name__ == '__main__':
-    threading.Thread(target=send_variable).start()
-    wrapper = ClientWrapper()
-    socketio.run(app, host='192.168.0.251', port=5000)
+    socketio.run(app, host='192.168.178.195', port=5000)

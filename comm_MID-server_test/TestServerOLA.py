@@ -6,6 +6,7 @@ from flask import jsonify
 from MOTORMIX_driver import Driver
 from flask_cors import CORS
 
+# OLA imports
 import sys
 import array
 from ola.ClientWrapper import ClientWrapper
@@ -18,7 +19,7 @@ from ola.ClientWrapper import ClientWrapper
 wrapper = None
 
 
-def DmxSent(status):
+def DmxSent(status):  # überprüft, ob die DMX-Daten erfolgreich gesendet wurden
     if status.Succeeded():
         print('Success!')
     else:
@@ -29,7 +30,7 @@ def DmxSent(status):
         wrapper.Stop()
 
 
-def setup():
+def setup():  # OLA-Client-Setup, wird dafür benötigt, dass die DMX-Daten gesendet werden können. (arrays für die universen erstellt, usw.)
     print("Setting up...")
     global universe
     global dmx_data
@@ -38,19 +39,20 @@ def setup():
     dmx_data.extend([0] * 256)
 
 
-# DMX-Daten senden
-
-
-def send_dmx(fader, faderValue):
-    print("Fader", fader, "Value changed: ", faderValue)
+def send_dmx(channel, faderValue, universe):  # sendet die DMX-Daten an das OLA-Universum
+    # Debug, gibt die Werte der Fader aus
+    print("Fader", channel, "Value changed: ", faderValue)
+    # Debug, gibt die Länge des Arrays aus
     lenght = len(dmx_data)
+    # Debug, gibt die Länge des Arrays aus
     print("len", lenght)
-    dmx_data[fader] = faderValue
+    # setzt den Wert des Faders im Array auf den aktuellen Wert
+    dmx_data[channel] = faderValue
 
     global wrapper
     wrapper = ClientWrapper()
     client = wrapper.Client()
-    # send 1 dmx frame with values for channels 1-3
+    # send 1 dmx frame mit dem akuellen array
     client.SendDmx(universe, dmx_data, DmxSent)
     wrapper.Run()
 
@@ -156,7 +158,7 @@ def handle_fader_value(data):
                       'id': fader, 'value': faderValue}, namespace='/socket')
 
     driver.pushFader(fader, faderValue) if driver is not None else None
-    send_dmx(fader, faderValue)  # DMX-Daten an Universum 2 senden
+    send_dmx(fader, faderValue, universe)  # DMX-Daten an Universum 2 senden
 
 
 @socketio.on('connect', namespace='/socket')

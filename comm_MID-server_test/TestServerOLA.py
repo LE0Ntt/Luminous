@@ -6,6 +6,7 @@ from flask import jsonify
 from MOTORMIX_driver import Driver
 from flask_cors import CORS
 from ola.ClientWrapper import ClientWrapper
+import array
 
 # from engineio.payload import Payload
 # Payload.max_decode_packets = 25
@@ -31,7 +32,13 @@ def setup():
 
 
 def send_dmx(universe, data):
-    client.SendDmx(universe, data, DmxSent)
+    # Umwandeln der Liste in ein Array von Bytes
+    data_array = array.array('B', data)
+    # Verwenden der tobytes Methode
+    data_bytes = data_array.tobytes()
+
+    client.SendDmx(universe, data_bytes, DmxSent)
+
 
 # Mutator method to get updates from driver
 

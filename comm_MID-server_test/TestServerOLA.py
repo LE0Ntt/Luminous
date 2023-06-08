@@ -23,10 +23,15 @@ def DmxSent(state):
 
 
 def setup():
+    print("Setting up...")
     global wrapper
     global client
-    wrapper = ClientWrapper()
-    client = wrapper.Client()
+
+    try:
+        wrapper = ClientWrapper()
+        client = wrapper.Client()
+    except Exception as e:
+        print("Failed to set up: " + str(e))
 
 # DMX-Daten senden
 
@@ -38,6 +43,7 @@ def send_dmx(universe, data):
     data_bytes = data_array.tobytes()
 
     client.SendDmx(universe, data_bytes, DmxSent)
+    print("DMX send")
 
 
 # Mutator method to get updates from driver

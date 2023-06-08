@@ -29,36 +29,29 @@ def DmxSent(status):
         wrapper.Stop()
 
 
-""" def setup():
+def setup():
     print("Setting up...")
-    global wrapper
-    global client
+    global universe
+    global dmx_data
+    universe = 2
+    dmx_data = array.array('B')
+    dmx_data.extend([0] * 256)
 
-    try:
-        wrapper = ClientWrapper()
-        client = wrapper.Client()
-    except Exception as e:
-        print("Failed to set up: " + str(e)) """
 
 # DMX-Daten senden
 
 
 def send_dmx(fader, faderValue):
-    universe = 2
-    data = array.array('B')
-    # append first dmx-value
-    data.append(faderValue)
-    print("Value changed: ", faderValue)
-    # append second dmx-value
-    # data.append(50)
-    # append third dmx-value
-    # data.append(255)
+    print("Fader", fader, "Value changed: ", faderValue)
+    lenght = len(dmx_data)
+    print("len", lenght)
+    dmx_data[fader] = faderValue
 
     global wrapper
     wrapper = ClientWrapper()
     client = wrapper.Client()
     # send 1 dmx frame with values for channels 1-3
-    client.SendDmx(universe, data, DmxSent)
+    client.SendDmx(universe, dmx_data, DmxSent)
     wrapper.Run()
 
 
@@ -181,4 +174,5 @@ def test_disconnect():
 
 
 if __name__ == '__main__':
+    setup()
     socketio.run(app, host='192.168.178.195', port=5000)

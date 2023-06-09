@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { TranslationContext } from "./components/TranslationContext";
 import { useConnectionContext } from "./components/ConnectionContext";
+import { useLocation } from 'react-router-dom';
 import './Control.css';
 import Fader from './components/Fader';
 import DeviceList from './components/DeviceList';
@@ -13,6 +14,7 @@ function Control() {
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
   const [firstLoad, setFirstLoad] = useState(false);
   const [animiation, setAnimiation] = useState(false);
+  const location = useLocation();
 
   // <- Device:
   interface DeviceConfig {
@@ -76,6 +78,15 @@ function Control() {
       }
     }
     
+    // Add a device if it was added from Studio
+    const id = location.state && location.state.id; // Device ID from Studio
+    if(id && !animiation) {
+      const foundDevice = unselectedDevices.find((device) => device.id === id);
+      if (foundDevice) {
+        setSelectedDevices([...selectedDevices, foundDevice]);
+        setUnselectedDevices(unselectedDevices.filter(item => item.id !== foundDevice.id));
+      }
+    }
     //sessionStorage.setItem('selectedDevices', JSON.stringify(JSON.parse('[]'))) // zum reseten
     //sessionStorage.setItem('unselectedDevices', JSON.stringify(JSON.parse('[]'))) // zum reseten
   }, [selectedDevices, unselectedDevices, devices]);
@@ -100,12 +111,13 @@ function Control() {
   var deviceWindow = 'devices window' + (selected ? ' devicesSmall' : ''); // 5px upper right corner if selected
   deviceWindow = animiation ? (deviceWindow + ' devicesAnimation') : deviceWindow
   const hide   = 'noSelectWindow window' + (selected ? ' hide' : '');
+  const selectAnimation = 'selectedDevices' + (animiation ? ' devicesAnimation' : '');
 
   return (
     <div>
       { selected ? (
       <div>
-        <div className="selectedDevices" style={{ height: height - 17 + 'px' }}>
+        <div className={selectAnimation} style={{ height: height - 17 + 'px' }}>
           <DeviceList devices={selectedDevices} isAddButton={false} onDeviceButtonClick={handleRemoveDevice} />
         </div>
 

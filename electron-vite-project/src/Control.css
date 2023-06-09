@@ -22,7 +22,6 @@
     top: -7px;
     left: -10px;
     position: absolute;
-    
 }
 
 .controlMain>g>g>*{
@@ -36,7 +35,6 @@
     position: absolute;
     padding: 20px 0 20px 20px;
     overflow: hidden;
-    transition: height 200ms ease-out;
     /* border: solid 1px red; */
 }
 

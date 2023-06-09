@@ -9,19 +9,21 @@ import Fader from './components/Fader';
 import { useState, useEffect, useContext } from 'react';
 import { useConnectionContext } from "./components/ConnectionContext";
 import { TranslationContext } from './components/TranslationContext';
+import { useNavigate } from 'react-router-dom';
 import ScenesComponent from './components/ScenesComponent';
 import BigView from './components/BigView';
 
 const Studio = () => {
-  
+  const navigate = useNavigate();
+
   // Language
   const { t, language, setLanguage } = useContext(TranslationContext);
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.target.value as "en" | "de");
   };
-  // Button test
+  // Button to open Control
   const handleClick = (id: number) => {
-    console.log('Button clicked!' + id);
+    navigate('/control', { state: { id: id } });
   };
 
   // <- Big View:

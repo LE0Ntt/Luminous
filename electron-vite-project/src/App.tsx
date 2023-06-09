@@ -2,6 +2,7 @@
  * App.tsx
  * @author Leon Hölzel
  */
+import { useRef, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './index.css'
 import Studio from './Studio'
@@ -12,7 +13,6 @@ import Scenes from './Scenes'
 import { TranslationProvider } from "./components/TranslationContext";
 import translations from "./translations.json";
 import Titlebar from './components/Titlebar';
-import React, { useRef, useContext, useEffect, useState } from "react";
 
 console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}!`)
 
@@ -26,7 +26,7 @@ function App() {
       const containerHeight = mainContentRef.current.offsetHeight;
 
       const contentWidth = 1920;
-      const contentHeight = 990;
+      const contentHeight = 990; /* window-height - header */
 
       const widthScale = containerWidth / contentWidth;
       const heightScale = containerHeight / contentHeight;

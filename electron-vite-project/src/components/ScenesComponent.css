@@ -17,7 +17,6 @@
     border-radius: 5px;
     background-color: var(--fillLight);
     position: relative;
-    vertical-align: middle;
 }
 
 .AddSceneButtonFont {
@@ -46,6 +45,15 @@
     border-radius: 5px;
     border: 1px solid var(--onepStroke);
     box-shadow: var(--shadowLight);
+    padding: 14px;
+}
+
+.scenesBox > h2{
+    font-size: 20px;
+    display: flex;
+    justify-content: flex-start;
+    top: -45%;
+    position: relative;
 }
 
 .scenesAlign {
@@ -70,4 +78,9 @@
     border-style: dotted;
     border-radius: 5px;
     width: 100%;
+}
+
+.on {
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: inset 0px 3px 10px 0px rgba(0, 0, 0, 0.12);
 }

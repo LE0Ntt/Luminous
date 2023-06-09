@@ -5,17 +5,19 @@ import GridLines from '../assets/GridLines';
 import { TranslationContext } from "./TranslationContext";
 import { useConnectionContext } from "../components/ConnectionContext";
 
-function ScenesComponent({ sideId }: { sideId: number }) {
+interface SceneConfig {
+  id: number;
+  name: string;
+  status: boolean;
+}
 
-  //console.log('sideId: ' + sideId); // 0: Studio, 1: Scenes, 2: Show // Debug
+interface ScenesComponentProps {
+  sideId: number;
+}
+
+const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
   const { t } = useContext(TranslationContext);
-  const { connected, on, off, url } = useConnectionContext();
-
-    // <- Scene:
-  interface SceneConfig {
-    id: number;
-    name: string;
-  };
+  const { connected, on, off, emit, url } = useConnectionContext();
 
   const [height, setHeight] = useState(0);
   const [buttonText, setButtonText] = useState(t(''));
@@ -49,12 +51,10 @@ function ScenesComponent({ sideId }: { sideId: number }) {
       });
     };
     
-    on("variable_update", eventListener);
+    on("scene_update", eventListener);
   
-    // Entfernen des Event-Listeners
-    return () => off("variable_update", eventListener);
+    return () => off("scene_update", eventListener);
   }, [on, off]);
-
 
   useEffect(() => {
     if (sideId === 0) {
@@ -75,6 +75,19 @@ function ScenesComponent({ sideId }: { sideId: number }) {
     }
   }, [sideId, t]);
 
+  const toggleSceneStatus = (sceneId: number) => {
+    setScenes((prevScenes) =>
+      prevScenes.map((scene) => {
+        if (scene.id === sceneId) {
+          const newStatus = !scene.status;
+          emit("scene_update", { id: sceneId, status: newStatus });
+          return { ...scene, status: newStatus };
+        }
+        return scene;
+      })
+    );
+  };
+
   const [scenes, setScenes] = useState<SceneConfig[]>([]);
   const addScene = () => {
     setScenes([
@@ -82,32 +95,30 @@ function ScenesComponent({ sideId }: { sideId: number }) {
       {
         id: scenes.length + 1,
         name: 'Scene ' + scenes.length,
+        status: false,
       },
     ]);
   };
-  // :Scene End ->
 
-  // <- Empty Scene:
-  const extraButton = 1; // Anzahl der zusätzlichen Buttons
-
+  const extraButton = 1;
   const emptyScenesLength = Math.ceil((scenes.length + extraButton) / repeatNumber) * repeatNumber - scenes.length - extraButton + (repeatNumber * 3);
-
   const emptyScenes = Array.from(
     { length: emptyScenesLength },
     (_, index) => ({ id: scenes.length + extraButton + index + 1, name: 'Empty Scene' })
   );
 
-  //console.log(emptyScenes);
-
-  // :Empty Scene End ->
-  
   return (
     <div className='scenesAlign'>
         <div className='grid-container' style={{ gridTemplateColumns: `repeat(${repeatNumber}, 1fr)` }}>
           {scenes.map((scene) => (
-            <div key={scene.id} className='scenesBox' style={{ height: `${height}px` }}>
+            <button
+              key={scene.id}
+              className={`scenesBox ${scene.status ? 'on' : ''}`}
+              style={{ height: `${height}px` }}
+              onClick={() => toggleSceneStatus(scene.id)}
+            >
               <h2>{scene.name}</h2>
-            </div>
+            </button>
           ))}
           <button 
             className='AddSceneButton'
@@ -123,13 +134,14 @@ function ScenesComponent({ sideId }: { sideId: number }) {
             <div 
               className='scenesEmpty'
               style={{ height: `${height}px` }}
+              key={scene.id}
             >
               <GridLines height={height} />
             </div>
           ))}
         </div>
     </div>
-  )
+  );
 }
 
-export default ScenesComponent
+export default ScenesComponent;

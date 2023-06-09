@@ -35,7 +35,7 @@ function Show() {
             height={290}
             sliderValue={255}
             id={0}
-            name='Master'
+            name='Value'
           /> 
           </div>
         </div>

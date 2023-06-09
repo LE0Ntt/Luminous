@@ -80,6 +80,14 @@ def get_scenes():
     global scenes
     return jsonify(scenes)
 
+@socketio.on('scene_update', namespace='/socket')
+def handle_scene(data):
+    print(int(data['id']), str(data['status']))
+    # Sende geänderte Werte an alle verbundenen Clients
+    #global connections
+    #if connections > 1:
+        #socketio.emit('scene_update', {'id': fader, 'value': faderValue}, namespace='/socket') # falsch
+
 @socketio.on('fader_value', namespace='/socket')
 def handle_fader_value(data):
     faderValue = int(data['value'])

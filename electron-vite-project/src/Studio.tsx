@@ -96,7 +96,11 @@ const Studio = () => {
         <ScenesComponent sideId={0} />
       </div>
       <div className='overview window'>
-        <div className='studio_overview window'></div>
+        <div className='studio_overview window'>
+          <div className='studio_overview_greenScreen'>A</div>
+          <div className='studio_overview_lights'>B</div>
+          <div className='studio_overview_testchart'>C</div>
+        </div>
       </div>
       <div className='mainfader window'>
         { sliders[0] && (

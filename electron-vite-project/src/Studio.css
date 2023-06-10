@@ -53,6 +53,31 @@
     background-size: cover;
 }
 
+.studio_overview_greenScreen {
+    height: 85px;
+    width: calc(100% - 190px);
+    position: relative;
+    margin-left: 120px;
+    background-color: rgba(68, 138, 196, 0.411);
+}
+
+.studio_overview_lights {
+    height: 690px;
+    width: calc(100% - 200px);
+    position: relative;
+    margin-left: 100px;
+    background-color: rgba(104, 196, 68, 0.274);
+}
+
+.studio_overview_testchart {
+    height: 83px;
+    width: 220px;
+    position: relative;
+    margin-left: 170px;
+    background-color: rgba(217, 96, 233, 0.274);
+}
+
+
 .buttonOpenControl {
     width: 36px;
     height: 36px;
@@ -103,7 +128,8 @@
     font-size: 18px;
 }
 
-select { /* !!!!!!!! -------- Kommt weg ---------- !!!!!!!! */
-    top:-40px;
+select {
+    /* !!!!!!!! -------- Kommt weg ---------- !!!!!!!! */
+    top: -40px;
     position: absolute;
 }

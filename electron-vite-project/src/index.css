@@ -95,7 +95,6 @@
     mask: url(./assets/IconAdd.svg);
     mask-repeat: no-repeat;
     background: var(--primary);
-    ;
   }
 
   select {

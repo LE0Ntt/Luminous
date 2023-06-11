@@ -82,11 +82,18 @@ def get_scenes():
 
 @socketio.on('scene_update', namespace='/socket')
 def handle_scene(data):
-    print(int(data['id']), str(data['status']))
+    status = bool(data['status'])
+    scene = int(data['id'])
+    print(scene, status)
+    global scenes
+    scenes = json.loads(scenes)
+    if scene < len(scenes): # Make sure scene exists
+        scenes[scene]["status"] = status
+    scenes = json.dumps(scenes)
     # Sende geänderte Werte an alle verbundenen Clients
-    #global connections
-    #if connections > 1:
-        #socketio.emit('scene_update', {'id': fader, 'value': faderValue}, namespace='/socket') # falsch
+    global connections
+    if connections > 0:
+        socketio.emit('scene_update', {'id': scene, 'status': status}, namespace='/socket')
 
 @socketio.on('fader_value', namespace='/socket')
 def handle_fader_value(data):
@@ -95,7 +102,8 @@ def handle_fader_value(data):
     print(fader, faderValue)
     global sliders
     sliders = json.loads(sliders)
-    sliders[fader]["sliderValue"] = faderValue
+    if fader < len(sliders):
+        sliders[fader]["sliderValue"] = faderValue
     sliders = json.dumps(sliders)
     driver.pushFader(fader, faderValue) if driver is not None else None
     # Sende geänderte Werte an alle verbundenen Clients
@@ -116,4 +124,4 @@ def test_disconnect():
     print('Client disconnected')
 
 if __name__ == '__main__': 
-    socketio.run(app) #, host='192.168.178.24', port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000)

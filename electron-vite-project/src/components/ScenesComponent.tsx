@@ -9,6 +9,7 @@ interface SceneConfig {
   id: number;
   name: string;
   status: boolean;
+  saved: boolean;
 }
 
 interface ScenesComponentProps {
@@ -40,11 +41,10 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
 
   useEffect(() => {
     const eventListener = (data: any) => {
-      console.log("Received data from server:", data.value);
       setScenes((prevScenes) => {
         return prevScenes.map((scene, index) => {
           if (index === data.id) {
-            return { ...scene, id: data.id, name: data.name };
+            return { ...scene, status: data.status };
           }
           return scene;
         });
@@ -93,9 +93,10 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
     setScenes([
       ...scenes,
       {
-        id: scenes.length + 1,
-        name: 'Scene ' + scenes.length,
+        id: scenes.length,
+        name: 'Scene' + (scenes.length + 1),
         status: false,
+        saved: true // zum testen
       },
     ]);
   };
@@ -111,14 +112,30 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
     <div className='scenesAlign'>
         <div className='grid-container' style={{ gridTemplateColumns: `repeat(${repeatNumber}, 1fr)` }}>
           {scenes.map((scene) => (
-            <button
-              key={scene.id}
-              className={`scenesBox ${scene.status ? 'on' : ''}`}
-              style={{ height: `${height}px` }}
-              onClick={() => toggleSceneStatus(scene.id)}
-            >
-              <h2>{scene.name}</h2>
-            </button>
+            <div className={`scenesBox ${scene.status ? 'on' : ''}`} style={{ height: `${height}px` }}>
+              <button
+                className='sceneButton'
+                onClick={() => toggleSceneStatus(scene.id)}
+              >
+                <h2>{scene.name}</h2>
+              </button>
+              {sideId === 1 && (
+                <div className='sceneButtons'>
+                  <button
+                    className={`bookmark ${scene.saved ? 'saved' : 'notSaved'}`}
+                    onClick={() => scene.saved ? toggleSceneStatus(scene.id) : addScene()}
+                  ></button>
+                  <button
+                    className={`sceneMiddleButton`}
+                    onClick={() => toggleSceneStatus(scene.id)}
+                  ></button>
+                  <button
+                    className={`delete`}
+                    onClick={addScene}
+                  ></button>
+                </div>
+              )}
+            </div>
           ))}
           <button 
             className='AddSceneButton'

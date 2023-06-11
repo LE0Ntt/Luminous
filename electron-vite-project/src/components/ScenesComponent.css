@@ -45,15 +45,16 @@
     border-radius: 5px;
     border: 1px solid var(--onepStroke);
     box-shadow: var(--shadowLight);
-    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-.scenesBox > h2{
+.scenesBox h2{
     font-size: 20px;
-    display: flex;
-    justify-content: flex-start;
-    top: -45%;
+    top: -10px;
     position: relative;
+    color: var(--primary);
 }
 
 .scenesAlign {
@@ -83,4 +84,48 @@
 .on {
     background-color: rgba(255, 255, 255, 0.8);
     box-shadow: inset 0px 3px 10px 0px rgba(0, 0, 0, 0.12);
+}
+
+.bookmark {
+    height: 25px;
+    width: 25px;
+    mask-repeat: no-repeat;
+    background: var(--primary);
+    mask-position: center;
+}
+
+.delete {
+    right: 0;
+    height: 25px;
+    width: 22px;
+    mask: url(../assets/delete.svg);
+    mask-repeat: no-repeat;
+    background: var(--primary);
+}
+
+.saved {
+    mask: url(../assets/bookmarkAdded.svg);
+}
+
+.notSaved {
+    mask: url(../assets/bookmarkAdd.svg);
+}
+
+.sceneButtons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 7px;
+    padding-right: 11px;
+}
+
+.sceneButton {
+    padding: 14px;
+    height: 166px;
+    display: flex;
+}
+
+.sceneMiddleButton {
+    width: 80%;
+    height: 200%;
 }

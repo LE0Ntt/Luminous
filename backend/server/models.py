@@ -1,9 +1,13 @@
-from server import db
+from sqlalchemy import JSON
 #from flask_login import UserMixin
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+import json
+from flask import jsonify
+from server import db
 
 class Admin(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     password_hash = db.Column(db.String(128))
 
     def set_password(self, password):
@@ -40,6 +44,7 @@ class Show(db.Model):
         return self.date.strftime('%d.%m.%y %H:%M')
         
 class Settings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     studio_grid = db.Column(JSON, nullable=False)    
     language = db.Column(db.String(2), default='en')
     
@@ -47,7 +52,9 @@ class Settings(db.Model):
         self.language = 'de' if self.language == 'en' else 'en'
         db.session.commit()
     
-    
+
+#db.drop_all()
+#db.create_all()    
     
 '''
 Die JSON-Spalte ermöglicht es, komplexe Datenstrukturen wie das JSON-Objekt, das du beschrieben hast, in der Datenbank zu speichern und abzurufen. Wenn du Daten in die Tabelle einfügen möchtest, kannst du dies auf folgende Weise tun:
@@ -117,5 +124,4 @@ class Plant(db.Model):
     def __repr__(self):
         return '<Plant {}>'.format(self.plant_name)
 '''
-# db.drop_all()
-# db.create_all()
+

@@ -1,6 +1,5 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
-import time
 import json
 from flask import jsonify
 from MOTORMIX_driver import Driver

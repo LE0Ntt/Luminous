@@ -8,18 +8,12 @@ from flask_cors import CORS
 #from motorMix_driver import Driver
 from server.motorMix_driver import Driver
 #from server.motorMix_handler import callback
+#from server.socket import *
+
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# Mutator method to get updates from driver
-def callback(index, value):
-    print("Eintrag", index, "wurde geändert:", value)
-    socketio.emit('variable_update', {'id': index, 'value': value}, namespace='/socket')
-    global sliders
-    sliders = json.loads(sliders)
-    sliders[index]["sliderValue"] = value
-    sliders = json.dumps(sliders)
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'VerySecretKey'
@@ -31,7 +25,9 @@ class Config(object):
 app = Flask(__name__)
 app.config.from_object(Config)
 CORS(app, resources={r"/*": {"origins": "*"}})
-socketio = SocketIO(app, cors_allowed_origins="*")
+#socketio = SocketIO(app, cors_allowed_origins = "*")
+
+#socketio.on_namespace(test_connect)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -42,10 +38,5 @@ from server import models, routes
 def create_tables():
     db.create_all()
 
-try:
-    driver = Driver()
-    driver.set_callback(callback)
-except OSError as e:
-    print("Fehler beim Initialisieren des Drivers:", str(e))
-    driver = None
 
+    

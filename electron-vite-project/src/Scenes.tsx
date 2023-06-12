@@ -2,7 +2,7 @@
  * Scenes.tsx
  * @author Leon Hölzel
  */
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import './Scenes.css';
 import { TranslationContext } from "./components/TranslationContext";
 import Fader from './components/Fader';
@@ -12,6 +12,10 @@ import Toggle from './components/Toggle';
 function Scenes() {
   const { t } = useContext(TranslationContext);
 
+  const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
+    localStorage.setItem('layer', `${status}`);
+  };
+  
   return (
     <div>
       <div className='window scenesMain'>
@@ -29,8 +33,8 @@ function Scenes() {
       </div>
       <div className='window scenesLayer'>
         <div className='scenesLayerAlign'>
-          <Toggle/>
-          LAYER
+          <Toggle onClick={handleToggleChange} enabled={localStorage.getItem('layer') === 'true'} />
+          {t("layer")}
         </div>
       </div>
     </div>

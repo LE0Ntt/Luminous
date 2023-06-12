@@ -21,22 +21,20 @@ const Studio = () => {
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.target.value as "en" | "de");
   };
+
   // Button to open Control
   const handleClick = (id: number) => {
     navigate('/control', { state: { id: id } });
   };
 
   // <- Big View:
-
   const [bigView, setBigView] = useState(false);
 
   const openBigView = () => {
-    console.log('Big View opened!');
     setBigView(true);
   };
 
   const closeBigView = () => {
-    console.log('Big View closed!');
     setBigView(false);
   };
   // :Big View End ->
@@ -79,18 +77,14 @@ const Studio = () => {
     
     on("variable_update", eventListener);
   
-    // Entfernen des Event-Listeners
     return () => off("variable_update", eventListener);
   }, [on, off]);
 
   return (
     <div>
       <select value={language} onChange={handleLanguageChange}>
-        <option value="en">{t("english")}</option>
-        <option value="de">{t("german")}</option>
-        <option value="fr">{t("french")}</option>
-        <option value="cn">{t("chinese")}</option>
-        <option value="ru">{t("russian")}</option>
+        <option value="en">{t("English 🇬🇧")}</option>
+        <option value="de">{t("German 🇩🇪")}</option>
       </select>
       <div className='scenes window'>
         <ScenesComponent sideId={0} />

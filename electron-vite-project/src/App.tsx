@@ -20,6 +20,7 @@ function App() {
   const mainContentRef = useRef<HTMLDivElement>(null);
   const [contentScale, setContentScale] = useState(1);
 
+  // To scale the content when the window is resized
   const updateContentScale = () => {
     if (mainContentRef.current) {
       const containerWidth = mainContentRef.current.offsetWidth;

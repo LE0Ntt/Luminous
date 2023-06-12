@@ -4,6 +4,7 @@ import '../assets/GridLines';
 import GridLines from '../assets/GridLines';
 import { TranslationContext } from "./TranslationContext";
 import { useConnectionContext } from "../components/ConnectionContext";
+import { boolean } from 'yargs';
 
 interface SceneConfig {
   id: number;
@@ -24,7 +25,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
   const [buttonText, setButtonText] = useState(t(''));
   const [repeatNumber, setRepeatNumber] = useState(6);
   const [buttonDisabled, setButtonDisabled] = useState(false);
-
+  
   useEffect(() => {
     fetchScenes();
   }, []);
@@ -86,12 +87,17 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
   };
 
   const toggleSceneStatus = (sceneId: number) => { 
+    const layer = localStorage.getItem('layer')  === 'true';
     setScenes((prevScenes) =>
       prevScenes.map((scene) => {
         if (scene.id === sceneId) {
           const newStatus = !scene.status;
           emit("scene_update", { id: sceneId, status: newStatus });
           return { ...scene, status: newStatus };
+        } // Deactivate already activated scenes if LAYER is off
+        else if (!layer && scene.status) {
+          emit("scene_update", { id: scene.id, status: false });
+          return { ...scene, status: false };
         }
         return scene;
       })

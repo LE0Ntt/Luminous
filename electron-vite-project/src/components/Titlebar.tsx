@@ -24,8 +24,6 @@ function Titlebar() {
     ipcRenderer.send('minimize');
   };
 
-
-
   /* <- settings */
   const [settings, setSettings] = useState(false);
 
@@ -38,7 +36,6 @@ function Titlebar() {
     console.log('Settings closed!');
     setSettings(false);
   };
-
 
   return (
     <div className='titlebarComp'>

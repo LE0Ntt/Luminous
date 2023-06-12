@@ -4,7 +4,7 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from flask import jsonify
-from server import db
+from server import db, app
 
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -51,10 +51,11 @@ class Settings(db.Model):
     def switch_language(self):
         self.language = 'de' if self.language == 'en' else 'en'
         db.session.commit()
-    
 
-#db.drop_all()
-#db.create_all()    
+# Clear db 
+with app.app_context():   
+    db.drop_all()
+    db.create_all()    
     
 '''
 Die JSON-Spalte ermöglicht es, komplexe Datenstrukturen wie das JSON-Objekt, das du beschrieben hast, in der Datenbank zu speichern und abzurufen. Wenn du Daten in die Tabelle einfügen möchtest, kannst du dies auf folgende Weise tun:

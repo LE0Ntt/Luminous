@@ -1,8 +1,9 @@
 from flask import Flask, render_template, jsonify
 from flask_socketio import SocketIO
-import json
-from server import app, routes
+from server import app, routes, db
 from server.motorMix_driver import Driver
+from server.models import Scene
+import json
 
 connections = 0 
 socketio = SocketIO(app, cors_allowed_origins = "*")
@@ -12,8 +13,7 @@ def register_socketio_events(socketio):
     def callback(index, value):
         print("Eintrag", index, "wurde geändert:", value)
         socketio.emit('variable_update', {'id': index, 'value': value}, namespace='/socket')
-        sliders = routes.sliders
-        sliders = json.loads(sliders)
+        sliders = json.loads(routes.sliders)
         sliders[index]["sliderValue"] = value
         routes.sliders = json.dumps(sliders)
 
@@ -21,36 +21,86 @@ def register_socketio_events(socketio):
         driver = Driver()
         driver.set_callback(callback)
     except OSError as e:
-        print("Fehler beim Initialisieren des Drivers:", str(e))
+        print("Possibly the MIDI interface is not connected.", str(e))
         driver = None
 
+    # Update status (on/off) of a scene
     @socketio.on('scene_update', namespace='/socket')
-    def handle_scene(data):
+    def update_scene(data):
         status = bool(data['status'])
         scene = int(data['id'])
-        print(scene, status)
-        scenes = routes.scenes
-        scenes = json.loads(scenes)
+        scenes = json.loads(routes.scenes)
         if scene < len(scenes): # Make sure scene exists
             scenes[scene]["status"] = status
         routes.scenes = json.dumps(scenes)
-        # Sende geänderte Werte an alle verbundenen Clients
+        # Send update to all clients
         global connections
         if connections > 0:
             socketio.emit('scene_update', {'id': scene, 'status': status}, namespace='/socket')
 
+    # Delete a scene and tell every client to update
+    @socketio.on('scene_delete', namespace='/socket')
+    def delete_scene(data):
+        scene = int(data['id'])
+        scenes = json.loads(routes.scenes)
+        if scene < len(scenes): # Make sure scene exists
+            scenes.pop(scene)
+            for entry in scenes: # Update ID of the following scenes
+                if entry['id'] > scene:
+                    entry['id'] -= 1
+            # Remove from the database and update every other id
+            db.session.query(Scene).filter(Scene.id == scene + 1).delete()
+            scenes_to_update = db.session.query(Scene).filter(Scene.id > scene + 1).all()
+            for scene in scenes_to_update:
+                scene.id -= 1
+            db.session.commit()
+        routes.scenes = json.dumps(scenes)
+        socketio.emit('scene_reload', namespace='/socket')
+    
+    # Add a scene and tell every client to update
+    @socketio.on('scene_add', namespace='/socket')
+    def add_scene(data):
+        scenes = json.loads(routes.scenes)
+        scenes.append(data['scene'])
+        routes.scenes = json.dumps(scenes)
+        if not data['scene']['saved']:
+            socketio.emit('scene_reload', namespace='/socket')
+        else:
+            save_scene(data['scene'])
+            
+    # Save a scene to the database
+    @socketio.on('scene_save', namespace='/socket')
+    def save_scene(data):
+        scene = int(data['id'])
+        scenes = json.loads(routes.scenes)
+        if scene < len(scenes): # Make sure scene exists
+            sceneToSave = scenes.pop(scene)
+            lastSavedIndex = Scene.query.count()
+            sceneToSave['saved'] = True
+            for entry in scenes:
+                if entry['id'] < scene and entry['id'] >= lastSavedIndex:
+                    entry['id'] += 1
+            sceneToSave['id'] = lastSavedIndex        
+            scenes.insert(lastSavedIndex, sceneToSave)
+            # Add scene to the database
+            new_scene = Scene(name='Scene1', number=1, color='red', channel=[1, 2, 3]) # beispiel test
+            db.session.add(new_scene)
+            db.session.commit()
+        routes.scenes = json.dumps(scenes)
+        socketio.emit('scene_reload', namespace='/socket')
+    
+    # Fader value update            
     @socketio.on('fader_value', namespace='/socket')
     def handle_fader_value(data):
         faderValue = int(data['value'])
         fader = int(data['id'])
-        print(fader, faderValue)
-        sliders = routes.sliders
-        sliders = json.loads(sliders)
+        #print(fader, faderValue)
+        sliders = json.loads(routes.sliders)
         if fader < len(sliders):
             sliders[fader]["sliderValue"] = faderValue
         routes.sliders = json.dumps(sliders)
         driver.pushFader(fader, faderValue) if driver is not None else None
-        # Sende geänderte Werte an alle verbundenen Clients
+        # Send update to all clients
         global connections
         if connections > 1:
             socketio.emit('variable_update', {'id': fader, 'value': faderValue}, namespace='/socket')

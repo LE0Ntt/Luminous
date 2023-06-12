@@ -103,12 +103,20 @@
     background: var(--primary);
 }
 
+.delete:hover {
+    background-color: red;
+}
+
 .saved {
     mask: url(../assets/bookmarkAdded.svg);
 }
 
 .notSaved {
     mask: url(../assets/bookmarkAdd.svg);
+}
+
+.notSaved:hover {
+    background-color: green;
 }
 
 .sceneButtons {

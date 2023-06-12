@@ -19,28 +19,18 @@ interface ScenesComponentProps {
 const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
   const { t } = useContext(TranslationContext);
   const { connected, on, off, emit, url } = useConnectionContext();
-
+  const [scenes, setScenes] = useState<SceneConfig[]>([]);
   const [height, setHeight] = useState(0);
   const [buttonText, setButtonText] = useState(t(''));
   const [repeatNumber, setRepeatNumber] = useState(6);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   useEffect(() => {
-    const fetchScenes = async () => {
-      try {
-        const response = await fetch(url + '/scenes');
-        const data = await response.json();
-        setScenes(JSON.parse(data));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
     fetchScenes();
   }, []);
 
   useEffect(() => {
-    const eventListener = (data: any) => {
+    const sceneUpdate = (data: any) => {
       setScenes((prevScenes) => {
         return prevScenes.map((scene, index) => {
           if (index === data.id) {
@@ -51,23 +41,32 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
       });
     };
     
-    on("scene_update", eventListener);
-  
-    return () => off("scene_update", eventListener);
+    const reloadScenes = () => {
+      fetchScenes();
+    };
+
+    on("scene_update", sceneUpdate);
+    on("scene_reload", reloadScenes);
+
+    return () => {
+      off("scene_update", sceneUpdate);
+      off("scene_reload", reloadScenes);
+    };
   }, [on, off]);
 
+  // Change the appearance of the component depending on which page it is called from
   useEffect(() => {
-    if (sideId === 0) {
+    if (sideId === 0) { // Studio
       setHeight(105);
       setButtonText(t("SaveCurrentConfiguration"));
       setRepeatNumber(5);
       setButtonDisabled(false);
-    } else if (sideId === 1) {
+    } else if (sideId === 1) { // Scenes
       setHeight(202);
       setButtonText(t("AddNewScene"));
       setRepeatNumber(6);
       setButtonDisabled(false);
-    } else if (sideId === 2) {
+    } else if (sideId === 2) { // Show
       setHeight(105);
       setButtonText('');
       setRepeatNumber(7);
@@ -75,7 +74,18 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
     }
   }, [sideId, t]);
 
-  const toggleSceneStatus = (sceneId: number) => {
+  // Get all scenes from the server with an API call
+  const fetchScenes = async () => {
+    try {
+      const response = await fetch(url + '/scenes');
+      const data = await response.json();
+      setScenes(JSON.parse(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const toggleSceneStatus = (sceneId: number) => { 
     setScenes((prevScenes) =>
       prevScenes.map((scene) => {
         if (scene.id === sceneId) {
@@ -88,17 +98,23 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
     );
   };
 
-  const [scenes, setScenes] = useState<SceneConfig[]>([]);
-  const addScene = () => {
-    setScenes([
-      ...scenes,
-      {
-        id: scenes.length,
-        name: 'Scene' + (scenes.length + 1),
-        status: false,
-        saved: true // zum testen
-      },
-    ]);
+  const deleteScene = (sceneId: number) => { 
+    emit("scene_delete", { id: sceneId });
+  };
+
+  const saveScene = (sceneId: number) => { 
+    emit("scene_save", { id: sceneId });
+  };
+
+  const addScene = () => { 
+    const scene: SceneConfig = {
+      id: scenes.length,
+      name: 'Scene' + (scenes.length + 1),
+      status: false,
+      saved: false
+    }
+
+    emit("scene_add", { scene: scene });
   };
 
   const extraButton = 1;
@@ -123,7 +139,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
                 <div className='sceneButtons'>
                   <button
                     className={`bookmark ${scene.saved ? 'saved' : 'notSaved'}`}
-                    onClick={() => scene.saved ? toggleSceneStatus(scene.id) : addScene()}
+                    onClick={() => scene.saved ? toggleSceneStatus(scene.id) : saveScene(scene.id)}
                   ></button>
                   <button
                     className={`sceneMiddleButton`}
@@ -131,7 +147,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
                   ></button>
                   <button
                     className={`delete`}
-                    onClick={addScene}
+                    onClick={() => deleteScene(scene.id)}
                   ></button>
                 </div>
               )}

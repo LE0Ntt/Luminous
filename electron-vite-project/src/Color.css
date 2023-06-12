@@ -97,7 +97,7 @@
     --shadowLight: 0px 3px 10px rgba(0, 0, 0, 0.1);
     --shadowButton: 0px 1px 5px rgba(0, 0, 0, 0.1);
 
-    --sceneOn: rgba(255, 255, 255, 1);
+    --sceneOn: rgba(255, 255, 255, .8);
     /* background image:
      * hintergrundbild für die app
      */

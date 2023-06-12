@@ -85,7 +85,7 @@
 .on {
     /* background-color: rgba(255, 255, 255, 0.8); */
     /* box-shadow: inset 0px 3px 10px 0px rgba(0, 0, 0, 0.12); */
-    box-shadow: 0 0 40px -15px var(--sceneOn),
+    box-shadow: 0 0 30px -13px var(--sceneOn),
                 inset 0 0 175px -25px var(--sceneOn),
                 inset 0 0 0 1px var(--sceneOn);
 }

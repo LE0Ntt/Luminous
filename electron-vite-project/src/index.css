@@ -38,7 +38,7 @@
   }
 
   * {
-    transition: border-color 200ms ease-out, background 200ms ease-out;
+    transition: border-color 200ms ease-out, background 200ms ease-out, box-shadow 200ms ease-out;;
   }
   
   .mainContainer {

@@ -91,9 +91,43 @@ const Studio = () => {
       </div>
       <div className='overview window'>
         <div className='studio_overview window'>
-          <div className='studio_overview_greenScreen'>A</div>
+          <div className='studio_overview_greenScreen'>
+            <div className='studio_overview_light'>
+              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
+              <div className='studio_overview_infopanel'></div>
+            </div>
+            <div className='studio_overview_light'>
+              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
+              <div className='studio_overview_infopanel'></div>
+            </div>
+            <div className='studio_overview_light'>
+              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
+              <div className='studio_overview_infopanel'></div>
+            </div>
+            <div className='studio_overview_light'>
+              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
+              <div className='studio_overview_infopanel'></div>
+            </div>
+            <div className='studio_overview_light'>
+              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
+              <div className='studio_overview_infopanel'></div>
+            </div>
+            <div className='studio_overview_light'>
+              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
+              <div className='studio_overview_infopanel'></div>
+            </div>
+          </div>
           <div className='studio_overview_lights'>B</div>
-          <div className='studio_overview_testchart'>C</div>
+          <div className='studio_overview_testchart'>
+            <div className='studio_overview_light'>
+              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_testchart_lamp'/>
+              <div className='studio_overview_infopanel'></div>
+            </div>
+            <div className='studio_overview_light'>
+              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_testchart_lamp'/>
+              <div className='studio_overview_infopanel'></div>
+            </div>
+          </div>
         </div>
       </div>
       <div className='mainfader window'>

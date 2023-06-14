@@ -63,7 +63,6 @@
     font-size: 25px;
     font-weight: 500;
     backdrop-filter: blur(5px);
-    position: relative;
     z-index: 9;
 }
 

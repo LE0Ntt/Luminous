@@ -9,7 +9,7 @@
     "help": "Help",
     "about": "About Luminous",
     "show": "Show",
-    "notConnected": "Sorry, you're currently not connected to the server. If the problem persists, please reach out to someone from the Studio department for assistance.",
+    "notConnected": "Unable to connect to Luminous server",
     "language": "Language",
     "view": "View",
     "fullscreen": "Full Screen",
@@ -19,9 +19,9 @@
     "SaveCurrentConfiguration": "Save as Scene",
     "AddNewScene": "Add New Scene",
     "group": "Group",
-    "noDevices": "No device selected.<br> Please choose at least one device to continue.",
+    "noDevices": "No device selected<br> Please choose at least one device to continue",
     "effects": "Effects",
-    "noSupport": "Effects are not supported by the selection.",
+    "noSupport": "Effects are not supported by the selection",
     "layer": "LAYER"
   },
   "de": {
@@ -34,7 +34,7 @@
     "help": "Hilfe",
     "about": "Über Luminous",
     "show": "Show",
-    "notConnected": "Entschuldigung, Sie sind derzeit nicht mit dem Server verbunden. Sollte das Problem fortbestehen, bitten wir Sie, sich an jemanden aus dem Studio-Bereich zu wenden, um Unterstützung zu erhalten.",
+    "notConnected": "Es konnte keine Verbindung zum Luminous Server hergestellt werden",
     "language": "Sprache",
     "view": "Ansicht",
     "fullscreen": "Vollbild",
@@ -44,9 +44,9 @@
     "SaveCurrentConfiguration": "Szene speichern",
     "AddNewScene": "Neue Szene hinzufügen",
     "group": "Gruppe",
-    "noDevices": "Kein Gerät ausgewählt.<br> Bitte wählen Sie mindestens ein Gerät aus, um fortzufahren.",
+    "noDevices": "Kein Gerät ausgewählt<br> Bitte wählen Sie mindestens ein Gerät aus, um fortzufahren",
     "effects": "Effekte",
-    "noSupport": "Effekte werden von der Auswahl nicht unterstützt.",
+    "noSupport": "Effekte werden von der Auswahl nicht unterstützt",
     "layer": "LAYER"
   }
 }

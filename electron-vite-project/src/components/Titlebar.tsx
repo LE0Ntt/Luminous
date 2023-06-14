@@ -5,16 +5,15 @@ import './Titlebar.css';
 import Button from './Button';
 import Settings from './Settings';
 
-function Titlebar() {
+function TitleBar() {
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [settings, setSettings] = useState(false);
   const { t } = useContext(TranslationContext);
 
   const toggleFullScreen = async () => {
-    //console.log('Sending toggle-full-screen event'); // DEBUG
     const response = await ipcRenderer.invoke('toggle-full-screen');
     setIsFullScreen(!isFullScreen);
-    //console.log(response); // DEBUG
-  }
+  };
 
   const handleClose = () => {
     window.close();
@@ -23,9 +22,6 @@ function Titlebar() {
   const handleMinimize = () => {
     ipcRenderer.send('minimize');
   };
-
-  /* <- settings */
-  const [settings, setSettings] = useState(false);
 
   const openSettings = () => {
     console.log('Settings opened!');
@@ -41,26 +37,35 @@ function Titlebar() {
     <div className='titlebarComp'>
       <nav>
         <ul>
-          <li><p className='mr-2'>Luminous</p></li>{/* mr-2 ist Tailwind, muss noch geändert werden :) */}
-          <li><a href="#">⚙️</a>
-            <ul>
+          <li>
+            <p className='mr-2'>Luminous</p>
+          </li>
+          <li>
+            <button className="dropdown-toggle" onClick={openSettings}>
+              <a href="#">⚙️</a> {t("Settings")}
+            </button>
+            {settings && <Settings onClose={closeSettings} />}
+            <ul className="dropdown-menu">
               <li>
-              <button onClick={() => openSettings()}>
-                {t("settings")}
-                {/* {settings && <Settings onClose={closeSettings} />} */}
-              </button>
-              </li><br />
-              <li><a href="#">{t("language")}</a></li><br />
-              <li><a href="#">{t("editLights")}</a></li><br />
-              <li><a href="#">{t("small")}</a></li><br />
-              <li>
-              <button onClick={toggleFullScreen} className='flex'>
-              <div>{isFullScreen ? t("exitFullscreen") : t("fullscreen")}</div>
-              <div className='align-right'>F11</div>
-              </button>
+                <button className="dropdown-item" onClick={openSettings}>
+                  {t("Language")}
+                </button>
               </li>
-              <li><a href="#">{t("documentation")}</a></li><br />
-              <li><a href="#">{t("about")}</a></li><br />
+              <li>
+                <button className="dropdown-item" onClick={openSettings}>
+                  {t("Edit Lights")}
+                </button>
+              </li>
+              <li>
+                <button className="dropdown-item" onClick={openSettings}>
+                  {t("Documentation")}
+                </button>
+              </li>
+              <li>
+                <button className="dropdown-item" onClick={toggleFullScreen}>
+                  {isFullScreen ? t("exitFullscreen") : t("fullscreen")}
+                </button>
+              </li>
             </ul>
           </li>
         </ul>
@@ -76,7 +81,7 @@ function Titlebar() {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
-export default Titlebar
+export default TitleBar

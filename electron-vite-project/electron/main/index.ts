@@ -60,10 +60,11 @@ async function createWindow() {
       contextIsolation: false,
     },
     width: 1920,  //ändert Fenster breite
-    height: 1080, //"         "    höhe
+    height: 1080, //ändert Fenster höhe
     minWidth: 1024,  // Mindestbreite des Fensters
-    minHeight: 618, // Mindesthöhe    "      "
+    minHeight: 618, // Mindesthöhe des Fensters
     titleBarStyle: 'hidden',
+    frame: false,
   })
 
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298

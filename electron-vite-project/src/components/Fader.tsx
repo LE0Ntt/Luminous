@@ -4,6 +4,7 @@ import { useConnectionContext } from './ConnectionContext';
 
 interface SliderProps {
   sliderValue?: number;
+  setSliderValue?: (value: number) => void;   // und das hier
   id?: number;
   name?: string;
   height?: number;
@@ -11,6 +12,7 @@ interface SliderProps {
 
 const Fader: React.FC<SliderProps> = ({
   sliderValue = 0,
+  setSliderValue = () => {},                  // und das hier 
   id,
   name,
   height,
@@ -45,6 +47,8 @@ const Fader: React.FC<SliderProps> = ({
   const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
     setValue(newValue);
+    setSliderValue(newValue);                     // das hier   
+    console.log("sliderValueTest: ", sliderValue);    // das hier
     cacheValueRef.current = newValue;
 
     // Send only at certain time intervals 

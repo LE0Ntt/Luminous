@@ -40,8 +40,8 @@ const Studio = () => {
   // :Big View End ->
 
   // <- Studio Overview:
-  const studioRows = 4;
-  const studioColumns = 4;
+  const studioRows = 3;
+  const studioColumns = 2;
 
   const grid = Array(studioRows).fill(undefined).map(() => Array(studioColumns).fill(undefined));
   // :Studio Overview End ->
@@ -86,6 +86,20 @@ const Studio = () => {
   
     return () => off("variable_update", eventListener);
   }, [on, off]);
+
+
+  // studio overview...
+  //const studioOverviewValue = sliders && sliders[0] ? sliders[0].sliderValue / 255 : 0;
+  const [sliderValue, setSliderValue] = useState(0);
+
+/*   const [studioOverviewValue, setStudioOverviewValue] = useState(0);
+
+  useEffect(() => {
+    setStudioOverviewValue(sliders && sliders[0] ? sliders[0].sliderValue / 255 : 0);
+    console.log(sliders[0].sliderValue / 255);
+  }
+  , [sliders[0].sliderValue]); */
+
 
   return (
     <div>
@@ -137,10 +151,13 @@ const Studio = () => {
           }}>
             {grid.map((row, rowIndex) => 
               row.map((_, colIndex) => 
-                {if (colIndex < row.length / 2) {
+                {
+                  console.log(sliderValue);
+                  if (colIndex < row.length / 2) {
                   return (
                     <div key={`${rowIndex}-${colIndex}`}>
                       <div className='studio_overview_light'>
+                        <img src="/src/assets/schein2.png" alt="schein" className={'schein'} style={{opacity: sliderValue/255}} />
                         <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
                         <div className='studio_overview_infopanel'>{rowIndex}{colIndex}</div>
                       </div>
@@ -149,10 +166,11 @@ const Studio = () => {
                   return (
                     <div key={`${rowIndex}-${colIndex}`}>
                       <div className='studio_overview_light'>
+                        <img src="/src/assets/schein2.png" alt="schein" className={'schein'} style={{opacity: sliderValue/255}} />
                         <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
                         <div className='studio_overview_infopanel'>{rowIndex}{colIndex}</div>
                       </div>
-                    </div>
+                    </div> 
                   )
                 }}
               )
@@ -191,6 +209,7 @@ const Studio = () => {
                 <Fader
                   key={slider.id}
                   sliderValue={slider.sliderValue}
+                  setSliderValue={setSliderValue}
                   id={slider.id}
                   name={slider.name}
                 />

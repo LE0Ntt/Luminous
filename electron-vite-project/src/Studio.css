@@ -56,6 +56,7 @@
 .studio_overview_infopanel {
     height: 39px;
     width: 90px;
+    margin-left: 5px;
     border-radius: 5px;
     border: 1px solid var(--onepStroke);
     background-color: var(--fillThick);
@@ -63,17 +64,24 @@
     backdrop-filter: var(--windowBackdrop);
     box-shadow: var(--shadowLight);
     -webkit-box-shadow: var(--shadowLight);
-    position: relative;
-    top: -40%;
+    position: absolute;
+    top: 60px;
     z-index: 1;
 }
 
 .studio_overview_light {
     color: var(--primary);
     position: relative;
+    display: inline-block;
+    background-color: aqua;
+}
+
+.schein {
+    position: absolute;
     width: 100px;
     height: 100px;
-    display: inline-block;
+    top: -52px;
+    opacity: 0;
 }
 
 .studio_overview_greenScreen {
@@ -87,8 +95,8 @@
 .studio_overview_greenScreen_lamp {
     transform: scale(0.5);
     position: relative;
-    display: inline;
-    top: 0%;
+    /* top: 30px; */
+    /* display: inline; */
     z-index: 2;
 }
 

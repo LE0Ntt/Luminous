@@ -160,7 +160,7 @@ def register_socketio_events(socketio):
                           'id': fader, 'value': faderValue}, namespace='/socket')
 
         # DMX-Data senden
-        send_dmx(fader, faderValue, universe)
+        #send_dmx(fader, faderValue, universe)
 
     @socketio.on('connect', namespace='/socket')
     def connect():

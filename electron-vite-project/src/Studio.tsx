@@ -39,6 +39,13 @@ const Studio = () => {
   };
   // :Big View End ->
 
+  // <- Studio Overview:
+  const studioRows = 4;
+  const studioColumns = 4;
+
+  const grid = Array(studioRows).fill(undefined).map(() => Array(studioColumns).fill(undefined));
+  // :Studio Overview End ->
+
   interface SliderConfig {
     id: number;
     sliderValue: number;
@@ -117,7 +124,41 @@ const Studio = () => {
               <div className='studio_overview_infopanel'></div>
             </div>
           </div>
-          <div className='studio_overview_lights'>B</div>
+          <div className='studio_overview_lights'>
+          <div style={{ 
+            display: 'grid',
+            gridTemplateRows: `repeat(${studioRows}, 1fr)`,
+            gridTemplateColumns: `repeat(${studioColumns}, 1fr)`,
+            gap: '10px', // Abstand zwischen den Zellen
+            width: '604px',
+            height: '672px',
+            alignItems: 'center',
+            justifyItems: 'center',
+          }}>
+            {grid.map((row, rowIndex) => 
+              row.map((_, colIndex) => 
+                {if (colIndex < row.length / 2) {
+                  return (
+                    <div key={`${rowIndex}-${colIndex}`}>
+                      <div className='studio_overview_light'>
+                        <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
+                        <div className='studio_overview_infopanel'>{rowIndex}{colIndex}</div>
+                      </div>
+                    </div>
+                  )} else {
+                  return (
+                    <div key={`${rowIndex}-${colIndex}`}>
+                      <div className='studio_overview_light'>
+                        <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
+                        <div className='studio_overview_infopanel'>{rowIndex}{colIndex}</div>
+                      </div>
+                    </div>
+                  )
+                }}
+              )
+            )}
+          </div>
+          </div>
           <div className='studio_overview_testchart'>
             <div className='studio_overview_light'>
               <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_testchart_lamp'/>

@@ -43,16 +43,16 @@ const Studio = () => {
   const studioRows = 6;     // Anzahl der Reihen, werden später in Settings einstellbar sein
   const studioColumns = 4;  // Anzahl der Spalten, werden später in Settings einstellbar sein
   const selectedSliders = [ // Slider, die in der Studio Overview angezeigt werden sollen (werden später in Settings einstellbar sein)
-    { id: 1, row: 0, col: 0 },
-    { id: 2, row: 0, col: 1 },
-    { id: 3, row: 3, col: 2 },
-    { id: 4, row: 0, col: 3 },
-    { id: 5, row: 1, col: 0 },
-    { id: 6, row: 1, col: 1 },
-    { id: 7, row: 1, col: 2 },
-    { id: 8, row: 1, col: 3 },
-    { id: 9, row: 2, col: 0 },
-    { id: 10, row: 2, col: 1 },
+    { id: 1, row: 0, col: 0 , fake: false},
+    { id: 2, row: 0, col: 1 , fake: false},
+    { id: 3, row: 3, col: 2 , fake: false},
+    { id: 4, row: 0, col: 3 , fake: false},
+    { id: 5, row: 1, col: 0 , fake: false},
+    { id: 6, row: 1, col: 1 , fake: true},
+    { id: 7, row: 1, col: 2 , fake: false},
+    { id: 8, row: 1, col: 3 , fake: false},
+    { id: 9, row: 2, col: 0 , fake: false},
+    { id: 10, row: 2, col: 1 , fake: false},
   ]
 // Erstellt ein Array mit der Anzahl der Reihen und Spalten, die in der Studio Overview angezeigt werden sollen
   const grid = Array(studioRows).fill(undefined).map(() => Array(studioColumns).fill(undefined)); 
@@ -188,7 +188,8 @@ const Studio = () => {
 
                 if (
                   selectedSlider &&
-                  colIndex < row.length / 2
+                  colIndex < row.length / 2 &&
+                  selectedSlider.fake === false
                 ) {
                   return (
                     <div key={`${rowIndex}-${colIndex}`}>
@@ -207,7 +208,8 @@ const Studio = () => {
                     </div>
                 )} else  if (
                   selectedSlider &&
-                  colIndex >= row.length / 2
+                  colIndex >= row.length / 2 &&
+                  selectedSlider.fake === false
                 )  {
                 return (
                   <div key={`${rowIndex}-${colIndex}`}>
@@ -221,6 +223,21 @@ const Studio = () => {
                           <div>#{slider.id}</div>
                         </div>                        
                       </>
+                    )}
+                    </div>
+                  </div> 
+                )
+              } else if (
+                selectedSlider &&
+                selectedSlider.fake === true
+              ) {
+                return (
+                  <div key={`${rowIndex}-${colIndex}`}>
+                    <div className='studio_overview_light ml-[45px]'> {/* ml-[45px] noch tailwind code */}
+                    {slider && (
+                      <div>
+                        FAKE       
+                      </div>
                     )}
                     </div>
                   </div> 

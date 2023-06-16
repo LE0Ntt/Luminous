@@ -3,6 +3,7 @@ import './BigView.css';
 import Button from './Button';
 import '../index.css';
 import Toggle from './Toggle';
+import Fader from './Fader';
 
 interface BigViewProps {
   onClose: () => void;
@@ -30,7 +31,9 @@ function BigView({ onClose }: BigViewProps) {
         >
           <div className='removeIcon centerIcon'></div>
         </Button>
-        <span>Devices</span> <div className='toggleUniverse'><Toggle /></div><span>DMX Channel</span>
+        <div className='BigViewLayer innerWindow'>
+          <span>Devices</span> <div className='toggleUniverse'><Toggle /></div><span>DMX Channel</span>
+        </div>
         <div className='BigViewContent innerWindow'>
           Text 1
         </div>

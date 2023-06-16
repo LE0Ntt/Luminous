@@ -14,7 +14,8 @@
 
 .BigViewContainer {
     position: fixed;
-    z-index: 9999; /* Above everything */
+    z-index: 9999;
+    /* Above everything */
     height: 910px;
     width: 1840px;
     top: 0;
@@ -32,12 +33,26 @@
     position: relative;
     height: 406px;
     width: 100%;
-    top: 17px;
+    top: 41px;
+    /* war mal 17px */
     margin-bottom: 20px;
     overflow: hidden;
 }
 
+.BigViewLayer {
+    position: absolute;
+    top: 10px;
+    height: 36px;
+    width: 225px;
+    object-fit: contain;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
 .toggleUniverse {
+    margin-left: 5px;
+    margin-right: 5px;
     top: 3px;
     position: relative;
     display: inline;

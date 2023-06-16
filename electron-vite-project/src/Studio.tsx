@@ -40,10 +40,16 @@ const Studio = () => {
   // :Big View End ->
 
   // <- Studio Overview:
-  const studioRows = 3;
-  const studioColumns = 2;
+  const studioRows = 6;
+  const studioColumns = 4;
+  const selectedSliders = [ // funktioniert noch nicht ganz, kann nicht auswählen, welche lampe wo ist, nimmt immer die ersten aus dem slider array
+    { id: 2, row: 0, col: 0 },
+  ]
 
   const grid = Array(studioRows).fill(undefined).map(() => Array(studioColumns).fill(undefined));
+
+  const solo = false;
+  const soloLights = [1, 2, 3];
   // :Studio Overview End ->
 
   interface SliderConfig {
@@ -90,7 +96,19 @@ const Studio = () => {
 
   // studio overview...
   //const studioOverviewValue = sliders && sliders[0] ? sliders[0].sliderValue / 255 : 0;
-  const [sliderValue, setSliderValue] = useState(0);
+  //const [sliderValue, setSliderValue] = useState(0);
+
+  const setSliderValue = (value: number, id: number) => {
+    setSliders((prevSliders) => {
+      return prevSliders.map((slider, index) => {
+        if (index === id) {
+          return { ...slider, sliderValue: value };
+        }
+        return slider;
+      });
+    }
+    );
+  };
 
 /*   const [studioOverviewValue, setStudioOverviewValue] = useState(0);
 
@@ -143,38 +161,59 @@ const Studio = () => {
             display: 'grid',
             gridTemplateRows: `repeat(${studioRows}, 1fr)`,
             gridTemplateColumns: `repeat(${studioColumns}, 1fr)`,
-            gap: '10px', // Abstand zwischen den Zellen
+            gap: '5px', // Abstand zwischen den Zellen
             width: '604px',
             height: '672px',
             alignItems: 'center',
             justifyItems: 'center',
           }}>
             {grid.map((row, rowIndex) => 
-              row.map((_, colIndex) => 
-                {
-                  console.log(sliderValue);
-                  if (colIndex < row.length / 2) {
+              row.map((_, colIndex) => {
+                const sliderIndex = rowIndex * row.length + colIndex;
+                const slider = sliders[sliderIndex];
+            
+                const selectedSlider = selectedSliders.find(
+                  slider => slider.row === rowIndex && slider.col === colIndex
+                );
+
+                if (
+                  selectedSlider &&
+                  colIndex < row.length / 2
+                ) {
                   return (
                     <div key={`${rowIndex}-${colIndex}`}>
-                      <div className='studio_overview_light'>
-                        <img src="/src/assets/schein2.png" alt="schein" className={'schein'} style={{opacity: sliderValue/255}} />
-                        <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
-                        <div className='studio_overview_infopanel'>{rowIndex}{colIndex}</div>
+                      <div className='studio_overview_light mr-[45px]'> {/* mr-[45px] noch tailwind code */}
+                      {slider && (
+                        <>
+                          <img src="/src/assets/schein2.png" alt="schein" className={'schein'} style={{opacity: (solo && soloLights.includes(slider.id)) ? 0 : (slider.sliderValue/255) * (sliders[0].sliderValue/255)}} />
+                          <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
+                          <div className='studio_overview_infopanel'>{rowIndex}{colIndex}</div>
+                        </>
+                      )}
                       </div>
                     </div>
-                  )} else {
-                  return (
-                    <div key={`${rowIndex}-${colIndex}`}>
-                      <div className='studio_overview_light'>
-                        <img src="/src/assets/schein2.png" alt="schein" className={'schein'} style={{opacity: sliderValue/255}} />
+                )} else  if (
+                  selectedSlider &&
+                  colIndex >= row.length / 2
+                )  {
+                return (
+                  <div key={`${rowIndex}-${colIndex}`}>
+                    <div className='studio_overview_light ml-[45px]'> {/* ml-[45px] noch tailwind code */}
+                    {slider && (
+                      <>
+                        <img src="/src/assets/schein2.png" alt="schein" className={'schein'} style={{opacity: (solo && soloLights.includes(slider.id)) ? 0 : (slider.sliderValue/255) * (sliders[0].sliderValue/255)}} />
                         <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
                         <div className='studio_overview_infopanel'>{rowIndex}{colIndex}</div>
-                      </div>
-                    </div> 
-                  )
-                }}
-              )
-            )}
+                      </>
+                    )}
+                    </div>
+                  </div> 
+                )
+              }
+              // Standardfall: Leerzeichen für nicht ausgewählte Slider
+              return <div key={`${rowIndex}-${colIndex}`} />;
+            })
+          )}
           </div>
           </div>
           <div className='studio_overview_testchart'>
@@ -194,6 +233,7 @@ const Studio = () => {
           <Fader
             height={340}
             sliderValue={sliders[0].sliderValue}
+            setSliderValue={(value: number) => setSliderValue(value, 0)}
             id={0}
             name="Master"
           />
@@ -209,7 +249,7 @@ const Studio = () => {
                 <Fader
                   key={slider.id}
                   sliderValue={slider.sliderValue}
-                  setSliderValue={setSliderValue}
+                  setSliderValue={(value: number) => setSliderValue(value, slider.id)}
                   id={slider.id}
                   name={slider.name}
                 />

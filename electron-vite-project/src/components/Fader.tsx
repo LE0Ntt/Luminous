@@ -48,7 +48,7 @@ const Fader: React.FC<SliderProps> = ({
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
     setValue(newValue);
     setSliderValue(newValue);                     // das hier   
-    console.log("sliderValueTest: ", sliderValue);    // das hier
+    console.log("sliderValue: ", sliderValue);    // das hier
     cacheValueRef.current = newValue;
 
     // Send only at certain time intervals 

@@ -73,7 +73,7 @@
     color: var(--primary);
     position: relative;
     display: inline-block;
-    background-color: aqua;
+    /* background-color: aqua; */
 }
 
 .schein {
@@ -109,7 +109,7 @@
     width: calc(100% - 200px);
     position: relative;
     margin-left: 100px;
-    background-color: rgba(104, 196, 68, 0.274);
+    /* background-color: rgba(104, 196, 68, 0.274); */
 }
 
 .studio_overview_testchart {

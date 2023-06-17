@@ -1,38 +1,77 @@
 .grid-container {
-    border-collapse: collapse;
-  }
-  
-  .grid-cell {
-    width: 40px;
-    height: 40px;
-    background-color: #f2f2f2;
-    position: relative;
-    border: 1px solid gray; /* Border zwischen den Zellen */
-  }
-  
-  .selected {
-    background-color: #d9d9d9;
-  }
-  
-  .red-box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 30px;
-    height: 30px;
-    background-color: red;
-  }
-  
-  .gray-box {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: gray;
-    display: none;
-  }
-  
-  .grid-cell:hover .gray-box {
-    display: block;
-  }
-  
+  border-collapse: collapse;
+  overflow: scroll;
+}
+
+.grid-cell {
+  width: 32px;
+  height: 60px;
+  background-color: #f2f2f2;
+  position: relative;
+  border: 1px solid gray; /* Border zwischen den Zellen */
+}
+
+.selected {
+  background-color: #d9d9d9;
+}
+
+.red-box {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(0, -50%);
+  width: 40px; /* Breite auf 2 Zellen anpassen */
+  height: 60px;
+  background-color: red;
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 9;
+}
+
+.red-box-handle-left,
+.red-box-handle-right {
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.red-box-handle-left {
+  left: -5px;
+  cursor: w-resize;
+}
+
+.red-box-handle-right {
+  right: -5px;
+  cursor: e-resize;
+}
+
+.red-box:hover .red-box-handle-left,
+.red-box:hover .red-box-handle-right {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.red-box-content {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.gray-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: gray;
+  display: none;
+  z-index: 19;
+  border-radius: 5px;
+}
+
+.grid-cell:hover .gray-box,
+.grid-cell.drag-over .gray-box {
+  display: block;
+}
+

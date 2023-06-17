@@ -4,6 +4,7 @@ import '../assets/GridLines';
 import GridLines from '../assets/GridLines';
 import { TranslationContext } from "./TranslationContext";
 import { useConnectionContext } from "../components/ConnectionContext";
+import { addScene } from './addSceneUtils';
 
 interface SceneConfig {
   id: number;
@@ -111,15 +112,8 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
     emit("scene_save", { id: sceneId });
   };
 
-  const addScene = () => { 
-    const scene: SceneConfig = {
-      id: scenes.length,
-      name: 'Scene' + (scenes.length + 1),
-      status: false,
-      saved: false
-    }
-
-    emit("scene_add", { scene: scene });
+  const handleAddScene = () => {
+    addScene(scenes, emit); // Verwendung der addScene-Funktion
   };
 
   const extraButton = 1;
@@ -162,7 +156,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
             className='AddSceneButton'
             disabled={buttonDisabled}
             style={{ height: `${height}px` }}
-            onClick={addScene}
+            onClick={handleAddScene}
           >
             <GridLines height={height} />
             {!buttonDisabled && <div className='AddSceneIcon'></div>}

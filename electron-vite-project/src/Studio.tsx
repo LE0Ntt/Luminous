@@ -53,6 +53,7 @@ const Studio = () => {
     { id: 8, row: 1, col: 3 , fake: false},
     { id: 9, row: 2, col: 0 , fake: false},
     { id: 10, row: 2, col: 1 , fake: false},
+    { id: 0, row: 2, col: 2 , fake: true},
   ]
 // Erstellt ein Array mit der Anzahl der Reihen und Spalten, die in der Studio Overview angezeigt werden sollen
   const grid = Array(studioRows).fill(undefined).map(() => Array(studioColumns).fill(undefined)); 
@@ -196,7 +197,7 @@ const Studio = () => {
                       <div className='studio_overview_light mr-[45px]'> {/* mr-[45px] noch tailwind code */}
                       {slider && (
                         <>
-                          <img src="/src/assets/schein2.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (slider.sliderValue/255) * (sliders[0].sliderValue/255)}} />
+                          <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (slider.sliderValue/255) * (sliders[0].sliderValue/255)}} />
                           <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
                           <div className='studio_overview_infopanel'>
                             {rowIndex}{colIndex}
@@ -216,7 +217,7 @@ const Studio = () => {
                     <div className='studio_overview_light ml-[45px]'> {/* ml-[45px] noch tailwind code */}
                     {slider && (
                       <>
-                        <img src="/src/assets/schein2.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (slider.sliderValue/255) * (sliders[0].sliderValue/255)}} />
+                        <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (slider.sliderValue/255) * (sliders[0].sliderValue/255)}} />
                         <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
                         <div className='studio_overview_infopanel'>
                           {rowIndex}{colIndex}

@@ -5,6 +5,9 @@ import { useLocation } from 'react-router-dom';
 import './Control.css';
 import Fader from './components/Fader';
 import DeviceList from './components/DeviceList';
+import Button from "./components/Button";
+import ScenesComponent from "./components/ScenesComponent";
+import { addScene } from "./components/addSceneUtils";
 
 function Control() {
   const { t } = useContext(TranslationContext);
@@ -113,6 +116,21 @@ function Control() {
   const hide   = 'noSelectWindow window' + (selected ? ' hide' : '');
   const selectAnimation = 'selectedDevices' + (animiation ? ' devicesAnimation' : '');
 
+
+  // <- SOLO:
+  const toggleSOLO = () => {
+    console.log("clicked SOLO")
+
+    const solo = localStorage.getItem('solo') === 'true';
+  };
+  // :SOLO END ->
+
+  // <- Add Scene:
+/*   const handleAddScene = () => {
+    addScene(scenes, emit); // Verwendung der addScene-Funktion
+  }; */
+  // :Add Scene END ->
+
   return (
     <div>
       { selected ? (
@@ -130,7 +148,20 @@ function Control() {
               name={t("group")}
             />
           </div>
-          <div className="controlButtons innerWindow"></div>
+          <div className="controlButtons innerWindow">
+            <Button 
+              onClick={() => toggleSOLO()} 
+              className="controlButton buttonCreateScene"
+            >
+              {t("saveAsScene")}
+            </Button>
+            <Button 
+              onClick={() => toggleSOLO()}
+              className="controlButton buttonSOLO"
+            >
+              SOLO
+            </Button>
+          </div>
           <div className="controlBiColor innerWindow">
             <span className="controlTitle">Bi-Color</span>
           </div>

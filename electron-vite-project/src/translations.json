@@ -22,7 +22,8 @@
     "noDevices": "No device selected.<br> Please choose at least one device to continue.",
     "effects": "Effects",
     "noSupport": "Effects are not supported by the selection.",
-    "layer": "LAYER"
+    "layer": "LAYER",
+    "saveAsScene": "Save as Scene"
   },
   "de": {
     "greeting": "Hallo!",
@@ -47,6 +48,7 @@
     "noDevices": "Kein Gerät ausgewählt.<br> Bitte wählen Sie mindestens ein Gerät aus, um fortzufahren.",
     "effects": "Effekte",
     "noSupport": "Effekte werden von der Auswahl nicht unterstützt.",
-    "layer": "LAYER"
+    "layer": "LAYER",
+    "saveAsScene": "Als Szene speichern"
   }
 }

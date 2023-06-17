@@ -24,7 +24,7 @@
     position: absolute;
 }
 
-.controlMain>g>g>*{
+.controlMain > g > g > * {
     transition: all 200ms ease-out;
 }
 
@@ -125,4 +125,26 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.controlButton {
+    width: 246px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: var(--mainColor);
+    color: var(--primary);
+    position: absolute;
+    top: 20px;
+    box-shadow: var(--shadowButton);
+    border: solid 1px var(--color00000008);
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.buttonSOLO {
+    right: 20px;
+}
+
+.buttonCreateScene {
+    left: 20px;
 }

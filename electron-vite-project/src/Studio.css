@@ -138,11 +138,6 @@
     transform: translate(calc(-50% - 10px), -50%);
 }
 
-.buttonOpenControl:hover {
-    background: hotpink;
-    cursor: pointer;
-}
-
 .buttonBigView {
     width: 36px;
     height: 36px;

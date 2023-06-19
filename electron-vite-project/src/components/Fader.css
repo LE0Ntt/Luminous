@@ -35,14 +35,14 @@
 }
 
 .value-slider {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
     position: absolute;
-    height: 100%;
-    width: 100%;
+    bottom: 70px;
+    left: 44%;
 }
 
 .slider {
-    transform: rotate(270deg);
-    -webkit-transform: rotate(270deg);
     appearance: none;
     -webkit-appearance: none;
     width: 260px;
@@ -52,9 +52,8 @@
     outline: none;
     -webkit-transition: .2s;
     transition: opacity .2s;
-    position: relative;
-    top: 44%;
-    left: -80px;
+    position: absolute;
+    top: 50%;
 }
 
 /* Slider Track - all Browsers */

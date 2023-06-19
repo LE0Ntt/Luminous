@@ -1,6 +1,6 @@
 {
   "name": "Luminous",
-  "version": "2.1.0",
+  "version": "0.1",
   "proxy": "http://127.0.0.1:5000",
   "main": "dist-electron/main/index.js",
   "description": "Luminous DMX light controll app.",

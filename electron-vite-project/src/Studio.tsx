@@ -169,20 +169,6 @@ const Studio = () => {
           }}>
             {grid.map((row, rowIndex) => 
               row.map((_, colIndex) => {
-                /* const sliderIndex = rowIndex * row.length + colIndex;
-                const slider = sliders[sliderIndex];
-            
-                const selectedSlider = selectedSliders.find(
-                  slider => slider.row === rowIndex && slider.col === colIndex
-                ); */
-                /* const slider = sliders.find(
-                  (s) => s.id === rowIndex * row.length + colIndex + 1
-                );
-            
-                const selectedSlider = selectedSliders.find(
-                  (s) => s.row === rowIndex && s.col === colIndex
-                ); */
-
                 const selectedSlider = selectedSliders.find((s) => s.row === rowIndex && s.col === colIndex);
                 const sliderId = selectedSlider ? selectedSlider.id : null;
                 const slider = sliders.find((s) => s.id === sliderId);

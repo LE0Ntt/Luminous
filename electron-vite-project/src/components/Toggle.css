@@ -1,3 +1,5 @@
+@import url(../Color.css);
+
 /* The switch - the box around the slider */
 .toggle {
     position: relative;

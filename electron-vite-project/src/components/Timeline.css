@@ -1,4 +1,4 @@
-.grid-container {
+.timeline-container {
   border-collapse: collapse;
   overflow: scroll;
 }
@@ -20,12 +20,19 @@
   top: 50%;
   left: 0;
   transform: translate(0, -50%);
-  width: 40px; /* Breite auf 2 Zellen anpassen */
   height: 60px;
   background-color: red;
   border-radius: 5px;
   overflow: hidden;
   z-index: 9;
+  pointer-events: auto;
+}
+
+.red-box.dragged {
+  /* background-color: brown; 
+  opacity: .5;*/
+  /* height: 0;
+  overflow:visible; */
 }
 
 .red-box-handle-left,
@@ -66,8 +73,9 @@
   height: 100%;
   background-color: gray;
   display: none;
-  z-index: 19;
+  z-index: 8;
   border-radius: 5px;
+  pointer-events: none;
 }
 
 .grid-cell:hover .gray-box,

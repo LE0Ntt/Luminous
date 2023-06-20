@@ -43,32 +43,32 @@ function TitleBar() {
    * @param event  The mouse event
    */
   const dismissHandler = (event: React.FocusEvent<HTMLButtonElement>): void => {
-    if (event.currentTarget === event.target) {
+    const delayedCodeExecution = () => {
       setShowDropDown(false);
-    }
+    };
+    setTimeout(delayedCodeExecution, 100);
   };
   /*
   * @param setting  The selected setting
   */
- const settingSelection = (setting: string): void => {
-  if(setting === settings()[0]) {
-    openSettings();
-  }
-  if(setting === settings()[4]) {
-    toggleFullScreen();
-  }
- };
+  const settingSelection = (setting: string): void => {
+    if(setting === settings()[0]) {
+      openSettings();
+    }
+    if(setting === settings()[4]) {
+      toggleFullScreen();
+    }
+  };
 
- const openSettings = () => {
-  console.log('Settings opened!');
-  setSettingsOpen(true);
-};
+  const openSettings = () => {
+    console.log('Settings opened!');
+    setSettingsOpen(true);
+  };
 
-const closeSettings = () => {
-  console.log('Settings closed!');
-  setSettingsOpen(false);
-};
-
+  const closeSettings = () => {
+    console.log('Settings closed!');
+    setSettingsOpen(false);
+  };
 
   /**
    * MacOS Titlebar Settings
@@ -88,8 +88,8 @@ const closeSettings = () => {
               className={showDropDown ? "active" : undefined  }
               onClick={(): void => toggleDropDown()}
               onBlur={(e: React.FocusEvent<HTMLButtonElement>): void =>
-              dismissHandler(e)
-            }
+                dismissHandler(e)
+              }
             >
               <a href="#">⚙️</a> {/* {t("Settings")} eigentlich nur das Icon */}
             {showDropDown && (
@@ -117,6 +117,6 @@ const closeSettings = () => {
       {settingsOpen && <Settings onClose={closeSettings} />}
     </div>
   );
-}
+};
 
-export default TitleBar
+export default TitleBar;

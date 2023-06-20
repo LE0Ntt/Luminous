@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './BigView.css';
+import './Settings.css';
 import Button from './Button';
 import '../index.css';
 import Toggle from './Toggle';
@@ -22,17 +22,20 @@ function BigView({ onClose }: SettingsProps) {
 
   return (
     <div>
-              <div className="BigViewOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
-      <div className="BigViewContainer">
-        <Button
-          onClick={() => handleClose()}
-          className="buttonClose"
-        >
-          <div className='removeIcon centerIcon'></div>
-        </Button>
-      </div>
+    <div className="SettingsOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
+    <div className="SettingsContainer">
+      <Button
+        onClick={() => handleClose()}
+        className="buttonClose"
+      >
+        <div className='SettingsLayer innerWindow'>
+        </div>
+        <div className='removeIcon centerIcon'></div>
+      </Button>
+     
     </div>
-  );
+  </div>
+  
+);
 }
-
 export default BigView;

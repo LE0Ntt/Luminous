@@ -9,6 +9,8 @@ import DropDown from "./DropDown";
 
 function TitleBar() {
   const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const [settingsOpen, setSettingsOpen] = useState(false);
   
   const { t } = useContext(TranslationContext);
 
@@ -25,13 +27,10 @@ function TitleBar() {
     ipcRenderer.send('minimize');
   };
 
- 
-
-  
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
-  const [selectSetting, setSelectSetting] = useState<string>("");
+
   const settings = () => {
-    return ["Hong Kong", "London", "New York City", "Paris"];
+    return [t("dd_settings"), t("dd_lights"), t("dd_help"), t("dd_about"), t("dd_fullscreen")];
   };
 
   const toggleDropDown = () => {
@@ -52,8 +51,23 @@ function TitleBar() {
   * @param setting  The selected setting
   */
  const settingSelection = (setting: string): void => {
-   setSelectSetting(setting);
+  if(setting === settings()[0]) {
+    openSettings();
+  }
+  if(setting === settings()[4]) {
+    toggleFullScreen();
+  }
  };
+
+ const openSettings = () => {
+  console.log('Settings opened!');
+  setSettingsOpen(true);
+};
+
+const closeSettings = () => {
+  console.log('Settings closed!');
+  setSettingsOpen(false);
+};
 
 
   /**
@@ -78,7 +92,6 @@ function TitleBar() {
             }
             >
               <a href="#">⚙️</a> {/* {t("Settings")} eigentlich nur das Icon */}
-            <div>{selectSetting ? "Select: " + selectSetting : "Select ..."} </div>
             {showDropDown && (
               <DropDown
                 settings={settings()}
@@ -101,6 +114,7 @@ function TitleBar() {
           </div>
         </button>
       </div>
+      {settingsOpen && <Settings onClose={closeSettings} />}
     </div>
   );
 }

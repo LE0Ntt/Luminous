@@ -8,7 +8,7 @@ interface SettingsProps {
   onClose: () => void;
 }
 
-function BigView({ onClose }: SettingsProps) {
+function Settings({ onClose }: SettingsProps) {
   const [isOpen, setIsOpen] = useState(true);
 
   const handleClose = () => {
@@ -38,4 +38,4 @@ function BigView({ onClose }: SettingsProps) {
   
 );
 }
-export default BigView;
+export default Settings;

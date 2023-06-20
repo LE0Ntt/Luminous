@@ -4,12 +4,13 @@
     position: absolute;
     top: 38px;
     left: -1px;
-    border: 1px solid rgb(197, 197, 197);
-    background: #fff;
+    border: 1px solid var(--onepStroke);
+    background-color: var(--colorButton);
     padding: 0;
-    color: #0062cc;
+    color: var(--primary);
     text-align: left;
-    border-radius: 0.25rem;
+    border-radius: 10px;
+    overflow: hidden;
   }
   .dropdown > p {
     margin: 0;
@@ -18,9 +19,10 @@
     min-width: 140px;
   }
   .dropdown > p:hover {
-    color: #fff;
-    background-color: #0062cc;
+    color: var(--primary);
+    background: var(--colorButtonHover);
   }
   .dropdown > p:last-child {
     border-bottom: 0 none;
   }
+

@@ -23,7 +23,12 @@
     "effects": "Effects",
     "noSupport": "Effects are not supported by the selection.",
     "layer": "LAYER",
-    "saveAsScene": "Save as Scene"
+    "saveAsScene": "Save as Scene",
+    "dd_settings": "Settings",
+    "dd_lights": "Lights",
+    "dd_help": "Help",
+    "dd_about": "About",
+    "dd_fullscreen": "Fullscreen"
   },
   "de": {
     "greeting": "Hallo!",
@@ -49,6 +54,11 @@
     "effects": "Effekte",
     "noSupport": "Effekte werden von der Auswahl nicht unterstützt.",
     "layer": "LAYER",
-    "saveAsScene": "Als Szene speichern"
+    "saveAsScene": "Als Szene speichern",
+    "dd_settings": "Einstellungen",
+    "dd_lights": "Lichter",
+    "dd_help": "Hilfe",
+    "dd_about": "Über Luminous",
+    "dd_fullscreen": "Vollbild"
   }
 }

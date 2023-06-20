@@ -20,8 +20,8 @@ const DropDown: React.FC<DropDownProps> = ({
    *
    * @param setting  The selected city
    */
-  const onClickHandler = (city: string): void => {
-    settingSelection(city);
+  const onClickHandler = (selectedSetting: string): void => {
+    settingSelection(selectedSetting);
   };
 
   useEffect(() => {
@@ -32,15 +32,15 @@ const DropDown: React.FC<DropDownProps> = ({
     <>
       <div className={showDropDown ? 'dropdown' : 'dropdown active'}>
         {settings.map(
-          (city: string, index: number): JSX.Element => {
+          (selectedSetting: string, index: number): JSX.Element => {
             return (
               <p
                 key={index}
                 onClick={(): void => {
-                  onClickHandler(city);
+                  onClickHandler(selectedSetting);
                 }}
               >
-                {city}
+                {selectedSetting}
               </p>
             );
           }

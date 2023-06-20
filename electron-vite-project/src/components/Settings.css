@@ -13,13 +13,19 @@
 }
 
 .SettingsContainer {
-  position: absolute;
+  position: fixed;
   z-index: 9999;
   /* Above everything */
-  height: 494px;
+  /*height: 494px;
   width: 850px;
   top: 293px;
   left: 535px;
+  */
+  height: 50vh; /* Verwendet 50% der Höhe des Viewports */
+  width: 50vw; /* Verwendet 50% der Breite des Viewports */
+  top: 50%; /* Platziert das Element in der vertikalen Mitte */
+  left: 50%; /* Platziert das Element in der horizontalen Mitte */
+  transform: translate(-50%, -50%); /* Zentriert das Element */
   border-radius: 10px;
   background-color: var(--fillMedium);
   color: var(--primary);
@@ -31,11 +37,11 @@
 
 .SettingsContent {
   position: relative;
-  height: 406px;
+  height: 85%;
   width: 100%;
   top: 41px;
   margin-bottom: 20px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .SettingsLayer {

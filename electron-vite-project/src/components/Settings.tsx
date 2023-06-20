@@ -22,19 +22,22 @@ function Settings({ onClose }: SettingsProps) {
 
   return (
     <div>
-    <div className="SettingsOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
-    <div className="SettingsContainer">
-      <Button
-        onClick={() => handleClose()}
-        className="buttonClose"
-      >
-        <div className='SettingsLayer innerWindow'>
-        </div>
-        <div className='removeIcon centerIcon'></div>
-      </Button>
-     
+      <div className="SettingsOverlay" onClick={handleClose} /> Overlay to close the modal when clicked outside
+        <div className="SettingsContainer">
+          <Button
+            onClick={() => handleClose()}
+            className="buttonClose"
+          > 
+          <div className='removeIcon centerIcon'></div>
+          </Button>
+          <div className='SettingsLayer innerWindow'>
+            <span>Settings</span>
+          </div>
+          <div className='SettingsContent innerWindow'>
+            Test text
+          </div>
+      </div>
     </div>
-  </div>
   
 );
 }

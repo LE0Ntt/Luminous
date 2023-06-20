@@ -9,5 +9,5 @@ from socket_events import setup
 socket_events.register_socketio_events(socketio)
 
 if __name__ == '__main__':
-    setup()
+    # setup()
     socketio.run(app, host='0.0.0.0', port=5000)

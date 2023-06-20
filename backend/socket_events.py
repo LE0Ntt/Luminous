@@ -6,6 +6,13 @@ from server.models import Scene
 import json
 
 # OLA imports
+from ola_handler import ola_handler
+
+ola = ola_handler()
+ola.setup()
+
+""" 
+# OLA imports
 import sys
 import array
 # from ola.ClientWrapper import ClientWrapper
@@ -51,6 +58,7 @@ def send_dmx(channel, faderValue, universe):  # sendet die DMX-Daten an das OLA-
     # send 1 dmx frame mit dem akuellen array
     client.SendDmx(universe, dmx_data, DmxSent)
     wrapper.Run()
+"""
 
 
 connections = 0
@@ -160,7 +168,7 @@ def register_socketio_events(socketio):
                           'id': fader, 'value': faderValue}, namespace='/socket')
 
         # DMX-Data senden
-        #send_dmx(fader, faderValue, universe)
+        # ola.send_dmx(fader, faderValue)
 
     @socketio.on('connect', namespace='/socket')
     def connect():

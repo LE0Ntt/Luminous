@@ -5,10 +5,11 @@ import './Titlebar.css';
 import '../index.css';
 import Button from './Button';
 import Settings from './Settings';
+import DropDown from "./DropDown";
 
 function TitleBar() {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [settings, setSettings] = useState(false);
+  
   const { t } = useContext(TranslationContext);
 
   const toggleFullScreen = async () => {
@@ -24,15 +25,36 @@ function TitleBar() {
     ipcRenderer.send('minimize');
   };
 
-  const openSettings = () => {
-    console.log('Settings opened!');
-    setSettings(true);
+ 
+
+  
+  const [showDropDown, setShowDropDown] = useState<boolean>(false);
+  const [selectSetting, setSelectSetting] = useState<string>("");
+  const settings = () => {
+    return ["Hong Kong", "London", "New York City", "Paris"];
   };
 
-  const closeSettings = () => {
-    console.log('Settings closed!');
-    setSettings(false);
+  const toggleDropDown = () => {
+    setShowDropDown(!showDropDown);
   };
+  /**
+   * Hide the drop down menu if click occurs
+   * outside of the drop-down element.
+   *
+   * @param event  The mouse event
+   */
+  const dismissHandler = (event: React.FocusEvent<HTMLButtonElement>): void => {
+    if (event.currentTarget === event.target) {
+      setShowDropDown(false);
+    }
+  };
+  /*
+  * @param setting  The selected setting
+  */
+ const settingSelection = (setting: string): void => {
+   setSelectSetting(setting);
+ };
+
 
   /**
    * MacOS Titlebar Settings
@@ -48,32 +70,24 @@ function TitleBar() {
             <p className={isMac ? 'mr-2 hide' : 'mr-2'}>Luminous</p> {/* mr-2 ist Tailwind, muss noch geändert werden :) */}
           </li>
           <li>
-            <button className="dropdown-toggle" onClick={openSettings}>
+            <button
+              className={showDropDown ? "active" : undefined  }
+              onClick={(): void => toggleDropDown()}
+              onBlur={(e: React.FocusEvent<HTMLButtonElement>): void =>
+              dismissHandler(e)
+            }
+            >
               <a href="#">⚙️</a> {/* {t("Settings")} eigentlich nur das Icon */}
-            </button>
-            {settings && <Settings onClose={closeSettings} />}
-            <ul className="dropdown-menu">
-              <li>
-                <button className="dropdown-item" onClick={openSettings}>
-                  {t("Language")}
-                </button>
-              </li>
-              <li>
-                <button className="dropdown-item" onClick={openSettings}>
-                  {t("Edit Lights")}
-                </button>
-              </li>
-              <li>
-                <button className="dropdown-item" onClick={openSettings}>
-                  {t("Documentation")}
-                </button>
-              </li>
-              <li>
-                <button className="dropdown-item" onClick={toggleFullScreen}>
-                  {isFullScreen ? t("exitFullscreen") : t("fullscreen")}
-                </button>
-              </li>
-            </ul>
+            <div>{selectSetting ? "Select: " + selectSetting : "Select ..."} </div>
+            {showDropDown && (
+              <DropDown
+                settings={settings()}
+                showDropDown={false}
+                toggleDropDown={(): void => toggleDropDown()}
+                settingSelection={settingSelection}
+              />
+            )}
+          </button>
           </li>
         </ul>
       </nav>

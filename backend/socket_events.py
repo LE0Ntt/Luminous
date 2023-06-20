@@ -6,10 +6,10 @@ from server.models import Scene
 import json
 
 # OLA imports
-from ola_handler import ola_handler
+# from ola_handler import ola_handler
 
-ola = ola_handler()
-ola.setup()
+# ola = ola_handler()
+# ola.setup()
 
 """ 
 # OLA imports

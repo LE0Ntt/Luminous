@@ -91,17 +91,17 @@ async function createWindow() {
 }
 
 app.whenReady().then(createWindow)
-  .then(() => {
-    ipcMain.handle('toggle-full-screen', (event) => {
-      console.log('toggle-full-screen event received');
-      if (win?.isFullScreen()) {
-        win.setFullScreen(false);
-      } else {
-        win?.setFullScreen(true);
-      }
-      return 'Received';
-    });
-  })
+  // .then(() => {
+  //   ipcMain.handle('toggle-full-screen', () => { // Not used!
+  //     console.log('toggle-full-screen event received');
+  //     if (win?.isFullScreen()) {
+  //       win.setFullScreen(false);
+  //     } else {
+  //       win?.setFullScreen(true);
+  //     }
+  //     return 'Received';
+  //   });
+  // })
 
 // win/linux quit app when all windows closed
 app.on('window-all-closed', () => {
@@ -147,4 +147,13 @@ ipcMain.handle('open-win', (_, arg) => {
 // Minimize
 ipcMain.on('minimize', () => {
   win.minimize()
+})
+
+// Toggle Fullscreen
+ipcMain.on('toggle-full-screen', () => {
+  if (win?.isFullScreen()) {
+    win.setFullScreen(false);
+  } else {
+    win?.setFullScreen(true);
+  }
 })

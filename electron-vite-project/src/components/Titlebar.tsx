@@ -8,15 +8,11 @@ import Settings from './Settings';
 import DropDown from "./DropDown";
 
 function TitleBar() {
-  const [isFullScreen, setIsFullScreen] = useState(false);
-
   const [settingsOpen, setSettingsOpen] = useState(false);
-  
   const { t } = useContext(TranslationContext);
 
   const toggleFullScreen = async () => {
-    const response = await ipcRenderer.invoke('toggle-full-screen');
-    setIsFullScreen(!isFullScreen);
+    ipcRenderer.send('toggle-full-screen');
   };
 
   const handleClose = () => {

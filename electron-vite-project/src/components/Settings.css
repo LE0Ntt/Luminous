@@ -1,0 +1,51 @@
+@import url(../Color.css);
+
+.SettingsOverlay {
+  position: relative;
+  z-index: 9998;
+  /* Infinite background hack */
+  height: 10000vh;
+  width: 10000vw;
+  left: -5000vw;
+  top: -5000vh;
+  background-color: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.SettingsContainer {
+  position: absolute;
+  z-index: 9999;
+  /* Above everything */
+  height: 494px;
+  width: 850px;
+  top: 293px;
+  left: 535px;
+  border-radius: 10px;
+  background-color: var(--fillMedium);
+  color: var(--primary);
+  -webkit-backdrop-filter: var(--windowBackdrop);
+  backdrop-filter: var(--windowBackdrop);
+  border: var(--onepStroke) 1px solid;
+  padding: 15px 20px 0;
+}
+
+.SettingsContent {
+  position: relative;
+  height: 406px;
+  width: 100%;
+  top: 41px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.SettingsLayer {
+  position: absolute;
+  top: 10px;
+  height: 36px;
+  width: 225px;
+  object-fit: contain;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+

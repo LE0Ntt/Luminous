@@ -6,9 +6,11 @@ import '../index.css';
 import Button from './Button';
 import Settings from './Settings';
 import DropDown from "./DropDown";
+import LightSettings from './LightSettings';
 
 function TitleBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [lightSettingsOpen, setLightSettingsOpen] = useState(false);
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const { t } = useContext(TranslationContext);
   const dropDownRef = useRef<HTMLButtonElement | null>(null);
@@ -56,6 +58,9 @@ function TitleBar() {
     if(setting === settings()[0]) {
       openSettings();
     }
+    if(setting === settings()[1]) {
+      openLightSettings();
+    }
     if(setting === settings()[4]) {
       toggleFullScreen();
     }
@@ -69,6 +74,16 @@ function TitleBar() {
   const closeSettings = () => {
     console.log('Settings closed!');
     setSettingsOpen(false);
+  };
+
+  const openLightSettings = () => {
+    console.log('Light-Settings opened!');
+    setLightSettingsOpen(true);
+  };
+
+  const closeLightSettings = () => {
+    console.log('Light-Settings closed!');
+    setLightSettingsOpen(false);
   };
 
 
@@ -112,6 +127,7 @@ function TitleBar() {
         </button>
       </div>
       {settingsOpen && <Settings onClose={closeSettings} />}
+      {lightSettingsOpen && <LightSettings onClose={closeLightSettings} />}
     </div>
   );
 };

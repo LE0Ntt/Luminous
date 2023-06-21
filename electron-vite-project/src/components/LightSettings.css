@@ -1,6 +1,6 @@
 @import url(../Color.css);
 
-.SettingsOverlay {
+.LightSettingsOverlay {
   position: relative;
   z-index: 9998;
   /* Infinite background hack */
@@ -12,8 +12,10 @@
   cursor: pointer;
 }
 
-.SettingsContainer {
+.LightSettingsContainer {
   position: fixed;
+  display: flex;
+  gap: 20px;
   z-index: 9999;
   /* Above everything */
   /*height: 494px;
@@ -32,19 +34,32 @@
   -webkit-backdrop-filter: var(--windowBackdrop);
   backdrop-filter: var(--windowBackdrop);
   border: var(--onepStroke) 1px solid;
-  padding: 15px 20px 0;
+  padding: 15px 20px 20px 20px;
 }
 
-.SettingsContent {
+.LightSettingsList {
+  flex-grow: 1;
   position: relative;
-  height: 85%;
-  width: 100%;
-  top: 41px;
-  margin-bottom: 20px;
+  height: stretch;
+  width: 20%;
+  top: 40px;
+  margin-bottom: 40px;
   overflow: auto;
+  bottom: 0;
 }
 
-.SettingsLayer {
+.LightSettingsWindow {
+  flex-grow: 10;
+  position: relative;
+  height: stretch;
+  width: 20%;
+  top: 40px;
+  margin-bottom: 40px;
+  overflow: auto;
+  bottom: 0;
+}
+
+.LightSettingsLayer {
   position: absolute;
   top: 10px;
   height: 36px;

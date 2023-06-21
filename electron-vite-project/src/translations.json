@@ -28,7 +28,9 @@
     "dd_lights": "Lights",
     "dd_help": "Help",
     "dd_about": "About",
-    "dd_fullscreen": "Fullscreen"
+    "dd_fullscreen": "Fullscreen",
+    "set_title" : "Settings",
+    "ls_title": "Device Preferences"
   },
   "de": {
     "greeting": "Hallo!",
@@ -59,6 +61,8 @@
     "dd_lights": "Lichter",
     "dd_help": "Hilfe",
     "dd_about": "Über Luminous",
-    "dd_fullscreen": "Vollbild"
+    "dd_fullscreen": "Vollbild",
+    "set_title" : "Einstellungen",
+    "ls_title": "Geräteverwaltung"
   }
 }

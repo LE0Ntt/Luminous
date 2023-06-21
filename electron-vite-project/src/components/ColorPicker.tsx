@@ -25,7 +25,12 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
       let layout;
 
       switch (pickerType) {
-        // Hier definieren Sie die Layouts ...
+        case 'kelvin':
+          layout = [
+            { component: iro.ui.Slider, options: { sliderType: 'kelvin' } }
+          ];
+          break;
+        case 'wheel':
         default:
           layout = [{ component: iro.ui.Wheel, options: {} }];
       }

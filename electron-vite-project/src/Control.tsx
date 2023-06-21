@@ -177,9 +177,13 @@ function Control() {
           <div className="controlBiColor innerWindow">
             <span className="controlTitle">Bi-Color</span>
             <div className="controlKelvinPicker">
-{/*               <ColorPicker 
+               <ColorPicker 
                 pickerType="kelvin"
-              /> */}
+                red={red}
+                green={green}
+                blue={blue}
+                onColorChange={handleColorChange}
+              />
             </div>
           </div>
           <div className="controlRGB innerWindow">

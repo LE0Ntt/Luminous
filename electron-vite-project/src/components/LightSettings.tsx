@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react';
-import './Settings.css';
+import { useState, useContext, useEffect } from 'react';
+import './LightSettings.css';
 import Button from './Button';
 import '../index.css';
 import Toggle from './Toggle';
@@ -9,7 +9,7 @@ interface SettingsProps {
   onClose: () => void;
 }
 
-function Settings({ onClose }: SettingsProps) {
+function LightSettings({ onClose }: SettingsProps) {
   const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
 
@@ -22,25 +22,29 @@ function Settings({ onClose }: SettingsProps) {
     return null; // Render nothing if the modal is closed
   }
 
+
   return (
     <div>
-      <div className="SettingsOverlay" onClick={handleClose} /> Overlay to close the modal when clicked outside
-        <div className="SettingsContainer">
+      <div className="LightSettingsOverlay" onClick={handleClose} /> Overlay to close the modal when clicked outside
+        <div className="LightSettingsContainer">
           <Button
             onClick={() => handleClose()}
             className="buttonClose"
           > 
           <div className='removeIcon centerIcon'></div>
           </Button>
-          <div className='SettingsLayer innerWindow'>
-            <span>{t("set_title")}</span>
+          <div className='LightSettingsLayer innerWindow'>
+            <span>{t("ls_title")}</span>
           </div>
-          <div className='SettingsContent innerWindow'>
+          <div className='LightSettingsList innerWindow'>
             Test text
+          </div>
+          <div className='LightSettingsWindow innerWindow'>
+            Test Window
           </div>
       </div>
     </div>
   
 );
 }
-export default Settings;
+export default LightSettings;

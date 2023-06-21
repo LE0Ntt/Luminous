@@ -14,6 +14,7 @@
 
 .SettingsContainer {
   position: fixed;
+  display: flex;
   z-index: 9999;
   /* Above everything */
   /*height: 494px;
@@ -32,16 +33,18 @@
   -webkit-backdrop-filter: var(--windowBackdrop);
   backdrop-filter: var(--windowBackdrop);
   border: var(--onepStroke) 1px solid;
-  padding: 15px 20px 0;
+  padding: 15px 20px 20px 20px;
 }
 
 .SettingsContent {
+  flex-grow: 1;
   position: relative;
-  height: 85%;
+  height: stretch;
   width: 100%;
-  top: 41px;
-  margin-bottom: 20px;
+  top: 40px;
+  margin-bottom: 40px;
   overflow: auto;
+  bottom: 0;
 }
 
 .SettingsLayer {

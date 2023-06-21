@@ -4,6 +4,8 @@ import Button from './Button';
 import '../index.css';
 import Toggle from './Toggle';
 import { TranslationContext } from './TranslationContext'
+import DeviceList from './DeviceList';
+import { useConnectionContext } from './ConnectionContext';
 
 interface SettingsProps {
   onClose: () => void;
@@ -12,6 +14,17 @@ interface SettingsProps {
 function LightSettings({ onClose }: SettingsProps) {
   const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
+  const { url } = useConnectionContext();
+  const [devices, setDevices] = useState<DeviceConfig[]>([]);
+  const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
+  const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
+
+
+  interface DeviceConfig {
+    id: number;
+    deviceValue: number;
+    name: string;
+  };
 
   const handleClose = () => {
     setIsOpen(false);
@@ -22,6 +35,26 @@ function LightSettings({ onClose }: SettingsProps) {
     return null; // Render nothing if the modal is closed
   }
 
+  useEffect(() => {
+    const fetchDevices = async () => {
+      try { 
+        const response = await fetch(url + '/fader');
+        const data = await response.json();
+        const parsedData = JSON.parse(data);
+        parsedData.shift(); // remove master
+        setDevices(parsedData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchDevices();
+  }, []);
+
+  const handleAddDevice = (device: DeviceConfig) => {
+    setSelectedDevices([...selectedDevices, device]);
+    setUnselectedDevices(unselectedDevices.filter(item => item.id !== device.id));
+  };
 
   return (
     <div>
@@ -37,7 +70,7 @@ function LightSettings({ onClose }: SettingsProps) {
             <span>{t("ls_title")}</span>
           </div>
           <div className='LightSettingsList innerWindow'>
-            Test text
+            <DeviceList devices={devices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />
           </div>
           <div className='LightSettingsWindow innerWindow'>
             Test Window

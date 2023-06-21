@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect, useRef } from 'react'
 import { ipcRenderer } from 'electron';
 import { TranslationContext } from './TranslationContext';
 import './Titlebar.css';
@@ -9,7 +9,9 @@ import DropDown from "./DropDown";
 
 function TitleBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const { t } = useContext(TranslationContext);
+  const dropDownRef = useRef<HTMLButtonElement | null>(null);
 
   const toggleFullScreen = async () => {
     ipcRenderer.send('toggle-full-screen');
@@ -23,30 +25,33 @@ function TitleBar() {
     ipcRenderer.send('minimize');
   };
 
-  const [showDropDown, setShowDropDown] = useState<boolean>(false);
-
   const settings = () => {
     return [t("dd_settings"), t("dd_lights"), t("dd_help"), t("dd_about"), t("dd_fullscreen")];
   };
 
+  // Closes the drop down if the user clicks outside of it
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropDownRef.current && !dropDownRef.current.contains(event.target as Node) && event.target !== dropDownRef.current) {
+      setShowDropDown(false);
+    }
+  };
+
+  // Listens for clicks outside of the dropdown window
+  useEffect(() => {
+    if (showDropDown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showDropDown]);
+
+  
   const toggleDropDown = () => {
     setShowDropDown(!showDropDown);
   };
-  /**
-   * Hide the drop down menu if click occurs
-   * outside of the drop-down element.
-   *
-   * @param event  The mouse event
-   */
-  const dismissHandler = (event: React.FocusEvent<HTMLButtonElement>): void => {
-    const delayedCodeExecution = () => {
-      setShowDropDown(false);
-    };
-    setTimeout(delayedCodeExecution, 100);
-  };
-  /*
-  * @param setting  The selected setting
-  */
+
+  // The selected setting
   const settingSelection = (setting: string): void => {
     if(setting === settings()[0]) {
       openSettings();
@@ -79,11 +84,9 @@ function TitleBar() {
           </li>
           <li>
             <button
-              className={showDropDown ? "active settingsButton" : "settingsButton" } // nicht genutzt?
+              className={showDropDown ? "active settingsButton" : "settingsButton" }
               onClick={(): void => toggleDropDown()}
-              onBlur={(e: React.FocusEvent<HTMLButtonElement>): void =>
-                dismissHandler(e)
-              }
+              ref={dropDownRef}
             >
               <a href="#">⚙️</a> {/* {t("Settings")} */}
             {showDropDown && (

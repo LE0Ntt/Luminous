@@ -163,13 +163,13 @@ function Control() {
           <div className="controlButtons innerWindow">
             <Button 
               onClick={() => toggleSOLO()} 
-              className="controlButton buttonCreateScene"
+              className="controlButton"
             >
               {t("saveAsScene")}
             </Button>
             <Button 
               onClick={() => toggleSOLO()}
-              className="controlButton buttonSOLO"
+              className="controlButton"
             >
               SOLO
             </Button>

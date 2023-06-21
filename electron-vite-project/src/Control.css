@@ -83,12 +83,6 @@
     width: 82px;
 }
 
-.controlButtons {
-    height: 90px;
-    width: 553px;
-    left: 122px;
-}
-
 .controlBiColor {
     height: 385px;
     width: 553px;
@@ -151,24 +145,23 @@
     transform: translate(-50%, -50%);
 }
 
+.controlButtons {
+    height: 90px;
+    width: 553px;
+    left: 122px;
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
 .controlButton {
-    width: 246px;
-    height: 50px;
+    width: 100%;
+    height: 100%;
     border-radius: 5px;
     background-color: var(--colorButton);
     color: var(--primary);
-    position: absolute;
-    top: 20px;
     box-shadow: var(--shadowButton);
-    border: solid 1px var(--color00000008);
+    border: solid 1px var(--faderBorder);
     font-weight: 600;
     font-size: 20px;
-}
-
-.buttonSOLO {
-    right: 20px;
-}
-
-.buttonCreateScene {
-    left: 20px;
 }

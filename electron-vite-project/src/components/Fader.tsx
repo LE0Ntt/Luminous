@@ -8,6 +8,8 @@ interface SliderProps {
   id?: number;
   name?: string;
   height?: number;
+  className ?: string;
+  color?: string;
 }
 
 const Fader: React.FC<SliderProps> = ({
@@ -16,6 +18,8 @@ const Fader: React.FC<SliderProps> = ({
   id,
   name,
   height,
+  className,
+  color,
 }) => {
   const { emit } = useConnectionContext();
   const [value, setValue] = useState<number>(sliderValue);
@@ -24,7 +28,7 @@ const Fader: React.FC<SliderProps> = ({
   const [cacheValue, setCacheValue] = useState<number | null>(null);
   const cacheValueRef = useRef<number>(sliderValue);
   const sendValueRef = useRef<number>(sliderValue);
-  const faderClassName = height ? "fader faderMaster" : "fader";
+  const faderClassName = height ? `fader faderMaster ${className}` : `fader ${className}`;
   const displayValue = Math.round((value / 255) * 100);
 
   useEffect(() => {
@@ -83,7 +87,7 @@ const Fader: React.FC<SliderProps> = ({
           onMouseDown={() => setIsDragging(true)}
           onMouseUp={() => setIsDragging(false)}
           style={{
-            background: `linear-gradient(to right, var(--mainColor) 0%, var(--mainColor) ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
+            background: color ? `linear-gradient(to right, ${color} 0%, ${color} ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)` : `linear-gradient(to right, var(--mainColor) 0%, var(--mainColor) ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
           }}
           className="slider sliderTrackColor"
         />

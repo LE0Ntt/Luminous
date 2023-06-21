@@ -1,48 +1,54 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-type ColorPickerProps = {
-  pickerType: 'boxAndHue' | 'sliders' | 'kelvin' | 'wheel' | 'circleSlider'; // hier definieren Sie die erlaubten Werte für pickerType
-};
+interface ColorPickerProps {
+  pickerType: 'wheel' | 'kelvin';
+  red: number;
+  green: number;
+  blue: number;
+  onColorChange: (newRed: number, newGreen: number, newBlue: number) => void;
+}
 
-const ColorPicker: React.FC<ColorPickerProps> = ({ pickerType }) => {
+const ColorPicker: React.FC<ColorPickerProps> = ({
+  pickerType,
+  red,
+  green,
+  blue,
+  onColorChange
+}) => {
   const pickerRef = useRef(null);
+  const [colorPicker, setColorPicker] = useState<any>(null);
 
   useEffect(() => {
     const iro = (window as any).iro;
-
-    if (iro && pickerRef.current) {
+    
+    if (iro && pickerRef.current && !colorPicker) {
       let layout;
 
       switch (pickerType) {
-        case 'kelvin':
-          layout = [
-            { component: iro.ui.Slider, options: { sliderType: 'kelvin' } }
-          ]
-          break;
-
-        case 'wheel':
-          layout = [{ component: iro.ui.Wheel, options: {} }]
-          break;
-
-        // ... Weitere Fälle hinzufügen ...
-        
+        // Hier definieren Sie die Layouts ...
         default:
           layout = [{ component: iro.ui.Wheel, options: {} }];
       }
 
-      const colorPicker = new iro.ColorPicker(pickerRef.current, {
+      const newColorPicker = new iro.ColorPicker(pickerRef.current, {
         width: 320,
-        color: "#f00",
+        color: `rgb(${red}, ${green}, ${blue})`,
         layout
       });
 
-      // Event-Listener hinzufügen, um auf Farbänderungen zu reagieren
-      colorPicker.on('color:change', (color: any) => {
-        console.log(`RGB: ${color.rgbString}`); // RGB-Werte in der Konsole ausgeben
-        // Hier können Sie mit den RGB-Werten arbeiten, z.B. in den State speichern
+      newColorPicker.on('color:change', (color : any) => {
+        onColorChange(color.rgb.r, color.rgb.g, color.rgb.b);
       });
+
+      setColorPicker(newColorPicker);
     }
   }, [pickerType]);
+
+  useEffect(() => {
+    if (colorPicker) {
+      colorPicker.color.set(`rgb(${red}, ${green}, ${blue})`);
+    }
+  }, [red, green, blue]);
 
   return <div ref={pickerRef}></div>;
 };

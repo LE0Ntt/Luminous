@@ -3,11 +3,10 @@ import { TranslationContext } from "./components/TranslationContext";
 import { useConnectionContext } from "./components/ConnectionContext";
 import { useLocation } from 'react-router-dom';
 import './Control.css';
+import './Color.css';
 import Fader from './components/Fader';
 import DeviceList from './components/DeviceList';
 import Button from "./components/Button";
-import ScenesComponent from "./components/ScenesComponent";
-import { addScene } from "./components/addSceneUtils";
 import ColorPicker from "./components/ColorPicker";
 
 function Control() {
@@ -118,19 +117,31 @@ function Control() {
   const selectAnimation = 'selectedDevices' + (animiation ? ' devicesAnimation' : '');
 
 
-  // <- SOLO:
+  // Solo Button
   const toggleSOLO = () => {
     console.log("clicked SOLO")
 
     const solo = localStorage.getItem('solo') === 'true';
   };
-  // :SOLO END ->
+
 
   // <- Add Scene:
 /*   const handleAddScene = () => {
     addScene(scenes, emit); // Verwendung der addScene-Funktion
   }; */
   // :Add Scene END ->
+
+
+  // Color Picker
+  const [red, setRed] = useState(255);
+  const [green, setGreen] = useState(255);
+  const [blue, setBlue] = useState(255);
+
+  const handleColorChange = (newRed: number, newGreen: number, newBlue: number) => {
+    setRed(newRed);
+    setGreen(newGreen);
+    setBlue(newBlue);
+  };
 
   return (
     <div>
@@ -165,11 +176,28 @@ function Control() {
           </div>
           <div className="controlBiColor innerWindow">
             <span className="controlTitle">Bi-Color</span>
-            <ColorPicker pickerType="kelvin"/>
+            <div className="controlKelvinPicker">
+{/*               <ColorPicker 
+                pickerType="kelvin"
+              /> */}
+            </div>
           </div>
           <div className="controlRGB innerWindow">
             <span className="controlTitle">RGB</span>
-            <ColorPicker pickerType="wheel"/>
+            <div className="controlRGBFader">
+              <Fader sliderValue={red} id={1} name="R" color="#CA2C2C"/>
+              <Fader sliderValue={green} id={2} name="G" color="#59E066"/>
+              <Fader sliderValue={blue} id={3} name="B" className="noBorder"/>
+            </div>
+            <div className="controlColorPicker">
+              <ColorPicker
+                pickerType="wheel"
+                red={red}
+                green={green}
+                blue={blue}
+                onColorChange={handleColorChange}
+              />
+            </div>
           </div>
           <div className="controlEffects innerWindow">
             <span className="controlTitle">{t("effects")}</span>

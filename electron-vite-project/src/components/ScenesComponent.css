@@ -40,18 +40,18 @@
 }
 
 .scenesBox {
-    background-color: var(--cyan);
+    background-color: var(--blue);
     width: 100%;
     border-radius: 5px;
     border: 1px solid var(--onepStroke);
     box-shadow: var(--shadowLight),
-                inset 0 0 0 0 transparent;
+        inset 0 0 0 0 transparent;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
-.scenesBox h2{
+.scenesBox h2 {
     font-size: 20px;
     top: -10px;
     position: relative;
@@ -86,8 +86,8 @@
     /* background-color: rgba(255, 255, 255, 0.8); */
     /* box-shadow: inset 0px 3px 10px 0px rgba(0, 0, 0, 0.12); */
     box-shadow: 0 0 30px -13px var(--sceneOn),
-                inset 0 0 175px -25px var(--sceneOn),
-                inset 0 0 0 1px var(--sceneOn);
+        inset 0 0 175px -25px var(--sceneOn),
+        inset 0 0 0 1px var(--sceneOn);
 }
 
 .bookmark {

@@ -8,6 +8,7 @@ import DeviceList from './components/DeviceList';
 import Button from "./components/Button";
 import ScenesComponent from "./components/ScenesComponent";
 import { addScene } from "./components/addSceneUtils";
+import ColorPicker from "./components/ColorPicker";
 
 function Control() {
   const { t } = useContext(TranslationContext);
@@ -164,9 +165,11 @@ function Control() {
           </div>
           <div className="controlBiColor innerWindow">
             <span className="controlTitle">Bi-Color</span>
+            <ColorPicker pickerType="kelvin"/>
           </div>
           <div className="controlRGB innerWindow">
             <span className="controlTitle">RGB</span>
+            <ColorPicker pickerType="wheel"/>
           </div>
           <div className="controlEffects innerWindow">
             <span className="controlTitle">{t("effects")}</span>

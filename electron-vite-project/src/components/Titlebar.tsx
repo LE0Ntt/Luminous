@@ -66,28 +66,26 @@ function TitleBar() {
     setSettingsOpen(false);
   };
 
-  /**
-   * MacOS Titlebar Settings
-   */
+
+  // MacOS Titlebar Settings                ---  nicht benötig, da es nie auf mac laufen soll
   const isMac = process.platform === 'darwin';
-  //const isMac = false;
 
   return (
     <div className='titlebarComp'>
       <nav>
         <ul>
           <li>
-            <p className={isMac ? 'mr-2 hide' : 'mr-2'}>Luminous</p> {/* mr-2 ist Tailwind, muss noch geändert werden :) */}
+            <div className='logo'></div>
           </li>
           <li>
             <button
-              className={showDropDown ? "active" : undefined  }
+              className={showDropDown ? "active settingsButton" : "settingsButton" } // nicht genutzt?
               onClick={(): void => toggleDropDown()}
               onBlur={(e: React.FocusEvent<HTMLButtonElement>): void =>
                 dismissHandler(e)
               }
             >
-              <a href="#">⚙️</a> {/* {t("Settings")} eigentlich nur das Icon */}
+              <a href="#">⚙️</a> {/* {t("Settings")} */}
             {showDropDown && (
               <DropDown
                 settings={settings()}

@@ -58,3 +58,14 @@ def get_faders():
 def get_scenes():
     global scenes
     return jsonify(scenes)
+
+
+
+@app.route('/submit', methods=['POST'])
+def handle_form_submission():
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
+    print(username, password)
+    
+    return {'message': 'Form submitted successfully'}

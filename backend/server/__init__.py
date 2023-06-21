@@ -9,11 +9,9 @@ from flask_cors import CORS
 from server.motorMix_driver import Driver
 #from server.motorMix_handler import callback
 #from server.socket import *
-
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'VerySecretKey'
@@ -37,6 +35,3 @@ from server import models, routes
 @app.before_first_request
 def create_tables():
     db.create_all()
-
-
-    

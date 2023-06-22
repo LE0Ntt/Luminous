@@ -8,6 +8,7 @@ import App from '@/App'
 import './samples/node-api'
 import './index.css'
 import { ConnectionProvider } from "./components/ConnectionContext";
+import { FaderProvider } from './components/FaderContext'
 
 /* http://192.168.0.251:5000 */
 /* http://192.168.178.195:5000 */
@@ -16,8 +17,10 @@ import { ConnectionProvider } from "./components/ConnectionContext";
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   /*<React.StrictMode>*/
-    <ConnectionProvider url="http://localhost:5000">
-      <App />
+    <ConnectionProvider url="http://192.168.178.195:5000">
+      <FaderProvider>
+        <App />
+      </FaderProvider>
     </ConnectionProvider>
   /*</React.StrictMode>,*/
 )

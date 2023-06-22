@@ -1,11 +1,10 @@
 import React, { useState, ChangeEvent, useEffect, useRef } from "react";
 import "./Fader.css";
 import { useConnectionContext } from './ConnectionContext';
+import { useFaderContext } from './FaderContext'; // Importieren Sie den Kontext
 
 interface SliderProps {
-  sliderValue?: number;
-  setSliderValue?: (value: number) => void;   // und das hier
-  id?: number;
+  id: number;
   name?: string;
   height?: number;
   className ?: string;
@@ -13,8 +12,6 @@ interface SliderProps {
 }
 
 const Fader: React.FC<SliderProps> = ({
-  sliderValue = 0,
-  setSliderValue = () => {},                  // und das hier 
   id,
   name,
   height,
@@ -22,19 +19,20 @@ const Fader: React.FC<SliderProps> = ({
   color,
 }) => {
   const { emit } = useConnectionContext();
-  const [value, setValue] = useState<number>(sliderValue);
+  const { faderValues, setFaderValue } = useFaderContext(); // Verwenden Sie den Kontext
   const [isDragging, setIsDragging] = useState(false);
   const [timerRunning, setTimerRunning] = useState<boolean | null>(null);
-  const [cacheValue, setCacheValue] = useState<number | null>(null);
-  const cacheValueRef = useRef<number>(sliderValue);
-  const sendValueRef = useRef<number>(sliderValue);
+  const cacheValueRef = useRef<number>(faderValues[id]);
+  const sendValueRef = useRef<number>(faderValues[id]);
   const faderClassName = height ? `fader faderMaster ${className}` : `fader ${className}`;
-  const displayValue = Math.round((value / 255) * 100);
+  const displayValue = Math.round((faderValues[id] / 255) * 100);
+
+  const value = faderValues[id] || 0;
 
   useEffect(() => {
     if(!isDragging)
-      setValue(sliderValue);
-  }, [sliderValue]);
+      setFaderValue(id, faderValues[id]);
+  }, [faderValues[id]]);
   
   // Set fader height by the passed parameter
   useEffect(() => {
@@ -45,14 +43,12 @@ const Fader: React.FC<SliderProps> = ({
   // Always send the last value
   useEffect(() => {
     if(!timerRunning && cacheValueRef.current != null && cacheValueRef.current != sendValueRef.current)
-      emit("fader_value", { id: id, value: value });
+      emit("fader_value", { id: id, value: faderValues[id] });
   }, [timerRunning]);
 
   const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
-    setValue(newValue);
-    setSliderValue(newValue);                     // das hier   
-    console.log("sliderValue: ", sliderValue);    // das hier
+    setFaderValue(id, newValue);
     cacheValueRef.current = newValue;
 
     // Send only at certain time intervals 
@@ -69,7 +65,7 @@ const Fader: React.FC<SliderProps> = ({
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 100);
     newValue = Math.round((newValue / 100) * 255);
-    setValue(newValue);
+    setFaderValue(id, newValue);
     emit("fader_value", { id: id, value: newValue });
   };
 
@@ -82,7 +78,7 @@ const Fader: React.FC<SliderProps> = ({
           min="0"
           max="255"
           step="1"
-          value={value}
+          value={faderValues[id]}
           onChange={handleSliderChange}
           onMouseDown={() => setIsDragging(true)}
           onMouseUp={() => setIsDragging(false)}

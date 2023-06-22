@@ -252,8 +252,6 @@ const Studio = () => {
         { sliders[0] && (
           <Fader
             height={340}
-            sliderValue={sliders[0].sliderValue}
-            setSliderValue={(value: number) => setSliderValue(value, 0)}
             id={0}
             name="Master"
           />
@@ -268,8 +266,6 @@ const Studio = () => {
                 <h2 className='faderText'>{slider.id}</h2>
                 <Fader
                   key={slider.id}
-                  sliderValue={slider.sliderValue}
-                  setSliderValue={(value: number) => setSliderValue(value, slider.id)}
                   id={slider.id}
                   name={slider.name}
                 />

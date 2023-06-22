@@ -155,7 +155,6 @@ function Control() {
           <div className="lightFader innerWindow">
             <Fader
               height={397}
-              sliderValue={50}  // muss natürlich geändert werden
               id={0}            // muss geändert werden zu gruppe aller ausgewählten devices
               name={t("group")}
             />
@@ -189,9 +188,9 @@ function Control() {
           <div className="controlRGB innerWindow">
             <span className="controlTitle">RGB</span>
             <div className="controlRGBFader">
-              <Fader sliderValue={red} id={1} name="R" color="#CA2C2C"/>
-              <Fader sliderValue={green} id={2} name="G" color="#59E066"/>
-              <Fader sliderValue={blue} id={3} name="B" className="noBorder"/>
+              <Fader id={1} name="R" color="#CA2C2C"/>
+              <Fader id={2} name="G" color="#59E066"/>
+              <Fader id={3} name="B" className="noBorder"/>
             </div>
             <div className="controlColorPicker">
               <ColorPicker

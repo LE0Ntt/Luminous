@@ -31,8 +31,8 @@ function BigView({ onClose }: BigViewProps) {
         >
           <div className='removeIcon centerIcon'></div>
         </Button>
-        <div className='BigViewLayer innerWindow'>
-          <span>Devices</span> <div className='toggleUniverse'><Toggle /></div><span>DMX Channel</span>
+        <div className='BigViewLayer'>
+          <span className='text-right'>Devices</span> <div className='toggleUniverse'><Toggle /></div><span className='text-left'>DMX Channel</span>
         </div>
         <div className='BigViewContent innerWindow'>
           Text 1

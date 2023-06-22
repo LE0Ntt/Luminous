@@ -9,7 +9,7 @@ from server import app, db
 from server.models import Device
 
 '''
-def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
+def create_sliders(num_sliders): # wird ersetzt durch db abfrage
     sliders = []
 
     master = {
@@ -52,14 +52,12 @@ def get_devices():
                 "universe": device.universe,
                 "attributes": device.attributes
             }
-            device_list.append(device)
-            
-    print(device_list)
-    return json.dumps(device_list)
+            device_list.append(device)  
+    return device_list
 
 devices = get_devices()
 
-def create_scenes(num_scenes): # wird nachher ersetzt durch db abfrage
+def create_scenes(num_scenes): # wird ersetzt durch db abfrage
     scenes = []
 
     for i in range(num_scenes):
@@ -69,7 +67,7 @@ def create_scenes(num_scenes): # wird nachher ersetzt durch db abfrage
             "name": "Scene" + str(i + 1)
         }
         scenes.append(scene)
-    return json.dumps(scenes)
+    return scenes
 
 scenes = create_scenes(6)
 
@@ -82,16 +80,39 @@ def mein_endpunkt():
 @app.route('/fader')
 def get_faders():
     global devices
-    return jsonify(devices)
+    return jsonify(json.dumps(devices))
 
 @app.route('/scenes')
 def get_scenes():
     global scenes
-    return jsonify(scenes)
+    return jsonify(json.dumps(scenes))
 
 
+@app.route('/addlight', methods=['POST'])
+def add_light():
+    data = request.get_json()
+    # name = data['name']
+    # number = data['number']
+    # device_type = data['device_typ']
+    # universe = data['universe']
+    # attributes = data['attributes']
+    device = Device(name = data['name'], number = data['number'], device_type = data['device_type'], universe = data['universe'], attributes = data['attributes'])
+    print(device)
+    db.session.add(device)
+    db.session.commit()
+    global devices
+    device_dict = {
+        "id": device.id,
+        "name": device.name,
+        "sliderValue": 0,
+        "deviceType": device.device_type,
+        "universe": device.universe,
+        "attributes": device.attributes
+    }
+    devices.append(device_dict)
+    return {'message': 'Form submitted successfully'}
 
-@app.route('/submit', methods=['POST'])
+@app.route('/submit', methods=['POST']) # nur zum testen
 def handle_form_submission():
     data = request.get_json()
     username = data['username']

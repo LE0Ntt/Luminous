@@ -113,7 +113,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
   };
 
   const handleAddScene = () => {
-    addScene(scenes, emit); // Verwendung der addScene-Funktion
+    addScene(scenes, emit);
   };
 
   const extraButton = 1;

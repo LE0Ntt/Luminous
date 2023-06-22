@@ -12,9 +12,13 @@ import { TranslationContext } from './components/TranslationContext';
 import { useNavigate } from 'react-router-dom';
 import ScenesComponent from './components/ScenesComponent';
 import BigView from './components/BigView';
+import { useFaderContext } from './components/FaderContext';
 
 const Studio = () => {
   const navigate = useNavigate();
+
+
+  const { faderValues, setFaderValue } = useFaderContext(); // FaderContext Test
 
   // Language
   const { t, language, setLanguage } = useContext(TranslationContext);
@@ -183,7 +187,7 @@ const Studio = () => {
                       <div className='studio_overview_light mr-[45px]'> {/* mr-[45px] noch tailwind code */}
                       {slider && (
                         <>
-                          <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (slider.sliderValue/255) * (sliders[0].sliderValue/255)}} />
+                          <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[slider.id]/255) * (faderValues[0]/255)}} />
                           <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
                           <div className='studio_overview_infopanel'>
                             {rowIndex}{colIndex}
@@ -203,7 +207,7 @@ const Studio = () => {
                     <div className='studio_overview_light ml-[45px]'> {/* ml-[45px] noch tailwind code */}
                     {slider && (
                       <>
-                        <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (slider.sliderValue/255) * (sliders[0].sliderValue/255)}} />
+                        <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[slider.id]/255) * (faderValues[0]/255)}} />
                         <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
                         <div className='studio_overview_infopanel'>
                           {rowIndex}{colIndex}

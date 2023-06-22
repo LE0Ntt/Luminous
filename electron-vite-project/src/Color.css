@@ -93,7 +93,7 @@
      * verschiedene schatten + blur für fenster
      */
     --windowShadow: 0px 18px 50px rgba(0, 0, 0, 0.15);
-    --windowBackdrop: blur(15px);
+    --windowBackdrop: blur(100px);
 
     --shadowLight: 0px 3px 10px rgba(0, 0, 0, 0.1);
     --shadowButton: 0px 1px 5px rgba(0, 0, 0, 0.1);

@@ -51,18 +51,21 @@ function LightSettings({ onClose }: SettingsProps) {
     fetchDevices();
   }, []);
 
-  const handleAddDevice = (device: DeviceConfig) => {
+  const handleSelectDevice = (device: DeviceConfig) => {
     setSelectedDevice(device);
     setUnselectedDevices(unselectedDevices.filter(item => item.id !== device.id));
   };
 
-  const handleRemoveDevice = (device: DeviceConfig) => {
+  const handleDeselectDevice = (device: DeviceConfig) => {
     setSelectedDevice(undefined);
     setUnselectedDevices([...unselectedDevices, device]);
   };
 
   const handleCreateDevice = () => {
-    //setSelectedDevice([...selectedDevice, device]);
+    
+  };
+
+  const handleRemoveDevice = () => {
     
   };
 
@@ -93,17 +96,37 @@ function LightSettings({ onClose }: SettingsProps) {
                 </>
                 ):(
                   <div className='LightSettingsSelectedDevice'>
-                    <DeviceList devices={[selectedDevice]} isAddButton={false} onDeviceButtonClick={handleRemoveDevice} />
+                    <DeviceList devices={[selectedDevice]} isAddButton={false} onDeviceButtonClick={handleDeselectDevice} />
                   </div>
                 )
               }
             </div>
             <div className='LightSettingsList innerWindow'>
-              <DeviceList devices={devices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />
+              <DeviceList devices={devices} isAddButton={true} onDeviceButtonClick={handleSelectDevice} />
             </div>  
           </div>
           <div className='LightSettingsWindow innerWindow'>
-            Test Window
+            <div className='LightSettingsWindowUpper'>
+              Test Upper
+            </div>
+            <hr />
+            <div className='LightSettingsWindowMid'>
+              Test Mid
+            </div>
+            <div className='LightSettingsWindowLower'>
+              <Button 
+                onClick={() => handleRemoveDevice()} 
+                className="LightSettingsDeleteButton controlButton"
+              >
+                {t("ls_deleteDevice")}
+              </Button>
+              <Button 
+                onClick={() => handleCreateDevice()} 
+                className="LightSettingsSaveButton controlButton"
+              >
+                {t("ls_saveDevice")}
+              </Button>
+            </div>
           </div>
       </div>
     </div>

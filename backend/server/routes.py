@@ -1,12 +1,11 @@
 from flask import render_template, redirect, flash, url_for, request, abort
 from flask_login import login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
-from flask import Flask, render_template
 from flask_socketio import SocketIO
 import json
 from flask import jsonify
 from server import app, db
-#from server.models import User
+from server.models import Admin, Scene, Device, Show, Settings
 
 def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
     sliders = []
@@ -59,7 +58,18 @@ def get_scenes():
     global scenes
     return jsonify(scenes)
 
-
+@app.route('/addlight', methods=['POST'])
+def add_light():
+    data = request.get_json()
+    # name = data['name']
+    # number = data['number']
+    # device_type = data['device_typ']
+    # universe = data['universe']
+    # attributes = data['attributes']
+    device = Device(name = data['name'], number = data['number'], device_type = data['device_type'], universe = data['universe'], attributes = data['attributes'])
+    db.session.add(device)
+    db.session.commit()
+    return {'message': 'Form submitted successfully'}
 
 @app.route('/submit', methods=['POST'])
 def handle_form_submission():

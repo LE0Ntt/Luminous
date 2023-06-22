@@ -36,15 +36,40 @@
   padding: 15px 20px 20px 20px;
 }
 
+.SettingsTitle {
+  position: absolute;
+  top: 10px;
+  height: 36px;
+  width: 225px;
+  object-fit: contain;
+  align-items: center;
+  display: flex;
+  font-size: 20px;
+}
+
+.innerWindow hr {
+  background-color: var(--faderBorder);
+}
+
 .SettingsContent {
-  flex-grow: 1;
+  flex-grow: 10;
   position: relative;
+  display: flex;
+  flex-direction: column;
   height: stretch;
-  width: 100%;
+  
   top: 40px;
   margin-bottom: 40px;
   overflow: auto;
   bottom: 0;
+}
+
+.SettingsOption {
+  flex-grow: 10;
+  position: relative;
+  width: stretch;
+  padding: 15px 20px 20px 20px;
+ 
 }
 
 .SettingsLayer {

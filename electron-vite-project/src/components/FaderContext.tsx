@@ -23,9 +23,11 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
   const [faderValues, setFaderValues] = useState<number[]>(initialFaderValues);
 
   const setFaderValue = (id: number, value: number) => {
-    const newFaderValues = [...faderValues];
-    newFaderValues[id] = value;
-    setFaderValues(newFaderValues);
+    setFaderValues(prevFaderValues => {
+      const updatedFaderValues = [...prevFaderValues];
+      updatedFaderValues[id] = value;
+      return updatedFaderValues;
+    });
   };
 
   /* const setFaderValue = (universeId: number, faderId: number, value: number) => {

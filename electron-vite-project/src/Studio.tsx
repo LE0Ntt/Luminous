@@ -92,15 +92,13 @@ const Studio = () => {
   useEffect(() => {
     const eventListener = (data: any) => {
       console.log("Received data from server:", data.value);
-      const { setFaderValue } = useFaderContext();
-  
-      setFaderValue(data.id, data.value);  // data.universeId ist angenommen und könnte anders in deinen Daten genannt sein.
+      setFaderValue(data.id, data.value);
     };
     
     on("variable_update", eventListener);
   
     return () => off("variable_update", eventListener);
-  }, [on, off]);
+  }, [on, off]); 
 
   return (
     <div>

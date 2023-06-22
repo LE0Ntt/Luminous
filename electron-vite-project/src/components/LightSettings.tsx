@@ -18,6 +18,7 @@ function LightSettings({ onClose }: SettingsProps) {
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceConfig>();
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
+  const [inputDMXstart, setInputDMXstart] = useState('');
 
 
   interface DeviceConfig {
@@ -50,6 +51,10 @@ function LightSettings({ onClose }: SettingsProps) {
 
     fetchDevices();
   }, []);
+
+  const handleInputDMXstart = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputDMXstart(event.target.value);
+  };
 
   const handleSelectDevice = (device: DeviceConfig) => {
     setSelectedDevice(device);
@@ -107,7 +112,10 @@ function LightSettings({ onClose }: SettingsProps) {
           </div>
           <div className='LightSettingsWindow innerWindow'>
             <div className='LightSettingsWindowUpper'>
-              Test Upper
+            <div>
+              <label>DMX Start-Adresse:</label>
+              <input type="text" value={inputDMXstart} onChange={handleInputDMXstart} />
+            </div>
             </div>
             <hr />
             <div className='LightSettingsWindowMid'>

@@ -92,36 +92,15 @@ const Studio = () => {
   useEffect(() => {
     const eventListener = (data: any) => {
       console.log("Received data from server:", data.value);
-      setSliders((prevSliders) => {
-        return prevSliders.map((slider, index) => {
-          if (index === data.id) {
-            return { ...slider, sliderValue: data.value };
-          }
-          return slider;
-        });
-      });
+      const { setFaderValue } = useFaderContext();
+  
+      setFaderValue(data.id, data.value);  // data.universeId ist angenommen und könnte anders in deinen Daten genannt sein.
     };
     
     on("variable_update", eventListener);
   
     return () => off("variable_update", eventListener);
   }, [on, off]);
-
-
-  /* <- Studio Overview 2: */
-  // setzt den SliderValue auf den Wert, der vom Server kommt, bzw. in der Fader.tsx gesetzt wird
-  const setSliderValue = (value: number, id: number) => {
-    setSliders((prevSliders) => {
-      return prevSliders.map((slider, index) => {
-        if (index === id) {
-          return { ...slider, sliderValue: value };
-        }
-        return slider;
-      });
-    }
-    );
-  };
-  /* :Stuido Overview 2 Ende -> */
 
   return (
     <div>

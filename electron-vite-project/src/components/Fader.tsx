@@ -27,7 +27,7 @@ const Fader: React.FC<SliderProps> = ({
   const faderClassName = height ? `fader faderMaster ${className}` : `fader ${className}`;
   const displayValue = Math.round((faderValues[id] / 255) * 100);
 
-  const value = faderValues[id] || 0;
+  /* const value = faderValues[id] || 0; */ // vielleicht nicht benötigt
 
   useEffect(() => {
     if(!isDragging)

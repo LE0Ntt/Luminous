@@ -41,15 +41,14 @@
 
 .BigViewLayer {
     position: absolute;
-    /*     top: 10px;
+    top: 7px;
     height: 36px;
-    width: 225px; */
     object-fit: contain;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
     display: flex;
     font-size: 20px;
-    font-weight: 500;
+    font-weight: 400;
     color: var(--primary);
     gap: 10px;
 }

@@ -39,6 +39,7 @@
 
 .LightSettingsListContainer {
   flex-grow: 1;
+  min-width: 20%;
   flex-direction: column;
   display: flex;
   gap: 20px;
@@ -84,10 +85,39 @@
 .LightSettingsWindow {
   flex-grow: 10;
   position: relative;
+  display: flex;
+  flex-direction: column;
   height: stretch;
   top: 40px;
   margin-bottom: 40px;
   bottom: 0;
+  padding: 20px 20px 20px 20px;
+}
+
+.innerWindow hr {
+  background-color: var(--faderBorder);
+}
+
+.LightSettingsWindowUpper {
+  flex-grow: 1;
+  position: relative;
+  width: stretch;
+  bottom: 0;
+}
+
+.LightSettingsWindowMid {
+  flex-grow: 5;
+  position: relative;
+  width: stretch;
+  bottom: 0;
+}
+
+.LightSettingsWindowLower {
+  flex-grow: 1;
+  position: relative;
+  width: stretch;
+  bottom: 0;
+  flex-direction: row;
 }
 
 .LightSettingsTitle {
@@ -110,3 +140,17 @@
   font-weight: 500;
 }
 
+.LightSettingsSaveButton {
+  position: absolute;
+  height: 60px;
+  width: 15vw;
+  right: 0px;
+  bottom: 0px;
+}
+
+.LightSettingsDeleteButton {
+  position: absolute;
+  height: 60px;
+  width: 15vw;
+  bottom: 0px;
+}

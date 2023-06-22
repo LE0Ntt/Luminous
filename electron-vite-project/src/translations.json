@@ -30,7 +30,8 @@
     "dd_about": "About",
     "dd_fullscreen": "Fullscreen",
     "set_title" : "Settings",
-    "ls_title": "Device Preferences"
+    "ls_title": "Device Preferences",
+    "ls_addDevice": "Add Device"
   },
   "de": {
     "greeting": "Hallo!",
@@ -63,6 +64,7 @@
     "dd_about": "Über Luminous",
     "dd_fullscreen": "Vollbild",
     "set_title" : "Einstellungen",
-    "ls_title": "Geräteverwaltung"
+    "ls_title": "Geräteverwaltung",
+    "ls_addDevice": "Gerät Hinzufügen"
   }
 }

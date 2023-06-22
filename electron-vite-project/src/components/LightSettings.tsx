@@ -16,7 +16,7 @@ function LightSettings({ onClose }: SettingsProps) {
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
-  const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState<DeviceConfig>();
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
 
 
@@ -52,8 +52,18 @@ function LightSettings({ onClose }: SettingsProps) {
   }, []);
 
   const handleAddDevice = (device: DeviceConfig) => {
-    setSelectedDevices([...selectedDevices, device]);
+    setSelectedDevice(device);
     setUnselectedDevices(unselectedDevices.filter(item => item.id !== device.id));
+  };
+
+  const handleRemoveDevice = (device: DeviceConfig) => {
+    setSelectedDevice(undefined);
+    setUnselectedDevices([...unselectedDevices, device]);
+  };
+
+  const handleCreateDevice = () => {
+    //setSelectedDevice([...selectedDevice, device]);
+    
   };
 
   return (
@@ -66,11 +76,31 @@ function LightSettings({ onClose }: SettingsProps) {
           > 
           <div className='removeIcon centerIcon'></div>
           </Button>
-          <div className='LightSettingsLayer innerWindow'>
+          <div className='LightSettingsTitle'>
             <span>{t("ls_title")}</span>
           </div>
-          <div className='LightSettingsList innerWindow'>
-            <DeviceList devices={devices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />
+          <div className='LightSettingsListContainer'>
+            <div className='LightSettingsSelected innerWindow'>
+              {selectedDevice === undefined ? (
+                <>
+                  <span className='LightSettingsAddDevice'>{t("ls_addDevice")}</span>
+                  <Button
+                      onClick={() => handleCreateDevice()}
+                      className="LightSettingsSelectedButton addremoveButton"
+                    >
+                      <div className={"centerIcon addIcon"}></div>
+                  </Button>
+                </>
+                ):(
+                  <div className='LightSettingsSelectedDevice'>
+                    <DeviceList devices={[selectedDevice]} isAddButton={false} onDeviceButtonClick={handleRemoveDevice} />
+                  </div>
+                )
+              }
+            </div>
+            <div className='LightSettingsList innerWindow'>
+              <DeviceList devices={devices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />
+            </div>  
           </div>
           <div className='LightSettingsWindow innerWindow'>
             Test Window

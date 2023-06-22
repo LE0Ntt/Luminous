@@ -27,7 +27,8 @@
     /* main color:
      * hauptfarbe für die app, zB buttons highlights, usw.
      */
-    --mainColor: #4F53B1;
+    /* --mainColor: #4F53B1; */
+    --mainColor: #4B4EA5;
 
     /* button colors:
      * farben für die buttons, zB hover, usw.

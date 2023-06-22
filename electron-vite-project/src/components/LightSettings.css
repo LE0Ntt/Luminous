@@ -37,15 +37,47 @@
   padding: 15px 20px 20px 20px;
 }
 
-.LightSettingsList {
+.LightSettingsListContainer {
   flex-grow: 1;
+  flex-direction: column;
+  display: flex;
+  gap: 20px;
   position: relative;
   height: stretch;
-  width: 20%;
   top: 40px;
   margin-bottom: 40px;
-  overflow: auto;
   bottom: 0;
+}
+
+.LightSettingsSelected {
+  flex-grow: 1;
+  height: 80px;
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background-color: var(--mainColor);
+  color: var(--primarySwitched);
+}
+
+.LightSettingsSelectedDevice {
+  width: 100%;
+  padding: 0px 0px 0px 20px;
+}
+
+.LightSettingsSelectedButton {
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+  right: 10px;
+}
+
+.LightSettingsList {
+  flex-grow: 5;
+  height: stretch;
+  position: relative;
+  width: stretch;
+  overflow: auto;
   padding: 20px 0px 20px 20px;
 }
 
@@ -53,21 +85,28 @@
   flex-grow: 10;
   position: relative;
   height: stretch;
-  width: 20%;
   top: 40px;
   margin-bottom: 40px;
-  overflow: auto;
   bottom: 0;
 }
 
-.LightSettingsLayer {
+.LightSettingsTitle {
   position: absolute;
   top: 10px;
   height: 36px;
   width: 225px;
   object-fit: contain;
   align-items: center;
-  justify-content: center;
   display: flex;
+  font-size: 20px;
+}
+
+.LightSettingsAddDevice {
+  position: absolute;
+  height: 36px;
+  width: 225px;
+  left: 20px;
+  font-size: 20px;
+  font-weight: 500;
 }
 

@@ -4,7 +4,7 @@ import array
 from ola.ClientWrapper import ClientWrapper
 
 
-class Dmx:
+class ola_handler:
     def __init__(self):
         self.wrapper = None
         self.universe = 2

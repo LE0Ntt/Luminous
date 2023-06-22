@@ -6,8 +6,9 @@ from flask_socketio import SocketIO
 import json
 from flask import jsonify
 from server import app, db
-#from server.models import User
+from server.models import Device
 
+'''
 def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
     sliders = []
 
@@ -28,6 +29,35 @@ def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
     return json.dumps(sliders)
 
 sliders = create_sliders(16)
+'''
+
+def get_devices():
+    device_list = []
+    
+    master = {
+        "id": 0,
+        "sliderValue": 255,
+        "name": "Master"
+    }
+    device_list.append(master)
+    
+    with app.app_context():
+        devices = Device.query.all()
+        for device in devices:
+            device = {
+                "id": device.id,
+                "sliderValue": 0,
+                "name": device.name,
+                "deviceType": device.device_type,
+                "universe": device.universe,
+                "attributes": device.attributes
+            }
+            device_list.append(device)
+            
+    print(device_list)
+    return json.dumps(device_list)
+
+devices = get_devices()
 
 def create_scenes(num_scenes): # wird nachher ersetzt durch db abfrage
     scenes = []
@@ -51,8 +81,8 @@ def mein_endpunkt():
 
 @app.route('/fader')
 def get_faders():
-    global sliders
-    return jsonify(sliders)
+    global devices
+    return jsonify(devices)
 
 @app.route('/scenes')
 def get_scenes():

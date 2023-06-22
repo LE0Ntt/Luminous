@@ -27,6 +27,7 @@
     -webkit-transition: .4s;
     transition: .4s;
     border: solid 1px var(--primary);
+    background-color: var(--primarySwitched);
 }
 
 .defaultToggle:before {

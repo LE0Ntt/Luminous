@@ -71,9 +71,9 @@ def register_socketio_events(socketio):
         print("Eintrag", index, "wurde geändert:", value)
         socketio.emit('variable_update', {
                       'id': index, 'value': value}, namespace='/socket')
-        sliders = json.loads(routes.sliders)
+        sliders = json.loads(routes.devices)
         sliders[index]["sliderValue"] = value
-        routes.sliders = json.dumps(sliders)
+        routes.devices = json.dumps(sliders)
 
     try:
         driver = Driver()
@@ -156,10 +156,10 @@ def register_socketio_events(socketio):
         faderValue = int(data['value'])
         fader = int(data['id'])
         # print(fader, faderValue)
-        sliders = json.loads(routes.sliders)
+        sliders = json.loads(routes.devices)
         if fader < len(sliders):
             sliders[fader]["sliderValue"] = faderValue
-        routes.sliders = json.dumps(sliders)
+        routes.devices = json.dumps(sliders)
         driver.pushFader(fader, faderValue) if driver is not None else None
         # Send update to all clients
         global connections

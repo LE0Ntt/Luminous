@@ -6,16 +6,19 @@ import './index.css';
 import './Studio.css';
 import Button from './components/Button';
 import Fader from './components/Fader';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { useConnectionContext } from "./components/ConnectionContext";
 import { TranslationContext } from './components/TranslationContext';
 import { useNavigate } from 'react-router-dom';
 import ScenesComponent from './components/ScenesComponent';
 import BigView from './components/BigView';
+import { useFaderContext } from './components/FaderContext';
 
 const Studio = () => {
   const navigate = useNavigate();
-
+  // FaderValues from FaderContext
+  const { faderValues, setFaderValue } = useFaderContext();
+  const { url, connected } = useConnectionContext();
   // Language
   const { t, language, setLanguage } = useContext(TranslationContext);
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -64,11 +67,9 @@ const Studio = () => {
 
   interface SliderConfig {
     id: number;
-    sliderValue: number;
     name: string;
   };
 
-  const { connected, on, off, url } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ const Studio = () => {
         const response = await fetch(url + '/fader');
         const data = await response.json();
         setSliders(JSON.parse(data));
+        //console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -85,39 +87,20 @@ const Studio = () => {
     fetchSliders();
   }, []);
 
-  useEffect(() => {
+
+
+/*   useEffect(() => {
     const eventListener = (data: any) => {
-      console.log("Received data from server:", data.value);
-      setSliders((prevSliders) => {
-        return prevSliders.map((slider, index) => {
-          if (index === data.id) {
-            return { ...slider, sliderValue: data.value };
-          }
-          return slider;
-        });
-      });
+      if (!isDragging && data.id !== undefined) { 
+        console.log("Received data from server:", data.value);
+        setFaderValue(0 , data.id, data.value); // 0 ist platzhalter
+      }
     };
-    
+  
     on("variable_update", eventListener);
   
     return () => off("variable_update", eventListener);
-  }, [on, off]);
-
-
-  /* <- Studio Overview 2: */
-  // setzt den SliderValue auf den Wert, der vom Server kommt, bzw. in der Fader.tsx gesetzt wird
-  const setSliderValue = (value: number, id: number) => {
-    setSliders((prevSliders) => {
-      return prevSliders.map((slider, index) => {
-        if (index === id) {
-          return { ...slider, sliderValue: value };
-        }
-        return slider;
-      });
-    }
-    );
-  };
-  /* :Stuido Overview 2 Ende -> */
+  }, [on, off, setFaderValue, isDragging]); */
 
   return (
     <div>
@@ -183,12 +166,12 @@ const Studio = () => {
                       <div className='studio_overview_light mr-[45px]'> {/* mr-[45px] noch tailwind code */}
                       {slider && (
                         <>
-                          <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (slider.sliderValue/255) * (sliders[0].sliderValue/255)}} />
+                          <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
                           <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
                           <div className='studio_overview_infopanel'>
                             {rowIndex}{colIndex}
                             <div>#{slider.id}</div>
-                            </div>
+                          </div>
                         </>
                       )}
                       </div>
@@ -203,7 +186,7 @@ const Studio = () => {
                     <div className='studio_overview_light ml-[45px]'> {/* ml-[45px] noch tailwind code */}
                     {slider && (
                       <>
-                        <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (slider.sliderValue/255) * (sliders[0].sliderValue/255)}} />
+                        <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
                         <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
                         <div className='studio_overview_infopanel'>
                           {rowIndex}{colIndex}
@@ -252,36 +235,34 @@ const Studio = () => {
         { sliders[0] && (
           <Fader
             height={340}
-            sliderValue={sliders[0].sliderValue}
-            setSliderValue={(value: number) => setSliderValue(value, 0)}
             id={0}
+            sliderGroupId={0}
             name="Master"
           />
         )}
       </div>
       <div>
         <div className='faders window'>
-        { connected ? (
-          <div className="sliders">
-            { sliders.slice(1).map((slider) => (
-              <div key={slider.id} className='slidersHeight'>
-                <h2 className='faderText'>{slider.id}</h2>
-                <Fader
-                  key={slider.id}
-                  sliderValue={slider.sliderValue}
-                  setSliderValue={(value: number) => setSliderValue(value, slider.id)}
-                  id={slider.id}
-                  name={slider.name}
-                />
-                <Button 
-                  onClick={() => handleClick(slider.id)} 
-                  className="buttonOpenControl"
-                >
-                  <svg className='centerIcon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="m19,20c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v4Zm-12,0c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-8c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29c.19.19.29.43.29.71v8Zm14-8c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71c.19-.19.43-.29.71-.29h1V4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v7h1c.28,0,.52.1.71.29.19.19.29.43.29.71Zm-6,4c0,.28-.1.52-.29.71s-.43.29-.71.29h-1v3c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-3h-1c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h4c.28,0,.52.1.71.29s.29.43.29.71Zm-2-4c0,.28-.1.52-.29.71s-.43.29-.71.29-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71V4c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29.29.43.29.71v8Zm-4-4c0,.28-.1.52-.29.71s-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h1v-3c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v3h1c.28,0,.52.1.71.29s.29.43.29.71Z"/></svg>
-                </Button>
-              </div>
-            ))}
-          </div>
+          { connected ? (
+            <div className="sliders">
+              { sliders.slice(1).map((slider) => (
+                <div key={slider.id} className='slidersHeight'>
+                  <h2 className='faderText'>{slider.id}</h2>
+                  <Fader
+                    key={slider.id}
+                    id={slider.id}
+                    sliderGroupId={1}
+                    name={slider.name}
+                  />
+                  <Button 
+                    onClick={() => handleClick(slider.id)} 
+                    className="buttonOpenControl"
+                  >
+                    <svg className='centerIcon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="m19,20c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v4Zm-12,0c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-8c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29c.19.19.29.43.29.71v8Zm14-8c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71c.19-.19.43-.29.71-.29h1V4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v7h1c.28,0,.52.1.71.29.19.19.29.43.29.71Zm-6,4c0,.28-.1.52-.29.71s-.43.29-.71.29h-1v3c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-3h-1c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h4c.28,0,.52.1.71.29s.29.43.29.71Zm-2-4c0,.28-.1.52-.29.71s-.43.29-.71.29-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71V4c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29.29.43.29.71v8Zm-4-4c0,.28-.1.52-.29.71s-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h1v-3c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v3h1c.28,0,.52.1.71.29s.29.43.29.71Z"/></svg>
+                  </Button>
+                </div>
+              ))}
+            </div>
           ) : (
             <div className='notConnected'>{t("notConnected")}</div>
           )}

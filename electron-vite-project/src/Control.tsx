@@ -11,7 +11,7 @@ import ColorPicker from "./components/ColorPicker";
 
 function Control() {
   const { t } = useContext(TranslationContext);
-  const { connected, on, off, url } = useConnectionContext();
+  const { url } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
@@ -124,14 +124,6 @@ function Control() {
     const solo = localStorage.getItem('solo') === 'true';
   };
 
-
-  // <- Add Scene:
-/*   const handleAddScene = () => {
-    addScene(scenes, emit); // Verwendung der addScene-Funktion
-  }; */
-  // :Add Scene END ->
-
-
   // Color Picker
   const [red, setRed] = useState(255);
   const [green, setGreen] = useState(255);
@@ -155,8 +147,8 @@ function Control() {
           <div className="lightFader innerWindow">
             <Fader
               height={397}
-              sliderValue={50}  // muss natürlich geändert werden
-              id={0}            // muss geändert werden zu gruppe aller ausgewählten devices
+              id={1}            // muss geändert werden zu gruppe aller ausgewählten devices
+              sliderGroupId={1}
               name={t("group")}
             />
           </div>
@@ -189,9 +181,24 @@ function Control() {
           <div className="controlRGB innerWindow">
             <span className="controlTitle">RGB</span>
             <div className="controlRGBFader">
-              <Fader sliderValue={red} id={1} name="R" color="#CA2C2C"/>
-              <Fader sliderValue={green} id={2} name="G" color="#59E066"/>
-              <Fader sliderValue={blue} id={3} name="B" className="noBorder"/>
+              <Fader
+                id={1}
+                sliderGroupId={2}
+                name="R"
+                color="#CA2C2C"
+              />
+              <Fader 
+                id={2} 
+                sliderGroupId={2} 
+                name="G" 
+                color="#59E066"
+              />
+              <Fader 
+                id={3} 
+                sliderGroupId={2} 
+                name="B" 
+                className="noBorder" 
+              />
             </div>
             <div className="controlColorPicker">
               <ColorPicker

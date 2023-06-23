@@ -5,6 +5,7 @@ import '../index.css';
 import Toggle from './Toggle';
 import Fader from './Fader';
 import { useConnectionContext } from './ConnectionContext';
+import { useFaderContext } from './FaderContext';
 import { useNavigate } from 'react-router-dom';
 
 interface BigViewProps {
@@ -29,12 +30,12 @@ function BigView({ onClose }: BigViewProps) {
   if (!isOpen) {
     return null; // Render nothing if the modal is closed
   }
-
   // Button to open Control
   const handleClick = (id: number) => {
     navigate('/control', { state: { id: id } });
   };
 
+  const { faderValues, setFaderValue } = useFaderContext(); // FaderContext Test
   const { connected, on, off, url } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
   const [DMX, setDMX] = useState(false);
@@ -53,25 +54,6 @@ function BigView({ onClose }: BigViewProps) {
     fetchSliders();
   }, []);
 
-  useEffect(() => {
-    const eventListener = (data: any) => {
-      console.log("Received data from server:", data.value);
-      setSliders((prevSliders) => {
-        return prevSliders.map((slider, index) => {
-          if (index === data.id) {
-            return { ...slider, sliderValue: data.value };
-          }
-          return slider;
-        });
-      });
-    };
-    
-    on("variable_update", eventListener);
-  
-    return () => off("variable_update", eventListener);
-  }, [on, off]);
-
-  
   const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
     localStorage.setItem('dmx', `${status}`);
     setDMX(status);
@@ -81,20 +63,6 @@ function BigView({ onClose }: BigViewProps) {
   useEffect (() => {
     setDMX(localStorage.getItem('dmx') === 'true');
   }, []);  
-
-  /* <- Studio Overview 2: */
-  // setzt den SliderValue auf den Wert, der vom Server kommt, bzw. in der Fader.tsx gesetzt wird
-  const setSliderValue = (value: number, id: number) => {
-    setSliders((prevSliders) => {
-      return prevSliders.map((slider, index) => {
-        if (index === id) {
-          return { ...slider, sliderValue: value };
-        }
-        return slider;
-      });
-    }
-    );
-  };
   
   return (
     <div>
@@ -109,40 +77,12 @@ function BigView({ onClose }: BigViewProps) {
         <div className='BigViewLayer'>
           <span className='text-right'>Devices</span> <div className='toggleUniverse'><Toggle onClick={handleToggleChange} enabled={localStorage.getItem('dmx') === 'true'} /></div><span className='text-left'>DMX Channel</span>
         </div>
-        { DMX ? (
-          <>
-            <div className='BigViewContent innerWindow'>
-              <p>U1</p>
-            </div>
-            <div className='BigViewContent innerWindow'>
-              <p>U2</p>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className='BigViewContent innerWindow'>
-              <p>Drag faders into this quick selection</p>
-            </div>
-            <div className='BigViewContent innerWindow'>
-            { connected && (
-              <div className="sliders">
-                { sliders.slice(1).map((slider) => (
-                  <div key={slider.id} className='slidersHeight'>
-                    <h2 className='faderText'>{slider.id}</h2>
-                    <Fader
-                      key={slider.id}
-                      id={slider.id}
-                      name={slider.name}
-                      sliderValue={slider.sliderValue}
-                      setSliderValue={(value: number) => setSliderValue(value, slider.id)}
-                    />
-                  </div>
-                ))}
-              </div>
-              )}
-            </div>
-          </>
-        )}
+        <div className='BigViewContent innerWindow'>
+          Text 1
+        </div>
+        <div className='BigViewContent innerWindow'>
+          Text 2
+        </div>
       </div>
     </div>
   );

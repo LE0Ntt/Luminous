@@ -6,8 +6,8 @@ import './index.css';
 import './Studio.css';
 import Button from './components/Button';
 import Fader from './components/Fader';
-import { useState, useEffect, useContext } from 'react';
-import { useConnectionContext } from "./components/ConnectionContext";
+import { useState, useEffect, useContext, useRef } from 'react';
+import { useConnectionContext } from "./components/ConnectionContext"; // ConnectionContext Test
 import { TranslationContext } from './components/TranslationContext';
 import { useNavigate } from 'react-router-dom';
 import ScenesComponent from './components/ScenesComponent';
@@ -68,11 +68,10 @@ const Studio = () => {
 
   interface SliderConfig {
     id: number;
-    sliderValue: number;
     name: string;
   };
 
-  const { connected, on, off, url } = useConnectionContext();
+  const { url, connected } = useConnectionContext(); // ConnectionContext Test
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
 
   useEffect(() => {
@@ -81,6 +80,7 @@ const Studio = () => {
         const response = await fetch(url + '/fader');
         const data = await response.json();
         setSliders(JSON.parse(data));
+        //console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -89,16 +89,20 @@ const Studio = () => {
     fetchSliders();
   }, []);
 
-  useEffect(() => {
+
+
+/*   useEffect(() => {
     const eventListener = (data: any) => {
-      console.log("Received data from server:", data.value);
-      setFaderValue(data.id, data.value);
+      if (!isDragging && data.id !== undefined) { 
+        console.log("Received data from server:", data.value);
+        setFaderValue(0 , data.id, data.value); // 0 ist platzhalter
+      }
     };
-    
+  
     on("variable_update", eventListener);
   
     return () => off("variable_update", eventListener);
-  }, [on, off]); 
+  }, [on, off, setFaderValue, isDragging]); */
 
   return (
     <div>
@@ -164,7 +168,7 @@ const Studio = () => {
                       <div className='studio_overview_light mr-[45px]'> {/* mr-[45px] noch tailwind code */}
                       {slider && (
                         <>
-                          <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[slider.id]/255) * (faderValues[0]/255)}} />
+                          <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
                           <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
                           <div className='studio_overview_infopanel'>
                             {rowIndex}{colIndex}
@@ -184,7 +188,7 @@ const Studio = () => {
                     <div className='studio_overview_light ml-[45px]'> {/* ml-[45px] noch tailwind code */}
                     {slider && (
                       <>
-                        <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[slider.id]/255) * (faderValues[0]/255)}} />
+                        <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
                         <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
                         <div className='studio_overview_infopanel'>
                           {rowIndex}{colIndex}
@@ -234,6 +238,7 @@ const Studio = () => {
           <Fader
             height={340}
             id={0}
+            sliderGroupId={0}
             name="Master"
           />
         )}
@@ -248,6 +253,7 @@ const Studio = () => {
                 <Fader
                   key={slider.id}
                   id={slider.id}
+                  sliderGroupId={1}
                   name={slider.name}
                 />
                 <Button 

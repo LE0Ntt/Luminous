@@ -1,10 +1,12 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useConnectionContext } from "./ConnectionContext";
 
 interface FaderContextProps {
-  faderValues: number[];
-  //faderValues: number[][];
-  //setFaderValue: (universeId: number, faderId: number, value: number) => void;
-  setFaderValue: (id: number, value: number) => void;
+  faderValues: number[][];
+  setFaderValue: (sliderGroupId: number, faderId: number, value: number) => void;
+  
+  isDragging?: boolean;
+  setIsDragging: (isDragging: boolean) => void;
 }
 
 interface FaderProviderProps {
@@ -14,34 +16,62 @@ interface FaderProviderProps {
 const FaderContext = createContext<FaderContextProps | undefined>(undefined);
 
 export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
-  // const universes = 3;
-  // const initialFaderValues = new Array(universes).fill(new Array(256).fill(0));
-  // const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
-  // const initialFaderValues = Array.from({ length: universes }, () => new Array(256).fill(0));
+  //multiverse
+  const sliderGroupId = 3;
 
-  const initialFaderValues = new Array(255).fill(0);
-  const [faderValues, setFaderValues] = useState<number[]>(initialFaderValues);
+  /* für die aktualisierung der faderwerte beim laden der seite
+  useEffect(() => {
+    const fetchSliders = async () => {
+      try {
+        const response = await fetch(url + '/fader');
+        const data = await response.json();
+        
+        console.log(JSON.parse(data).map(item => item.faderValue));
+        setFaderValues(JSON.parse(data).map(item => item.faderValue));
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const setFaderValue = (id: number, value: number) => {
-    setFaderValues(prevFaderValues => {
-      const updatedFaderValues = [...prevFaderValues];
-      updatedFaderValues[id] = value;
-      return updatedFaderValues;
-    });
-  };
+    fetchSliders();
+  }, []); 
+  */
 
-  /* const setFaderValue = (universeId: number, faderId: number, value: number) => {
+
+
+  const initialFaderValues = Array.from({ length: sliderGroupId }, () => new Array(512).fill(0));
+  const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
+  
+  
+  const [isDragging, setIsDragging] = useState(false);
+
+  const { on, off, url} = useConnectionContext();
+
+  const setFaderValue = (sliderGroupId: number, faderId: number, value: number) => {
     const newFaderValues = [...faderValues];
-    newFaderValues[universeId][faderId] = value;
+    newFaderValues[sliderGroupId][faderId] = value;
     setFaderValues(newFaderValues);
-  }; */
+  };
 
   // Benutzung:
   /* const { faderValues, setFaderValue } = useFaderContext();
   setFaderValue(0, 1, 100); // Setzt den Wert von Fader 1 im Universe 0 auf 100 */
 
+  useEffect(() => {
+    const eventListener = (data: any) => {
+      if (!isDragging && data.id !== undefined) { 
+        console.log("Received data from server:", data.value);
+        setFaderValue(1, data.id, data.value); // 0 ist platzhalter
+      }
+    };
+  
+    on("variable_update", eventListener);
+  
+    return () => off("variable_update", eventListener);
+  }, [on, off, setFaderValue, isDragging]);
+
   return (
-    <FaderContext.Provider value={{ faderValues, setFaderValue }}>
+    <FaderContext.Provider value={{ faderValues, setFaderValue, isDragging, setIsDragging }}>
       {children}
     </FaderContext.Provider>
   );

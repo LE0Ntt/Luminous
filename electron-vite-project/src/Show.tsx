@@ -8,9 +8,11 @@ import "./Color.css";
 import Fader from "./components/Fader";
 import ScenesComponent from "./components/ScenesComponent";
 import MyTimeline from "./components/Timeline"; // Importiere die Timeline-Komponente
+import { useFaderContext } from "./components/FaderContext";
 
 function Show() {
   const { connected, emit, on } = useConnectionContext();
+  const { isDragging, setIsDragging } = useFaderContext();
 
   return (
     <div>
@@ -27,7 +29,7 @@ function Show() {
           <div className="showMasterAlign">
             <Fader
               height={290}
-              sliderValue={255}
+              sliderGroupId={0}
               id={0}
               name='Value'
             /> 

@@ -124,14 +124,6 @@ function Control() {
     const solo = localStorage.getItem('solo') === 'true';
   };
 
-
-  // <- Add Scene:
-/*   const handleAddScene = () => {
-    addScene(scenes, emit); // Verwendung der addScene-Funktion
-  }; */
-  // :Add Scene END ->
-
-
   // Color Picker
   const [red, setRed] = useState(255);
   const [green, setGreen] = useState(255);
@@ -156,6 +148,7 @@ function Control() {
             <Fader
               height={397}
               id={0}            // muss geändert werden zu gruppe aller ausgewählten devices
+              sliderGroupId={2}
               name={t("group")}
             />
           </div>
@@ -188,9 +181,24 @@ function Control() {
           <div className="controlRGB innerWindow">
             <span className="controlTitle">RGB</span>
             <div className="controlRGBFader">
-              <Fader id={1} name="R" color="#CA2C2C"/>
-              <Fader id={2} name="G" color="#59E066"/>
-              <Fader id={3} name="B" className="noBorder"/>
+              <Fader
+                id={1}
+                sliderGroupId={2}
+                name="R"
+                color="#CA2C2C"
+              />
+              <Fader 
+                id={2} 
+                sliderGroupId={2} 
+                name="G" 
+                color="#59E066"
+              />
+              <Fader 
+                id={3} 
+                sliderGroupId={2} 
+                name="B" 
+                className="noBorder" 
+              />
             </div>
             <div className="controlColorPicker">
               <ColorPicker

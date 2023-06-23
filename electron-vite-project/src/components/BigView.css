@@ -34,9 +34,17 @@
     height: 406px;
     width: 100%;
     top: 41px;
-    /* war mal 17px */
     margin-bottom: 20px;
-    overflow: hidden;
+    padding: 0 20px 0 20px;
+}
+
+.BigViewContent .sliders{
+    height: 396px;
+}
+
+.BigViewContent .fader{
+    height: 357px;
+    top: -22px;
 }
 
 .BigViewLayer {

@@ -36,6 +36,42 @@ function LightSettings({ onClose }: SettingsProps) {
   }
 
   useEffect(() => {
+    fetch(url + '/addlight', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 
+                            name: "lamp", 
+                            number: "1", 
+                            device_type: "lamp", 
+                            universe: "1", 
+                            attributes: 
+                              { channel: [
+                                { 
+                                  id: "1", 
+                                  dmx_channel: "1", 
+                                  channel_type: "bi" 
+                                },
+                                {
+                                  id: "2",
+                                  dmx_channel: "2",
+                                  channel_type: "uni"
+                                },
+                              ]
+                            }
+                          })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }, []);
+
+  useEffect(() => {
     const fetchDevices = async () => {
       try { 
         const response = await fetch(url + '/fader');

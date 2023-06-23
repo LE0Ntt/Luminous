@@ -83,3 +83,12 @@
   display: flex;
 }
 
+.SettingsButton {
+  height: 36px;
+  width: 225px;
+  left: 122px;
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+

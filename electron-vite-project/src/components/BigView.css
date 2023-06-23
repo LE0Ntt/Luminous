@@ -34,25 +34,39 @@
     height: 406px;
     width: 100%;
     top: 41px;
-    /* war mal 17px */
     margin-bottom: 20px;
-    overflow: hidden;
+    padding: 0 20px 0 20px;
+}
+
+.BigViewContent .sliders{
+    height: 396px;
+}
+
+.BigViewContent .fader{
+    height: 357px;
+    top: -22px;
 }
 
 .BigViewLayer {
     position: absolute;
-    top: 10px;
+    top: 7px;
     height: 36px;
-    width: 225px;
     object-fit: contain;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
     display: flex;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--primary);
+    gap: 10px;
+}
+
+.BigViewLayer > div {
+    top: 7px;
 }
 
 .toggleUniverse {
     margin-left: 5px;
-    margin-right: 5px;
     top: 3px;
     position: relative;
     display: inline;

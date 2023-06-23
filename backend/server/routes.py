@@ -1,13 +1,15 @@
 from flask import render_template, redirect, flash, url_for, request, abort
 from flask_login import login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
+from flask import Flask, render_template
 from flask_socketio import SocketIO
 import json
 from flask import jsonify
 from server import app, db
-from server.models import Admin, Scene, Device, Show, Settings
+from server.models import Device
 
-def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
+'''
+def create_sliders(num_sliders): # wird ersetzt durch db abfrage
     sliders = []
 
     master = {
@@ -27,8 +29,35 @@ def create_sliders(num_sliders): # wird nachher ersetzt durch db abfrage
     return json.dumps(sliders)
 
 sliders = create_sliders(16)
+'''
 
-def create_scenes(num_scenes): # wird nachher ersetzt durch db abfrage
+def get_devices():
+    device_list = []
+    
+    master = {
+        "id": 0,
+        "sliderValue": 255,
+        "name": "Master"
+    }
+    device_list.append(master)
+    
+    with app.app_context():
+        devices = Device.query.all()
+        for device in devices:
+            device = {
+                "id": device.id,
+                "sliderValue": 0,
+                "name": device.name,
+                "deviceType": device.device_type,
+                "universe": device.universe,
+                "attributes": device.attributes
+            }
+            device_list.append(device)  
+    return device_list
+
+devices = get_devices()
+
+def create_scenes(num_scenes): # wird ersetzt durch db abfrage
     scenes = []
 
     for i in range(num_scenes):
@@ -38,7 +67,7 @@ def create_scenes(num_scenes): # wird nachher ersetzt durch db abfrage
             "name": "Scene" + str(i + 1)
         }
         scenes.append(scene)
-    return json.dumps(scenes)
+    return scenes
 
 scenes = create_scenes(6)
 
@@ -50,13 +79,14 @@ def mein_endpunkt():
 
 @app.route('/fader')
 def get_faders():
-    global sliders
-    return jsonify(sliders)
+    global devices
+    return jsonify(json.dumps(devices))
 
 @app.route('/scenes')
 def get_scenes():
     global scenes
-    return jsonify(scenes)
+    return jsonify(json.dumps(scenes))
+
 
 @app.route('/addlight', methods=['POST'])
 def add_light():
@@ -67,11 +97,22 @@ def add_light():
     # universe = data['universe']
     # attributes = data['attributes']
     device = Device(name = data['name'], number = data['number'], device_type = data['device_type'], universe = data['universe'], attributes = data['attributes'])
+    print(device)
     db.session.add(device)
     db.session.commit()
+    global devices
+    device_dict = {
+        "id": device.id,
+        "name": device.name,
+        "sliderValue": 0,
+        "deviceType": device.device_type,
+        "universe": device.universe,
+        "attributes": device.attributes
+    }
+    devices.append(device_dict)
     return {'message': 'Form submitted successfully'}
 
-@app.route('/submit', methods=['POST'])
+@app.route('/submit', methods=['POST']) # nur zum testen
 def handle_form_submission():
     data = request.get_json()
     username = data['username']

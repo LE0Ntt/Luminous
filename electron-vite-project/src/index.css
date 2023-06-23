@@ -40,10 +40,11 @@
   * {
     transition: border-color 200ms ease-out, background 200ms ease-out, box-shadow 200ms ease-out;
   }
-  
+
   .mainContainer {
     position: absolute;
-    top: 90px; /* Header hight */
+    top: 90px;
+    /* Header hight */
     left: 0;
     right: 0;
     bottom: 0;
@@ -81,6 +82,14 @@
 
   .hide {
     visibility: hidden;
+  }
+
+  .marginLeft45 {
+    margin-left: 45px;
+  }
+
+  .marginRight45 {
+    margin-right: 45px;
   }
 
   .centerIcon {

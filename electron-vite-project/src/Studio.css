@@ -70,6 +70,16 @@
     z-index: 1;
 }
 
+.studio_overview_infopanel_greenscreen {
+    top: 30px;
+    left: -90px;
+}
+
+.studio_overview_infopanel_testchart {
+    top: 30px;
+    left: -90px;
+}
+
 .studio_overview_infopanel_text {
     font-size: 13px;
     font-weight: 600;

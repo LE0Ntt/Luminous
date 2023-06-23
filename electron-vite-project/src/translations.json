@@ -38,7 +38,8 @@
     "ls_addDevice": "Add Device",
     "ls_saveDevice": "Save Device",
     "ls_deleteDevice": "Remove Device",
-    "Off": "Off"
+    "Off": "Off",
+    "testchart": "Testchart"
   },
   "de": {
     "greeting": "Hallo!",
@@ -79,6 +80,7 @@
     "ls_addDevice": "Gerät hinzufügen",
     "ls_saveDevice": "Gerät speichern",
     "ls_deleteDevice": "Gerät entfernen",
-    "Off": "Aus"
+    "Off": "Aus",
+    "testchart": "Testchart"
   }
 }

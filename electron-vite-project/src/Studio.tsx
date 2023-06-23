@@ -99,29 +99,29 @@ const Studio = () => {
       <div className='overview window'>
         <div className='studio_overview window'>
           <div className='studio_overview_greenScreen'>
-            <div className='studio_overview_light'>
-              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
-              <div className='studio_overview_infopanel'></div>
+            <div className='studio_overview_infopanel studio_overview_infopanel_greenscreen'>
+              <div className='studio_overview_infopanel_text'>Greenscreen</div>
+              <div className='studio_overview_infopanel_brightness'>
+                {(((faderValues[1][16] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[1][16] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+              </div>
             </div>
             <div className='studio_overview_light'>
               <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
-              <div className='studio_overview_infopanel'></div>
             </div>
             <div className='studio_overview_light'>
               <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
-              <div className='studio_overview_infopanel'></div>
+            </div>
+            <div className='studio_overview_light'>
+              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
             </div>
             <div className='studio_overview_light'>
               <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
-              <div className='studio_overview_infopanel'></div>
             </div>
             <div className='studio_overview_light'>
               <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
-              <div className='studio_overview_infopanel'></div>
             </div>
             <div className='studio_overview_light'>
               <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
-              <div className='studio_overview_infopanel'></div>
             </div>
           </div>
           <div className='studio_overview_lights'>
@@ -148,7 +148,7 @@ const Studio = () => {
                 ) {
                   return (
                     <div key={`${rowIndex}-${colIndex}`}>
-                      <div className='studio_overview_light mr-[45px]'> {/* mr-[45px] noch tailwind code */}
+                      <div className='studio_overview_light marginRight45'>
                       {slider && (
                         <>
                           <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
@@ -170,7 +170,7 @@ const Studio = () => {
                 )  {
                 return (
                   <div key={`${rowIndex}-${colIndex}`}>
-                    <div className='studio_overview_light ml-[45px]'> {/* ml-[45px] noch tailwind code */}
+                    <div className='studio_overview_light marginLeft45'>
                     {slider && (
                       <>
                         <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
@@ -192,7 +192,7 @@ const Studio = () => {
               ) {
                 return (
                   <div key={`${rowIndex}-${colIndex}`}>
-                    <div className='studio_overview_light ml-[45px]'> {/* ml-[45px] noch tailwind code */}
+                    <div className='studio_overview_light'>
                     {slider && (
                       <div>
                         PROP
@@ -209,13 +209,17 @@ const Studio = () => {
           </div>
           </div>
           <div className='studio_overview_testchart'>
-            <div className='studio_overview_light'>
-              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_testchart_lamp'/>
-              <div className='studio_overview_infopanel'></div>
+            <div className='studio_overview_infopanel studio_overview_infopanel_greenscreen'>
+              <div className='studio_overview_infopanel_text'>{t('testchart')}</div>
+              <div className='studio_overview_infopanel_brightness'>
+                {(((faderValues[1][15] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[1][15] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+            </div>
             </div>
             <div className='studio_overview_light'>
               <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_testchart_lamp'/>
-              <div className='studio_overview_infopanel'></div>
+            </div>
+            <div className='studio_overview_light'>
+              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_testchart_lamp'/>
             </div>
           </div>
         </div>

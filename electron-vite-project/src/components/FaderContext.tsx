@@ -16,9 +16,7 @@ interface FaderProviderProps {
 const FaderContext = createContext<FaderContextProps | undefined>(undefined);
 
 export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
-  //multiverse
   const sliderGroupId = 3;
-
   /* für die aktualisierung der faderwerte beim laden der seite
   useEffect(() => {
     const fetchSliders = async () => {
@@ -36,15 +34,9 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
     fetchSliders();
   }, []); 
   */
-
-
-
   const initialFaderValues = Array.from({ length: sliderGroupId }, () => new Array(512).fill(0));
   const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
-  
-  
   const [isDragging, setIsDragging] = useState(false);
-
   const { on, off, url} = useConnectionContext();
 
   const setFaderValue = (sliderGroupId: number, faderId: number, value: number) => {
@@ -52,10 +44,6 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
     newFaderValues[sliderGroupId][faderId] = value;
     setFaderValues(newFaderValues);
   };
-
-  // Benutzung:
-  /* const { faderValues, setFaderValue } = useFaderContext();
-  setFaderValue(0, 1, 100); // Setzt den Wert von Fader 1 im Universe 0 auf 100 */
 
   useEffect(() => {
     const eventListener = (data: any) => {

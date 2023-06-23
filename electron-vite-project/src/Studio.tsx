@@ -7,7 +7,7 @@ import './Studio.css';
 import Button from './components/Button';
 import Fader from './components/Fader';
 import { useState, useEffect, useContext, useRef } from 'react';
-import { useConnectionContext } from "./components/ConnectionContext"; // ConnectionContext Test
+import { useConnectionContext } from "./components/ConnectionContext";
 import { TranslationContext } from './components/TranslationContext';
 import { useNavigate } from 'react-router-dom';
 import ScenesComponent from './components/ScenesComponent';
@@ -16,10 +16,9 @@ import { useFaderContext } from './components/FaderContext';
 
 const Studio = () => {
   const navigate = useNavigate();
-
-
-  const { faderValues, setFaderValue } = useFaderContext(); // FaderContext Test
-
+  // FaderValues from FaderContext
+  const { faderValues, setFaderValue } = useFaderContext();
+  const { url, connected } = useConnectionContext();
   // Language
   const { t, language, setLanguage } = useContext(TranslationContext);
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -71,7 +70,6 @@ const Studio = () => {
     name: string;
   };
 
-  const { url, connected } = useConnectionContext(); // ConnectionContext Test
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
 
   useEffect(() => {
@@ -253,7 +251,7 @@ const Studio = () => {
                   <Fader
                     key={slider.id}
                     id={slider.id}
-                  sliderGroupId={1}
+                    sliderGroupId={1}
                     name={slider.name}
                   />
                   <Button 

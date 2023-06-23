@@ -55,17 +55,6 @@ function BigView({ onClose }: BigViewProps) {
     fetchSliders();
   }, []);
 
-  useEffect(() => {
-    const eventListener = (data: any) => {
-      console.log("Received data from server:", data.value);
-      setFaderValue(data.id, data.value);
-    };
-    
-    on("variable_update", eventListener);
-  
-    return () => off("variable_update", eventListener);
-  }, [on, off]); 
-
   const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
     localStorage.setItem('dmx', `${status}`);
     setDMX(status);
@@ -112,6 +101,7 @@ function BigView({ onClose }: BigViewProps) {
                     <Fader
                       key={slider.id}
                       id={slider.id}
+                      sliderGroupId={1}
                       name={slider.name}
                     />
                   </div>

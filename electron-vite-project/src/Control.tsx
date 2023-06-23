@@ -11,7 +11,7 @@ import ColorPicker from "./components/ColorPicker";
 
 function Control() {
   const { t } = useContext(TranslationContext);
-  const { connected, on, off, url } = useConnectionContext();
+  const { url } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
@@ -147,8 +147,8 @@ function Control() {
           <div className="lightFader innerWindow">
             <Fader
               height={397}
-              id={0}            // muss geändert werden zu gruppe aller ausgewählten devices
-              sliderGroupId={2}
+              id={1}            // muss geändert werden zu gruppe aller ausgewählten devices
+              sliderGroupId={1}
               name={t("group")}
             />
           </div>

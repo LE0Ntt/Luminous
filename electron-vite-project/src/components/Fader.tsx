@@ -31,13 +31,6 @@ const Fader: React.FC<SliderProps> = ({
 
   const { isDragging, setIsDragging } = useFaderContext(); // Verwenden Sie den Kontext
 
-  /* const value = faderValues[id] || 0; */ // vielleicht nicht benötigt
-  /* // auskommentiert, da nach Studio verschoben
-  useEffect(() => {
-    if(!isDragging)
-      setFaderValue(universeId, id, faderValues[universeId][id]);
-  }, [faderValues[universeId][id]]);
-   */
   // Set fader height by the passed parameter
   useEffect(() => {
     if(height)

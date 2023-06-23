@@ -18,6 +18,7 @@ function LightSettings({ onClose }: SettingsProps) {
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceConfig>();
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
+  const [inputDMXstart, setInputDMXstart] = useState('');
 
 
   interface DeviceConfig {
@@ -87,6 +88,10 @@ function LightSettings({ onClose }: SettingsProps) {
     fetchDevices();
   }, []);
 
+  const handleInputDMXstart = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputDMXstart(event.target.value);
+  };
+
   const handleSelectDevice = (device: DeviceConfig) => {
     setSelectedDevice(device);
     setUnselectedDevices(unselectedDevices.filter(item => item.id !== device.id));
@@ -98,7 +103,39 @@ function LightSettings({ onClose }: SettingsProps) {
   };
 
   const handleCreateDevice = () => {
-    
+    fetch(url + '/addlight', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 
+                            name: "lamp", 
+                            number: "1", 
+                            device_type: "lamp", 
+                            universe: "1", 
+                            attributes: 
+                              { channel: [
+                                { 
+                                  id: "1", 
+                                  dmx_channel: "1", 
+                                  channel_type: "bi" 
+                                },
+                                {
+                                  id: "2",
+                                  dmx_channel: "2",
+                                  channel_type: "uni"
+                                },
+                              ]
+                            }
+                          })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
   };
 
   const handleRemoveDevice = () => {
@@ -143,7 +180,10 @@ function LightSettings({ onClose }: SettingsProps) {
           </div>
           <div className='LightSettingsWindow innerWindow'>
             <div className='LightSettingsWindowUpper'>
-              Test Upper
+            <div>
+              <label>DMX Start-Adresse:</label>
+              <input type="text" value={inputDMXstart} onChange={handleInputDMXstart} />
+            </div>
             </div>
             <hr />
             <div className='LightSettingsWindowMid'>

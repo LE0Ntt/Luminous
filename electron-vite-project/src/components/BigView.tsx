@@ -30,7 +30,6 @@ function BigView({ onClose }: BigViewProps) {
   if (!isOpen) {
     return null; // Render nothing if the modal is closed
   }
-
   // Button to open Control
   const handleClick = (id: number) => {
     navigate('/control', { state: { id: id } });
@@ -78,39 +77,12 @@ function BigView({ onClose }: BigViewProps) {
         <div className='BigViewLayer'>
           <span className='text-right'>Devices</span> <div className='toggleUniverse'><Toggle onClick={handleToggleChange} enabled={localStorage.getItem('dmx') === 'true'} /></div><span className='text-left'>DMX Channel</span>
         </div>
-        { DMX ? (
-          <>
-            <div className='BigViewContent innerWindow'>
-              <p>U1</p>
-            </div>
-            <div className='BigViewContent innerWindow'>
-              <p>U2</p>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className='BigViewContent innerWindow'>
-              <p>Drag faders into this quick selection</p>
-            </div>
-            <div className='BigViewContent innerWindow'>
-            { connected && (
-              <div className="sliders">
-                { sliders.slice(1).map((slider) => (
-                  <div key={slider.id} className='slidersHeight'>
-                    <h2 className='faderText'>{slider.id}</h2>
-                    <Fader
-                      key={slider.id}
-                      id={slider.id}
-                      sliderGroupId={1}
-                      name={slider.name}
-                    />
-                  </div>
-                ))}
-              </div>
-              )}
-            </div>
-          </>
-        )}
+        <div className='BigViewContent innerWindow'>
+          Text 1
+        </div>
+        <div className='BigViewContent innerWindow'>
+          Text 2
+        </div>
       </div>
     </div>
   );

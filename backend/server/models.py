@@ -1,10 +1,11 @@
 from sqlalchemy import JSON
-#from flask_login import UserMixin
+# from flask_login import UserMixin
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from flask import jsonify
 from server import db, app
+
 
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -15,14 +16,16 @@ class Admin(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-    
+
+
 class Scene(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     number = db.Column(db.Integer)
     color = db.Column(db.String(50))
     channel = db.Column(JSON)
-    
+
+
 class Device(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
@@ -31,32 +34,35 @@ class Device(db.Model):
     universe = db.Column(db.Integer)
     attributes = db.Column(JSON)
 
+
 class Show(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     date = db.Column(db.DateTime, default=datetime.utcnow)
     duration = db.Column(db.String(50))
-    event = db.Column(JSON) 
+    event = db.Column(JSON)
     mute = db.Column(db.Boolean, default=False)
     solo = db.Column(db.Boolean, default=False)
-    
+
     def get_date(self):
         return self.date.strftime('%d.%m.%y %H:%M')
-        
+
+
 class Settings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    studio_grid = db.Column(JSON, nullable=False)    
+    studio_grid = db.Column(JSON, nullable=False)
     language = db.Column(db.String(2), default='en')
-    
+
     def switch_language(self):
         self.language = 'de' if self.language == 'en' else 'en'
         db.session.commit()
 
-# Clear db 
-#with app.app_context():   
-    #db.drop_all()
-    #db.create_all()    
-    
+# Clear db
+# with app.app_context():
+    # db.drop_all()
+    # db.create_all()
+
+
 '''
 Die JSON-Spalte ermöglicht es, komplexe Datenstrukturen wie das JSON-Objekt, das du beschrieben hast, in der Datenbank zu speichern und abzurufen. Wenn du Daten in die Tabelle einfügen möchtest, kannst du dies auf folgende Weise tun:
 new_scene = Scene(name='my_scene', number=1, color='red', channel={
@@ -125,4 +131,3 @@ class Plant(db.Model):
     def __repr__(self):
         return '<Plant {}>'.format(self.plant_name)
 '''
-

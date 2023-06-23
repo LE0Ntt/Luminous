@@ -2,7 +2,7 @@
  * Scenes.tsx
  * @author Leon Hölzel
  */
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import './Scenes.css';
 import { TranslationContext } from "./components/TranslationContext";
 import Fader from './components/Fader';
@@ -11,7 +11,7 @@ import Toggle from './components/Toggle';
 
 function Scenes() {
   const { t } = useContext(TranslationContext);
-
+  
   const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
     localStorage.setItem('layer', `${status}`);
   };

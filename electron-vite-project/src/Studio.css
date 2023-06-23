@@ -56,6 +56,7 @@
 .studio_overview_infopanel {
     height: 39px;
     width: 90px;
+    flex-shrink: 0;
     margin-left: 5px;
     border-radius: 5px;
     border: 1px solid var(--onepStroke);
@@ -67,6 +68,25 @@
     position: absolute;
     top: 60px;
     z-index: 1;
+}
+
+.studio_overview_infopanel_text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    text-align: right;
+    letter-spacing: 0em;
+    margin-right: 6px;
+}
+
+.studio_overview_infopanel_brightness {
+    font-weight: 600;
+    font-size: 18px;
+    position: absolute;
+    color: var(--primary);
+
+    bottom: -4px;
+    right: 6px;
 }
 
 .studio_overview_light {

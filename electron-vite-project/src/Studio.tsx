@@ -87,21 +87,6 @@ const Studio = () => {
     fetchSliders();
   }, []);
 
-
-
-/*   useEffect(() => {
-    const eventListener = (data: any) => {
-      if (!isDragging && data.id !== undefined) { 
-        console.log("Received data from server:", data.value);
-        setFaderValue(0 , data.id, data.value); // 0 ist platzhalter
-      }
-    };
-  
-    on("variable_update", eventListener);
-  
-    return () => off("variable_update", eventListener);
-  }, [on, off, setFaderValue, isDragging]); */
-
   return (
     <div>
       <select value={language} onChange={handleLanguageChange}>
@@ -169,8 +154,10 @@ const Studio = () => {
                           <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
                           <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
                           <div className='studio_overview_infopanel'>
-                            {rowIndex}{colIndex}
-                            <div>#{slider.id}</div>
+                            <div className='studio_overview_infopanel_text'>#{slider.id}</div>
+                            <div className='studio_overview_infopanel_brightness'>
+                              {((solo && !soloLights.includes(slider.id)) ? 0 : ((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+                            </div>
                           </div>
                         </>
                       )}
@@ -189,8 +176,10 @@ const Studio = () => {
                         <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
                         <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
                         <div className='studio_overview_infopanel'>
-                          {rowIndex}{colIndex}
-                          <div>#{slider.id}</div>
+                          <div className='studio_overview_infopanel_text'>#{slider.id}</div>
+                          <div className='studio_overview_infopanel_brightness'>
+                            {((solo && !soloLights.includes(slider.id)) ? 0 : ((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+                          </div>
                         </div>                        
                       </>
                     )}
@@ -206,7 +195,7 @@ const Studio = () => {
                     <div className='studio_overview_light ml-[45px]'> {/* ml-[45px] noch tailwind code */}
                     {slider && (
                       <div>
-                        FAKE       
+                        PROP
                       </div>
                     )}
                     </div>

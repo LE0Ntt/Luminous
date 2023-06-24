@@ -80,18 +80,28 @@ function BigView({ onClose }: BigViewProps) {
         { DMX ? (
           <>
             <div className='BigViewContent innerWindow'>
-              <p>U1</p>
+              <div className="universeLabel window">
+                U1
+              </div>
             </div>
             <div className='BigViewContent innerWindow'>
-              <p>U2</p>
+              <div className="universeLabel window">
+                U2
+              </div>
             </div>
           </>
         ) : (
           <>
             <div className='BigViewContent innerWindow'>
-              <p>Drag faders into this quick selection</p>
+              <div className="universeLabel window">
+                U1
+              </div>
+              
             </div>
             <div className='BigViewContent innerWindow'>
+              <div className="universeLabel window">
+                U2
+              </div>
             { connected && (
               <div className="sliders">
                 { sliders.slice(1).map((slider) => (
@@ -110,6 +120,16 @@ function BigView({ onClose }: BigViewProps) {
             </div>
           </>
         )}
+        <div className='mainfaderBigView innerWindow'>
+        { sliders[0] && (
+          <Fader
+            height={714}
+            id={0}
+            sliderGroupId={0}
+            name="Master"
+          />
+        )}
+      </div>
       </div>
     </div>
   );

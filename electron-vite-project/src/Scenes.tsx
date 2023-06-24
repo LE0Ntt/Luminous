@@ -24,7 +24,7 @@ function Scenes() {
       <div className='window scenesMaster mainfader'>
         <div className='scenesMasterAlign'>
           <Fader
-              height={684}
+              height={700}
               sliderGroupId={0}
               id={0}
               name='Master'

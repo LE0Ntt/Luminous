@@ -175,6 +175,7 @@
     position: absolute;
     right: 10px;
     top: 10px;
+    backdrop-filter: blur(10px);
 }
 
 .faderText {

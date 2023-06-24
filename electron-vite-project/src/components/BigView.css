@@ -32,7 +32,7 @@
 .BigViewContent {
     position: relative;
     height: 406px;
-    width: 100%;
+    width: 1694px;
     top: 41px;
     margin-bottom: 20px;
     padding: 0 20px 0 20px;
@@ -70,4 +70,26 @@
     top: 3px;
     position: relative;
     display: inline;
+}
+
+.universeLabel {
+    width: 36px;
+    height: 36px;
+    border-radius: 5px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    text-align: center;
+    padding-top: 4px;
+    color: var(--primary);
+    backdrop-filter: blur(10px);
+    z-index: 9;
+}
+
+.mainfaderBigView {
+    height: 832px;
+    width: 84px;
+    right: 20px;
+    top: 56px;
+    position: absolute;
 }

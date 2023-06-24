@@ -125,88 +125,87 @@ const Studio = () => {
             </div>
           </div>
           <div className='studio_overview_lights'>
-          <div style={{ 
-            display: 'grid',
-            gridTemplateRows: `repeat(${studioRows}, 1fr)`,
-            gridTemplateColumns: `repeat(${studioColumns}, 1fr)`,
-            gap: '5px', // Abstand zwischen den Zellen
-            width: '604px',
-            height: '672px',
-            alignItems: 'center',
-            justifyItems: 'center',
-          }}>
-            {grid.map((row, rowIndex) => 
-              row.map((_, colIndex) => {
-                const selectedSlider = selectedSliders.find((s) => s.row === rowIndex && s.col === colIndex);
-                const sliderId = selectedSlider ? selectedSlider.id : null;
-                const slider = sliders.find((s) => s.id === sliderId);
-
-                if (
-                  selectedSlider &&
-                  colIndex < row.length / 2 &&
-                  selectedSlider.fake === false
-                ) {
-                  return (
-                    <div key={`${rowIndex}-${colIndex}`}>
-                      <div className='studio_overview_light marginRight45'>
-                      {slider && (
-                        <>
-                          <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
-                          <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
-                          <div className='studio_overview_infopanel'>
-                            <div className='studio_overview_infopanel_text'>#{slider.id}</div>
-                            <div className='studio_overview_infopanel_brightness'>
-                              {((solo && !soloLights.includes(slider.id)) ? 0 : ((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+            <div style={{ 
+              display: 'grid',
+              gridTemplateRows: `repeat(${studioRows}, 1fr)`,
+              gridTemplateColumns: `repeat(${studioColumns}, 1fr)`,
+              gap: '5px', // Abstand zwischen den Zellen
+              width: '604px',
+              height: '672px',
+              alignItems: 'center',
+              justifyItems: 'center',
+            }}>
+              {grid.map((row, rowIndex) => 
+                row.map((_, colIndex) => {
+                  const selectedSlider = selectedSliders.find((s) => s.row === rowIndex && s.col === colIndex);
+                  const sliderId = selectedSlider ? selectedSlider.id : null;
+                  const slider = sliders.find((s) => s.id === sliderId);
+                  if (
+                    selectedSlider &&
+                    colIndex < row.length / 2 &&
+                    selectedSlider.fake === false
+                  ) {
+                    return (
+                      <div key={`${rowIndex}-${colIndex}`}>
+                        <div className='studio_overview_light marginRight45'>
+                        {slider && (
+                          <>
+                            <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
+                            <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
+                            <div className='studio_overview_infopanel'>
+                              <div className='studio_overview_infopanel_text'>#{slider.id}</div>
+                              <div className='studio_overview_infopanel_brightness'>
+                                {((solo && !soloLights.includes(slider.id)) ? 0 : ((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+                              </div>
                             </div>
-                          </div>
-                        </>
-                      )}
+                          </>
+                        )}
+                        </div>
                       </div>
-                    </div>
-                )} else  if (
-                  selectedSlider &&
-                  colIndex >= row.length / 2 &&
-                  selectedSlider.fake === false
-                )  {
-                return (
-                  <div key={`${rowIndex}-${colIndex}`}>
-                    <div className='studio_overview_light marginLeft45'>
-                    {slider && (
-                      <>
-                        <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
-                        <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
-                        <div className='studio_overview_infopanel'>
-                          <div className='studio_overview_infopanel_text'>#{slider.id}</div>
-                          <div className='studio_overview_infopanel_brightness'>
-                            {((solo && !soloLights.includes(slider.id)) ? 0 : ((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+                  )} else  if (
+                    selectedSlider &&
+                    colIndex >= row.length / 2 &&
+                    selectedSlider.fake === false
+                  ) {
+                    return (
+                      <div key={`${rowIndex}-${colIndex}`}>
+                        <div className='studio_overview_light marginLeft45'>
+                        {slider && (
+                          <>
+                            <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
+                            <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
+                            <div className='studio_overview_infopanel'>
+                              <div className='studio_overview_infopanel_text'>#{slider.id}</div>
+                              <div className='studio_overview_infopanel_brightness'>
+                                {((solo && !soloLights.includes(slider.id)) ? 0 : ((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+                              </div>
+                            </div>                        
+                          </>
+                        )}
+                        </div>
+                      </div> 
+                    )
+                  } else if (
+                    selectedSlider &&
+                    selectedSlider.fake === true
+                  ) {
+                    return (
+                      <div key={`${rowIndex}-${colIndex}`}>
+                        <div className='studio_overview_light'>
+                        {slider && (
+                          <div>
+                            PROP
                           </div>
-                        </div>                        
-                      </>
-                    )}
-                    </div>
-                  </div> 
-                )
-              } else if (
-                selectedSlider &&
-                selectedSlider.fake === true
-              ) {
-                return (
-                  <div key={`${rowIndex}-${colIndex}`}>
-                    <div className='studio_overview_light'>
-                    {slider && (
-                      <div>
-                        PROP
-                      </div>
-                    )}
-                    </div>
-                  </div> 
-                )
-              }
-              // Standardfall: Leerzeichen für nicht ausgewählte Slider
-              return <div key={`${rowIndex}-${colIndex}`} />;
-            })
-          )}
-          </div>
+                        )}
+                        </div>
+                      </div> 
+                    )
+                  }
+                  // Standardfall: Leerzeichen für nicht ausgewählte Slider
+                  return <div key={`${rowIndex}-${colIndex}`} />;
+                })
+              )}
+            </div>
           </div>
           <div className='studio_overview_testchart'>
             <div className='studio_overview_infopanel studio_overview_infopanel_greenscreen'>

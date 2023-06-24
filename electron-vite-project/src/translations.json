@@ -1,7 +1,5 @@
 {
   "en": {
-    "greeting": "Hello!",
-    "buttonLabel": "Click me!",
     "studio": "Studio",
     "scenes": "Scenes",
     "control": "LightFX",
@@ -39,11 +37,10 @@
     "ls_saveDevice": "Save Device",
     "ls_deleteDevice": "Remove Device",
     "Off": "Off",
-    "testchart": "Testchart"
+    "testchart": "Testchart",
+    "bb_lights": "Devices"
   },
   "de": {
-    "greeting": "Hallo!",
-    "buttonLabel": "Klick mich!",
     "studio": "Studio",
     "scenes": "Szenen",
     "control": "LightFX",
@@ -81,6 +78,7 @@
     "ls_saveDevice": "Gerät speichern",
     "ls_deleteDevice": "Gerät entfernen",
     "Off": "Aus",
-    "testchart": "Testchart"
+    "testchart": "Testchart",
+    "bb_lights": "Geräte"
   }
 }

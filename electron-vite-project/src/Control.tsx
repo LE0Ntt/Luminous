@@ -8,6 +8,7 @@ import Fader from './components/Fader';
 import DeviceList from './components/DeviceList';
 import Button from "./components/Button";
 import ColorPicker from "./components/ColorPicker";
+import { useFaderContext } from "./components/FaderContext";
 
 function Control() {
   const { t } = useContext(TranslationContext);
@@ -18,6 +19,7 @@ function Control() {
   const [firstLoad, setFirstLoad] = useState(false);
   const [animiation, setAnimiation] = useState(false);
   const location = useLocation();
+  const { faderValues, setFaderValue } = useFaderContext();
 
   // <- Device:
   interface DeviceConfig {
@@ -125,14 +127,17 @@ function Control() {
   };
 
   // Color Picker
-  const [red, setRed] = useState(255);
-  const [green, setGreen] = useState(255);
-  const [blue, setBlue] = useState(255);
+  const [red, setRed] = useState(faderValues[0][3]);
+  const [green, setGreen] = useState(faderValues[0][4]);
+  const [blue, setBlue] = useState(faderValues[0][5]);
 
   const handleColorChange = (newRed: number, newGreen: number, newBlue: number) => {
     setRed(newRed);
     setGreen(newGreen);
     setBlue(newBlue);
+    setFaderValue(0, 3, newRed);
+    setFaderValue(0, 4, newGreen);
+    setFaderValue(0, 5, newBlue);
   };
 
   return (
@@ -148,7 +153,7 @@ function Control() {
             <Fader
               height={397}
               id={1}            // muss geändert werden zu gruppe aller ausgewählten devices
-              sliderGroupId={1}
+              sliderGroupId={0}
               name={t("group")}
             />
           </div>
@@ -171,9 +176,9 @@ function Control() {
             <div className="controlKelvinPicker">
                <ColorPicker 
                 pickerType="kelvin"
-                red={red}
-                green={green}
-                blue={blue}
+                red={faderValues[0][3]}
+                green={faderValues[0][4]}
+                blue={faderValues[0][5]}
                 onColorChange={handleColorChange}
               />
             </div>
@@ -182,20 +187,20 @@ function Control() {
             <span className="controlTitle">RGB</span>
             <div className="controlRGBFader">
               <Fader
-                id={1}
-                sliderGroupId={2}
+                id={3}
+                sliderGroupId={0}
                 name="R"
                 color="#CA2C2C"
               />
               <Fader 
-                id={2} 
-                sliderGroupId={2} 
+                id={4} 
+                sliderGroupId={0} 
                 name="G" 
                 color="#59E066"
               />
               <Fader 
-                id={3} 
-                sliderGroupId={2} 
+                id={5} 
+                sliderGroupId={0} 
                 name="B" 
                 className="noBorder" 
               />

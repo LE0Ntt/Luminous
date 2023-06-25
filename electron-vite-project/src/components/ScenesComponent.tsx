@@ -127,7 +127,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
     <div className='scenesAlign'>
         <div className='grid-container' style={{ gridTemplateColumns: `repeat(${repeatNumber}, 1fr)` }}>
           {scenes.map((scene) => (
-            <div className={`scenesBox ${scene.status ? 'on' : ''}`} style={{ height: `${height}px` }}>
+            <div className={`scenesBox ${scene.status ? 'on' : ''}`} style={{ height: `${height}px` }} key={scene.id}>
               <button
                 className='sceneButton'
                 onClick={() => toggleSceneStatus(scene.id)}

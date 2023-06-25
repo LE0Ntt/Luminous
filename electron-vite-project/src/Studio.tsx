@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import ScenesComponent from './components/ScenesComponent';
 import BigView from './components/BigView';
 import { useFaderContext } from './components/FaderContext';
+import AddScene from './components/AddScene';
 
 const Studio = () => {
   const navigate = useNavigate();
@@ -87,6 +88,12 @@ const Studio = () => {
     fetchSliders();
   }, []);
 
+  const [addScene, setAddScene] = useState(false);
+
+  const closeAddScene = () => {
+    setAddScene(false);
+  };
+
   return (
     <div>
       <select value={language} onChange={handleLanguageChange}>
@@ -94,7 +101,7 @@ const Studio = () => {
         <option value="de">{t("German 🇩🇪")}</option>
       </select>
       <div className='scenes window'>
-        <ScenesComponent sideId={0} />
+        <ScenesComponent sideId={0} setAddScene={setAddScene} />
       </div>
       <div className='overview window'>
         <div className='studio_overview window'>
@@ -272,6 +279,7 @@ const Studio = () => {
         </>
       )}
       {bigView && <BigView onClose={closeBigView} />}
+      {addScene && <AddScene onClose={closeAddScene} />}
     </div>
   )
 };

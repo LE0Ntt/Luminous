@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import './BigView.css';
 import Button from './Button';
 import '../index.css';
+import './AddScene.css';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 
@@ -28,7 +29,7 @@ function AddScene({ onClose }: addSceneProps) {
   return (
     <div>
       <div className="BigViewOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
-        <div className="BigViewContainer">
+        <div className="BigViewContainer AddSceneContainer">
           <Button
             onClick={() => handleClose()}
             className="buttonClose"

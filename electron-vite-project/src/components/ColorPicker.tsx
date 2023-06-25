@@ -47,7 +47,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
 
       setColorPicker(newColorPicker);
     }
-  }, [pickerType]);
+  }, [pickerType, red, green, blue, colorPicker, onColorChange]);
 
   useEffect(() => {
     if (colorPicker) {

@@ -15,9 +15,10 @@ interface SceneConfig {
 
 interface ScenesComponentProps {
   sideId: number;
+  setAddScene: (addScene: boolean) => void;
 }
 
-const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
+const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene }) => {
   const { t } = useContext(TranslationContext);
   const { connected, on, off, emit, url } = useConnectionContext();
   const [scenes, setScenes] = useState<SceneConfig[]>([]);
@@ -113,7 +114,8 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId }) => {
   };
 
   const handleAddScene = () => {
-    addScene(scenes, emit);
+    //addScene(scenes, emit);
+    setAddScene(true);
   };
 
   const extraButton = 1;

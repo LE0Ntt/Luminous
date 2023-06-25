@@ -8,9 +8,15 @@ import { TranslationContext } from "./components/TranslationContext";
 import Fader from './components/Fader';
 import ScenesComponent from './components/ScenesComponent';
 import Toggle from './components/Toggle';
+import AddScene from './components/AddScene';
 
 function Scenes() {
   const { t } = useContext(TranslationContext);
+  const [addScene, setAddScene] = useState(false);
+
+  const closeAddScene = () => {
+    setAddScene(false);
+  };
   
   const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
     localStorage.setItem('layer', `${status}`);
@@ -19,7 +25,7 @@ function Scenes() {
   return (
     <div>
       <div className='window scenesMain'>
-          <ScenesComponent sideId={1} />
+          <ScenesComponent sideId={1} setAddScene={setAddScene} />
       </div>
       <div className='window scenesMaster mainfader'>
         <div className='scenesMasterAlign'>
@@ -37,6 +43,7 @@ function Scenes() {
           {t("layer")}
         </div>
       </div>
+      {addScene && <AddScene onClose={closeAddScene} />}
     </div>
   );
 }

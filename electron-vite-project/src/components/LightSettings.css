@@ -61,16 +61,22 @@
   color: var(--primarySwitched);
 }
 
+.LightSettingsSelectedDevice .name{
+  color: var(--primarySwitched);
+}
+
 .LightSettingsSelectedDevice {
   width: 100%;
   padding: 0px 0px 0px 20px;
 }
 
 .LightSettingsSelectedButton {
-  top: 50%;
-  transform: translateY(-50%);
   position: absolute;
-  right: 10px;
+  width: stretch;
+  height: stretch;
+  left: 20px;
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .LightSettingsList {
@@ -99,7 +105,7 @@
 }
 
 .LightSettingsWindowUpper {
-  flex-grow: 1;
+  flex-grow: 1.5;
   position: relative;
   width: stretch;
   bottom: 0;
@@ -120,24 +126,39 @@
   flex-direction: row;
 }
 
+.LightSettingsTextBoxContainer{
+  width: stretch;
+  display: flex;
+  position: absolute;
+  bottom: 20px;
+  gap: 1vw;
+  flex-direction: row;
+}
+
+.LightSettingsTextBox{
+  background-color: var(--fillLight);
+  border: var(--onepStrokeSwitched) 1px solid;
+  border-radius: 5px;
+  width: 10vw;
+  height: 35px;
+}
+
 .LightSettingsTitle {
   position: absolute;
-  top: 10px;
-  height: 36px;
-  width: 225px;
+  width: 50vw;
   object-fit: contain;
   align-items: center;
   display: flex;
   font-size: 20px;
 }
 
-.LightSettingsAddDevice {
+.LightSettingsSubTitle {
+  top: 0px;
   position: absolute;
-  height: 36px;
-  width: 225px;
-  left: 20px;
+  width: stretch;
+  object-fit: contain;
+  display: flex;
   font-size: 20px;
-  font-weight: 500;
 }
 
 .LightSettingsSaveButton {

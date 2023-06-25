@@ -18,7 +18,10 @@ function LightSettings({ onClose }: SettingsProps) {
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceConfig>();
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
+  const [inputName, setInputName] = useState('');
   const [inputDMXstart, setInputDMXstart] = useState('');
+  const [inputDMXrange, setInputDMXrange] = useState('');
+  const [inputUniverse, setInputUniverse] = useState('U1');
 
 
   interface DeviceConfig {
@@ -37,42 +40,6 @@ function LightSettings({ onClose }: SettingsProps) {
   }
 
   useEffect(() => {
-    fetch(url + '/addlight', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ 
-                            name: "lamp", 
-                            number: "1", 
-                            device_type: "lamp", 
-                            universe: "1", 
-                            attributes: 
-                              { channel: [
-                                { 
-                                  id: "1", 
-                                  dmx_channel: "1", 
-                                  channel_type: "bi" 
-                                },
-                                {
-                                  id: "2",
-                                  dmx_channel: "2",
-                                  channel_type: "uni"
-                                },
-                              ]
-                            }
-                          })
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  }, []);
-
-  useEffect(() => {
     const fetchDevices = async () => {
       try { 
         const response = await fetch(url + '/fader');
@@ -88,8 +55,20 @@ function LightSettings({ onClose }: SettingsProps) {
     fetchDevices();
   }, []);
 
+  const handleInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputName(event.target.value);
+  };
+
   const handleInputDMXstart = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputDMXstart(event.target.value);
+  };
+
+  const handleInputDMXrange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputDMXrange(event.target.value);
+  };
+
+  const handleInputUniverse = (device: DeviceConfig) => {
+    setInputUniverse(event.target.value);
   };
 
   const handleSelectDevice = (device: DeviceConfig) => {
@@ -159,12 +138,10 @@ function LightSettings({ onClose }: SettingsProps) {
             <div className='LightSettingsSelected innerWindow'>
               {selectedDevice === undefined ? (
                 <>
-                  <span className='LightSettingsAddDevice'>{t("ls_addDevice")}</span>
                   <Button
                       onClick={() => handleCreateDevice()}
-                      className="LightSettingsSelectedButton addremoveButton"
-                    >
-                      <div className={"centerIcon addIcon"}></div>
+                      className="LightSettingsSelectedButton"
+                    > {t("ls_addDevice")}
                   </Button>
                 </>
                 ):(
@@ -180,10 +157,30 @@ function LightSettings({ onClose }: SettingsProps) {
           </div>
           <div className='LightSettingsWindow innerWindow'>
             <div className='LightSettingsWindowUpper'>
-            <div>
-              <label>DMX Start-Adresse:</label>
-              <input type="text" value={inputDMXstart} onChange={handleInputDMXstart} />
-            </div>
+              <div className='LightSettingsSubTitle'>
+                <span>Grundeinstellungen</span>
+              </div>
+              <div className='LightSettingsTextBoxContainer'>
+                <div>
+                  <label>Name</label> <br />
+                  <input className='LightSettingsTextBox' type="text" value={inputName} onChange={handleInputName} />
+                </div>
+                <div>
+                  <label>Universe:</label><br />
+                  <select className='LightSettingsTextBox' value={inputUniverse} onChange={handleInputUniverse}>
+                    <option value="U1">DMX-Universe 1</option>
+                    <option value="U2">DMX-Universe 2</option>
+                  </select>
+                </div>
+                <div>
+                  <label>DMX Start-Adresse</label> <br />
+                  <input className='LightSettingsTextBox' type="text" value={inputDMXstart} onChange={handleInputDMXstart} />
+                </div>
+                <div>
+                  <label>DMX Range</label> <br />
+                  <input className='LightSettingsTextBox' type="text" value={inputDMXrange} onChange={handleInputDMXrange} />
+                </div>
+              </div>
             </div>
             <hr />
             <div className='LightSettingsWindowMid'>

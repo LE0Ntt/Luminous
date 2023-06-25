@@ -89,7 +89,7 @@ const Studio = () => {
 
   return (
     <div>
-      <select value={language} onChange={handleLanguageChange}>
+      <select className='languageSelect' value={language} onChange={handleLanguageChange}>
         <option value="en">{t("English 🇬🇧")}</option>
         <option value="de">{t("German 🇩🇪")}</option>
       </select>

@@ -204,7 +204,7 @@
     font-size: 18px;
 }
 
-select {
+.languageSelect {
     /* !!!!!!!! -------- Kommt weg ---------- !!!!!!!! */
     top: -40px;
     position: absolute;

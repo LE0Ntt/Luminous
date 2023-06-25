@@ -67,8 +67,8 @@ function LightSettings({ onClose }: SettingsProps) {
     setInputDMXrange(event.target.value);
   };
 
-  const handleInputUniverse = (device: DeviceConfig) => {
-    setInputUniverse(event.target.value);
+  const handleInputUniverse = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputUniverse(e.target.value as "U1" | "U2");
   };
 
   const handleSelectDevice = (device: DeviceConfig) => {
@@ -166,19 +166,19 @@ function LightSettings({ onClose }: SettingsProps) {
                   <input className='LightSettingsTextBox' type="text" value={inputName} onChange={handleInputName} />
                 </div>
                 <div>
-                  <label>Universe:</label><br />
-                  <select className='LightSettingsTextBox' value={inputUniverse} onChange={handleInputUniverse}>
-                    <option value="U1">DMX-Universe 1</option>
-                    <option value="U2">DMX-Universe 2</option>
-                  </select>
-                </div>
-                <div>
                   <label>DMX Start-Adresse</label> <br />
                   <input className='LightSettingsTextBox' type="text" value={inputDMXstart} onChange={handleInputDMXstart} />
                 </div>
                 <div>
                   <label>DMX Range</label> <br />
                   <input className='LightSettingsTextBox' type="text" value={inputDMXrange} onChange={handleInputDMXrange} />
+                </div>
+                <div>
+                  <label>Universe:</label><br />
+                  <select className='LightSettingsTextBox' value={inputUniverse} onChange={handleInputUniverse} >
+                    <option value="U1">DMX-Universe 1</option>
+                    <option value="U2">DMX-Universe 2</option>
+                  </select>
                 </div>
               </div>
             </div>

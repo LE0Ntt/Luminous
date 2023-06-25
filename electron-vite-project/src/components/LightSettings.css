@@ -141,6 +141,7 @@
   border-radius: 5px;
   width: 10vw;
   height: 35px;
+  position: relative;
 }
 
 .LightSettingsTitle {

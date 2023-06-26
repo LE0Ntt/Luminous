@@ -4,7 +4,6 @@ import '../assets/GridLines';
 import GridLines from '../assets/GridLines';
 import { TranslationContext } from "./TranslationContext";
 import { useConnectionContext } from "../components/ConnectionContext";
-import { addScene } from './addSceneUtils';
 
 interface SceneConfig {
   id: number;

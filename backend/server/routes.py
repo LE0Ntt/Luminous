@@ -6,7 +6,7 @@ from flask_socketio import SocketIO
 import json
 from flask import jsonify
 from server import app, db
-from server.models import Device
+from server.models import Device, Admin
 
 '''
 def create_sliders(num_sliders): # wird ersetzt durch db abfrage
@@ -120,3 +120,14 @@ def handle_form_submission():
     print(username, password)
     
     return {'message': 'Form submitted successfully'}
+
+
+@app.route('/checkpassword', methods=['POST']) 
+def check_password():
+    data = request.get_json()
+    password = data['password']
+    admin = Admin.query.get(1)
+    if admin.check_password(password):
+        return {'match': 'true'}
+    else:
+        return {'match': 'false'}

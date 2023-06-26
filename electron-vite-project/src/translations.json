@@ -43,7 +43,11 @@
     "as_checkbox": "Set as Default Scene",
     "as_note": "Note: Scene will not be saved permanently unless set as default and admin password is entered.",
     "as_save": "Save",
-    "as_cancel": "Cancel"
+    "as_cancel": "Cancel",
+    "ap_title": "Enter Admin Password",
+    "ap_password": "Password",
+    "ap_note": "Note: If you do not have the authorization for this, please contact a studio supervisor.",
+    "ap_confirm": "Confirm"
   },
   "de": {
     "studio": "Studio",
@@ -89,6 +93,10 @@
     "as_checkbox": "Als Standard Szene setzen",
     "as_note": "Hinweis: Szene wird nicht dauerhaft gespeichert, es sei denn sie wird als Standard gesetzt und das Administrator Passwort eingegeben.",
     "as_save": "Speichern",
-    "as_cancel": "Abbrechen"
+    "as_cancel": "Abbrechen",
+    "ap_title": "Administrator Passwort eingeben",
+    "ap_password": "Passwort",
+    "ap_note": "Hinweis: Wenn Sie nicht die Berechtigung dafür haben, wenden Sie sich bitte ans Studiopersonal.",
+    "ap_confirm": "Bestätigen"
   }
 }

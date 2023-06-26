@@ -113,11 +113,13 @@ def register_socketio_events(socketio):
     # Add a scene and tell every client to update
     @socketio.on('scene_add', namespace='/socket')
     def add_scene(data):
-        routes.scenes.append(data['scene'])
-        if not data['scene']['saved']:
+        scene = data['scene']
+        scene['id'] = len(routes.scenes)
+        routes.scenes.append(scene)
+        if not scene['saved']:
             socketio.emit('scene_reload', namespace='/socket')
         else:
-            save_scene(data['scene'])
+            save_scene(scene)
 
     # Save a scene to the database
     @socketio.on('scene_save', namespace='/socket')

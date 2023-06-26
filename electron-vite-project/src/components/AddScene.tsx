@@ -1,19 +1,23 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useState, useCallback, useContext, useEffect, useRef } from 'react';
 import './BigView.css';
 import Button from './Button';
 import '../index.css';
 import './AddScene.css';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
+import AdminPassword from './AdminPassword';
 
-interface addSceneProps {
+interface AddSceneProps {
   onClose: () => void;
 }
 
-
-function AddScene({ onClose }: addSceneProps) {
+function AddScene({ onClose }: AddSceneProps) {
   const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
+  const [name, setName] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
+  const { emit } = useConnectionContext();
   
   const handleClose = () => {
     setIsOpen(false);
@@ -24,50 +28,80 @@ function AddScene({ onClose }: addSceneProps) {
     return null; // Render nothing if the modal is closed
   }
 
-  const { connected, url } = useConnectionContext();
+  const handleNameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    setName(event.target.value);
+  };
+
+  const handleCheckboxChange = () => {
+    setIsChecked((prevChecked) => !prevChecked);
+  };
+
+  const handleSave = () => {
+    if (!isChecked) {
+      const scene = {
+        name: name,
+        saved: false
+      };
+      addScene(emit, scene);
+    } else {
+      setShowAdminPassword(true);
+    }
+  };
+
+  const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
+    if (isConfirmed) {
+      const scene = {
+        name: name,
+        saved: true
+      };
+      addScene(emit, scene);
+    }
+  }, [name]);
   
-  const handleSave= () => {
-    console.log("clicked Save")
+  const addScene = (emit: any, scene: { name: string; saved: boolean; }) => {
+    emit('scene_add', { scene });
+    handleClose();
   };
 
   return (
     <div>
       <div className="AddSceneOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
-      <div className="AddSceneContainer window">
-        <Button
-          onClick={() => handleClose()}
-          className="buttonClose"
-        >
-          <div className='removeIcon centerIcon'></div>
-        </Button>
-        <div className='AddSceneContent'>
-          <span className='AddSceneTitle'>{t("as_title")}</span>
-          <input className='LightSettingsTextBox AddSceneTextBox' type="text" placeholder="Name" />
-          <div className='AddSceneChecker'>
-            <input type="checkbox" value="Bike" />
-            <label >{t("as_checkbox")}</label>
+      {showAdminPassword ? (
+        <AdminPassword onConfirm={handleAdminPasswordConfirm} onClose={() => setShowAdminPassword(false)} />
+      ) : (
+        <div className="AddSceneContainer window">
+          <Button onClick={handleClose} className="buttonClose">
+            <div className="removeIcon centerIcon"></div>
+          </Button>
+          <div className="AddSceneContent">
+            <span className="AddSceneTitle">{t('as_title')}</span>
+            <input
+              className="LightSettingsTextBox AddSceneTextBox"
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={handleNameChange}
+            />
+            <div className="AddSceneChecker">
+              <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
+              <label>{t('as_checkbox')}</label>
+            </div>
+            <div className="AddSceneNote">
+              <span>❕ {t('as_note')}</span>
+            </div>
           </div>
-          <div className='AddSceneNote'>
-            <span>❕ {t("as_note")}</span>
+          <div className="AddSceneFooter">
+            <div className="controlButtons AddSceneButtons">
+              <Button onClick={handleSave} className="controlButton">
+                {t('as_save')}
+              </Button>
+              <Button onClick={handleClose} className="controlButton">
+                {t('as_cancel')}
+              </Button>
+            </div>
           </div>
         </div>
-        <div className='AddSceneFooter'>
-          <div className="controlButtons AddSceneButtons">
-            <Button 
-              onClick={() => handleSave()} 
-              className="controlButton"
-            >
-              {t("as_save")}
-            </Button>
-            <Button 
-              onClick={() => handleClose()}
-              className="controlButton"
-            >
-              {t("as_cancel")}
-            </Button>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

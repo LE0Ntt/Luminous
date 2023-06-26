@@ -7,6 +7,7 @@ import json
 from flask import jsonify
 from server import app, db
 from server.models import Device, Admin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 '''
 def create_sliders(num_sliders): # wird ersetzt durch db abfrage
@@ -120,6 +121,37 @@ def handle_form_submission():
     print(username, password)
     
     return {'message': 'Form submitted successfully'}
+
+
+
+@app.route("/changePassword", methods=["POST"])
+def change_password():
+    data = request.get_json()
+    current_password = data.get("currentPassword")
+    new_password = data.get("newPassword")
+    new_password_confirm = data.get("newPasswordConfirm")
+
+    admin = Admin.query.first()
+
+    if admin:
+        if check_password_hash(admin.password_hash, current_password):
+            if new_password == new_password_confirm:
+                admin.set_password(new_password)
+                db.session.commit()
+                return jsonify({"message": "Password changed successfully"})
+            else:
+                return jsonify({"message": "New passwords do not match"})
+        else:
+            return jsonify({"message": "Incorrect current password"})
+    else:
+        if new_password == new_password_confirm:
+            new_admin = Admin()
+            new_admin.set_password(new_password)
+            db.session.add(new_admin)
+            db.session.commit()
+            return jsonify({"message": "Admin created successfully"})
+        else:
+            return jsonify({"message": "New passwords do not match"})
 
 
 @app.route('/checkpassword', methods=['POST']) 

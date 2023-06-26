@@ -98,6 +98,7 @@
   margin-bottom: 40px;
   bottom: 0;
   padding: 20px 20px 20px 20px;
+  overflow: auto;
 }
 
 .innerWindow hr {
@@ -105,8 +106,9 @@
 }
 
 .LightSettingsWindowUpper {
-  flex-grow: 1.5;
+  flex-grow: 1;
   position: relative;
+  max-height: 130px;
   width: stretch;
   bottom: 0;
 }
@@ -129,34 +131,55 @@
 .LightSettingsTextBoxContainer{
   width: stretch;
   display: flex;
-  position: absolute;
+  position: relative;
   bottom: 20px;
-  gap: 1vw;
+  top: 20px;
+  gap: 20px;
   flex-direction: row;
+  overflow: auto;
 }
 
 .LightSettingsTextBox{
   background-color: var(--fillLight);
   border: var(--onepStrokeSwitched) 1px solid;
   border-radius: 5px;
-  width: 10vw;
+  width: 160px;
   height: 35px;
   position: relative;
   padding-left: 10px;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+.LightSettingsTextBoxSmall{
+  background-color: var(--fillLight);
+  border: var(--onepStrokeSwitched) 1px solid;
+  border-radius: 5px;
+  width: 90px;
+  height: 35px;
+  position: relative;
+  padding-left: 10px;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+.LightSettingsTextBoxSmall::-webkit-outer-spin-button,
+.LightSettingsTextBoxSmall::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .LightSettingsTitle {
   position: absolute;
   width: 50vw;
   object-fit: contain;
-  align-items: center;
   display: flex;
   font-size: 20px;
 }
 
 .LightSettingsSubTitle {
   top: 0px;
-  position: absolute;
+  position: relative;
   width: stretch;
   object-fit: contain;
   display: flex;

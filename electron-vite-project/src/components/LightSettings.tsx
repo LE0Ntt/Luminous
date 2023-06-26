@@ -22,6 +22,8 @@ function LightSettings({ onClose }: SettingsProps) {
   const [inputDMXstart, setInputDMXstart] = useState('');
   const [inputDMXrange, setInputDMXrange] = useState('');
   const [inputUniverse, setInputUniverse] = useState('U1');
+  const [inputNumber, setInputNumber] = useState('');
+  const [inputType, setInputType] = useState('T1');
 
 
   interface DeviceConfig {
@@ -59,6 +61,10 @@ function LightSettings({ onClose }: SettingsProps) {
     setInputName(event.target.value);
   };
 
+  const handleInputNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputNumber(event.target.value);
+  };
+
   const handleInputDMXstart = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputDMXstart(event.target.value);
   };
@@ -68,7 +74,11 @@ function LightSettings({ onClose }: SettingsProps) {
   };
 
   const handleInputUniverse = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputUniverse(e.target.value as "U1" | "U2");
+    setInputUniverse(e.target.value);
+  };
+
+  const handleInputType = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputType(e.target.value);
   };
 
   const handleSelectDevice = (device: DeviceConfig) => {
@@ -158,26 +168,39 @@ function LightSettings({ onClose }: SettingsProps) {
           <div className='LightSettingsWindow innerWindow'>
             <div className='LightSettingsWindowUpper'>
               <div className='LightSettingsSubTitle'>
-                <span>Grundeinstellungen</span>
+                <span>{t("ls_basicSettings")}</span>
               </div>
               <div className='LightSettingsTextBoxContainer'>
                 <div>
-                  <label>Name</label> <br />
-                  <input className='LightSettingsTextBox' type="text" value={inputName} onChange={handleInputName} />
+                  <label>Universe:</label><br />
+                  <select className='LightSettingsTextBoxSmall' type="number" value={inputUniverse} onChange={handleInputUniverse} >
+                    <option value="1">U1</option>
+                    <option value="2">U2</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label>{t("ls_deviceNumber")}</label> <br />
+                  <input className='LightSettingsTextBoxSmall' type="number" value={inputName} onChange={handleInputName} />
                 </div>
                 <div>
-                  <label>DMX Start-Adresse</label> <br />
-                  <input className='LightSettingsTextBox' type="text" value={inputDMXstart} onChange={handleInputDMXstart} />
+                  <label>{t("ls_deviceName")}</label> <br />
+                  <input className='LightSettingsTextBox' type="text" value={inputNumber} onChange={handleInputNumber} />
+                </div>
+                <div>
+                  <label>DMX Start</label> <br />
+                  <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXstart} onChange={handleInputDMXstart} />
                 </div>
                 <div>
                   <label>DMX Range</label> <br />
-                  <input className='LightSettingsTextBox' type="text" value={inputDMXrange} onChange={handleInputDMXrange} />
+                  <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXrange} onChange={handleInputDMXrange} />
                 </div>
                 <div>
-                  <label>Universe:</label><br />
-                  <select className='LightSettingsTextBox' value={inputUniverse} onChange={handleInputUniverse} >
-                    <option value="U1">DMX-Universe 1</option>
-                    <option value="U2">DMX-Universe 2</option>
+                  <label>{t("ls_deviceType")}</label><br />
+                  <select className='LightSettingsTextBox' type="number" value={inputType} onChange={handleInputType} >
+                    <option value="1">{t("ls_device_rgb")}</option>
+                    <option value="2">{t("ls_device_rgbw")}</option>
+                    <option value="3">{t("ls_device_spot")}</option>
                   </select>
                 </div>
               </div>

@@ -36,6 +36,14 @@
     "ls_addDevice": "Add Device",
     "ls_saveDevice": "Save Device",
     "ls_deleteDevice": "Remove Device",
+    "ls_basicSettings": "Basic Settings",
+    "ls_deviceName": "Device Name",
+    "ls_deviceNumber": "Number",
+    "ls_deviceType": "Type",
+    "ls_device_rgb": "RGB",
+    "ls_device_rgbw": "RGBW",
+    "ls_device_spot": "Spotlight",
+
     "Off": "Off",
     "testchart": "Testchart",
     "bb_lights": "Devices",
@@ -97,6 +105,13 @@
     "ap_title": "Administrator Passwort eingeben",
     "ap_password": "Passwort",
     "ap_note": "Hinweis: Wenn Sie nicht die Berechtigung dafür haben, wenden Sie sich bitte ans Studiopersonal.",
-    "ap_confirm": "Bestätigen"
+    "ap_confirm": "Bestätigen",
+    "ls_basicSettings": "Grundeinstellungen",
+    "ls_deviceName": "Gerätename",
+    "ls_deviceNumber": "Nummer",
+    "ls_deviceType": "Typ",
+    "ls_device_rgb": "RGB",
+    "ls_device_rgbw": "RGBW",
+    "ls_device_spot": "Spotlight"
   }
 }

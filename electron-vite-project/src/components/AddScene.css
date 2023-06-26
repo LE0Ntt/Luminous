@@ -27,6 +27,10 @@
     overflow: hidden;
 }
 
+.buttonClose {
+    z-index: 9999;
+}
+
 .AddSceneTitle {
     font-size: 24px;
     font-weight: 400;
@@ -34,7 +38,7 @@
 
 .AddSceneContent {
     height: 200px;
-    position: absolute;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -42,7 +46,7 @@
 }
 
 .AddSceneTextBox {
-    width: 500px;
+    width: 397px !important;
 }
 
 .AddSceneChecker input {
@@ -63,10 +67,9 @@
 }
 
 .AddSceneButtons {
-    gap: 30px;
-    width: 100%;
-    padding: 30px;
-    
+    gap: 30px !important;
+    width: 100% !important;
+    padding: 30px !important;
 }
 
 .AddSceneButtons button{

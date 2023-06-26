@@ -38,7 +38,12 @@
     "ls_deleteDevice": "Remove Device",
     "Off": "Off",
     "testchart": "Testchart",
-    "bb_lights": "Devices"
+    "bb_lights": "Devices",
+    "as_title": "Save Current Configuration as Scene",
+    "as_checkbox": "Set as Default Scene",
+    "as_note": "Note: Scene will not be saved permanently unless set as default and admin password is entered.",
+    "as_save": "Save",
+    "as_cancel": "Cancel"
   },
   "de": {
     "studio": "Studio",
@@ -79,6 +84,11 @@
     "ls_deleteDevice": "Gerät entfernen",
     "Off": "Aus",
     "testchart": "Testchart",
-    "bb_lights": "Geräte"
+    "bb_lights": "Geräte",
+    "as_title": "Aktuelle Konfiguration als Szene speichern",
+    "as_checkbox": "Als Standard Szene setzen",
+    "as_note": "Hinweis: Szene wird nicht dauerhaft gespeichert, es sei denn sie wird als Standard gesetzt und das Administrator Passwort eingegeben.",
+    "as_save": "Speichern",
+    "as_cancel": "Abbrechen"
   }
 }

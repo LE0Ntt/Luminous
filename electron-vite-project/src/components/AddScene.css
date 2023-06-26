@@ -1,9 +1,79 @@
 @import url(../Color.css);
 
+.AddSceneOverlay {
+    position: relative;
+    z-index: 9998;
+    /* Infinite background hack */
+    height: 10000vh;
+    width: 10000vw;
+    left: -5000vw;
+    top: -5000vh;
+    background-color: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    backdrop-filter: blur(2px);
+}
+
 .AddSceneContainer {
-    height: 363px;
-    width: 884px;
+    height: 362px;
+    width: 886px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    padding: 30px;
+    backdrop-filter: var(--windowBackdrop);
+    -webkit-backdrop-filter: var(--windowBackdrop);
+    position: absolute;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.AddSceneTitle {
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.AddSceneContent {
+    height: 200px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--primary);
+}
+
+.AddSceneTextBox {
+    width: 500px;
+}
+
+.AddSceneChecker input {
+    margin-right: 10px;
+}
+
+.AddSceneNote {
+    color: var(--secondary);
+}
+
+.AddSceneFooter {
+    top: 254px;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: var(--fillMedium);
+    left: 0;
+}
+
+.AddSceneButtons {
+    gap: 30px;
+    width: 100%;
+    padding: 30px;
+    
+}
+
+.AddSceneButtons button{
+    height: 46px;
+}
+
+.AddSceneButtons button:first-child {
+    background-color: var(--mainColor);
+    color: var(--primaryDark);
 }

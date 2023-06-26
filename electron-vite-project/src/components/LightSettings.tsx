@@ -203,7 +203,6 @@ function LightSettings({ onClose }: SettingsProps) {
           </div>
       </div>
     </div>
-  
-);
+  );
 }
 export default LightSettings;

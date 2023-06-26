@@ -26,22 +26,49 @@ function AddScene({ onClose }: addSceneProps) {
 
   const { connected, url } = useConnectionContext();
   
+  const handleSave= () => {
+    console.log("clicked Save")
+  };
+
   return (
     <div>
-      <div className="BigViewOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
-        <div className="BigViewContainer AddSceneContainer">
-          <Button
-            onClick={() => handleClose()}
-            className="buttonClose"
-          >
-            <div className='removeIcon centerIcon'></div>
-          </Button>
-          <div className='BigViewLayer'>
-            <span className='text-right'>{t("bb_lights")}</span>
+      <div className="AddSceneOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
+      <div className="AddSceneContainer window">
+        <Button
+          onClick={() => handleClose()}
+          className="buttonClose"
+        >
+          <div className='removeIcon centerIcon'></div>
+        </Button>
+        <div className='AddSceneContent'>
+          <span className='AddSceneTitle'>{t("as_title")}</span>
+          <input className='LightSettingsTextBox AddSceneTextBox' type="text" placeholder="Name" />
+          <div className='AddSceneChecker'>
+            <input type="checkbox" value="Bike" />
+            <label >{t("as_checkbox")}</label>
           </div>
-          test
+          <div className='AddSceneNote'>
+            <span>❕ {t("as_note")}</span>
+          </div>
+        </div>
+        <div className='AddSceneFooter'>
+          <div className="controlButtons AddSceneButtons">
+            <Button 
+              onClick={() => handleSave()} 
+              className="controlButton"
+            >
+              {t("as_save")}
+            </Button>
+            <Button 
+              onClick={() => handleClose()}
+              className="controlButton"
+            >
+              {t("as_cancel")}
+            </Button>
+          </div>
         </div>
       </div>
+    </div>
   );
 }
 

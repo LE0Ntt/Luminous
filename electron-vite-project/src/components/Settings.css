@@ -16,6 +16,7 @@
   position: fixed;
   display: flex;
   z-index: 9999;
+  gap: 20px;
   /* Above everything */
   /*height: 494px;
   width: 850px;
@@ -47,12 +48,33 @@
   font-size: 20px;
 }
 
+.SettingsSubTitle {
+  top: 0px;
+  position: absolute;
+  width: stretch;
+  object-fit: contain;
+  display: flex;
+  font-size: 20px;
+}
+
+.SettingsTextBox{
+  background-color: var(--fillLight);
+  border: var(--onepStrokeSwitched) 1px solid;
+  border-radius: 5px;
+  width: 160px;
+  height: 35px;
+  position: relative;
+  padding-left: 10px;
+  outline: none;
+  margin-bottom: 10px;
+}
+
 .innerWindow hr {
   background-color: var(--faderBorder);
 }
 
 .SettingsContent {
-  flex-grow: 10;
+  flex-grow: 1;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -63,6 +85,18 @@
   overflow: auto;
   bottom: 0;
 }
+
+.SettingsTextBoxContainer{
+  width: stretch;
+  display: flex;
+  position: relative;
+  bottom: 20px;
+  top: 20px;
+  gap: 20px;
+  flex-direction: row;
+  overflow: auto;
+}
+
 
 .SettingsOption {
   flex-grow: 10;
@@ -92,3 +126,21 @@
   padding: 20px;
 }
 
+.SettingsSavePWButton {
+  position: absolute;
+  height: 60px;
+  width: 15vw;
+  right: 0px;
+  bottom: 0px;
+}
+
+.SettingsLanguageSelection {
+  background-color: var(--fillLight);
+  border: var(--onepStrokeSwitched) 1px solid;
+  border-radius: 5px;
+  height: 35px;
+  position: relative;
+  padding-left: 10px;
+  outline: none;
+  margin-bottom: 10px;
+}

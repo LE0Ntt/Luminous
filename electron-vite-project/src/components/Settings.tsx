@@ -2,9 +2,10 @@ import { useState, useContext } from "react";
 import "./Settings.css";
 import Button from "./Button";
 import "../index.css";
+import "./LightSettings.css";
 import Toggle from "./Toggle";
 import { TranslationContext } from "./TranslationContext";
-import { useConnectionContext } from './ConnectionContext';
+import { useConnectionContext } from "./ConnectionContext";
 
 interface SettingsProps {
   onClose: () => void;
@@ -17,12 +18,16 @@ function Settings({ onClose }: SettingsProps) {
   const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const { t } = useContext(TranslationContext);
+  const { t, language, setLanguage } = useContext(TranslationContext);
   const { url } = useConnectionContext();
 
   const handleClose = () => {
     setIsOpen(false);
     onClose();
+  };
+
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLanguage(e.target.value as "en" | "de");
   };
 
   const handleSavePassword = () => {
@@ -32,7 +37,7 @@ function Settings({ onClose }: SettingsProps) {
       return;
     }
 
-    fetch(url +"/changePassword", {
+    fetch(url + "/changePassword", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +54,7 @@ function Settings({ onClose }: SettingsProps) {
         setErrorMessage("");
       })
       .catch((error) => {
-        setErrorMessage("Error occurred while changing the password.");
+        setErrorMessage("An Error occurred while changing the password.");
         setSuccessMessage("");
         console.error(error);
       });
@@ -66,38 +71,77 @@ function Settings({ onClose }: SettingsProps) {
         <Button onClick={handleClose} className="buttonClose">
           <div className="removeIcon centerIcon"></div>
         </Button>
-        <div className="SettingsTitle">{t("set_title")}</div>
+
+        <div className="SettingsTitle">
+          <span>{t("set_title")}</span>
+        </div>
+
         <div className="SettingsContent innerWindow">
-          {errorMessage && <div className="ErrorMessage">{errorMessage}</div>}
-          {successMessage && (
-            <div className="SuccessMessage">{successMessage}</div>
-          )}
           <div className="SettingsOption">
-            {t("set_admin")}
-            <input
-              type="password"
-              placeholder="Current Password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Confirm New Password"
-              value={newPasswordConfirm}
-              onChange={(e) => setNewPasswordConfirm(e.target.value)}
-            />
-            <button onClick={handleSavePassword}>Save New Password</button>
+            <div className="LightSettingsSubTitle">
+              <span>{t("set_admin")}</span>
+            </div>
+            {errorMessage && <div className="ErrorMessage">{errorMessage}</div>}
+            {successMessage && (
+              <div className="SuccessMessage">{successMessage}</div>
+            )}
+            <div className="SettingsTextBoxContainer">
+              <div>
+                <label>Current Password</label> <br />
+                <input
+                  className="SettingsTextBox"
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                />
+              </div>
+              <div>
+                <label>New Password</label> <br />
+                <input
+                  className="SettingsTextBox"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </div>
+              <div>
+                <label>Confirm Password</label> <br />
+                <input
+                  className="SettingsTextBox"
+                  type="password"
+                  value={newPasswordConfirm}
+                  onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                />
+              </div>
+              <br />
+              <button
+                className="SettingsSavePWButton controlButton"
+                onClick={handleSavePassword}
+              >
+                Save
+              </button>
+            </div>
+            
           </div>
+          
           <div className="SettingsOption">
-            <hr />
-            {t("set_language")}
+          <hr />
+            <div className="LightSettingsSubTitle">
+              <span>{t("set_language")}</span>
+            </div>
+            <div>
+              <select
+              className="SettingsLanguageSelection"
+              value={language}
+              onChange={handleLanguageChange}
+            >
+              <option value="en">{t("English 🇬🇧")}</option>
+              <option value="de">{t("German 🇩🇪")}</option>
+            </select>
+            </div>
+            
           </div>
+
           <div className="SettingsOption">
             <hr />
             OLA

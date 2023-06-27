@@ -32,7 +32,7 @@ function Settings({ onClose }: SettingsProps) {
 
   const handleSavePassword = () => {
     if (newPassword !== newPasswordConfirm) {
-      setErrorMessage("The new passwords do not match.");
+      setErrorMessage(t("set_error_match"));
       setSuccessMessage("");
       return;
     }
@@ -54,7 +54,7 @@ function Settings({ onClose }: SettingsProps) {
         setErrorMessage("");
       })
       .catch((error) => {
-        setErrorMessage("An Error occurred while changing the password.");
+        setErrorMessage(t("set_error_change"));
         setSuccessMessage("");
         console.error(error);
       });
@@ -87,7 +87,7 @@ function Settings({ onClose }: SettingsProps) {
             )}
             <div className="SettingsTextBoxContainer">
               <div>
-                <label>Current Password</label> <br />
+                <label>{t("set_current_pw")}</label> <br />
                 <input
                   className="SettingsTextBox"
                   type="password"
@@ -96,7 +96,7 @@ function Settings({ onClose }: SettingsProps) {
                 />
               </div>
               <div>
-                <label>New Password</label> <br />
+                <label>{t("set_new_pw")}</label> <br />
                 <input
                   className="SettingsTextBox"
                   type="password"
@@ -105,7 +105,7 @@ function Settings({ onClose }: SettingsProps) {
                 />
               </div>
               <div>
-                <label>Confirm Password</label> <br />
+                <label>{t("set_conew_pw")}</label> <br />
                 <input
                   className="SettingsTextBox"
                   type="password"
@@ -118,7 +118,7 @@ function Settings({ onClose }: SettingsProps) {
                 className="SettingsSavePWButton controlButton"
                 onClick={handleSavePassword}
               >
-                Save
+                {t("as_save")}
               </button>
             </div>
             
@@ -127,9 +127,9 @@ function Settings({ onClose }: SettingsProps) {
           <div className="SettingsOption">
           <hr />
             <div className="LightSettingsSubTitle">
-              <span>{t("set_language")}</span>
+              <span>{t("set_language")}</span> 
             </div>
-            <div>
+            <div className="SettingsTextBoxContainer">
               <select
               className="SettingsLanguageSelection"
               value={language}
@@ -144,15 +144,21 @@ function Settings({ onClose }: SettingsProps) {
 
           <div className="SettingsOption">
             <hr />
-            OLA
+            <div className="LightSettingsSubTitle">
+              <span>OLA</span> 
+            </div>
           </div>
           <div className="SettingsOption">
             <hr />
-            {t("set_view")}
+            <div className="LightSettingsSubTitle">
+              <span>{t("set_view")}</span> 
+            </div>
           </div>
           <div className="SettingsOption">
             <hr />
-            {t("set_overview")}
+            <div className="LightSettingsSubTitle">
+              <span>{t("set_overview")}</span> 
+            </div>
           </div>
           <div className="SettingsOption"></div>
         </div>

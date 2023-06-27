@@ -14,20 +14,42 @@ interface SceneConfig {
 
 interface ScenesComponentProps {
   sideId: number;
-  setAddScene: (addScene: boolean) => void;
+  setAddScene?: (addScene: boolean) => void;
+  setDeleteScene?: (deleteScene: boolean) => void;
+  setDeleteSceneAdmin?: (deleteSceneAdmin: boolean) => void;
+  setSaveSceneAdmin?: (saveSceneAdmin: boolean) => void;
 }
 
-const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene }) => {
+const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, setDeleteScene, setDeleteSceneAdmin, setSaveSceneAdmin }) => {
   const { t } = useContext(TranslationContext);
-  const { connected, on, off, emit, url } = useConnectionContext();
+  const { on, off, emit, url } = useConnectionContext();
   const [scenes, setScenes] = useState<SceneConfig[]>([]);
   const [height, setHeight] = useState(0);
   const [buttonText, setButtonText] = useState(t(''));
   const [repeatNumber, setRepeatNumber] = useState(6);
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  
+
   useEffect(() => {
     fetchScenes();
+
+    // Listen for the delete and save scene event
+    const handleDeleteScene = () => {
+      const deleteID = sessionStorage.getItem('deleteID');
+      if (deleteID !== null)
+        emit("scene_delete", { id: JSON.parse(deleteID) });
+    };
+
+    const handleSaveScene = () => {
+      const saveID = sessionStorage.getItem('saveID');
+      if (saveID !== null)
+        emit("scene_save", { id: JSON.parse(saveID) });
+    };
+    document.body.addEventListener('saveScene', handleSaveScene);
+    document.body.addEventListener('deleteScene', handleDeleteScene);
+    return () => { 
+      document.body.removeEventListener('deleteScene', handleDeleteScene);
+      document.body.removeEventListener('saveScene', handleSaveScene); 
+    };
   }, []);
 
   useEffect(() => {
@@ -104,17 +126,31 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene }
     );
   };
 
-  const deleteScene = (sceneId: number) => { 
-    emit("scene_delete", { id: sceneId });
+  const deleteScene = (sceneId: number, saved: boolean) => { 
+    sessionStorage.setItem('deleteID', JSON.stringify(sceneId));
+    if(!saved) {
+      if(setDeleteScene) {
+        setDeleteScene(true);
+      }  
+    } else {
+      if(setDeleteSceneAdmin) {
+        setDeleteSceneAdmin(true);
+      } 
+    }
   };
 
   const saveScene = (sceneId: number) => { 
-    emit("scene_save", { id: sceneId });
+    //emit("scene_save", { id: sceneId });
+    sessionStorage.setItem('saveID', JSON.stringify(sceneId));
+    if(setSaveSceneAdmin) {
+      setSaveSceneAdmin(true);
+    }
   };
 
   const handleAddScene = () => {
-    //addScene(scenes, emit);
-    setAddScene(true);
+    if(setAddScene) {
+      setAddScene(true);
+    }
   };
 
   const extraButton = 1;
@@ -147,7 +183,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene }
                   ></button>
                   <button
                     className={`delete`}
-                    onClick={() => deleteScene(scene.id)}
+                    onClick={() => deleteScene(scene.id, scene.saved)}
                   ></button>
                 </div>
               )}

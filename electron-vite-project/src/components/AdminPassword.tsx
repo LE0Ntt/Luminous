@@ -1,4 +1,4 @@
-import { SetStateAction, useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import './BigView.css';
 import Button from './Button';
 import '../index.css';
@@ -7,11 +7,12 @@ import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 
 interface AdminPasswordProps {
-  onConfirm: (isConfirmed: boolean) => void;
+  onConfirm?: (isConfirmed: boolean) => void;
   onClose: () => void;
+  isDelete?: boolean;
 }
 
-function AdminPassword({ onConfirm, onClose }: AdminPasswordProps) {
+function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
   const { url } = useConnectionContext();
   const { t } = useContext(TranslationContext);
   const [isOpen, setIsOpen] = useState(true);
@@ -42,7 +43,16 @@ function AdminPassword({ onConfirm, onClose }: AdminPasswordProps) {
     .then(data => {
       if(data.match === 'true') {
         console.log('Password correct');
-        onConfirm(true);
+        if(onConfirm !== undefined) {
+          onConfirm(true);
+        } else {
+          if(isDelete) {
+            document.body.dispatchEvent(new Event('deleteScene'))
+            console.log('Delete scene');
+          } else {
+            document.body.dispatchEvent(new Event('saveScene'))
+          }
+        }
         handleClose();
       } else {
         console.log('Password wrong');
@@ -62,7 +72,14 @@ function AdminPassword({ onConfirm, onClose }: AdminPasswordProps) {
         </Button>
         <div className='AddSceneContent'>
           <span className='AddSceneTitle'>{t("ap_title")}</span>
-          <input className='LightSettingsTextBox AddSceneTextBox' type="password" placeholder={t("ap_password")} value={password} onChange={handlePasswordChange}/>
+          <input 
+            className='LightSettingsTextBox AddSceneTextBox' 
+            type="password" 
+            placeholder={t("ap_password")} 
+            value={password} 
+            onChange={handlePasswordChange}
+            autoFocus // Autofokus aktivieren
+          />
           <p className='hide'>a</p> {/* Hidden element for spacing */}
           <div className='AddSceneNote'>
             <span>❕ {t("ap_note")}</span>

@@ -2,21 +2,22 @@
  * Scenes.tsx
  * @author Leon Hölzel
  */
-import { useContext, useEffect, useState } from 'react'
-import './Scenes.css';
+import { useContext, useState } from 'react'
 import { TranslationContext } from "./components/TranslationContext";
+import './Scenes.css';
 import Fader from './components/Fader';
 import ScenesComponent from './components/ScenesComponent';
 import Toggle from './components/Toggle';
 import AddScene from './components/AddScene';
+import DeleteScene from './components/DeleteScene';
+import AdminPassword from './components/AdminPassword';
 
 function Scenes() {
   const { t } = useContext(TranslationContext);
   const [addScene, setAddScene] = useState(false);
-
-  const closeAddScene = () => {
-    setAddScene(false);
-  };
+  const [deleteScene, setDeleteScene] = useState(false);
+  const [deleteSceneAdmin, setDeleteSceneAdmin] = useState(false);
+  const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
   
   const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
     localStorage.setItem('layer', `${status}`);
@@ -25,7 +26,7 @@ function Scenes() {
   return (
     <div>
       <div className='window scenesMain'>
-          <ScenesComponent sideId={1} setAddScene={setAddScene} />
+          <ScenesComponent sideId={1} setAddScene={setAddScene} setDeleteScene={setDeleteScene} setDeleteSceneAdmin={setDeleteSceneAdmin} setSaveSceneAdmin={setSaveSceneAdmin} />
       </div>
       <div className='window scenesMaster mainfader'>
         <div className='scenesMasterAlign'>
@@ -43,7 +44,10 @@ function Scenes() {
           {t("layer")}
         </div>
       </div>
-      {addScene && <AddScene onClose={closeAddScene} />}
+      {addScene && <AddScene onClose={() => setAddScene(false)} />}
+      {deleteScene && <DeleteScene onClose={() => setDeleteScene(false)} />}
+      {deleteSceneAdmin && <AdminPassword onClose={() => setDeleteSceneAdmin(false)} isDelete />}
+      {saveSceneAdmin && <AdminPassword onClose={() => setSaveSceneAdmin(false)} />}
     </div>
   );
 }

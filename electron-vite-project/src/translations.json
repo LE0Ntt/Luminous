@@ -43,7 +43,6 @@
     "ls_device_rgb": "RGB",
     "ls_device_rgbw": "RGBW",
     "ls_device_spot": "Spotlight",
-
     "Off": "Off",
     "testchart": "Testchart",
     "bb_lights": "Devices",
@@ -55,7 +54,10 @@
     "ap_title": "Enter Admin Password",
     "ap_password": "Password",
     "ap_note": "Note: If you do not have the authorization for this, please contact a studio supervisor.",
-    "ap_confirm": "Confirm"
+    "ap_confirm": "Confirm",
+    "ds_title": "Really delete scene?",
+    "ds_note": "Note: This scene will also be deleted automatically when the system is restarted.",
+    "ds_delete": "Delete"
   },
   "de": {
     "studio": "Studio",
@@ -99,7 +101,7 @@
     "bb_lights": "Geräte",
     "as_title": "Aktuelle Konfiguration als Szene speichern",
     "as_checkbox": "Als Standard Szene setzen",
-    "as_note": "Hinweis: Szene wird nicht dauerhaft gespeichert, es sei denn sie wird als Standard gesetzt und das Administrator Passwort eingegeben.",
+    "as_note": "Hinweis: Standard-Setzung und Admin-Passworteingabe erforderlich für dauerhafte Szene-Speicherung.",
     "as_save": "Speichern",
     "as_cancel": "Abbrechen",
     "ap_title": "Administrator Passwort eingeben",
@@ -112,6 +114,9 @@
     "ls_deviceType": "Typ",
     "ls_device_rgb": "RGB",
     "ls_device_rgbw": "RGBW",
-    "ls_device_spot": "Spotlight"
+    "ls_device_spot": "Spotlight",
+    "ds_title": "Szene wirklich löschen?",
+    "ds_note": "Hinweis: Diese Szene wird auch automatisch gelöscht, wenn das System neu gestartet wird.",
+    "ds_delete": "Löschen"
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import './BigView.css';
 import Button from './Button';
 import '../index.css';
@@ -81,10 +81,11 @@ function AddScene({ onClose }: AddSceneProps) {
               placeholder="Name"
               value={name}
               onChange={handleNameChange}
+              autoFocus // Autofokus aktivieren
             />
             <div className="AddSceneChecker">
-              <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
-              <label>{t('as_checkbox')}</label>
+              <input type="checkbox" id="checkboxId" checked={isChecked} onChange={handleCheckboxChange} />
+              <label htmlFor="checkboxId">{t('as_checkbox')}</label>
             </div>
             <div className="AddSceneNote">
               <span>❕ {t('as_note')}</span>

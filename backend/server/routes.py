@@ -6,32 +6,11 @@ from flask_socketio import SocketIO
 import json
 from flask import jsonify
 from server import app, db
-from server.models import Device, Admin
+from server.models import Device, Admin, Scene, Settings
 from werkzeug.security import generate_password_hash, check_password_hash
 
-'''
-def create_sliders(num_sliders): # wird ersetzt durch db abfrage
-    sliders = []
 
-    master = {
-        "id": 0,
-        "sliderValue": 255,
-        "name": "Master"
-    }
-    sliders.append(master)
-
-    for i in range(num_sliders):
-        slider = {
-            "id": i + 1,
-            "sliderValue": 0,
-            "name": "Fader" + str(i + 1)
-        }
-        sliders.append(slider)
-    return json.dumps(sliders)
-
-sliders = create_sliders(16)
-'''
-
+# load devices from database
 def get_devices():
     device_list = []
     
@@ -58,20 +37,25 @@ def get_devices():
 
 devices = get_devices()
 
-def create_scenes(num_scenes): # wird ersetzt durch db abfrage
-    scenes = []
 
-    for i in range(num_scenes):
-        scene = {
-            "id": i,
-            "statusOn": False,
-            "name": "Scene" + str(i + 1)
-        }
-        scenes.append(scene)
-    return scenes
+# load scenes from database
+def get_scenes(): # wird ersetzt durch db abfrage
+    scenes_list = []
 
-scenes = create_scenes(6)
+    with app.app_context():
+        scenes = Scene.query.all()
+        for scene in scenes:
+            scene = {
+                "id": scene.id - 1,
+                "statusOn": False,
+                "name": scene.name,
+                "channel": scene.channel,
+                "saved": True
+            }
+            scenes_list.append(scene)  
+    return scenes_list
 
+scenes = get_scenes()
 
 
 @app.route('/')
@@ -92,11 +76,6 @@ def get_scenes():
 @app.route('/addlight', methods=['POST'])
 def add_light():
     data = request.get_json()
-    # name = data['name']
-    # number = data['number']
-    # device_type = data['device_typ']
-    # universe = data['universe']
-    # attributes = data['attributes']
     device = Device(name = data['name'], number = data['number'], device_type = data['device_type'], universe = data['universe'], attributes = data['attributes'])
     print(device)
     db.session.add(device)
@@ -112,16 +91,6 @@ def add_light():
     }
     devices.append(device_dict)
     return {'message': 'Form submitted successfully'}
-
-@app.route('/submit', methods=['POST']) # nur zum testen
-def handle_form_submission():
-    data = request.get_json()
-    username = data['username']
-    password = data['password']
-    print(username, password)
-    
-    return {'message': 'Form submitted successfully'}
-
 
 
 @app.route("/changePassword", methods=["POST"])

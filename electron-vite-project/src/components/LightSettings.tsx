@@ -73,11 +73,11 @@ function LightSettings({ onClose }: SettingsProps) {
     setInputDMXrange(event.target.value);
   };
 
-  const handleInputUniverse = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputUniverse = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setInputUniverse(e.target.value);
   };
 
-  const handleInputType = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputType = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setInputType(e.target.value);
   };
 
@@ -173,7 +173,7 @@ function LightSettings({ onClose }: SettingsProps) {
               <div className='LightSettingsTextBoxContainer'>
                 <div>
                   <label>Universe:</label><br />
-                  <select className='LightSettingsTextBoxSmall' type="number" value={inputUniverse} onChange={handleInputUniverse} >
+                  <select className='LightSettingsTextBoxSmall' value={inputUniverse} onChange={handleInputUniverse} >
                     <option value="1">U1</option>
                     <option value="2">U2</option>
                   </select>
@@ -197,7 +197,7 @@ function LightSettings({ onClose }: SettingsProps) {
                 </div>
                 <div>
                   <label>{t("ls_deviceType")}</label><br />
-                  <select className='LightSettingsTextBox' type="number" value={inputType} onChange={handleInputType} >
+                  <select className='LightSettingsTextBox' value={inputType} onChange={handleInputType} >
                     <option value="1">{t("ls_device_rgb")}</option>
                     <option value="2">{t("ls_device_rgbw")}</option>
                     <option value="3">{t("ls_device_spot")}</option>

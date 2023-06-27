@@ -1,0 +1,62 @@
+@import url(./Color.css);
+
+/* Layer */
+.scenesLayer {
+    height: 73px;
+    width: 124px;
+    left: 1716px;
+    top: 0x;
+    border-radius: 10px;
+    color: var(--primary);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+.scenesLayerAlign {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+}
+
+/* Layer End */
+
+
+/* Scenes */
+.scenesMain {
+    height: 910px;
+    width: 1696px;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+.scenesMainAlign {
+    background-color: aquamarine;
+    /* For testing */
+    margin-top: 20px;
+    margin-left: 20px;
+    height: 870px;
+    width: 1656px;
+}
+
+/* Scenes End */
+
+/* Master Fader */
+.scenesMaster {
+    height: 818px;
+    width: 124px;
+    left: 1716px;
+    top: 92px;
+    border-radius: 10px;
+
+}
+
+.scenesMasterAlign {
+    position: relative;
+    left: 20px;
+}
+
+/* Master Fader End */

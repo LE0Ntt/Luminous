@@ -1,0 +1,95 @@
+@import url(../Color.css);
+
+.BigViewOverlay {
+    position: relative;
+    z-index: 9998;
+    /* Infinite background hack */
+    height: 10000vh;
+    width: 10000vw;
+    left: -5000vw;
+    top: -5000vh;
+    background-color: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}
+
+.BigViewContainer {
+    position: fixed;
+    z-index: 9999;
+    /* Above everything */
+    height: 910px;
+    width: 1840px;
+    top: 0;
+    left: 0;
+    border-radius: 10px;
+    background-color: var(--fillMedium);
+    color: var(--primary);
+    -webkit-backdrop-filter: var(--windowBackdrop);
+    backdrop-filter: var(--windowBackdrop);
+    border: var(--onepStroke) 1px solid;
+    padding: 15px 20px 0;
+}
+
+.BigViewContent {
+    position: relative;
+    height: 406px;
+    width: 1694px;
+    top: 41px;
+    margin-bottom: 20px;
+    padding: 0 20px 0 20px;
+}
+
+.BigViewContent .sliders{
+    height: 396px;
+}
+
+.BigViewContent .fader{
+    height: 357px;
+    top: -22px;
+}
+
+.BigViewLayer {
+    position: absolute;
+    top: 7px;
+    height: 36px;
+    object-fit: contain;
+    align-items: center;
+    /* justify-content: center; */
+    display: flex;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--primary);
+    gap: 10px;
+}
+
+.BigViewLayer > div {
+    top: 7px;
+}
+
+.toggleUniverse {
+    margin-left: 5px;
+    top: 3px;
+    position: relative;
+    display: inline;
+}
+
+.universeLabel {
+    width: 36px;
+    height: 36px;
+    border-radius: 5px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    text-align: center;
+    padding-top: 4px;
+    color: var(--primary);
+    backdrop-filter: blur(10px);
+    z-index: 9;
+}
+
+.mainfaderBigView {
+    height: 832px;
+    width: 84px;
+    right: 20px;
+    top: 56px;
+    position: absolute;
+}

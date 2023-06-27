@@ -1,0 +1,62 @@
+@import url(./Color.css);
+
+/* Scenes */
+
+.showScenes {
+    height: 449px;
+    width: 1352px;
+    left: 0;
+    top: 0;
+}
+
+/* Scenes End */
+
+/* Saves */
+
+.showSaves {
+    height: 449px;
+    width: 468px;
+    left: 1372px;
+    top: 0;
+}
+
+/* Saves End */
+
+/* Controls */
+
+.showControls {
+    height: 441px;
+    width: 1840px;
+    left: 0;
+    top: 469px;
+}
+
+.showControlButtons {
+    position: relative !important;
+    height: 54px;
+    width: 1675px;
+    margin: 20px;
+}
+
+.showControlTimeline {
+    position: relative !important;
+    height: 327px;
+    width: 1675px;
+    margin: 20px;
+}
+
+.showControlMaster {
+    position: relative !important;
+    height: 401px;
+    width: 105px;
+    margin: 20px;
+    bottom: calc(401px + 20px);
+    left: calc(1675px + 20px);
+}
+
+.showMasterAlign {
+    position: relative;
+    left: 10px;
+}
+
+/* Controls End */

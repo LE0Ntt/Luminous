@@ -1,0 +1,231 @@
+/**
+ * Fader.css
+ * @author Leon Hölzel
+ */
+@import url(../Color.css);
+
+:root {
+    --sliderHeight: 260px;
+    /* Height of the slider (width im code) */
+}
+
+.fader {
+    height: 360px;
+    width: 102px;
+    font-weight: 700;
+    top: -4%;
+    position: relative;
+    color: var(--primary);
+    border-right: 1px solid var(--color00000010);
+    transform: translateX(-10px);
+}
+
+.faderMaster {
+    height: calc(var(--sliderHeight) + 100px) !important;
+    border: none !important;
+    top: 5px;
+}
+
+.faderMaster > .midPoint {
+    bottom: calc(var(--sliderHeight) / 2 + 70px) !important;
+}
+
+.faderMaster > .value-slider > .slider {
+    width: var(--sliderHeight) !important;
+}
+
+.value-slider {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    position: absolute;
+    bottom: 70px;
+    left: 44%;
+}
+
+.slider {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 260px;
+    height: 13px;
+    border-radius: 50px;
+    background: #d3d3d3;
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    position: absolute;
+    top: 50%;
+}
+
+/* test für touchscreens
+.value-slider {
+    position: absolute;
+    height: 100%;
+    width: 14px;
+    left: 50%;
+    transform: translateX(calc(var(--sliderHeight) / -2));
+}
+
+.slider {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    appearance: none;
+    -webkit-appearance: none;
+    width: 260px;
+    height: 13px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    position: relative;
+    top: 43%;
+}
+*/
+
+/* Slider Track - all Browsers */
+.slider::-webkit-slider-runnable-track {
+    /* Specific styling for WebKit/Blink */
+    -webkit-appearance: none;
+    width: 260px;
+    height: 13px;
+    cursor: pointer;
+    box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+}
+
+.slider::-moz-range-progress {
+    /* Specific styling for Firefox track */
+    background-color: var(--mainColor);
+    height: 13px;
+    border-radius: 50px;
+}
+
+.slider::-ms-fill-lower {
+    /* Specific styling for Microsoft Edge track */
+    background-color: var(--mainColor);
+    height: 13px;
+    border-radius: 50px;
+}
+
+.slider::-ms-fill-upper {
+    /* Specific styling for Microsoft Edge track */
+    background-color: var(--mainColor);
+    height: 13px;
+    border-radius: 50px;
+}
+
+/* Slider Thumb - all Browsers */
+.slider::-webkit-slider-thumb {
+    /* Specific styling for WebKit/Blink */
+    margin-top: -15px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--faderBorder);
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-appearance: none;
+    background: var(--faderThumb);
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+}
+
+.slider::-moz-range-thumb {
+    /* Specific styling for Firefox */
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--faderBorder);
+    border-radius: 50%;
+    cursor: pointer;
+    background: var(--faderThumb);
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
+    margin-top: -15px;
+}
+
+.slider::-ms-thumb {
+    /* Specific styling for Microsoft Edge */
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--faderBorder);
+    border-radius: 50%;
+    cursor: pointer;
+    background: var(--faderThumb);
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
+    height: 20px;
+    margin-top: -15px;
+}
+
+.slider::-webkit-slider-thumb:hover {
+    /* Specific styling for WebKit/Blink */
+    background: var(--faderThumbHover);
+    cursor: ns-resize;
+}
+
+.slider.slider::-moz-range-thumb:hover {
+    /* Specific styling for Firefox */
+    background: var(--faderThumbHover);
+    cursor: ns-resize;
+}
+
+.slider::-ms-thumb:hover {
+    /* Specific styling for Microsoft Edge */
+    background: var(--faderThumbHover);
+    cursor: ns-resize;
+}
+
+.inputNum {
+    width: 3rem;
+    height: 2rem;
+    text-align: right;
+    background: transparent;
+    position: absolute;
+    right: 50%;
+    bottom: 37px;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.inputNumPercent {
+    font-weight: 800;
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+}
+
+.inputNum::-webkit-outer-spin-button,
+.inputNum::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.percentSymbol {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.midPoint {
+    position: absolute;
+    bottom: calc(260px / 2 + 70px);
+    left: 50%;
+    transform: translateX(-50%);
+
+    height: 1px;
+    width: 50px;
+    background: var(--midLine);
+}
+
+.faderName {
+    position: absolute;
+    text-align: center;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0em;
+    text-align: center;
+}

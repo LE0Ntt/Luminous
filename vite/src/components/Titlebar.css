@@ -1,0 +1,101 @@
+@import url(../Color.css);
+
+.titlebarComp {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 23px;
+    z-index: 99;
+    -webkit-app-region: drag;
+}
+
+nav {
+    margin-left: 10px;
+    position: absolute;
+    z-index: 99;
+}
+
+nav ul li {
+    float: left;
+    list-style: none;
+    position: relative;
+}
+
+nav ul li a {
+    color: var(--primary);
+    display: block;
+    padding: 0 5px 0 5px;
+}
+
+.logo {
+    height: 11px;
+    width: 74px;
+    mask: url(../assets/Luminous_Logo.svg);
+    mask-repeat: no-repeat;
+    background: var(--secondary);
+    mask-position: center;
+    top: 7px;
+    position: relative;
+    margin-right: 5px;
+}
+
+.settingsButton:hover, .active {
+    background: var(--colorButtonHover);
+}
+
+.active {
+    box-shadow: inset 0px 3px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    opacity: .8;
+}
+
+.titlebar-button {
+    border: none;
+    outline: none;
+    position: relative;
+    cursor: pointer;
+    width: 30px;
+    height: 23px;
+    top: 0;
+    padding-left: 8px;
+    -webkit-app-region: none;
+}
+
+.titlebar-button.minimize:hover {
+    background-color: var(--tertiary);
+}
+
+.titlebar-button.close:hover {
+    background-color: red;
+}
+
+.titlebar-button.close:hover .x {
+    background-color: #fff
+}
+
+.x {
+    position: relative;
+    height: 13px;
+    width: 1px;
+    background-color: var(--primary);
+    margin-left: 6px;
+    transform: rotate(45deg);
+}
+
+.xi {
+    margin-left: 0;
+    transform: rotate(90deg);
+}
+
+.min {
+    margin-left: 1px;
+    height: 1px;
+    width: 12px;
+    background-color: var(--primary);
+}

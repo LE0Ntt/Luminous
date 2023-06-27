@@ -7,7 +7,7 @@ import json
 from flask import jsonify
 from server import app, db
 from server.models import Device, Admin, Scene, Settings
-from werkzeug.security import generate_password_hash, check_password_hash
+
 
 
 # load devices from database

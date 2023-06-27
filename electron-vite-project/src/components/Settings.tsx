@@ -147,6 +147,9 @@ function Settings({ onClose }: SettingsProps) {
             <div className="LightSettingsSubTitle">
               <span>OLA</span> 
             </div>
+            <div className="SettingsTextBoxContainer">
+            Hier könnte ihre Werbung stehen
+            </div>    
           </div>
           <div className="SettingsOption">
             <hr />

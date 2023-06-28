@@ -112,7 +112,7 @@
     "bb_lights": "Geräte",
     "as_title": "Aktuelle Konfiguration als Szene speichern",
     "as_checkbox": "Als Standard Szene setzen",
-    "as_note": "Hinweis: Standard-Setzung und Admin-Passworteingabe erforderlich für dauerhafte Szene-Speicherung.",
+    "as_note": "Hinweis: Standard-Setzung und Admin-Passworteingabe erforderlich, um Szene dauerhaft zu speichern.",
     "as_save": "Speichern",
     "as_cancel": "Abbrechen",
     "ap_title": "Administrator Passwort eingeben",

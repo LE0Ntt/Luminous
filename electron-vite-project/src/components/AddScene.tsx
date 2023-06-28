@@ -37,14 +37,22 @@ function AddScene({ onClose }: AddSceneProps) {
   };
 
   const handleSave = () => {
-    if (!isChecked) {
-      const scene = {
-        name: name,
-        saved: false
-      };
-      addScene(emit, scene);
+    if(name !== '') {
+      if (!isChecked) {
+        const scene = {
+          name: name,
+          saved: false
+        };
+        addScene(emit, scene);
+      } else {
+        setShowAdminPassword(true);
+      }
     } else {
-      setShowAdminPassword(true);
+      // If the name is empty, the text box will be highlighted in red
+      const textBox = document.getElementsByClassName('AddSceneTextBox')[0] as HTMLInputElement;
+      textBox.focus();
+      textBox.style.outline = '2px solid red';
+      textBox.style.outlineOffset =  "-1px";
     }
   };
 

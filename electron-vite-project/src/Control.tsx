@@ -9,6 +9,8 @@ import DeviceList from './components/DeviceList';
 import Button from "./components/Button";
 import ColorPicker from "./components/ColorPicker";
 import { useFaderContext } from "./components/FaderContext";
+import AddScene from './components/AddScene';
+import AdminPassword from './components/AdminPassword';
 
 function Control() {
   const { t } = useContext(TranslationContext);
@@ -20,6 +22,9 @@ function Control() {
   const [animiation, setAnimiation] = useState(false);
   const location = useLocation();
   const { faderValues, setFaderValue } = useFaderContext();
+  const [addScene, setAddScene] = useState(false);
+  const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
+  const [isSolo, setIsSolo] = useState(false);
 
   // <- Device:
   interface DeviceConfig {
@@ -42,6 +47,9 @@ function Control() {
     };
 
     fetchDevices();
+
+    // Load saved solo state from session storage
+    setIsSolo(sessionStorage.getItem('controlSolo') === 'true');
 
     // Load saved selection from session storage
     const savedSelectedDevices = JSON.parse(sessionStorage.getItem('selectedDevices') || '[]');
@@ -94,6 +102,11 @@ function Control() {
     }
     //sessionStorage.setItem('selectedDevices', JSON.stringify(JSON.parse('[]'))) // zum reseten
     //sessionStorage.setItem('unselectedDevices', JSON.stringify(JSON.parse('[]'))) // zum reseten
+
+    // Deactivate solo if no device is selected
+    if(selectedDevices.length == 0 && isSolo) {
+      toggleSolo();
+    }
   }, [selectedDevices, unselectedDevices, devices]);
 
   const handleAddDevice = (device: DeviceConfig) => {
@@ -120,10 +133,11 @@ function Control() {
 
 
   // Solo Button
-  const toggleSOLO = () => {
-    console.log("clicked SOLO")
-
-    const solo = localStorage.getItem('solo') === 'true';
+  const toggleSolo = () => {
+    sessionStorage.setItem('controlSolo', `${!isSolo}`);
+    setIsSolo(!isSolo);
+    // auswahl mit solo status an server senden
+    
   };
 
   // Color Picker
@@ -159,14 +173,14 @@ function Control() {
           </div>
           <div className="controlButtons innerWindow">
             <Button 
-              onClick={() => toggleSOLO()} 
+              onClick={() => setAddScene(true)} 
               className="controlButton"
             >
               {t("saveAsScene")}
             </Button>
             <Button 
-              onClick={() => toggleSOLO()}
-              className="controlButton"
+              onClick={() => toggleSolo()}
+              className={`controlButton ${isSolo ? 'isSolo' : ''}`}
             >
               SOLO
             </Button>
@@ -274,6 +288,8 @@ function Control() {
         <DeviceList devices={unselectedDevices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />
       </div>
       <div className={hide}></div>
+      {addScene && <AddScene onClose={() => setAddScene(false)} />}
+      {saveSceneAdmin && <AdminPassword onClose={() => setSaveSceneAdmin(false)} />}
     </div>
   );
 }

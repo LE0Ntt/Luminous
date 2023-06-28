@@ -39,7 +39,7 @@
 
 .LightSettingsListContainer {
   flex-grow: 1;
-  min-width: 20%;
+  min-width: 270px;
   flex-direction: column;
   display: flex;
   gap: 20px;
@@ -51,18 +51,18 @@
 }
 
 .LightSettingsSelected {
-  flex-grow: 1;
-  height: 80px;
+  min-height: 70px;
   position: relative;
   width: 100%;
   display: flex;
   align-items: center;
   background-color: var(--mainColor);
-  color: var(--primarySwitched);
+  color: var(--primaryDark);
 }
 
 .LightSettingsSelectedDevice .name{
-  color: var(--primarySwitched);
+  color: var(--primaryDark);
+  min-width: 110px;
 }
 
 .LightSettingsSelectedDevice {

@@ -94,7 +94,14 @@ function LightSettings({ onClose }: SettingsProps) {
 
   const handleCreateDevice = () => {
     setIsNewDevice(true);
-    /* setSelectedDevice({ */
+
+    const newDevice: DeviceConfig = {
+      id: devices.length + 1, // oder nur devices.length?
+      deviceValue: 0,
+      name: t("ls_newDevice"),
+    };
+  
+    setSelectedDevice(newDevice);
   };
 
   const handleUpdateDevice = () => {
@@ -134,7 +141,7 @@ function LightSettings({ onClose }: SettingsProps) {
   };
 
   const handleRemoveDevice = () => {
-    
+    alert('Remove device');
   };
 
   return (
@@ -185,7 +192,6 @@ function LightSettings({ onClose }: SettingsProps) {
                       <option value="2">U2</option>
                     </select>
                   </div>
-                  
                   <div>
                     <label>{t("ls_deviceNumber")}</label> <br />
                     <input className='LightSettingsTextBoxSmall' type="number" value={inputName} onChange={handleInputName} />

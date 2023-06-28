@@ -37,7 +37,6 @@
     "set_current_pw" : "current password",
     "set_new_pw" : "new password",
     "set_conew_pw" : "confirm new password",
-
     "ls_title": "Device Preferences",
     "ls_addDevice": "Add Device",
     "ls_saveDevice": "Save Device",
@@ -49,6 +48,7 @@
     "ls_device_rgb": "RGB",
     "ls_device_rgbw": "RGBW",
     "ls_device_spot": "Spotlight",
+    "ls_newDevice": "New Device",
     "Off": "Off",
     "testchart": "Testchart",
     "bb_lights": "Devices",
@@ -107,6 +107,7 @@
     "ls_addDevice": "Gerät hinzufügen",
     "ls_saveDevice": "Gerät speichern",
     "ls_deleteDevice": "Gerät entfernen",
+    "ls_newDevice": "Neues Gerät",
     "Off": "Aus",
     "testchart": "Testchart",
     "bb_lights": "Geräte",

@@ -10,56 +10,6 @@ from server.models import Scene
 # ola = ola_handler()
 # ola.setup()
 
-""" 
-# OLA imports
-import sys
-import array
-# from ola.ClientWrapper import ClientWrapper
-
-# OLA
-
-wrapper = None
-
-
-def DmxSent(status):  # überprüft, ob die DMX-Daten erfolgreich gesendet wurden
-    if status.Succeeded():
-        print('Success!')
-    else:
-        print('Error: %s' % status.message, file=sys.stderr)
-
-    global wrapper
-    if wrapper:
-        wrapper.Stop()
-
-
-def setup():  # OLA-Client-Setup, wird dafür benötigt, dass die DMX-Daten gesendet werden können. (arrays für die universen erstellt, usw.)
-    print("Setting up...")
-    global universe
-    global dmx_data
-    universe = 2
-    dmx_data = array.array('B')
-    dmx_data.extend([0] * 256)
-
-
-def send_dmx(channel, faderValue, universe):  # sendet die DMX-Daten an das OLA-Universum
-    # Debug, gibt die Werte der Fader aus
-    print("Fader", channel, "Value changed: ", faderValue)
-    # Debug, gibt die Länge des Arrays aus
-    lenght = len(dmx_data)
-    # Debug, gibt die Länge des Arrays aus
-    print("len", lenght)
-    # setzt den Wert des Faders im Array auf den aktuellen Wert
-    dmx_data[channel] = faderValue
-
-    global wrapper
-    wrapper = ClientWrapper()
-    client = wrapper.Client()
-    # send 1 dmx frame mit dem akuellen array
-    client.SendDmx(universe, dmx_data, DmxSent)
-    wrapper.Run()
-"""
-
-
 connections = 0
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -146,6 +96,7 @@ def register_socketio_events(socketio):
     def handle_fader_value(data):
         faderValue = int(data['value'])
         fader = int(data['id'])
+        channel = int(data['channel'])
         # print(fader, faderValue)
         if fader < len(routes.devices):
             routes.devices[fader]["sliderValue"] = faderValue
@@ -154,7 +105,7 @@ def register_socketio_events(socketio):
         global connections
         if connections > 1:
             socketio.emit('variable_update', {
-                          'id': fader, 'value': faderValue}, namespace='/socket')
+                          'id': fader, 'value': faderValue, 'channel': channel}, namespace='/socket')
 
         # DMX-Data senden
         # ola.send_dmx(fader, faderValue)

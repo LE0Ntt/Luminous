@@ -47,17 +47,26 @@ const Studio = () => {
   const studioRows = 6;     // Anzahl der Reihen, werden später in Settings einstellbar sein
   const studioColumns = 4;  // Anzahl der Spalten, werden später in Settings einstellbar sein
   const selectedSliders = [ // Slider, die in der Studio Overview angezeigt werden sollen (werden später in Settings einstellbar sein)
-    { id: 1, row: 0, col: 0 , fake: false},
-    { id: 2, row: 0, col: 1 , fake: false},
-    { id: 3, row: 3, col: 2 , fake: false},
-    { id: 4, row: 0, col: 3 , fake: false},
-    { id: 5, row: 1, col: 0 , fake: false},
-    { id: 6, row: 1, col: 1 , fake: true},
-    { id: 7, row: 1, col: 2 , fake: false},
-    { id: 8, row: 1, col: 3 , fake: false},
-    { id: 9, row: 2, col: 0 , fake: false},
-    { id: 10, row: 2, col: 1 , fake: false},
-    { id: 0, row: 2, col: 2 , fake: true},
+    { id: 5, row: 0, col: 0 , fake: false},
+    { id: 5, row: 0, col: 1, fake: false},
+    { id: 6, row: 0, col: 2, fake: false},
+    { id: 6, row: 0, col: 3, fake: false},
+    { id: 4, row: 1, col: 0, fake: false},
+    { id: 4, row: 1, col: 1, fake: false},
+    { id: 7, row: 1, col: 2, fake: false},
+    { id: 7, row: 1, col: 3, fake: false},
+    { id: 3, row: 2, col: 0, fake: false},
+    { id: 3, row: 2, col: 1, fake: false},
+    { id: 8, row: 2, col: 2, fake: false},
+    { id: 8, row: 2, col: 3, fake: false},
+    { id: 2, row: 3, col: 0, fake: false},
+    { id: 2, row: 3, col: 1, fake: false},
+    { id: 9, row: 3, col: 2, fake: false},
+    { id: 9, row: 3, col: 3, fake: false},
+    { id: 1, row: 4, col: 0, fake: false},
+    { id: 1, row: 4, col: 1, fake: false},
+    { id: 15, row: 4, col: 2, fake: false},
+    { id: 17, row: 4, col: 3, fake: false},
   ]
 // Erstellt ein Array mit der Anzahl der Reihen und Spalten, die in der Studio Overview angezeigt werden sollen
   const grid = Array(studioRows).fill(undefined).map(() => Array(studioColumns).fill(undefined)); 

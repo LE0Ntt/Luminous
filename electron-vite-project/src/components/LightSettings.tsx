@@ -13,6 +13,7 @@ interface SettingsProps {
 
 function LightSettings({ onClose }: SettingsProps) {
   const [isOpen, setIsOpen] = useState(true);
+  const [isNewDevice, setIsNewDevice] = useState(false);
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
@@ -22,8 +23,8 @@ function LightSettings({ onClose }: SettingsProps) {
   const [inputDMXstart, setInputDMXstart] = useState('');
   const [inputDMXrange, setInputDMXrange] = useState('');
   const [inputUniverse, setInputUniverse] = useState('U1');
+  const [inputType, setInputType] = useState('');
   const [inputNumber, setInputNumber] = useState('');
-  const [inputType, setInputType] = useState('T1');
 
 
   interface DeviceConfig {
@@ -92,6 +93,11 @@ function LightSettings({ onClose }: SettingsProps) {
   };
 
   const handleCreateDevice = () => {
+    setIsNewDevice(true);
+    /* setSelectedDevice({ */
+  };
+
+  const handleUpdateDevice = () => {
     fetch(url + '/addlight', {
       method: 'POST',
       headers: {
@@ -165,65 +171,71 @@ function LightSettings({ onClose }: SettingsProps) {
               <DeviceList devices={devices} isAddButton={true} onDeviceButtonClick={handleSelectDevice} />
             </div>  
           </div>
-          <div className='LightSettingsWindow innerWindow'>
-            <div className='LightSettingsWindowUpper'>
-              <div className='LightSettingsSubTitle'>
-                <span>{t("ls_basicSettings")}</span>
+          {selectedDevice !== undefined && (
+            <div className='LightSettingsWindow innerWindow'>
+              <div className='LightSettingsWindowUpper'>
+                <div className='LightSettingsSubTitle'>
+                  <span>{t("ls_basicSettings")}</span>
+                </div>
+                <div className='LightSettingsTextBoxContainer'>
+                  <div>
+                    <label>Universe:</label><br />
+                    <select className='LightSettingsTextBoxSmall' value={inputUniverse} onChange={handleInputUniverse} >
+                      <option value="1">U1</option>
+                      <option value="2">U2</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label>{t("ls_deviceNumber")}</label> <br />
+                    <input className='LightSettingsTextBoxSmall' type="number" value={inputName} onChange={handleInputName} />
+                  </div>
+                  <div>
+                    <label>{t("ls_deviceName")}</label> <br />
+                    <input className='LightSettingsTextBox' type="text" value={inputNumber} onChange={handleInputNumber} />
+                  </div>
+                  <div>
+                    <label>DMX Start</label> <br />
+                    <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXstart} onChange={handleInputDMXstart} />
+                  </div>
+                  <div>
+                    <label>DMX Range</label> <br />
+                    <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXrange} onChange={handleInputDMXrange} />
+                  </div>
+                  <div>
+                    <label>{t("ls_deviceType")}</label><br />
+                    <select className='LightSettingsTextBox' value={inputType} onChange={handleInputType} >
+                      <option value="1">{t("ls_device_rgb")}</option>
+                      <option value="2">{t("ls_device_rgbw")}</option>
+                      <option value="3">{t("ls_device_spot")}</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div className='LightSettingsTextBoxContainer'>
-                <div>
-                  <label>Universe:</label><br />
-                  <select className='LightSettingsTextBoxSmall' value={inputUniverse} onChange={handleInputUniverse} >
-                    <option value="1">U1</option>
-                    <option value="2">U2</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label>{t("ls_deviceNumber")}</label> <br />
-                  <input className='LightSettingsTextBoxSmall' type="number" value={inputName} onChange={handleInputName} />
-                </div>
-                <div>
-                  <label>{t("ls_deviceName")}</label> <br />
-                  <input className='LightSettingsTextBox' type="text" value={inputNumber} onChange={handleInputNumber} />
-                </div>
-                <div>
-                  <label>DMX Start</label> <br />
-                  <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXstart} onChange={handleInputDMXstart} />
-                </div>
-                <div>
-                  <label>DMX Range</label> <br />
-                  <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXrange} onChange={handleInputDMXrange} />
-                </div>
-                <div>
-                  <label>{t("ls_deviceType")}</label><br />
-                  <select className='LightSettingsTextBox' value={inputType} onChange={handleInputType} >
-                    <option value="1">{t("ls_device_rgb")}</option>
-                    <option value="2">{t("ls_device_rgbw")}</option>
-                    <option value="3">{t("ls_device_spot")}</option>
-                  </select>
-                </div>
+              <hr />
+              <div className="LightSettingsWindowMid">
+                {isNewDevice ? (
+                  <div>New Device</div>
+                ) : (
+                  <div>No new device</div>
+                )}
+              </div>
+              <div className='LightSettingsWindowLower'>
+                <Button 
+                  onClick={() => handleRemoveDevice()} 
+                  className="LightSettingsDeleteButton controlButton"
+                >
+                  {t("ls_deleteDevice")}
+                </Button>
+                <Button 
+                  onClick={() => handleUpdateDevice()} 
+                  className="LightSettingsSaveButton controlButton"
+                >
+                  {t("ls_saveDevice")}
+                </Button>
               </div>
             </div>
-            <hr />
-            <div className='LightSettingsWindowMid'>
-              Test Mid
-            </div>
-            <div className='LightSettingsWindowLower'>
-              <Button 
-                onClick={() => handleRemoveDevice()} 
-                className="LightSettingsDeleteButton controlButton"
-              >
-                {t("ls_deleteDevice")}
-              </Button>
-              <Button 
-                onClick={() => handleCreateDevice()} 
-                className="LightSettingsSaveButton controlButton"
-              >
-                {t("ls_saveDevice")}
-              </Button>
-            </div>
-          </div>
+          )}
       </div>
     </div>
   );

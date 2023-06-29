@@ -7,11 +7,13 @@ import Settings from './Settings';
 import DropDown from "./DropDown";
 import LightSettings from './LightSettings';
 import Help from './Help';
+import About from './About';
 
 function TitleBar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [lightSettingsOpen, setLightSettingsOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const { t } = useContext(TranslationContext);
   const dropDownRef = useRef<HTMLButtonElement | null>(null);
@@ -65,6 +67,9 @@ function TitleBar() {
     if(setting === settings()[2]) {
       openHelp();
     }
+    if(setting === settings()[3]) {
+      openAbout();
+    }
     if(setting === settings()[4]) {
       toggleFullScreen();
     }
@@ -99,6 +104,14 @@ function TitleBar() {
     setHelpOpen(false);
   };
 
+  const openAbout = () => { 
+    console.log('About opened!'); 
+    setAboutOpen(true);
+  };
+  const closeAbout = () => {
+    console.log('About closed!');
+    setAboutOpen(false);
+  };
 
   // MacOS Titlebar Settings                ---  nicht benötig, da es nie auf mac laufen soll
   const isMac = process.platform === 'darwin';
@@ -142,6 +155,7 @@ function TitleBar() {
       {settingsOpen && <Settings onClose={closeSettings} />}
       {lightSettingsOpen && <LightSettings onClose={closeLightSettings} />}
       {helpOpen && <Help onClose={closeHelp} />}
+      {aboutOpen && <About onClose={closeAbout} />}
     </div>
   );
 }

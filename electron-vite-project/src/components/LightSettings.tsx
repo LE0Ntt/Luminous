@@ -221,7 +221,7 @@ function LightSettings({ onClose }: SettingsProps) {
               <hr />
               <div className="LightSettingsWindowMid">
                 {isNewDevice ? (
-                  <div>New Device</div>
+                  <div>New Device<div style={{fontSize:"250px"}}>𓀐𓂸</div></div>
                 ) : (
                   <div>No new device</div>
                 )}

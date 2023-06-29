@@ -9,7 +9,6 @@ from server import app, db
 from server.models import Device, Admin, Scene, Settings
 
 
-
 # load devices from database
 def get_devices():
     device_list = []
@@ -103,15 +102,14 @@ def change_password():
     admin = Admin.query.first()
 
     if admin:
-        if check_password_hash(admin.password_hash, current_password):
+        if admin.check_password(current_password):
             if new_password == new_password_confirm:
-                admin.set_password(new_password)
-                db.session.commit()
+                admin.set_password(new_password)  # Passwort in der Datenbank aktualisieren
                 return jsonify({"message": "Password changed successfully"})
             else:
                 return jsonify({"message": "New passwords do not match"})
         else:
-            return jsonify({"message": "Incorrect current password"})
+            return jsonify({"message": "Current password is incorrect"})
     else:
         if new_password == new_password_confirm:
             new_admin = Admin()
@@ -127,7 +125,7 @@ def change_password():
 def check_password():
     data = request.get_json()
     password = data['password']
-    admin = Admin.query.get(1)
+    admin = Admin.query.first()
     if admin.check_password(password):
         return {'match': 'true'}
     else:

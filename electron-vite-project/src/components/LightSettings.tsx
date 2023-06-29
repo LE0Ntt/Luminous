@@ -19,7 +19,7 @@ function LightSettings({ onClose }: SettingsProps) {
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceConfig>();
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
-  const [inputName, setInputName] = useState('');
+  const [inputName, setInputName] = useState('New Device');
   const [inputDMXstart, setInputDMXstart] = useState('');
   const [inputDMXrange, setInputDMXrange] = useState('');
   const [inputUniverse, setInputUniverse] = useState('U1');
@@ -200,15 +200,7 @@ function LightSettings({ onClose }: SettingsProps) {
                   </div>
                   <div>
                     <label>{t("ls_deviceName")}</label> <br />
-                    <input className='LightSettingsTextBox' type="text" value={inputNumber} onChange={handleInputNumber} />
-                  </div>
-                  <div>
-                    <label>DMX Start</label> <br />
-                    <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXstart} onChange={handleInputDMXstart} />
-                  </div>
-                  <div>
-                    <label>DMX Range</label> <br />
-                    <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXrange} onChange={handleInputDMXrange} />
+                    <input className='LightSettingsTextBox' type="text" value={inputName} onChange={handleInputName} />
                   </div>
                   <div>
                     <label>{t("ls_deviceType")}</label><br />
@@ -218,19 +210,41 @@ function LightSettings({ onClose }: SettingsProps) {
                       <option value="3">{t("ls_device_spot")}</option>
                     </select>
                   </div>
+                  <div>
+                    <label>DMX Start</label> <br />
+                    <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXstart} onChange={handleInputDMXstart} />
+                  </div>
+                  <div>
+                    <label>DMX Range</label> <br />
+                    <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXrange} onChange={handleInputDMXrange} />
+                  </div>
                 </div>
               </div>
               <hr />
               <div className="LightSettingsWindowMid">
                 {isNewDevice ? (
                   <div>
-                    New Device
-                    <div className="containerD">
-                      <div className="box">Box 1</div>
-                      <div className="box">Box 2</div>
-                      <div className="box">Box 3</div>
-                      <div className="box">Box 4</div>
-                      <div className="box">Box 5</div>
+                    <div className='LightSettingsSubTitle'>
+                      <span>{t("ls_dmxSettings")}</span>
+                    </div>
+                    <div className='LightSettingsDMXContainer'>
+                      {Array.from({ length: parseInt(inputDMXrange) }, (_, index) => (
+                        <div className="LightSettingsDMXBox" key={index}>
+                          <div className="LightSettingsDMXBoxLeft">
+                          <span>{parseInt(inputDMXstart) + index}</span>
+                          </div>
+                          <div className="LightSettingsDMXBoxRight">
+                            <select className="LightSettingsTextBox">
+                              <option value="1">Channel: Brightness</option>
+                              <option value="2">Channel: R</option>
+                              <option value="3">Channel: G</option>
+                              <option value="4">Channel: B</option>
+                              <option value="5">Channel: BiColor</option>
+                              <option value="6">Channel: Misc</option>
+                            </select>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ) : (

@@ -112,6 +112,54 @@
   position: relative;
   width: stretch;
   bottom: 0;
+  gap: 20px;
+}
+
+.LightSettingsDMXContainer {
+  display: grid;
+  position: relative;
+  top: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 20px;
+  width: 100%;
+}
+
+.LightSettingsDMXBox {
+  width: stretch;
+  height: 60px;
+  display: flex;
+  border-radius: 5px;
+}
+
+.LightSettingsDMXBoxLeft{
+  position: relative;
+  display: flex;
+  width: 80px;
+  left: 0;
+  height: stretch;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color00000008);
+  border-radius: 5px 0px 0px 5px;
+  border: var(--onepStroke) 1px solid;
+}
+
+.LightSettingsDMXBoxRight{
+  position: relative;
+  display: flex;
+  width: stretch;
+  right: 0;
+  height: stretch;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color00000003);
+  border-radius: 0px 5px 5px 0px;
+  border: var(--onepStroke) 1px solid;
+  padding: 0px 10px 0px 10px;
+}
+
+.LightSettingsDMXBoxRight select{
+  width: stretch;
 }
 
 .LightSettingsWindowLower {
@@ -137,12 +185,12 @@
   background-color: var(--fillLight);
   border: var(--onepStrokeSwitched) 1px solid;
   border-radius: 5px;
-  width: 160px;
+  width: 180px;
   height: 35px;
   position: relative;
   padding-left: 10px;
   outline: none;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
 }
 
 .LightSettingsTextBoxSmall{
@@ -195,15 +243,3 @@
   bottom: 0px;
 }
 
-.containerD {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  grid-gap: 20px;
-}
-
-.box {
-  height: 35px;
-  background-color: #412c4d;
-  border-radius: 5px;
-  padding-left: 10px;
-}

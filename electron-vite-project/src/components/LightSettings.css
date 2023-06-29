@@ -17,17 +17,11 @@
   display: flex;
   gap: 20px;
   z-index: 9999;
-  /* Above everything */
-  /*height: 494px;
-  width: 850px;
-  top: 293px;
-  left: 535px;
-  */
-  height: 70vh; /* Verwendet 50% der Höhe des Viewports */
-  width: 70vw; /* Verwendet 50% der Breite des Viewports */
-  top: 50%; /* Platziert das Element in der vertikalen Mitte */
-  left: 50%; /* Platziert das Element in der horizontalen Mitte */
-  transform: translate(-50%, -50%); /* Zentriert das Element */
+  height: 70vh;
+  width: 70vw;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   border-radius: 10px;
   background-color: var(--fillMedium);
   color: var(--primary);
@@ -199,4 +193,17 @@
   height: 60px;
   width: 15vw;
   bottom: 0px;
+}
+
+.containerD {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-gap: 20px;
+}
+
+.box {
+  height: 35px;
+  background-color: #412c4d;
+  border-radius: 5px;
+  padding-left: 10px;
 }

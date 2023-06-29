@@ -3,7 +3,6 @@ import { ipcRenderer } from 'electron';
 import { TranslationContext } from './TranslationContext';
 import './Titlebar.css';
 import '../index.css';
-import Button from './Button';
 import Settings from './Settings';
 import DropDown from "./DropDown";
 import LightSettings from './LightSettings';
@@ -145,6 +144,6 @@ function TitleBar() {
       {helpOpen && <Help onClose={closeHelp} />}
     </div>
   );
-};
+}
 
 export default TitleBar;

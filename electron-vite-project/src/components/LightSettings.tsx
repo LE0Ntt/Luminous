@@ -85,11 +85,13 @@ function LightSettings({ onClose }: SettingsProps) {
   const handleSelectDevice = (device: DeviceConfig) => {
     setSelectedDevice(device);
     setUnselectedDevices(unselectedDevices.filter(item => item.id !== device.id));
+    setIsNewDevice(false);
   };
 
   const handleDeselectDevice = (device: DeviceConfig) => {
     setSelectedDevice(undefined);
     setUnselectedDevices([...unselectedDevices, device]);
+    setIsNewDevice(false);
   };
 
   const handleCreateDevice = () => {
@@ -221,9 +223,27 @@ function LightSettings({ onClose }: SettingsProps) {
               <hr />
               <div className="LightSettingsWindowMid">
                 {isNewDevice ? (
-                  <div>New Device<div style={{fontSize:"250px"}}>𓀐𓂸</div></div>
+                  <div>
+                    New Device
+                    <div className="containerD">
+                      <div className="box">Box 1</div>
+                      <div className="box">Box 2</div>
+                      <div className="box">Box 3</div>
+                      <div className="box">Box 4</div>
+                      <div className="box">Box 5</div>
+                    </div>
+                  </div>
                 ) : (
-                  <div>No new device</div>
+                  <div>
+                    No new device
+                    <div style={{fontSize:"250px"}}>𓀐𓂸</div>
+
+                    <select className='LightSettingsTextBox' >
+                      <option value="1">r</option>
+                      <option value="2">g</option>
+                      <option value="3">b</option>
+                    </select>
+                  </div>
                 )}
               </div>
               <div className='LightSettingsWindowLower'>
@@ -246,4 +266,5 @@ function LightSettings({ onClose }: SettingsProps) {
     </div>
   );
 }
+
 export default LightSettings;

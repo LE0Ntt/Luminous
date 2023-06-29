@@ -126,7 +126,7 @@ def check_password():
     data = request.get_json()
     password = data['password']
     admin = Admin.query.first()
-    if admin.check_password(password):
+    if admin and admin.check_password(password):
         return {'match': 'true'}
     else:
         return {'match': 'false'}

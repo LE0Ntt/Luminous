@@ -14,12 +14,6 @@ const DropDown: React.FC<DropDownProps> = ({
 }: DropDownProps): JSX.Element => {
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
 
-  /**
-   * Handle passing the city name
-   * back to the parent component
-   *
-   * @param setting  The selected city
-   */
   const onClickHandler = (selectedSetting: string): void => {
     settingSelection(selectedSetting);
   };
@@ -29,25 +23,23 @@ const DropDown: React.FC<DropDownProps> = ({
   }, [showDropDown]);
 
   return (
-    <>
-      <div className={showDropDown ? 'dropdown' : 'dropdown active'}>
-        {settings.map(
-          (selectedSetting: string, index: number): JSX.Element => {
-            return (
-              <p
-                key={index}
-                onClick={(): void => {
-                  onClickHandler(selectedSetting);
-                }}
-              >
-                {selectedSetting}
-              </p>
-            );
-          }
-        )}
-      </div>
-    </>
+    <div className={showDropDown ? 'dropdown' : 'dropdown active'}>
+      {settings.map(
+        (selectedSetting: string, index: number): JSX.Element => {
+          return (
+            <p
+              key={index}
+              onClick={(): void => {
+                onClickHandler(selectedSetting);
+              }}
+            >
+              {selectedSetting}
+            </p>
+          );
+        }
+      )}
+    </div>
   );
-};
+}
 
 export default DropDown;

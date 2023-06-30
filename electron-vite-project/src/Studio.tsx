@@ -21,10 +21,7 @@ const Studio = () => {
   const { faderValues, setFaderValue } = useFaderContext();
   const { url, connected } = useConnectionContext();
   // Language
-  const { t, language, setLanguage } = useContext(TranslationContext);
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(e.target.value as "en" | "de");
-  };
+  const { t } = useContext(TranslationContext);
 
   // Button to open Control
   const handleClick = (id: number) => {
@@ -82,13 +79,15 @@ const Studio = () => {
 
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
 
+
+
   useEffect(() => {
     const fetchSliders = async () => {
       try {
         const response = await fetch(url + '/fader');
         const data = await response.json();
         setSliders(JSON.parse(data));
-        //console.log(data);
+        loadFaderValues(JSON.parse(data)); // läd die Faderwerte aus der Datenbank
       } catch (error) {
         console.log(error);
       }
@@ -96,6 +95,20 @@ const Studio = () => {
 
     fetchSliders();
   }, []);
+
+  // läd die Faderwerte aus der Datenbank
+  function loadFaderValues(sliders: any[]): any[][] {
+    const array: any[][] = [];  
+    sliders.forEach(item => {
+      const { id, sliderValue } = item;
+      if (!array[id]) {
+        array[id] = [];
+      }
+      array[id].push(sliderValue);
+      setFaderValue(id, 0, sliderValue);
+    }); 
+    return array;
+  }
 
   const [addScene, setAddScene] = useState(false);
 
@@ -162,12 +175,12 @@ const Studio = () => {
                         <div className='studio_overview_light marginRight45'>
                         {slider && (
                           <>
-                            <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
+                            <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[slider.id][0]/255) * (faderValues[0][0]/255)}} />
                             <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
                             <div className='studio_overview_infopanel'>
                               <div className='studio_overview_infopanel_text'>#{slider.id}</div>
                               <div className='studio_overview_infopanel_brightness'>
-                                {((solo && !soloLights.includes(slider.id)) ? 0 : ((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+                                {((solo && !soloLights.includes(slider.id)) ? 0 : ((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
                               </div>
                             </div>
                           </>
@@ -184,12 +197,12 @@ const Studio = () => {
                         <div className='studio_overview_light marginLeft45'>
                         {slider && (
                           <>
-                            <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[1][slider.id]/255) * (faderValues[0][0]/255)}} />
+                            <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[slider.id][0]/255) * (faderValues[0][0]/255)}} />
                             <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
                             <div className='studio_overview_infopanel'>
                               <div className='studio_overview_infopanel_text'>#{slider.id}</div>
                               <div className='studio_overview_infopanel_brightness'>
-                                {((solo && !soloLights.includes(slider.id)) ? 0 : ((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[1][slider.id] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+                                {((solo && !soloLights.includes(slider.id)) ? 0 : ((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : (((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
                               </div>
                             </div>                        
                           </>
@@ -256,8 +269,8 @@ const Studio = () => {
                       <h2 className='faderText'>{slider.id}</h2>
                       <Fader
                         key={slider.id}
-                        id={slider.id}
-                        sliderGroupId={1}
+                        id={0}
+                        sliderGroupId={slider.id}
                         name={slider.name}
                       />
                       <Button 

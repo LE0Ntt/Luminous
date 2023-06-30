@@ -16,24 +16,7 @@ interface FaderProviderProps {
 const FaderContext = createContext<FaderContextProps | undefined>(undefined);
 
 export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
-  const sliderGroupId = 3;
-  /* für die aktualisierung der faderwerte beim laden der seite
-  useEffect(() => {
-    const fetchSliders = async () => {
-      try {
-        const response = await fetch(url + '/fader');
-        const data = await response.json();
-        
-        console.log(JSON.parse(data).map(item => item.faderValue));
-        setFaderValues(JSON.parse(data).map(item => item.faderValue));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchSliders();
-  }, []); 
-  */
+  const sliderGroupId = 64;
   const initialFaderValues = Array.from({ length: sliderGroupId }, () => new Array(512).fill(0));
   const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
   const [isDragging, setIsDragging] = useState(false);

@@ -12,7 +12,7 @@ from server.models import Device, Admin, Scene, Settings
 # load devices from database
 def get_devices():
     device_list = []
-    
+
     master = {
         "id": 0,
         "name": "Master",
@@ -26,30 +26,31 @@ def get_devices():
         }
     }
     device_list.append(master)
-    
+
     with app.app_context():
         devices = Device.query.all()
         for device in devices:
-                channels = device.attributes.get("channel", [])
-                for channel in channels:
-                    channel["sliderValue"] = 0
-                    device = {
-                        "id": device.id,
-                        "name": device.name,
-                        "deviceType": device.device_type,
-                        "universe": device.universe,
-                        "attributes": {
-                            "channel": channels
-                        }
-                    }
-                device_list.append(device)
+            channels = device.attributes.get("channel", [])
+            for channel in channels:
+                channel["sliderValue"] = 0
+            device = {
+                "id": device.id,
+                "name": device.name,
+                "deviceType": device.device_type,
+                "universe": device.universe,
+                "attributes": {
+                    "channel": channels
+                }
+            }
+            device_list.append(device)
     return device_list
+
 
 devices = get_devices()
 
 
 # load scenes from database
-def get_scenes(): # wird ersetzt durch db abfrage
+def get_scenes():  # wird ersetzt durch db abfrage
     scenes_list = []
 
     with app.app_context():
@@ -62,8 +63,9 @@ def get_scenes(): # wird ersetzt durch db abfrage
                 "channel": scene.channel,
                 "saved": True
             }
-            scenes_list.append(scene)  
+            scenes_list.append(scene)
     return scenes_list
+
 
 scenes = get_scenes()
 
@@ -72,10 +74,12 @@ scenes = get_scenes()
 def mein_endpunkt():
     return render_template('faderTest.html')
 
+
 @app.route('/fader')
 def get_faders():
     global devices
     return jsonify(json.dumps(devices))
+
 
 @app.route('/scenes')
 def get_scenes():
@@ -86,7 +90,8 @@ def get_scenes():
 @app.route('/addlight', methods=['POST'])
 def add_light():
     data = request.get_json()
-    device = Device(name = data['name'], number = data['number'], device_type = data['device_type'], universe = data['universe'], attributes = data['attributes'])
+    device = Device(name=data['name'], number=data['number'], device_type=data['device_type'],
+                    universe=data['universe'], attributes=data['attributes'])
     print(device)
     db.session.add(device)
     db.session.commit()
@@ -115,7 +120,8 @@ def change_password():
     if admin:
         if admin.check_password(current_password):
             if new_password == new_password_confirm:
-                admin.set_password(new_password)  # Passwort in der Datenbank aktualisieren
+                # Passwort in der Datenbank aktualisieren
+                admin.set_password(new_password)
                 return jsonify({"message": "Password changed successfully"})
             else:
                 return jsonify({"message": "New passwords do not match"})
@@ -132,7 +138,7 @@ def change_password():
             return jsonify({"message": "New passwords do not match"})
 
 
-@app.route('/checkpassword', methods=['POST']) 
+@app.route('/checkpassword', methods=['POST'])
 def check_password():
     data = request.get_json()
     password = data['password']

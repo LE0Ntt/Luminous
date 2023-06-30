@@ -105,10 +105,7 @@ function LightSettings({ onClose }: SettingsProps) {
     setSelectedDevice(newDevice);
   };
 
-
-
-
-  const [channelArray, setChannelArray] = useState<Array<{ id: string; dmx_channel: string; channel_type: string }>>([]);
+  const [channelArray, setChannelArray] = useState<Array<{ id: number; dmx_channel: string; channel_type: string }>>([]);
 
   const handleChannelTypeChange = (index: number, event: ChangeEvent<HTMLSelectElement>) => {
     const selectedChannelType = event.target.value;
@@ -116,7 +113,7 @@ function LightSettings({ onClose }: SettingsProps) {
     setChannelArray(prevChannelArray => {
       const updatedChannelArray = [...prevChannelArray];
       updatedChannelArray[index] = {
-        id: String(index + 1),
+        id: index + 1,
         dmx_channel: String(parseInt(inputDMXstart) + index),
         channel_type: selectedChannelType
       };
@@ -125,11 +122,13 @@ function LightSettings({ onClose }: SettingsProps) {
   };
 
   const handleUpdateDevice = () => {
+    console.log(channelArray)
     fetch(url + '/addlight', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
+      
       body: JSON.stringify({ 
         name: inputName, 
         number: inputNumber, 

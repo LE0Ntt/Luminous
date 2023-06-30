@@ -16,8 +16,8 @@ interface FaderProviderProps {
 const FaderContext = createContext<FaderContextProps | undefined>(undefined);
 
 export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
-  const sliderGroupId = 64;
-  const initialFaderValues = Array.from({ length: sliderGroupId }, () => new Array(512).fill(0));
+  const sliderGroupId = 22;
+  const initialFaderValues = Array.from({ length: sliderGroupId }, () => new Array(4).fill(0));
   const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
   const [isDragging, setIsDragging] = useState(false);
   const { on, off, url} = useConnectionContext();
@@ -30,9 +30,10 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const eventListener = (data: any) => {
-      if (!isDragging && data.id !== undefined) { 
+      console.log("Received data from server:", data);
+      if (!isDragging && data.deviceId !== undefined) { 
         console.log("Received data from server:", data.value);
-        setFaderValue(1, data.id, data.value); // 0 ist platzhalter
+        setFaderValue(data.deviceId, 0, data.value); // 0 ist platzhalter
       }
     };
   

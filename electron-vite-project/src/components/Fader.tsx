@@ -59,36 +59,11 @@ const Fader: React.FC<SliderProps> = ({
     }
   };
 
-  /* const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
-    let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
-    setFaderValue(sliderGroupId, id, newValue);
-    cacheValueRef.current = newValue;
-
-    if (!timerRunning) {
-      setTimerRunning(true);
-      sendFaderValue();
-    }
-  };
-
-  const sendFaderValue = () => {
-    emit("fader_value", { deviceId: sliderGroupId, value: cacheValueRef.current, channelId: id });
-    sendValueRef.current = cacheValueRef.current;
-
-    requestAnimationFrame(() => {
-      if (cacheValueRef.current !== sendValueRef.current) {
-        sendFaderValue();
-      } else {
-        setTimerRunning(false);
-      }
-    });
-  };
-  */
-
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 100);
     newValue = Math.round((newValue / 100) * 255);
     setFaderValue(sliderGroupId, id, newValue);
-    emit("fader_value", { deviceId: sliderGroupId, value: newValue, channelId: id});
+    emit("fader_value", { deviceId: sliderGroupId, value: newValue, channelId: (id)});
   };
 
   return (

@@ -1,8 +1,7 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, ChangeEvent } from 'react';
 import './LightSettings.css';
 import Button from './Button';
 import '../index.css';
-import Toggle from './Toggle';
 import { TranslationContext } from './TranslationContext'
 import DeviceList from './DeviceList';
 import { useConnectionContext } from './ConnectionContext';
@@ -106,6 +105,25 @@ function LightSettings({ onClose }: SettingsProps) {
     setSelectedDevice(newDevice);
   };
 
+
+
+
+  const [channelArray, setChannelArray] = useState<Array<{ id: string; dmx_channel: string; channel_type: string }>>([]);
+
+  const handleChannelTypeChange = (index: number, event: ChangeEvent<HTMLSelectElement>) => {
+    const selectedChannelType = event.target.value;
+
+    setChannelArray(prevChannelArray => {
+      const updatedChannelArray = [...prevChannelArray];
+      updatedChannelArray[index] = {
+        id: String(index + 1),
+        dmx_channel: String(parseInt(inputDMXstart) + index),
+        channel_type: selectedChannelType
+      };
+      return updatedChannelArray;
+    });
+  };
+
   const handleUpdateDevice = () => {
     fetch(url + '/addlight', {
       method: 'POST',
@@ -113,25 +131,18 @@ function LightSettings({ onClose }: SettingsProps) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ 
-                            name: "lamp", 
-                            number: "1", 
-                            device_type: "lamp", 
-                            universe: "1", 
-                            attributes: 
-                              { channel: [
-                                { 
-                                  id: "1", 
-                                  dmx_channel: "1", 
-                                  channel_type: "bi" 
-                                },
-                                {
-                                  id: "2",
-                                  dmx_channel: "2",
-                                  channel_type: "uni"
-                                },
-                              ]
-                            }
-                          })
+        name: inputName, 
+        number: inputNumber, 
+        device_type: inputType, 
+        universe: inputUniverse,
+        attributes: {
+          channel: channelArray.map(channel => ({
+            id: channel.id,
+            dmx_channel: channel.dmx_channel,
+            channel_type: channel.channel_type
+          }))
+        }
+      })
     })
     .then(response => response.json())
     .then(data => {
@@ -234,7 +245,7 @@ function LightSettings({ onClose }: SettingsProps) {
                           <span>{parseInt(inputDMXstart) + index}</span>
                           </div>
                           <div className="LightSettingsDMXBoxRight">
-                            <select className="LightSettingsTextBox">
+                            <select className="LightSettingsTextBox" onChange={(event) => handleChannelTypeChange(index, event)}>
                               <option value="1">Channel: Brightness</option>
                               <option value="2">Channel: R</option>
                               <option value="3">Channel: G</option>

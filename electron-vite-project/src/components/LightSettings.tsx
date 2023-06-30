@@ -113,7 +113,7 @@ function LightSettings({ onClose }: SettingsProps) {
     setChannelArray(prevChannelArray => {
       const updatedChannelArray = [...prevChannelArray];
       updatedChannelArray[index] = {
-        id: index + 1,
+        id: index,
         dmx_channel: String(parseInt(inputDMXstart) + index),
         channel_type: selectedChannelType
       };

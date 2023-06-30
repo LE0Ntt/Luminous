@@ -207,7 +207,7 @@ function LightSettings({ onClose }: SettingsProps) {
                   </div>
                   <div>
                     <label>{t("ls_deviceNumber")}</label> <br />
-                    <input className='LightSettingsTextBoxSmall' type="number" value={inputName} onChange={handleInputName} />
+                    <input className='LightSettingsTextBoxSmall' type="number" value={inputNumber} onChange={handleInputNumber} />
                   </div>
                   <div>
                     <label>{t("ls_deviceName")}</label> <br />
@@ -216,9 +216,9 @@ function LightSettings({ onClose }: SettingsProps) {
                   <div>
                     <label>{t("ls_deviceType")}</label><br />
                     <select className='LightSettingsTextBox' value={inputType} onChange={handleInputType} >
-                      <option value="1">{t("ls_device_rgb")}</option>
-                      <option value="2">{t("ls_device_rgbw")}</option>
-                      <option value="3">{t("ls_device_spot")}</option>
+                      <option value="RGB">{t("ls_device_rgb")}</option>
+                      <option value="RGBW">{t("ls_device_rgbw")}</option>
+                      <option value="SPOT">{t("ls_device_spot")}</option>
                     </select>
                   </div>
                   <div>
@@ -246,12 +246,13 @@ function LightSettings({ onClose }: SettingsProps) {
                           </div>
                           <div className="LightSettingsDMXBoxRight">
                             <select className="LightSettingsTextBox" onChange={(event) => handleChannelTypeChange(index, event)}>
-                              <option value="1">Channel: Brightness</option>
-                              <option value="2">Channel: R</option>
-                              <option value="3">Channel: G</option>
-                              <option value="4">Channel: B</option>
-                              <option value="5">Channel: BiColor</option>
-                              <option value="6">Channel: Misc</option>
+                              <option value="w">Channel: Brightness</option>
+                              <option value="r">Channel: R</option>
+                              <option value="g">Channel: G</option>
+                              <option value="b">Channel: B</option>
+                              <option value="biCo">Channel: BiColor</option>
+                              <option value="effect">Channel: Effect</option>
+                              <option value="misc">Channel: Misc</option>
                             </select>
                           </div>
                         </div>

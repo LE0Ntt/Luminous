@@ -97,17 +97,22 @@ const Studio = () => {
   }, []);
 
   // läd die Faderwerte aus der Datenbank
-  function loadFaderValues(sliders: any[]): any[][] {
-    const array: any[][] = [];  
+  function loadFaderValues(sliders: any[]) {
+    const array: any[][] = [];
     sliders.forEach(item => {
       const { id, sliderValue } = item;
       if (!array[id]) {
         array[id] = [];
       }
-      array[id].push(sliderValue);
-      setFaderValue(id, 0, sliderValue); // noch nicht richtig, da nur sliderValue getzt wird, aber nicht die channel
-    }); 
-    return array;
+      if (item.attributes && item.attributes.channel) {
+        item.attributes.channel.forEach((channelItem: any) => {
+          const channelId = parseInt(channelItem.id, 10);
+          const sliderValue = channelItem.sliderValue !== undefined ? channelItem.sliderValue : 0;
+          array[id][channelId] = sliderValue;
+          setFaderValue(id, channelId, sliderValue);
+        });
+      }
+    });
   }
 
   const [addScene, setAddScene] = useState(false);

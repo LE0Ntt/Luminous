@@ -40,7 +40,7 @@ const Fader: React.FC<SliderProps> = ({
   // Always send the last value
   useEffect(() => {
     if(!timerRunning && cacheValueRef.current != null && cacheValueRef.current != sendValueRef.current)
-      emit("fader_value", { deviceId: sliderGroupId, value: faderValues[sliderGroupId][id], channelID: id });
+      emit("fader_value", { deviceId: sliderGroupId, value: faderValues[sliderGroupId][id], channelId: id });
   }, [timerRunning]);
 
   const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +51,7 @@ const Fader: React.FC<SliderProps> = ({
     // Send only at certain time intervals 
     if(!timerRunning) {
       setTimerRunning(true);
-      emit("fader_value", { deviceId: sliderGroupId, value: newValue, channelID: id });
+      emit("fader_value", { deviceId: sliderGroupId, value: newValue, channelId: id });
       sendValueRef.current = newValue;
       setTimeout(() => {
         setTimerRunning(false);
@@ -71,7 +71,7 @@ const Fader: React.FC<SliderProps> = ({
   };
 
   const sendFaderValue = () => {
-    emit("fader_value", { deviceId: sliderGroupId, value: cacheValueRef.current, channelID: id });
+    emit("fader_value", { deviceId: sliderGroupId, value: cacheValueRef.current, channelId: id });
     sendValueRef.current = cacheValueRef.current;
 
     requestAnimationFrame(() => {
@@ -88,7 +88,7 @@ const Fader: React.FC<SliderProps> = ({
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 100);
     newValue = Math.round((newValue / 100) * 255);
     setFaderValue(sliderGroupId, id, newValue);
-    emit("fader_value", { deviceId: sliderGroupId, value: newValue, channelID: id});
+    emit("fader_value", { deviceId: sliderGroupId, value: newValue, channelId: id});
   };
 
   return (

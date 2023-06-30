@@ -96,8 +96,8 @@ def register_socketio_events(socketio):
     def handle_fader_value(data):
         faderValue = int(data['value'])
         fader = int(data['deviceId'])
-        channel = int(data['channelID'])
-        print(fader, faderValue)
+        channel = int(data['channelId'])
+        print(fader, channel, faderValue)
         if fader < len(routes.devices):
             routes.devices[fader]["sliderValue"] = faderValue
         driver.pushFader(fader, faderValue) if driver is not None else None
@@ -105,7 +105,7 @@ def register_socketio_events(socketio):
         global connections
         if connections > 1:
             socketio.emit('variable_update', {
-                          'deviceId': fader, 'value': faderValue, 'channelID': channel}, namespace='/socket')
+                          'deviceId': fader, 'value': faderValue, 'channelId': channel}, namespace='/socket')
 
         # DMX-Data senden
         # ola.send_dmx(fader, faderValue)

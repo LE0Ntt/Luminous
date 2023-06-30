@@ -96,10 +96,18 @@ def register_socketio_events(socketio):
     def handle_fader_value(data):
         faderValue = int(data['value'])
         fader = int(data['deviceId'])
-        channel = int(data['channelId'])
-        print(fader, channel, faderValue)
+        channelId = int(data['channelId'])
+
         if fader < len(routes.devices):
-            routes.devices[fader]["sliderValue"] = faderValue
+            device = routes.devices[fader]
+            channels = device["attributes"]["channel"]
+            for channel in channels:
+                if int(channel["id"]) - 1 == channelId:
+                    channel["sliderValue"] = faderValue
+                    break
+
+            device["attributes"]["channel"] = channels
+            routes.devices[fader] = device
         driver.pushFader(fader, faderValue) if driver is not None else None
         # Send update to all clients
         global connections

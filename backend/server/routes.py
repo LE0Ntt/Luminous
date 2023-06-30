@@ -19,7 +19,7 @@ def get_devices():
         "attributes": {
             "channel": [
                 {
-                    "id": "0",
+                    "id": "1",
                     "sliderValue": 255
                 }
             ]

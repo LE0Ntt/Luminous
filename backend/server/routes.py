@@ -15,23 +15,34 @@ def get_devices():
     
     master = {
         "id": 0,
-        "sliderValue": 255,
-        "name": "Master"
+        "name": "Master",
+        "attributes": {
+            "channel": [
+                {
+                    "id": "0",
+                    "sliderValue": 255
+                }
+            ]
+        }
     }
     device_list.append(master)
     
     with app.app_context():
         devices = Device.query.all()
         for device in devices:
-            device = {
-                "id": device.id,
-                "sliderValue": 0,
-                "name": device.name,
-                "deviceType": device.device_type,
-                "universe": device.universe,
-                "attributes": device.attributes
-            }
-            device_list.append(device)  
+                channels = device.attributes.get("channel", [])
+                for channel in channels:
+                    channel["sliderValue"] = 0
+                    device = {
+                        "id": device.id,
+                        "name": device.name,
+                        "deviceType": device.device_type,
+                        "universe": device.universe,
+                        "attributes": {
+                            "channel": channels
+                        }
+                    }
+                device_list.append(device)
     return device_list
 
 devices = get_devices()

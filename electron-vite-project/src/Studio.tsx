@@ -105,7 +105,7 @@ const Studio = () => {
         array[id] = [];
       }
       array[id].push(sliderValue);
-      setFaderValue(id, 0, sliderValue);
+      setFaderValue(id, 0, sliderValue); // noch nicht richtig, da nur sliderValue getzt wird, aber nicht die channel
     }); 
     return array;
   }

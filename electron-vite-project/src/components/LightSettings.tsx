@@ -22,9 +22,8 @@ function LightSettings({ onClose }: SettingsProps) {
   const [inputDMXstart, setInputDMXstart] = useState('');
   const [inputDMXrange, setInputDMXrange] = useState('');
   const [inputUniverse, setInputUniverse] = useState('U1');
-  const [inputType, setInputType] = useState('');
+  const [inputType, setInputType] = useState('RGBDim');
   const [inputNumber, setInputNumber] = useState('');
-
 
   interface DeviceConfig {
     id: number;
@@ -105,6 +104,38 @@ function LightSettings({ onClose }: SettingsProps) {
     setSelectedDevice(newDevice);
   };
 
+  // const handleInputChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+  //   setInputDMXrange(event.target.value);
+  // };
+
+  // const handleTypeChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+  //   setInputType(event.target.value);
+  // };
+
+  const createInitialChannelArray = () => {
+    const initialChannels = Array.from({ length: parseInt(inputDMXrange) }, (_, index) => {
+      const startChannel = parseInt(inputDMXstart) + index;
+      return {
+        id: index,
+        channel_type: LampTypeChannels[inputType]?.[index] || 'misc',
+        dmx_channel: startChannel.toString()
+      };
+    });
+    setChannelArray(initialChannels);
+  };
+  
+  // ...
+  
+  useEffect(() => {
+    createInitialChannelArray();
+  }, [inputDMXrange, inputDMXstart, inputType]);
+
+  const handleChannelChange = (index: number, type: any, channel: string) => {
+    const updatedChannelArray = [...channelArray];
+    updatedChannelArray[index] = { id: index, channel_type: type, dmx_channel: channel };
+    setChannelArray(updatedChannelArray);
+  }
+
   const [channelArray, setChannelArray] = useState<Array<{ id: number; dmx_channel: string; channel_type: string }>>([]);
 
   const handleChannelTypeChange = (index: number, event: ChangeEvent<HTMLSelectElement>) => {
@@ -154,6 +185,14 @@ function LightSettings({ onClose }: SettingsProps) {
 
   const handleRemoveDevice = () => {
     alert('Remove device');
+  };
+
+  const LampTypeChannels:{ [key: string]: string[] } = {
+    'RGBDim':  ['main', 'r', 'g', 'b'],
+    'BiColor': ['main', 'bi'],
+    'Spot':    ['main'],
+    'Fill':    ['main'],
+    'Misc':    ['main']
   };
 
   return (
@@ -215,9 +254,11 @@ function LightSettings({ onClose }: SettingsProps) {
                   <div>
                     <label>{t("ls_deviceType")}</label><br />
                     <select className='LightSettingsTextBox' value={inputType} onChange={handleInputType} >
-                      <option value="RGB">{t("ls_device_rgb")}</option>
-                      <option value="RGBW">{t("ls_device_rgbw")}</option>
-                      <option value="SPOT">{t("ls_device_spot")}</option>
+                      {Object.keys(LampTypeChannels).map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div>
@@ -241,18 +282,23 @@ function LightSettings({ onClose }: SettingsProps) {
                       {Array.from({ length: parseInt(inputDMXrange) }, (_, index) => (
                         <div className="LightSettingsDMXBox" key={index}>
                           <div className="LightSettingsDMXBoxLeft">
-                          <span>{parseInt(inputDMXstart) + index}</span>
+                            {LampTypeChannels[inputType]?.[index] ? (
+                              <span>{LampTypeChannels[inputType][index]}</span>
+                            ) : (
+                              <input
+                                type="text"
+                                value={channelArray[index]?.channel_type || 'misc'}
+                                onChange={(e) => handleChannelChange(index, e.target.value, channelArray[index]?.dmx_channel)}
+                                style={{ width: '100%', textAlign: "center" }}
+                              />
+                            )}
                           </div>
                           <div className="LightSettingsDMXBoxRight">
-                            <select className="LightSettingsTextBox" onChange={(event) => handleChannelTypeChange(index, event)}>
-                              <option value="w">Channel: Brightness</option>
-                              <option value="r">Channel: R</option>
-                              <option value="g">Channel: G</option>
-                              <option value="b">Channel: B</option>
-                              <option value="biCo">Channel: BiColor</option>
-                              <option value="effect">Channel: Effect</option>
-                              <option value="misc">Channel: Misc</option>
-                            </select>
+                            <input
+                              type="number"
+                              value={channelArray[index]?.dmx_channel || ''}
+                              onChange={(e) => handleChannelChange(index, channelArray[index]?.channel_type, e.target.value)}
+                            />
                           </div>
                         </div>
                       ))}

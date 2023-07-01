@@ -59,10 +59,10 @@ class Settings(db.Model):
         db.session.commit()
 
 # Clear db
-""" with app.app_context():
-    db.drop_all()
-    db.create_all()
- """
+#with app.app_context():
+ #   db.drop_all()
+  #  db.create_all()
+ 
 
 '''
 Die JSON-Spalte ermöglicht es, komplexe Datenstrukturen wie das JSON-Objekt, das du beschrieben hast, in der Datenbank zu speichern und abzurufen. Wenn du Daten in die Tabelle einfügen möchtest, kannst du dies auf folgende Weise tun:

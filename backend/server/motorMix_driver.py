@@ -1,6 +1,10 @@
 import threading
 import mido
 import time
+#import url
+import requests
+#from routes import devices
+
 
 '''
 Todo:
@@ -19,11 +23,11 @@ class Driver:
         self.fader_touch       = [False] * 8
         self.fader_touch_flag  = False
         
-        self.outport = mido.open_output('USB MIDI Interface 1')
-        self.inport  = mido.open_input( 'USB MIDI Interface 0')
+        #self.outport = mido.open_output('USB MIDI Interface 1')
+        #self.inport  = mido.open_input( 'USB MIDI Interface 0')
         #--MMix Config - DONT CHANGE -
-        #self.outport = mido.open_output('USB MIDI Interface MIDI 1')
-        #self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
+        self.outport = mido.open_output('USB MIDI Interface MIDI 1')
+        self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
         
         self.current_page = 1
         self.light_mode = True # False: Scene mode
@@ -38,16 +42,7 @@ class Driver:
         print("Driver Initiated")
         
         #-------------------- SETUP --------------------
-        self.pushFader(0, 255) # set master to 255
-        for index in range(1, 8): # every other fader to 0
-            self.pushFader(index, 0)
-        self.clearDisplay()
-        self.displayASCII_perChannel(7,0,"MSTER")
-        self.displayASCII(34,0,"|")
-        self.displayASCII(34,1,"|")
-        self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
-        self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
-        self.displayPageNumber(str(self.current_page))
+        self.setup()
         #-------------------- SETUP END --------------------
         
         
@@ -58,7 +53,7 @@ class Driver:
         for message in self.inport:
             hex_message = ''.join(format(byte, '02X') for byte in message.bytes())
 
-            print(hex_message)
+           # print(hex_message)
             
             if hex_message.startswith('B04'): # Rotory message but potentially startup -> push faders, pages, display, button lights ??? Maybe not best practice
                 for faderIndex, value in enumerate(self.fader_values):
@@ -123,7 +118,7 @@ class Driver:
                 elif hex_message == 'B02F46':
                     print("SUS pressed")
                 elif hex_message == 'B02F47':
-                    print("MIDO message send")
+                    self.setup()
 
                 self.left_button_flag = False
             elif hex_message == 'B00F09': # right Button-Block
@@ -149,6 +144,13 @@ class Driver:
                     self.button_LED("RIGHT", 2, 1)
 
                 self.right_button_flag = False
+                
+            elif hex_message == 'B04841':
+                self.rotary_pageUpdate(True)
+                
+            elif hex_message == 'B04801':
+                self.rotary_pageUpdate(False)
+
             
             else:
                 print("Unknown: " + hex_message)    
@@ -165,6 +167,19 @@ class Driver:
         return value_8bit
     '''
 
+    def setup(self):
+            self.pushFader(0, 255) # set master to 255
+            for index in range(1, 8): # every other fader to 0
+                self.pushFader(index, 0)
+            self.clearDisplay()
+            self.displayASCII_perChannel(7,0,"MSTER")
+            self.displayASCII(34,0,"|")
+            self.displayASCII(34,1,"|")
+            self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
+            self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
+            self.displayPageNumber(str(self.current_page))
+
+    
     def interpolate_thread(self, value, time_to_sleep, fader):
         while time.monotonic() < self.current_time[fader] + time_to_sleep:
             if value != self.fader_values[fader] or not self.fader_touch[fader]:
@@ -258,22 +273,23 @@ class Driver:
     #-------------------- LCD Display END --------------------
     
     #-------------------- page Display --------------------
+    
     def displayPageNumber(self, pageNumber):
         hex_string = "F0 00 01 0F 00 11 00 12 "
         
-        if(int(pageNumber) <10): hex_string += "00 00 "
+        if int(pageNumber) < 10:
+            pageNumber = "0" + str(pageNumber)
         
         for char in pageNumber:
             ascii_val = ord(char)
             hi_nibble = ascii_val >> 4
             lo_nibble = ascii_val & 0x0F
             hex_string += format(hi_nibble, '02X')+ " " + format(lo_nibble, '02X') + " "
+        
         hex_string += "F7"
         print(hex_string)
         self.outport.send(mido.Message.from_hex(hex_string))
-    
-    def clear_pageNumber(self):
-        self.outport.send(mido.Message.from_hex("  "))
+
     #-------------------- page Display END --------------------
 
     #-------------------- Button LED --------------------
@@ -315,3 +331,27 @@ class Driver:
             
         self.callback(faderNew, self.fader_values[fader])
         self.displayFaderValues(fader,value)
+        
+        
+   #---------------- Channel Pull ----------------
+   
+    def rotary_pageUpdate(self, forward):
+        if forward:
+            self.current_page = self.current_page + 1
+        else:
+            self.current_page = self.current_page - 1
+        
+        #range control
+        if self.current_page < 1:
+            self.current_page = 1
+        if self.current_page > 99:
+            self.current_page = 99
+        
+          
+        self.displayPageNumber(str(self.current_page))
+        print(self.current_page)         
+        #self.devicePull(self.current_page)  
+
+    def devicePull(self, current_page):
+        device_numbers = [device['number'] for device in self.devices]
+        device_names = [device['name'] for device in devices]

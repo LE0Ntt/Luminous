@@ -37,17 +37,20 @@ class Driver:
         threading.Thread(target=self.input).start() 
         print("Driver Initiated")
         
+        
         #-------------------- SETUP --------------------
-        self.pushFader(0, 255) # set master to 255
-        for index in range(1, 8): # every other fader to 0
-            self.pushFader(index, 0)
-        self.clearDisplay()
-        self.displayASCII_perChannel(7,0,"MSTER")
-        self.displayASCII(34,0,"|")
-        self.displayASCII(34,1,"|")
-        self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
-        self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
-        self.displayPageNumber(str(self.current_page))
+        setup(self)	
+        def setup(self):
+            self.pushFader(0, 255) # set master to 255
+            for index in range(1, 8): # every other fader to 0
+                self.pushFader(index, 0)
+            self.clearDisplay()
+            self.displayASCII_perChannel(7,0,"MSTER")
+            self.displayASCII(34,0,"|")
+            self.displayASCII(34,1,"|")
+            self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
+            self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
+            self.displayPageNumber(str(self.current_page))
         #-------------------- SETUP END --------------------
         
         
@@ -123,7 +126,9 @@ class Driver:
                 elif hex_message == 'B02F46':
                     print("SUS pressed")
                 elif hex_message == 'B02F47':
-                    print("MIDO message send")
+                    self.setup(self)
+                    print("MOTOR_MIX restartet")
+
 
                 self.left_button_flag = False
             elif hex_message == 'B00F09': # right Button-Block
@@ -211,7 +216,12 @@ class Driver:
     def displayASCII_perChannel(self, channel, row, text):
         HEADER = "F0 00 01 0F 00 11 00"
         END = "F7"
-
+        
+        if len(text) > 5:
+            text = text[:5]
+        if len(text) < 5:
+            text = text + " " * (5 - len(text))
+        
         # Calculate the starting address based on channel and row
         ADDRESS = row * 40 + (channel*5)
 

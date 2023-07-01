@@ -18,12 +18,21 @@ function LightSettings({ onClose }: SettingsProps) {
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceConfig>();
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
-  const [inputName, setInputName] = useState('New Device');
-  const [inputDMXstart, setInputDMXstart] = useState('');
-  const [inputDMXrange, setInputDMXrange] = useState('');
+  const [inputName, setInputName] = useState('');
+  const [inputDMXstart, setInputDMXstart] = useState('1'); // must be fetched
+  const [inputDMXrange, setInputDMXrange] = useState('4');
   const [inputUniverse, setInputUniverse] = useState('U1');
   const [inputType, setInputType] = useState('RGBDim');
-  const [inputNumber, setInputNumber] = useState('');
+  const [inputNumber, setInputNumber] = useState('1'); // must be fetched
+  const [channelArray, setChannelArray] = useState<Array<{ id: number; dmx_channel: string; channel_type: string }>>([]);
+
+  const LampTypeChannels:{ [key: string]: string[] } = {
+    'RGBDim':  ['main', 'r', 'g', 'b'],
+    'BiColor': ['main', 'bi'],
+    'Spot':    ['main'],
+    'Fill':    ['main'],
+    'Misc':    ['main']
+  };
 
   interface DeviceConfig {
     id: number;
@@ -61,15 +70,40 @@ function LightSettings({ onClose }: SettingsProps) {
   };
 
   const handleInputNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputNumber(event.target.value);
+    // Only allow numbers between 1 and 1024 for the device number
+    const inputValue = event.target.value === '' ? 1 : parseInt(event.target.value);
+    setInputNumber(inputValue.toString());
+    if (inputValue > 1024) {
+      setInputNumber("1024");
+    } else if (inputValue < 1) {
+      setInputNumber("1");
+    }
   };
 
   const handleInputDMXstart = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputDMXstart(event.target.value);
+    // Only allow numbers between 1 and (512 - (DMX range + 1)) for the DMX start channel
+    const inputValue = event.target.value === '' ? 1 : parseInt(event.target.value);
+    setInputDMXstart(inputValue.toString());
+  
+    const maxDMXrange = 513 - parseInt(inputDMXrange);
+    if (inputValue < 1) {
+      setInputDMXstart("1");
+    } else if (inputValue > maxDMXrange) {
+      setInputDMXstart(maxDMXrange.toString());
+    }
   };
-
+  
   const handleInputDMXrange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputDMXrange(event.target.value);
+    // Only allow numbers between 1 and (512 - (DMX start + 1)) for the DMX range
+    const inputValue = event.target.value === '' ? 1 : parseInt(event.target.value);
+    setInputDMXrange(inputValue.toString());
+  
+    const maxDMXstart = 513 - parseInt(inputDMXstart);
+    if (inputValue < 1) {
+      setInputDMXrange("1");
+    } else if (inputValue > maxDMXstart) {
+      setInputDMXrange(maxDMXstart.toString());
+    }
   };
 
   const handleInputUniverse = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -77,7 +111,14 @@ function LightSettings({ onClose }: SettingsProps) {
   };
 
   const handleInputType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setInputType(e.target.value);
+    const value = e.target.value;
+    setInputType(value);
+
+    // Set the DMX range to the number of channels of the selected device type
+    const valueChannels = LampTypeChannels[value];
+    if ( valueChannels) {
+      setInputDMXrange(valueChannels.length.toString());
+    }
   };
 
   const handleSelectDevice = (device: DeviceConfig) => {
@@ -100,18 +141,12 @@ function LightSettings({ onClose }: SettingsProps) {
       deviceValue: 0,
       name: t("ls_newDevice"),
     };
-  
+    
+    setInputName(t("ls_newDevice"));
     setSelectedDevice(newDevice);
   };
 
-  // const handleInputChange = (event: { target: { value: SetStateAction<string>; }; }) => {
-  //   setInputDMXrange(event.target.value);
-  // };
-
-  // const handleTypeChange = (event: { target: { value: SetStateAction<string>; }; }) => {
-  //   setInputType(event.target.value);
-  // };
-
+  // Set the initial channel array
   const createInitialChannelArray = () => {
     const initialChannels = Array.from({ length: parseInt(inputDMXrange) }, (_, index) => {
       const startChannel = parseInt(inputDMXstart) + index;
@@ -124,33 +159,26 @@ function LightSettings({ onClose }: SettingsProps) {
     setChannelArray(initialChannels);
   };
   
-  // ...
-  
   useEffect(() => {
     createInitialChannelArray();
   }, [inputDMXrange, inputDMXstart, inputType]);
 
   const handleChannelChange = (index: number, type: any, channel: string) => {
+    // Only allow numbers between 1 and 512 for the channel
+    var inputValue = channel === '' ? 1 : parseInt(channel);
+    
+    if (inputValue > 512) {
+      inputValue = 512;
+    } else if (inputValue < 1) {
+      inputValue = 1;
+    }
+
+    channel = inputValue.toString()
+
     const updatedChannelArray = [...channelArray];
     updatedChannelArray[index] = { id: index, channel_type: type, dmx_channel: channel };
     setChannelArray(updatedChannelArray);
   }
-
-  const [channelArray, setChannelArray] = useState<Array<{ id: number; dmx_channel: string; channel_type: string }>>([]);
-
-  const handleChannelTypeChange = (index: number, event: ChangeEvent<HTMLSelectElement>) => {
-    const selectedChannelType = event.target.value;
-
-    setChannelArray(prevChannelArray => {
-      const updatedChannelArray = [...prevChannelArray];
-      updatedChannelArray[index] = {
-        id: index,
-        dmx_channel: String(parseInt(inputDMXstart) + index),
-        channel_type: selectedChannelType
-      };
-      return updatedChannelArray;
-    });
-  };
 
   const handleUpdateDevice = () => {
     console.log(channelArray)
@@ -185,14 +213,6 @@ function LightSettings({ onClose }: SettingsProps) {
 
   const handleRemoveDevice = () => {
     alert('Remove device');
-  };
-
-  const LampTypeChannels:{ [key: string]: string[] } = {
-    'RGBDim':  ['main', 'r', 'g', 'b'],
-    'BiColor': ['main', 'bi'],
-    'Spot':    ['main'],
-    'Fill':    ['main'],
-    'Misc':    ['main']
   };
 
   return (
@@ -282,6 +302,15 @@ function LightSettings({ onClose }: SettingsProps) {
                       {Array.from({ length: parseInt(inputDMXrange) }, (_, index) => (
                         <div className="LightSettingsDMXBox" key={index}>
                           <div className="LightSettingsDMXBoxLeft">
+                            <input
+                              type="number"
+                              value={channelArray[index]?.dmx_channel || ''}
+                              onChange={(e) => handleChannelChange(index, channelArray[index]?.channel_type, e.target.value)}
+                              className='LightSettingsChannelInput'
+                            />
+                            
+                          </div>
+                          <div className="LightSettingsDMXBoxRight">
                             {LampTypeChannels[inputType]?.[index] ? (
                               <span>{LampTypeChannels[inputType][index]}</span>
                             ) : (
@@ -289,16 +318,9 @@ function LightSettings({ onClose }: SettingsProps) {
                                 type="text"
                                 value={channelArray[index]?.channel_type || 'misc'}
                                 onChange={(e) => handleChannelChange(index, e.target.value, channelArray[index]?.dmx_channel)}
-                                style={{ width: '100%', textAlign: "center" }}
+                                className='LightSettingsChannelInput'
                               />
                             )}
-                          </div>
-                          <div className="LightSettingsDMXBoxRight">
-                            <input
-                              type="number"
-                              value={channelArray[index]?.dmx_channel || ''}
-                              onChange={(e) => handleChannelChange(index, channelArray[index]?.channel_type, e.target.value)}
-                            />
                           </div>
                         </div>
                       ))}

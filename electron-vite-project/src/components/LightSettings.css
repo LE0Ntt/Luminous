@@ -206,7 +206,9 @@
 }
 
 .LightSettingsTextBoxSmall::-webkit-outer-spin-button,
-.LightSettingsTextBoxSmall::-webkit-inner-spin-button {
+.LightSettingsTextBoxSmall::-webkit-inner-spin-button,
+.LightSettingsChannelInput::-webkit-outer-spin-button,
+.LightSettingsChannelInput::-webkit-inner-spin-button  {
     -webkit-appearance: none;
     margin: 0;
 }
@@ -243,3 +245,8 @@
   bottom: 0px;
 }
 
+.LightSettingsChannelInput {
+  width: 100%;
+  text-align: center;
+  background: none;
+}

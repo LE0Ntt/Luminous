@@ -43,7 +43,7 @@ class Driver:
         
         
         #-------------------- SETUP --------------------
-        setup(self)	
+        
         def setup(self):
             self.pushFader(0, 255) # set master to 255
             for index in range(1, 8): # every other fader to 0
@@ -130,7 +130,7 @@ class Driver:
                 elif hex_message == 'B02F46':
                     print("SUS pressed")
                 elif hex_message == 'B02F47':
-                    self.setup(self)
+                    self.setup()
                     print("MOTOR_MIX restartet")
 
 

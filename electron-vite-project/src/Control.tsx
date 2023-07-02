@@ -141,9 +141,9 @@ function Control() {
   };
 
   // Color Picker
-  const [red, setRed] = useState(faderValues[0][3]);
-  const [green, setGreen] = useState(faderValues[0][4]);
-  const [blue, setBlue] = useState(faderValues[0][5]);
+  const [red, setRed] = useState(faderValues[0][0]);
+  const [green, setGreen] = useState(faderValues[0][0]);
+  const [blue, setBlue] = useState(faderValues[0][0]);
 
   const handleColorChange = (newRed: number, newGreen: number, newBlue: number) => {
     setRed(newRed);
@@ -190,9 +190,9 @@ function Control() {
             <div className="controlKelvinPicker">
                <ColorPicker 
                 pickerType="kelvin"
-                red={faderValues[0][3]}
-                green={faderValues[0][4]}
-                blue={faderValues[0][5]}
+                red={faderValues[1][1]}
+                green={faderValues[1][1]}
+                blue={faderValues[1][1]}
                 onColorChange={handleColorChange}
               />
             </div>

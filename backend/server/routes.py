@@ -91,21 +91,46 @@ def get_scenes():
 @app.route('/addlight', methods=['POST'])
 def add_light():
     data = request.get_json()
-    device = Device(name=data['name'], number=data['number'], device_type=data['device_type'],
+    # Check if device number is already in use
+    if Device.query.filter_by(number=data['number']).first():
+        return {'message': 'number_in_use'}
+    device = Device(id=int(data['number']), name=data['name'], number=data['number'], device_type=data['device_type'],
                     universe=data['universe'], attributes=data['attributes'])
     print(device)
     db.session.add(device)
     db.session.commit()
     global devices
     device_dict = {
-        "id": device.id,
+        "id": int(device.number),
         "name": device.name,
+        "number": device.number,
         "sliderValue": 0,
         "deviceType": device.device_type,
         "universe": device.universe,
         "attributes": device.attributes
     }
-    devices.append(device_dict)
+    # Add device to devices list to the right position based on the id
+    for i in range(len(devices)):
+        if devices[i]['id'] > device_dict['id']:
+            devices.insert(i, device_dict)
+            break
+        
+    return {'message': 'success'}
+
+
+@app.route('/removelight', methods=['POST'])
+def remove_light():
+    data = request.get_json()
+    deviceId = int(data['id'])
+    device = Device.query.get(deviceId)
+    db.session.delete(device)
+    db.session.commit()
+    global devices
+    updated_devices = []
+    for device in devices:
+        if device['id'] != deviceId:
+            updated_devices.append(device)
+    devices = updated_devices
     return {'message': 'Form submitted successfully'}
 
 

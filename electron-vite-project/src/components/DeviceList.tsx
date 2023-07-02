@@ -39,12 +39,15 @@ const DeviceList: React.FC<DeviceListProps> = ({
             height: index === 0 || index === devices.length - 1 ? '50px' : '70px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: index === 0 || index === devices.length - 1 ? 'flex-start' : 'center',
+            justifyContent: 'center',
             marginBottom: index === 0 && devices.length > 1 ? '10px' : '0',
-            marginTop: index === devices.length - 1 && devices.length > 1 ? '10px' : '0',
+            marginTop: index === devices.length - 1 && devices.length > 1 ? '10px' : '0'
             }}>
               <div className="circle"></div>
-              <span className="name">{device.name}</span>
+              <div className="nameNumberBox">
+                <span className="number">{device.id}</span>
+                <span title={device.name} className="name">{device.name}</span>
+              </div>
               <Button
                 onClick={() => onDeviceButtonClick(device)}
                 className="addremoveButton"

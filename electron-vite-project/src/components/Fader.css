@@ -211,7 +211,6 @@
     bottom: calc(260px / 2 + 70px);
     left: 50%;
     transform: translateX(-50%);
-
     height: 1px;
     width: 50px;
     background: var(--midLine);
@@ -228,4 +227,8 @@
     line-height: 22px;
     letter-spacing: 0em;
     text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 80%;
+    white-space: nowrap;
 }

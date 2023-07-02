@@ -16,7 +16,7 @@ interface FaderProviderProps {
 const FaderContext = createContext<FaderContextProps | undefined>(undefined);
 
 export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
-  const sliderGroupId = 26;
+  const sliderGroupId = 693;
   const initialFaderValues = Array.from({ length: sliderGroupId }, () => new Array(10).fill(0));
   const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
   const [isDragging, setIsDragging] = useState(false);

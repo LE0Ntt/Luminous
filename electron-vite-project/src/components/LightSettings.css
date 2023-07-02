@@ -34,6 +34,7 @@
 .LightSettingsListContainer {
   flex-grow: 1;
   min-width: 270px;
+  width: 370px;
   flex-direction: column;
   display: flex;
   gap: 20px;
@@ -54,9 +55,8 @@
   color: var(--primaryDark);
 }
 
-.LightSettingsSelectedDevice .name{
+.LightSettingsSelectedDevice span{
   color: var(--primaryDark);
-  min-width: 110px;
 }
 
 .LightSettingsSelectedDevice {
@@ -93,6 +93,7 @@
   bottom: 0;
   padding: 20px 20px 20px 20px;
   overflow: auto;
+  gap: 20px;
 }
 
 .innerWindow hr {
@@ -104,15 +105,24 @@
   position: relative;
   max-height: 130px;
   width: stretch;
-  bottom: 0;
+  bottom: 10px;
 }
 
 .LightSettingsWindowMid {
-  flex-grow: 5;
+  height: 100%;
+  position: relative;
+  width: stretch;
+  gap: 20px;
+  overflow-y: scroll;
+  padding-right: 10px;
+}
+
+.LightSettingsWindowLower {
+  max-height: 60px;
+  min-height: 60px;
   position: relative;
   width: stretch;
   bottom: 0;
-  gap: 20px;
 }
 
 .LightSettingsDMXContainer {
@@ -160,14 +170,6 @@
 
 .LightSettingsDMXBoxRight select{
   width: stretch;
-}
-
-.LightSettingsWindowLower {
-  flex-grow: 1;
-  position: relative;
-  width: stretch;
-  bottom: 0;
-  flex-direction: row;
 }
 
 .LightSettingsTextBoxContainer{
@@ -222,12 +224,14 @@
 }
 
 .LightSettingsSubTitle {
-  top: 0px;
-  position: relative;
-  width: stretch;
-  object-fit: contain;
-  display: flex;
   font-size: 20px;
+}
+
+.LightSettingsSubTitle1 {
+  font-size: 20px;
+  height: 20px;
+  top: -8px;
+  position: relative;
 }
 
 .LightSettingsSaveButton {

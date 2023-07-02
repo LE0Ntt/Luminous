@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, ChangeEvent } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import './LightSettings.css';
 import Button from './Button';
 import '../index.css';
@@ -19,13 +19,13 @@ function LightSettings({ onClose }: SettingsProps) {
   const [selectedDevice, setSelectedDevice] = useState<DeviceConfig>();
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
   const [inputName, setInputName] = useState('');
-  const [inputDMXstart, setInputDMXstart] = useState('1'); // must be fetched
-  const [inputDMXrange, setInputDMXrange] = useState('4');
-  const [inputUniverse, setInputUniverse] = useState('U1');
-  const [inputType, setInputType] = useState('RGBDim');
-  const [inputNumber, setInputNumber] = useState('1'); // must be fetched
+  const [inputDMXstart, setInputDMXstart] = useState('');
+  const [inputDMXrange, setInputDMXrange] = useState('');
+  const [inputUniverse, setInputUniverse] = useState('');
+  const [inputType, setInputType] = useState('');
+  const [inputNumber, setInputNumber] = useState('');
   const [channelArray, setChannelArray] = useState<Array<{ id: number; dmx_channel: string; channel_type: string }>>([]);
-
+  
   const LampTypeChannels:{ [key: string]: string[] } = {
     'RGBDim':  ['main', 'r', 'g', 'b'],
     'BiColor': ['main', 'bi'],
@@ -50,31 +50,33 @@ function LightSettings({ onClose }: SettingsProps) {
   }
 
   useEffect(() => {
-    const fetchDevices = async () => {
-      try { 
-        const response = await fetch(url + '/fader');
-        const data = await response.json();
-        const parsedData = JSON.parse(data);
-        parsedData.shift(); // remove master
-        setDevices(parsedData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
     fetchDevices();
   }, []);
 
+  const fetchDevices = async () => {
+    try { 
+      const response = await fetch(url + '/fader');
+      const data = await response.json();
+      const parsedData = JSON.parse(data);
+      parsedData.shift(); // remove master
+      setDevices(parsedData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputName(event.target.value);
+    // Limit the name to 20 characters
+    const inputValue = event.target.value.length > 20 ? event.target.value.slice(0, 20) : event.target.value;
+    setInputName(inputValue);
   };
 
   const handleInputNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow numbers between 1 and 1024 for the device number
+    // Only allow numbers between 1 and 691 for the device number. Limit from MotorMix: 7*99-2
     const inputValue = event.target.value === '' ? 1 : parseInt(event.target.value);
     setInputNumber(inputValue.toString());
-    if (inputValue > 1024) {
-      setInputNumber("1024");
+    if (inputValue > 691) {
+      setInputNumber("691");
     } else if (inputValue < 1) {
       setInputNumber("1");
     }
@@ -144,6 +146,11 @@ function LightSettings({ onClose }: SettingsProps) {
     
     setInputName(t("ls_newDevice"));
     setSelectedDevice(newDevice);
+    setInputDMXstart('1');
+    setInputDMXrange('4');
+    setInputUniverse('U1');
+    setInputType('RGBDim');
+    setInputNumber('1');
   };
 
   // Set the initial channel array
@@ -175,44 +182,106 @@ function LightSettings({ onClose }: SettingsProps) {
 
     channel = inputValue.toString()
 
+    // Limit the name to 20 characters
+    type = type.length > 20 ? type.slice(0, 20) : type;
+    
     const updatedChannelArray = [...channelArray];
     updatedChannelArray[index] = { id: index, channel_type: type, dmx_channel: channel };
     setChannelArray(updatedChannelArray);
   }
 
   const handleUpdateDevice = () => {
-    console.log(channelArray)
-    fetch(url + '/addlight', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      
-      body: JSON.stringify({ 
-        name: inputName, 
-        number: inputNumber, 
-        device_type: inputType, 
-        universe: inputUniverse,
-        attributes: {
-          channel: channelArray.map(channel => ({
-            id: channel.id,
-            dmx_channel: channel.dmx_channel,
-            channel_type: channel.channel_type
-          }))
+    if(isNewDevice) {
+      fetch(url + '/addlight', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          name: inputName, 
+          number: inputNumber, 
+          device_type: inputType, 
+          universe: inputUniverse,
+          attributes: {
+            channel: channelArray.map(channel => ({
+              id: channel.id,
+              dmx_channel: channel.dmx_channel,
+              channel_type: channel.channel_type
+            }))
+          }
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.message === 'success') {
+          console.log('Device successfully updated');
+          setSelectedDevice(undefined);
+          fetchDevices();
+        } else if(data.message === 'number_in_use'){
+          console.log('Number already in use');
+          const textBox = document.getElementsByClassName('deviceNumber')[0] as HTMLInputElement;
+          textBox.focus();
+          textBox.style.outline = '2px solid red';
+          textBox.style.outlineOffset =  "-1px";
         }
       })
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    } else {
+      fetch(url + '/updatelight', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          id: selectedDevice?.id,
+          name: inputName, 
+          number: inputNumber, 
+          device_type: inputType, 
+          universe: inputUniverse,
+          attributes: {
+            channel: channelArray.map(channel => ({
+              id: channel.id,
+              dmx_channel: channel.dmx_channel,
+              channel_type: channel.channel_type
+            }))
+          }
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    } 
   };
 
   const handleRemoveDevice = () => {
-    alert('Remove device');
+    if(isNewDevice) {
+      setSelectedDevice(undefined);
+    } else {
+      // send remove device request
+      fetch(url + '/removelight', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: selectedDevice?.id
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setSelectedDevice(undefined);
+        fetchDevices();
+      }
+      )
+    }
   };
 
   return (
@@ -265,7 +334,7 @@ function LightSettings({ onClose }: SettingsProps) {
                   </div>
                   <div>
                     <label>{t("ls_deviceNumber")}</label> <br />
-                    <input className='LightSettingsTextBoxSmall' type="number" value={inputNumber} onChange={handleInputNumber} />
+                    <input className='LightSettingsTextBoxSmall deviceNumber' type="number" value={inputNumber} onChange={handleInputNumber} />
                   </div>
                   <div>
                     <label>{t("ls_deviceName")}</label> <br />
@@ -295,7 +364,7 @@ function LightSettings({ onClose }: SettingsProps) {
               <div className="LightSettingsWindowMid">
                 {isNewDevice ? (
                   <div>
-                    <div className='LightSettingsSubTitle'>
+                    <div className='LightSettingsSubTitle1'>
                       <span>{t("ls_dmxSettings")}</span>
                     </div>
                     <div className='LightSettingsDMXContainer'>
@@ -328,14 +397,7 @@ function LightSettings({ onClose }: SettingsProps) {
                   </div>
                 ) : (
                   <div>
-                    No new device
-                    <div style={{fontSize:"250px"}}>𓀐𓂸</div>
-
-                    <select className='LightSettingsTextBox' >
-                      <option value="1">r</option>
-                      <option value="2">g</option>
-                      <option value="3">b</option>
-                    </select>
+                    Existing device selected
                   </div>
                 )}
               </div>

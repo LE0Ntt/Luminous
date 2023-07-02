@@ -95,7 +95,7 @@ const Fader: React.FC<SliderProps> = ({
           max="100"
         />
         <span className="inputNumPercent">%</span>
-        <span className="faderName">{name}</span>
+        <span title={name} className="faderName">{name}</span>
       </div>
     </div>
   );

@@ -30,6 +30,10 @@ class Driver:
         self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
         
         self.current_page = 1
+        self.device_names = []
+        self.device_numbers = []
+        self.device_channels = []
+        
         self.light_mode = True # False: Scene mode
         self.callback = None
         self.last_value   = [0] * 8
@@ -39,22 +43,25 @@ class Driver:
         self.last_active          = None
         
         threading.Thread(target=self.input).start() 
+        self.setup()
         print("Driver Initiated")
         
         
         #-------------------- SETUP --------------------
         
-        def setup(self):
-            self.pushFader(0, 255) # set master to 255
-            for index in range(1, 8): # every other fader to 0
-                self.pushFader(index, 0)
-            self.clearDisplay()
-            self.displayASCII_perChannel(7,0,"MSTER")
-            self.displayASCII(34,0,"|")
-            self.displayASCII(34,1,"|")
-            self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
-            self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
-            self.displayPageNumber(str(self.current_page))
+        #def setup(self):
+         #   self.pushFader(0, 255) # set master to 255
+          #  for index in range(1, 8): # every other fader to 0
+           #     self.pushFader(index, 0)
+            #self.clearDisplay()
+            #self.displayASCII_perChannel(7,0,"MSTER")
+            #self.displayASCII(34,0,"|")
+            #self.displayASCII(34,1,"|")
+            #self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
+            #self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
+            #for index in range(1, 8):
+             #   self.displayFaderValues(index, 0)
+            #self.displayPageNumber(str(self.current_page))
         #-------------------- SETUP END --------------------
         
         
@@ -181,16 +188,31 @@ class Driver:
         return value_8bit
     '''
     def setup(self):
-            self.pushFader(0, 255) # set master to 255
-            for index in range(1, 8): # every other fader to 0
-                self.pushFader(index, 0)
-            self.clearDisplay()
-            self.displayASCII_perChannel(7,0,"MSTER")
-            self.displayASCII(34,0,"|")
-            self.displayASCII(34,1,"|")
-            self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
-            self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
-            self.displayPageNumber(str(self.current_page))
+        
+        self.clearDisplay()
+        self.pushFader(0, 255) # set master to 255
+        for index in range(1, 8): # every other fader to 0
+            self.pushFader(index, 0)
+        
+        if self.light_mode:
+            self.displayASCII_perChannel(7,0,"LIGHT")
+        else:
+            self.displayASCII_perChannel(7,0,"SCENE")
+        
+        print(self.device_numbers)
+        for index, number in enumerate(self.device_numbers[:8], 1):
+            self.displayASCII_perChannel(index, 0, number)
+            print(index, number)
+            print("Hallu")
+
+
+        
+        
+        #self.displayASCII(34,0,"|")
+        #self.displayASCII(34,1,"|")
+        #self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
+        #self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
+        self.displayPageNumber(str(self.current_page))
 
     
     def interpolate_thread(self, value, time_to_sleep, fader):

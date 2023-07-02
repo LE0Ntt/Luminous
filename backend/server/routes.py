@@ -37,6 +37,7 @@ def get_devices():
                 "id": device.id,
                 "name": device.name,
                 "deviceType": device.device_type,
+                "number": device.number,
                 "universe": device.universe,
                 "attributes": {
                     "channel": channels

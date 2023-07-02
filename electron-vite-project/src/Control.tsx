@@ -11,6 +11,7 @@ import ColorPicker from "./components/ColorPicker";
 import { useFaderContext } from "./components/FaderContext";
 import AddScene from './components/AddScene';
 import AdminPassword from './components/AdminPassword';
+import ControlHandler from "./components/ControlHandler";
 
 function Control() {
   const { t } = useContext(TranslationContext);
@@ -142,21 +143,23 @@ function Control() {
 
   // Color Picker
   const { emit } = useConnectionContext();
-  const [red, setRed] = useState(faderValues[0][4]);
-  const [green, setGreen] = useState(faderValues[0][5]);
-  const [blue, setBlue] = useState(faderValues[0][6]);
+  const [red, setRed] = useState(faderValues[0][3]);
+  const [green, setGreen] = useState(faderValues[0][4]);
+  const [blue, setBlue] = useState(faderValues[0][5]);
+  const [kelvin, setKelvin] = useState(0);
 
   const handleColorChange = (newRed: number, newGreen: number, newBlue: number) => {
     setRed(newRed);
     setGreen(newGreen);
     setBlue(newBlue);
-    setFaderValue(0, 4, newRed);
-    setFaderValue(0, 5, newGreen);
-    setFaderValue(0, 6, newBlue);
-    emit("fader_value", { deviceId: 0, value: newRed, channelId: 4 });
-    emit("fader_value", { deviceId: 0, value: newGreen, channelId: 5 });
-    emit("fader_value", { deviceId: 0, value: newBlue, channelId: 6 });
+    setFaderValue(0, 3, newRed);
+    setFaderValue(0, 4, newGreen);
+    setFaderValue(0, 5, newBlue);
   };
+
+  useEffect(() => {
+    ControlHandler(selectedDevices, faderValues[0][3], faderValues[0][4], faderValues[0][5], faderValues[0][2], faderValues[0][1], setFaderValue, emit);
+  }, [faderValues[0][1], faderValues[0][2], faderValues[0][3], faderValues[0][4], faderValues[0][5]]);
 
   return (
     <div>
@@ -192,32 +195,32 @@ function Control() {
           <div className="controlBiColor innerWindow">
             <span className="controlTitle">Bi-Color</span>
             <div className="controlKelvinPicker">
-               <ColorPicker 
+               {<ColorPicker 
                 pickerType="kelvin"
-                red={faderValues[1][1]}
-                green={faderValues[1][1]}
-                blue={faderValues[1][1]}
+                red={faderValues[0][3]}
+                green={faderValues[0][4]}
+                blue={faderValues[0][5]}
                 onColorChange={handleColorChange}
-              />
+              />}
             </div>
           </div>
           <div className="controlRGB innerWindow">
             <span className="controlTitle">RGB</span>
             <div className="controlRGBFader">
               <Fader
-                id={4}
+                id={3}
                 sliderGroupId={0}
                 name="R"
                 color="#CA2C2C"
               />
               <Fader 
-                id={5} 
+                id={4} 
                 sliderGroupId={0} 
                 name="G" 
                 color="#59E066"
               />
               <Fader 
-                id={6} 
+                id={5} 
                 sliderGroupId={0} 
                 name="B" 
                 className="noBorder" 

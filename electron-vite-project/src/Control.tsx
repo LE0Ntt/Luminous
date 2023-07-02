@@ -141,17 +141,21 @@ function Control() {
   };
 
   // Color Picker
-  const [red, setRed] = useState(faderValues[0][0]);
-  const [green, setGreen] = useState(faderValues[0][0]);
-  const [blue, setBlue] = useState(faderValues[0][0]);
+  const { emit } = useConnectionContext();
+  const [red, setRed] = useState(faderValues[0][4]);
+  const [green, setGreen] = useState(faderValues[0][5]);
+  const [blue, setBlue] = useState(faderValues[0][6]);
 
   const handleColorChange = (newRed: number, newGreen: number, newBlue: number) => {
     setRed(newRed);
     setGreen(newGreen);
     setBlue(newBlue);
-    setFaderValue(0, 3, newRed);
-    setFaderValue(0, 4, newGreen);
-    setFaderValue(0, 5, newBlue);
+    setFaderValue(0, 4, newRed);
+    setFaderValue(0, 5, newGreen);
+    setFaderValue(0, 6, newBlue);
+    emit("fader_value", { deviceId: 0, value: newRed, channelId: 4 });
+    emit("fader_value", { deviceId: 0, value: newGreen, channelId: 5 });
+    emit("fader_value", { deviceId: 0, value: newBlue, channelId: 6 });
   };
 
   return (
@@ -201,19 +205,19 @@ function Control() {
             <span className="controlTitle">RGB</span>
             <div className="controlRGBFader">
               <Fader
-                id={3}
+                id={4}
                 sliderGroupId={0}
                 name="R"
                 color="#CA2C2C"
               />
               <Fader 
-                id={4} 
+                id={5} 
                 sliderGroupId={0} 
                 name="G" 
                 color="#59E066"
               />
               <Fader 
-                id={5} 
+                id={6} 
                 sliderGroupId={0} 
                 name="B" 
                 className="noBorder" 

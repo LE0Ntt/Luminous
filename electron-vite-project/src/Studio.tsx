@@ -107,7 +107,7 @@ const Studio = () => {
           const channelId = parseInt(channelItem.id, 10);
           const sliderValue = channelItem.sliderValue !== undefined ? channelItem.sliderValue : 0;
           array[id][channelId] = sliderValue;
-          setFaderValue(id, channelId, sliderValue);
+          setFaderValue(id, channelId - 1, sliderValue);
         });
       }
     });

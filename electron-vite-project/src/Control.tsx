@@ -32,6 +32,9 @@ function Control() {
     id: number;
     deviceValue: number;
     name: string;
+    attributes: any;
+    device_type: string;
+    universe: string;
   };
 
   useEffect(() => {

@@ -47,6 +47,7 @@ hr {
     overflow: hidden;
     flex-wrap: wrap;
     text-overflow: ellipsis;
+    color: var(--primary);
 }
 
 .addremoveButton {

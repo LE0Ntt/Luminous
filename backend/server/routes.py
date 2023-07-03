@@ -36,7 +36,7 @@ def get_devices():
             device = {
                 "id": device.id,
                 "name": device.name,
-                "deviceType": device.device_type,
+                "device_type": device.device_type,
                 "number": device.number,
                 "universe": device.universe,
                 "attributes": {
@@ -100,14 +100,18 @@ def add_light():
     db.session.add(device)
     db.session.commit()
     global devices
+    
+    channels = device.attributes.get("channel", [])
+    for channel in channels:
+        channel["sliderValue"] = 0
+        
     device_dict = {
         "id": int(device.number),
         "name": device.name,
         "number": device.number,
-        "sliderValue": 0,
-        "deviceType": device.device_type,
+        "device_type": device.device_type,
         "universe": device.universe,
-        "attributes": device.attributes
+        "attributes": channels
     }
     # Add device to devices list to the right position based on the id
     for i in range(len(devices)):
@@ -115,6 +119,53 @@ def add_light():
             devices.insert(i, device_dict)
             break
         
+    return {'message': 'success'}
+
+
+@app.route('/updatelight', methods=['POST'])
+def update_light():
+    data = request.get_json()
+    deviceId = int(data['id'])
+    newNumber = int(data['number'])
+
+    # Check if device exists
+    device = Device.query.filter_by(number=deviceId).first()
+    if not device:
+        return {'message': 'device_not_found'}
+
+    # Update device in the database
+    device.id = newNumber
+    device.name = data['name']
+    device.number = newNumber
+    device.device_type = data['device_type']
+    device.universe = data['universe']
+    device.attributes = data['attributes']
+    db.session.commit()
+    
+    channels = device.attributes.get("channel", [])
+    for channel in channels:
+        channel["sliderValue"] = 0
+        
+    device_dict = {
+        "id": int(device.number),
+        "name": device.name,
+        "number": device.number,
+        "device_type": device.device_type,
+        "universe": device.universe,
+        "attributes": channels
+    }
+            
+    global devices        
+    for i in range(len(devices)):
+        if deviceId != newNumber:
+            if devices[i]['id'] == deviceId:
+                devices.pop(i)
+            if devices[i]['id'] > newNumber:
+                devices.insert(i, device_dict)
+                break
+        elif devices[i]['id'] == newNumber:
+            devices[i] = device_dict
+            break
     return {'message': 'success'}
 
 

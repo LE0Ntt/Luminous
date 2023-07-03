@@ -55,7 +55,8 @@
   color: var(--primaryDark);
 }
 
-.LightSettingsSelectedDevice span{
+.LightSettingsSelectedDevice span,
+.LightSettingsSelectedDevice .nameNumberBox{
   color: var(--primaryDark);
 }
 
@@ -253,4 +254,8 @@
   width: 100%;
   text-align: center;
   background: none;
+}
+
+.LightSettingsOverParent .AddSceneContainer {
+  position: fixed !important;
 }

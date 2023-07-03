@@ -6,6 +6,9 @@ type DeviceConfig = {
   id: number;
   deviceValue: number;
   name: string;
+  attributes: any;
+  device_type: string;
+  universe: string;
 };
 
 type DeviceListProps = {

@@ -1,10 +1,11 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useCallback } from 'react';
 import './LightSettings.css';
 import Button from './Button';
 import '../index.css';
 import { TranslationContext } from './TranslationContext'
 import DeviceList from './DeviceList';
 import { useConnectionContext } from './ConnectionContext';
+import AdminPassword from './AdminPassword';
 
 interface SettingsProps {
   onClose: () => void;
@@ -25,7 +26,9 @@ function LightSettings({ onClose }: SettingsProps) {
   const [inputType, setInputType] = useState('');
   const [inputNumber, setInputNumber] = useState('');
   const [channelArray, setChannelArray] = useState<Array<{ id: number; dmx_channel: string; channel_type: string }>>([]);
-  
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
+  const [istDelete, setIsDelete] = useState(false); // False = update/create device, true = delete device
+
   const LampTypeChannels:{ [key: string]: string[] } = {
     'RGBDim':  ['main', 'r', 'g', 'b'],
     'BiColor': ['main', 'bi'],
@@ -35,6 +38,9 @@ function LightSettings({ onClose }: SettingsProps) {
   };
 
   interface DeviceConfig {
+    attributes: any;
+    device_type: string;
+    universe: string;
     id: number;
     deviceValue: number;
     name: string;
@@ -127,6 +133,14 @@ function LightSettings({ onClose }: SettingsProps) {
     setSelectedDevice(device);
     setUnselectedDevices(unselectedDevices.filter(item => item.id !== device.id));
     setIsNewDevice(false);
+
+
+    setInputName(device.name);
+    setInputDMXstart(device.attributes.channel[0].dmx_channel);
+    setInputDMXrange(device.attributes.channel.length.toString());
+    setInputUniverse(device.universe);
+    setInputType(device.device_type);
+    setInputNumber(device.id.toString());
   };
 
   const handleDeselectDevice = (device: DeviceConfig) => {
@@ -139,9 +153,12 @@ function LightSettings({ onClose }: SettingsProps) {
     setIsNewDevice(true);
 
     const newDevice: DeviceConfig = {
-      id: devices.length + 1, // oder nur devices.length?
+      id: devices.length + 1,
       deviceValue: 0,
       name: t("ls_newDevice"),
+      attributes: undefined,
+      device_type: '',
+      universe: ''
     };
     
     setInputName(t("ls_newDevice"));
@@ -150,7 +167,7 @@ function LightSettings({ onClose }: SettingsProps) {
     setInputDMXrange('4');
     setInputUniverse('U1');
     setInputType('RGBDim');
-    setInputNumber('1');
+    setInputNumber(newDevice?.id.toString() || '1');
   };
 
   // Set the initial channel array
@@ -185,12 +202,18 @@ function LightSettings({ onClose }: SettingsProps) {
     // Limit the name to 20 characters
     type = type.length > 20 ? type.slice(0, 20) : type;
     
+
     const updatedChannelArray = [...channelArray];
     updatedChannelArray[index] = { id: index, channel_type: type, dmx_channel: channel };
     setChannelArray(updatedChannelArray);
   }
 
   const handleUpdateDevice = () => {
+    setIsDelete(false);
+    setShowAdminPassword(true);
+  };
+
+  const updateDevice = () => {
     if(isNewDevice) {
       fetch(url + '/addlight', {
         method: 'POST',
@@ -228,7 +251,7 @@ function LightSettings({ onClose }: SettingsProps) {
       .catch(error => {
         console.error('Error:', error);
       });
-    } else {
+    } else { // If device already exists update it
       fetch(url + '/updatelight', {
         method: 'POST',
         headers: {
@@ -251,8 +274,17 @@ function LightSettings({ onClose }: SettingsProps) {
       })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        
+        if(data.message === 'success') {
+          console.log('Device successfully updated');
+          setSelectedDevice(undefined);
+          fetchDevices();
+        } else if(data.message === 'device_not_found'){
+          console.log('Device not found');
+          const textBox = document.getElementsByClassName('deviceNumber')[0] as HTMLInputElement;
+          textBox.focus();
+          textBox.style.outline = '2px solid red';
+          textBox.style.outlineOffset =  "-1px";
+        }
       })
       .catch(error => {
         console.error('Error:', error);
@@ -264,159 +296,178 @@ function LightSettings({ onClose }: SettingsProps) {
     if(isNewDevice) {
       setSelectedDevice(undefined);
     } else {
-      // send remove device request
-      fetch(url + '/removelight', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id: selectedDevice?.id
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        setSelectedDevice(undefined);
-        fetchDevices();
-      }
-      )
+      setIsDelete(true);
+      setShowAdminPassword(true);
     }
   };
 
+  const removeDevice = () => {
+    // send remove device request
+    fetch(url + '/removelight', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: selectedDevice?.id
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      setSelectedDevice(undefined);
+      fetchDevices();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  };
+
+  // Callback function for the admin password component
+  const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
+    if(isConfirmed) {;
+      if(istDelete) {
+        removeDevice();
+      } else {
+        updateDevice();
+      }
+    }
+  }, [istDelete, inputName, inputNumber, inputType, inputUniverse, channelArray, selectedDevice]);
+
+  if(showAdminPassword)
+   return (
+    <div className='LightSettingsOverParent'>
+      <AdminPassword onConfirm={handleAdminPasswordConfirm} onClose={() => setShowAdminPassword(false)} />
+    </div>
+  )
+
   return (
-    <div>
-      <div className="LightSettingsOverlay" onClick={handleClose} /> Overlay to close the modal when clicked outside
-        <div className="LightSettingsContainer">
-          <Button
-            onClick={() => handleClose()}
-            className="buttonClose"
-          > 
+    <div className='LightSettingsOverParent'>
+      <div className="LightSettingsOverlay" onClick={handleClose} />
+      <div className="LightSettingsContainer">
+        <Button
+          onClick={() => handleClose()}
+          className="buttonClose"
+        > 
           <div className='removeIcon centerIcon'></div>
-          </Button>
-          <div className='LightSettingsTitle'>
-            <span>{t("ls_title")}</span>
-          </div>
-          <div className='LightSettingsListContainer'>
-            <div className='LightSettingsSelected innerWindow'>
-              {selectedDevice === undefined ? (
-                <>
-                  <Button
-                      onClick={() => handleCreateDevice()}
-                      className="LightSettingsSelectedButton"
-                    > {t("ls_addDevice")}
-                  </Button>
-                </>
-                ):(
-                  <div className='LightSettingsSelectedDevice'>
-                    <DeviceList devices={[selectedDevice]} isAddButton={false} onDeviceButtonClick={handleDeselectDevice} />
-                  </div>
-                )
-              }
-            </div>
-            <div className='LightSettingsList innerWindow'>
-              <DeviceList devices={devices} isAddButton={true} onDeviceButtonClick={handleSelectDevice} />
-            </div>  
-          </div>
-          {selectedDevice !== undefined && (
-            <div className='LightSettingsWindow innerWindow'>
-              <div className='LightSettingsWindowUpper'>
-                <div className='LightSettingsSubTitle'>
-                  <span>{t("ls_basicSettings")}</span>
-                </div>
-                <div className='LightSettingsTextBoxContainer'>
-                  <div>
-                    <label>Universe:</label><br />
-                    <select className='LightSettingsTextBoxSmall' value={inputUniverse} onChange={handleInputUniverse} >
-                      <option value="1">U1</option>
-                      <option value="2">U2</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label>{t("ls_deviceNumber")}</label> <br />
-                    <input className='LightSettingsTextBoxSmall deviceNumber' type="number" value={inputNumber} onChange={handleInputNumber} />
-                  </div>
-                  <div>
-                    <label>{t("ls_deviceName")}</label> <br />
-                    <input className='LightSettingsTextBox' type="text" value={inputName} onChange={handleInputName} />
-                  </div>
-                  <div>
-                    <label>{t("ls_deviceType")}</label><br />
-                    <select className='LightSettingsTextBox' value={inputType} onChange={handleInputType} >
-                      {Object.keys(LampTypeChannels).map((type) => (
-                        <option key={type} value={type}>
-                          {type}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label>DMX Start</label> <br />
-                    <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXstart} onChange={handleInputDMXstart} />
-                  </div>
-                  <div>
-                    <label>DMX Range</label> <br />
-                    <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXrange} onChange={handleInputDMXrange} />
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div className="LightSettingsWindowMid">
-                {isNewDevice ? (
-                  <div>
-                    <div className='LightSettingsSubTitle1'>
-                      <span>{t("ls_dmxSettings")}</span>
-                    </div>
-                    <div className='LightSettingsDMXContainer'>
-                      {Array.from({ length: parseInt(inputDMXrange) }, (_, index) => (
-                        <div className="LightSettingsDMXBox" key={index}>
-                          <div className="LightSettingsDMXBoxLeft">
-                            <input
-                              type="number"
-                              value={channelArray[index]?.dmx_channel || ''}
-                              onChange={(e) => handleChannelChange(index, channelArray[index]?.channel_type, e.target.value)}
-                              className='LightSettingsChannelInput'
-                            />
-                            
-                          </div>
-                          <div className="LightSettingsDMXBoxRight">
-                            {LampTypeChannels[inputType]?.[index] ? (
-                              <span>{LampTypeChannels[inputType][index]}</span>
-                            ) : (
-                              <input
-                                type="text"
-                                value={channelArray[index]?.channel_type || 'misc'}
-                                onChange={(e) => handleChannelChange(index, e.target.value, channelArray[index]?.dmx_channel)}
-                                className='LightSettingsChannelInput'
-                              />
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    Existing device selected
-                  </div>
-                )}
-              </div>
-              <div className='LightSettingsWindowLower'>
-                <Button 
-                  onClick={() => handleRemoveDevice()} 
-                  className="LightSettingsDeleteButton controlButton"
-                >
-                  {t("ls_deleteDevice")}
+        </Button>
+        <div className='LightSettingsTitle'>
+          <span>{t("ls_title")}</span>
+        </div>
+        <div className='LightSettingsListContainer'>
+          <div className='LightSettingsSelected innerWindow'>
+            {selectedDevice === undefined ? (
+              <>
+                <Button
+                    onClick={() => handleCreateDevice()}
+                    className="LightSettingsSelectedButton"
+                  > {t("ls_addDevice")}
                 </Button>
-                <Button 
-                  onClick={() => handleUpdateDevice()} 
-                  className="LightSettingsSaveButton controlButton"
-                >
-                  {t("ls_saveDevice")}
-                </Button>
+              </>
+              ):(
+                <div className='LightSettingsSelectedDevice'>
+                  <DeviceList devices={[selectedDevice]} isAddButton={false} onDeviceButtonClick={handleDeselectDevice} />
+                </div>
+              )
+            }
+          </div>
+          <div className='LightSettingsList innerWindow'>
+            <DeviceList devices={devices} isAddButton={true} onDeviceButtonClick={handleSelectDevice} />
+          </div>  
+        </div>
+        {selectedDevice !== undefined && (
+          <div className='LightSettingsWindow innerWindow'>
+            <div className='LightSettingsWindowUpper'>
+              <div className='LightSettingsSubTitle'>
+                <span>{t("ls_basicSettings")}</span>
+              </div>
+              <div className='LightSettingsTextBoxContainer'>
+                <div>
+                  <label>Universe:</label><br />
+                  <select className='LightSettingsTextBoxSmall' value={inputUniverse} onChange={handleInputUniverse} >
+                    <option value="U1">U1</option>
+                    <option value="U2">U2</option>
+                  </select>
+                </div>
+                <div>
+                  <label>{t("ls_deviceNumber")}</label> <br />
+                  <input className='LightSettingsTextBoxSmall deviceNumber' type="number" value={inputNumber} onChange={handleInputNumber} />
+                </div>
+                <div>
+                  <label>{t("ls_deviceName")}</label> <br />
+                  <input className='LightSettingsTextBox' type="text" value={inputName} onChange={handleInputName} />
+                </div>
+                <div>
+                  <label>{t("ls_deviceType")}</label><br />
+                  <select className='LightSettingsTextBox' value={inputType} onChange={handleInputType} >
+                    {Object.keys(LampTypeChannels).map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label>DMX Start</label> <br />
+                  <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXstart} onChange={handleInputDMXstart} />
+                </div>
+                <div>
+                  <label>DMX Range</label> <br />
+                  <input className='LightSettingsTextBoxSmall' type="number" value={inputDMXrange} onChange={handleInputDMXrange} />
+                </div>
               </div>
             </div>
-          )}
+            <hr />
+            <div className="LightSettingsWindowMid">
+              <div>
+                <div className='LightSettingsSubTitle1'>
+                  <span>{t("ls_dmxSettings")}</span>
+                </div>
+                <div className='LightSettingsDMXContainer'>
+                  {Array.from({ length: parseInt(inputDMXrange) }, (_, index) => (
+                    <div className="LightSettingsDMXBox" key={index}>
+                      <div className="LightSettingsDMXBoxLeft">
+                        <input
+                          type="number"
+                          value={channelArray[index]?.dmx_channel || ''}
+                          onChange={(e) => handleChannelChange(index, channelArray[index]?.channel_type, e.target.value)}
+                          className='LightSettingsChannelInput'
+                        />
+                        
+                      </div>
+                      <div className="LightSettingsDMXBoxRight">
+                        {LampTypeChannels[inputType]?.[index] ? (
+                          <span>{LampTypeChannels[inputType][index]}</span>
+                        ) : (
+                          <input
+                            type="text"
+                            value={channelArray[index]?.channel_type || 'misc'}
+                            onChange={(e) => handleChannelChange(index, e.target.value, channelArray[index]?.dmx_channel)}
+                            className='LightSettingsChannelInput'
+                          />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className='LightSettingsWindowLower'>
+              <Button 
+                onClick={() => handleRemoveDevice()} 
+                className="LightSettingsDeleteButton controlButton"
+              >
+                {t("ls_deleteDevice")}
+              </Button>
+              <Button 
+                onClick={() => handleUpdateDevice()} 
+                className="LightSettingsSaveButton controlButton"
+              >
+                {t("ls_saveDevice")}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -11,27 +11,18 @@ from server.models import Scene
 # ola.setup()
 connections = 0
 socketio = SocketIO(app, cors_allowed_origins="*")
-devices = routes.devices
-
-def motorMix_updateDevices(driver):
-    driver.device_names = [device["name"] for device in devices]
-    dn = [device.get("number") for device in devices]
-    driver.device_numbers = dn
-    driver.device_channels = [device["attributes"].get("channel", []) for device in devices]
-    print("Device Numbers: "+  str(dn))
 
 def register_socketio_events(socketio):
     # Mutator method to get updates from driver
     def callback(index, value):
         print("Eintrag", index, "wurde geändert:", value)
         socketio.emit('variable_update', {
-                      'id': index, 'value': value}, namespace='/socket')
-        routes.devices[index]["sliderValue"] = value
+                          'deviceId': index, 'value': value, 'channelId': 0}, namespace='/socket')
+        routes.devices[index]["attributes"]["channel"][0]["sliderValue"] = value
 
     try:
         driver = Driver()
         driver.set_callback(callback)
-        motorMix_updateDevices(driver)
     except OSError as e:
         print("Possibly the MIDI interface is not connected.", str(e))
         driver = None

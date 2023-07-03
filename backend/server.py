@@ -7,7 +7,7 @@ import signal
 import sys
 import motorMix_handler
 # from socket_events import setup
-# socketio = SocketIO(app, cors_allowed_origins = "*")
+socketio = SocketIO(app, cors_allowed_origins = "*")
 
 
 def signal_handler(sig, frame):

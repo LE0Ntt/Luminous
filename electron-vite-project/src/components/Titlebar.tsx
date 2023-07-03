@@ -76,40 +76,32 @@ function TitleBar() {
   };
 
   const openSettings = () => {
-    console.log('Settings opened!');
     setSettingsOpen(true);
   };
 
   const closeSettings = () => {
-    console.log('Settings closed!');
     setSettingsOpen(false);
   };
 
   const openLightSettings = () => {
-    console.log('Light-Settings opened!');
     setLightSettingsOpen(true);
   };
 
   const closeLightSettings = () => {
-    console.log('Light-Settings closed!');
     setLightSettingsOpen(false);
   };
 
   const openHelp = () => {
-    console.log('Help opened!');
     setHelpOpen(true);
   };
   const closeHelp = () => {
-    console.log('Help closed!');
     setHelpOpen(false);
   };
 
   const openAbout = () => { 
-    console.log('About opened!'); 
     setAboutOpen(true);
   };
   const closeAbout = () => {
-    console.log('About closed!');
     setAboutOpen(false);
   };
 

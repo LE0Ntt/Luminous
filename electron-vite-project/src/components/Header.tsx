@@ -58,6 +58,7 @@ function Header() {
               </div>
             </Link>
           </li>
+          {/* 
           <li>
             <Link to="/Show" className={location.pathname === '/Show' ? 'is-active' : ''}>
               <div className='headerButton'>
@@ -66,6 +67,7 @@ function Header() {
               </div>
             </Link>
           </li>
+          */}
         </ul>
       </div>
       <div className='divTheme'>

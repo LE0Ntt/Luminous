@@ -10,14 +10,18 @@ from server.models import Scene
 # ola = ola_handler()
 # ola.setup()
 connections = 0
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", logger=True,engineio_logger=True)
 
 def register_socketio_events(socketio):
     # Mutator method to get updates from driver
+    def faderSend(index, value, channelid):
+         socketio.emit('variable_update', {
+                        'deviceId': index, 'value': value, 'channelId': channelid}, namespace='/socket')
+        
+    
     def callback(index, value):
         print("Eintrag", index, "wurde geändert:", value)
-        socketio.emit('variable_update', {
-                          'deviceId': index, 'value': value, 'channelId': 0}, namespace='/socket')
+        faderSend(index, value, 0)
         routes.devices[index]["attributes"]["channel"][0]["sliderValue"] = value
 
     try:
@@ -110,8 +114,9 @@ def register_socketio_events(socketio):
         # Send update to all clients
         global connections
         if connections > 1:
-            socketio.emit('variable_update', {
-                          'deviceId': fader, 'value': faderValue, 'channelId': channel}, namespace='/socket')
+            faderSend(fader, faderValue, channelId)
+            """ socketio.emit('variable_update', {
+                          'deviceId': fader, 'value': faderValue, 'channelId': channel}, namespace='/socket') """
 
         # DMX-Data senden
         # ola.send_dmx(fader, faderValue)

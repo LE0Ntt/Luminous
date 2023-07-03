@@ -23,4 +23,4 @@ socket_events.register_socketio_events(socketio)
 
 if __name__ == '__main__':
     # setup()
-    socketio.run(app, host='192.168.0.251', port=5000)
+    socketio.run(app, host='127.0.0.1', port=5000)

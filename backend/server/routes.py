@@ -111,7 +111,9 @@ def add_light():
         "number": device.number,
         "device_type": device.device_type,
         "universe": device.universe,
-        "attributes": channels
+        "attributes": {
+            "channel": channels
+        }
     }
     # Add device to devices list to the right position based on the id
     for i in range(len(devices)):
@@ -152,9 +154,11 @@ def update_light():
         "number": device.number,
         "device_type": device.device_type,
         "universe": device.universe,
-        "attributes": channels
+        "attributes": {
+            "channel": channels
+        }
     }
-            
+    print(device_dict)
     global devices        
     for i in range(len(devices)):
         if deviceId != newNumber:

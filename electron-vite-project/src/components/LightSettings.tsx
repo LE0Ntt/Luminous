@@ -133,8 +133,6 @@ function LightSettings({ onClose }: SettingsProps) {
     setSelectedDevice(device);
     setUnselectedDevices(unselectedDevices.filter(item => item.id !== device.id));
     setIsNewDevice(false);
-
-
     setInputName(device.name);
     setInputDMXstart(device.attributes.channel[0].dmx_channel);
     setInputDMXrange(device.attributes.channel.length.toString());

@@ -28,6 +28,7 @@ def register_socketio_events(socketio):
     try:
         driver = Driver()
         driver.set_callback(callback)
+        driver.devices = routes.devices if driver is not None else None
     except OSError as e:
         print("Possibly the MIDI interface is not connected.", str(e))
         driver = None
@@ -113,6 +114,7 @@ def register_socketio_events(socketio):
             routes.devices[fader] = device
 
         driver.pushFader(fader, faderValue) if driver is not None else None
+        driver.devices = routes.devices if driver is not None else None
         # Send update to all clients
         if connections > 1:
             faderSend(fader, faderValue, channelId)

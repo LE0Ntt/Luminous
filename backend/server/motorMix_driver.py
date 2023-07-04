@@ -18,6 +18,8 @@ Todo:
 class Driver:
     def __init__(self):
         self.fader_values      = [0] * 8 # values of MotorMix faders
+        self.devices = []
+
         self.left_button_flag  = False
         self.right_button_flag = False
         self.fader_touch       = [False] * 8
@@ -30,9 +32,6 @@ class Driver:
         #self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
         
         self.current_page = 1
-        self.device_names = []
-        self.device_numbers = []
-        self.device_channels = []
         
         self.light_mode = True # False: Scene mode
         self.callback = None
@@ -45,27 +44,6 @@ class Driver:
         threading.Thread(target=self.input).start() 
         self.setup()
         print("Driver Initiated")
-        
-        
-        #-------------------- SETUP --------------------
-        
-        #def setup(self):
-         #   self.pushFader(0, 255) # set master to 255
-          #  for index in range(1, 8): # every other fader to 0
-           #     self.pushFader(index, 0)
-            #self.clearDisplay()
-            #self.displayASCII_perChannel(7,0,"MSTER")
-            #self.displayASCII(34,0,"|")
-            #self.displayASCII(34,1,"|")
-            #self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
-            #self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
-            #for index in range(1, 8):
-             #   self.displayFaderValues(index, 0)
-            #self.displayPageNumber(str(self.current_page))
-        #-------------------- SETUP END --------------------
-        
-        
-            
         #self.outport.send(mido.Message.from_hex('90 00 00')) # ping
 
     def input(self):
@@ -198,20 +176,7 @@ class Driver:
             self.displayASCII_perChannel(7,0,"LIGHT")
         else:
             self.displayASCII_perChannel(7,0,"SCENE")
-        
-        print(self.device_numbers)
-        for index, number in enumerate(self.device_numbers[:8], 1):
-            self.displayASCII_perChannel(index, 0, number)
-            print(index, number)
-            print("Hallu")
 
-
-        
-        
-        #self.displayASCII(34,0,"|")
-        #self.displayASCII(34,1,"|")
-        #self.displayASCII(3,1, "%"), self.displayASCII(8,1, "%"), self.displayASCII(13,1, "%"), self.displayASCII(18,1, "%")
-        #self.displayASCII(23,1, "%"), self.displayASCII(28,1, "%"), self.displayASCII(33,1, "%"), self.displayASCII(38,1, "%")
         self.displayPageNumber(str(self.current_page))
 
     
@@ -235,18 +200,7 @@ class Driver:
         value_14bit = value_8bit << 6
         return value_14bit
 
-    def pushFader(self, faderIndex, value):
-        # Fader mapping
-        start_index = (self.current_page - 1) * 7
-        end_index = self.current_page * 7
-        
-        if faderIndex == 0:
-            faderIndex = 7
-        elif start_index < faderIndex <= end_index:
-            faderIndex = faderIndex - start_index - 1
-        else: 
-            return    
-        
+    def pushFader(self, faderIndex, value):   
         self.fader_values[faderIndex] = value
         msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
         lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
@@ -389,9 +343,17 @@ class Driver:
         
           
         self.displayPageNumber(str(self.current_page))
-        print(self.current_page)         
-        #self.devicePull(self.current_page)  
+        self.deviceMapping()
+        print("Seite: " + str(self.current_page))         
+        #self.devicePull(self.current_page)
 
-    def devicePull(self, current_page):
-        device_numbers = [device['number'] for device in self.devices]
-        device_names = [device['name'] for device in devices]
+    def deviceMapping(self):
+        for channel in range(7):
+            self.displayASCII_perChannel(channel, 0, "     ")
+            fader_number = (self.current_page - 1) * 7 + channel + 1
+            if fader_number < len(self.devices):
+                deviceNumber = self.devices[fader_number]["number"]
+                self.displayASCII_perChannel(channel, 0, str(deviceNumber))
+                self.pushFader(channel, self.devices[fader_number]["attributes"]["channel"][0]["sliderValue"])
+            else:
+                self.pushFader(0, 0)

@@ -10,6 +10,7 @@ from server.models import Device, Admin, Scene, Settings
 
 
 # load devices from database
+@app.route('/devices')
 def get_devices():
     device_list = []
 

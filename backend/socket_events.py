@@ -129,6 +129,8 @@ def register_socketio_events(socketio):
                     dmx_channel = int(channel['dmx_channel'])
                     universe = int(device['universe'][1:])
                     # ola.send_dmx(dmx_channel, faderValue, universe=universe)
+                    print("dmx", dmx_channel, "value", faderValue,
+                          "universe", universe)
                     break
 
     @socketio.on('connect', namespace='/socket')

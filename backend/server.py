@@ -7,11 +7,11 @@ import signal
 import sys
 import motorMix_handler
 # from socket_events import setup
-#import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-#--------------LED-----------------#
+# --------------LED-----------------#
 '''
 LED_PIN = 24
 GPIO.setmode(GPIO.BCM)
@@ -29,9 +29,15 @@ def signal_handler(sig, frame):
     GPIO.cleanup()
     sys.exit(0)
     '''
-#-------------LED-END----------------#
+# -------------LED-END----------------#
 
-#motorMix_handler.motorMix_updateDevices()
+# motorMix_handler.motorMix_updateDevices()
+
+
+def signal_handler(sig, frame):
+    print('Server stopped.')
+    sys.exit(0)
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -39,5 +45,5 @@ socket_events.register_socketio_events(socketio)
 
 if __name__ == '__main__':
     # LED einschalten
-    #turn_on_led()
-    socketio.run(app, host='192.168.0.251', port=5000)
+    # turn_on_led()
+    socketio.run(app, host='192.168.178.14', port=5000)

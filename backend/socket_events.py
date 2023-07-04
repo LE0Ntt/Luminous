@@ -121,8 +121,15 @@ def register_socketio_events(socketio):
         faderSend(fader, faderValue, channelId)
 
         # DMX-Data senden
-        # ola.send_dmx(fader, faderValue, universe=0) # 0 ist placeholder für universe
-        print(device)
+        if fader < len(routes.devices):
+            device = routes.devices[fader]
+            channels = device["attributes"]["channel"]
+            for channel in channels:
+                if int(channel["id"]) == channelId:
+                    dmx_channel = int(channel['dmx_channel'])
+                    universe = int(device['universe'][1:])
+                    # ola.send_dmx(dmx_channel, faderValue, universe=universe)
+                    break
 
     @socketio.on('connect', namespace='/socket')
     async def connect():

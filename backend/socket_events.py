@@ -3,7 +3,6 @@ from flask_socketio import SocketIO
 from server import app, routes, db
 from server.motorMix_driver import Driver
 from server.models import Scene
-import asyncio
 
 # OLA imports
 # from ola_handler import ola_handler
@@ -11,7 +10,7 @@ import asyncio
 # ola = ola_handler()
 # ola.setup()
 connections = 0
-socketio = SocketIO(app, cors_allowed_origins="*", logger=True, engineio_logger=True, async_mode='threading')
+socketio = SocketIO(app, cors_allowed_origins="*", logger=True, engineio_logger=True)
 
 def register_socketio_events(socketio):
     # Mutator method to get updates from driver
@@ -28,7 +27,7 @@ def register_socketio_events(socketio):
     try:
         driver = Driver()
         driver.set_callback(callback)
-        driver.devices = routes.devices if driver is not None else None
+        driver.devices = routes.devices
     except OSError as e:
         print("Possibly the MIDI interface is not connected.", str(e))
         driver = None
@@ -112,9 +111,9 @@ def register_socketio_events(socketio):
 
             device["attributes"]["channel"] = channels
             routes.devices[fader] = device
-
-        driver.pushFader(fader, faderValue) if driver is not None else None
-        driver.devices = routes.devices if driver is not None else None
+        if driver is not None:
+            driver.pushFader(fader, faderValue)
+            driver.devices = routes.devices
         # Send update to all clients
         if connections > 1:
             faderSend(fader, faderValue, channelId)
@@ -123,13 +122,13 @@ def register_socketio_events(socketio):
         # ola.send_dmx(fader, faderValue)
 
     @socketio.on('connect', namespace='/socket')
-    async def connect():
+    def connect():
         global connections
         connections += 1
         print('Client connected', connections)
 
     @socketio.on('disconnect', namespace='/socket')
-    async def disconnect():
+    def disconnect():
         global connections
         connections = max(connections - 1, 0)
         print('Client disconnected')

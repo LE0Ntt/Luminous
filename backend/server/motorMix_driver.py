@@ -186,6 +186,7 @@ class Driver:
 
         self.displayPageNumber(str(self.current_page))
 
+
     
     def interpolate_thread(self, value, time_to_sleep, fader):
         while time.monotonic() < self.current_time[fader] + time_to_sleep:
@@ -208,20 +209,31 @@ class Driver:
         return value_14bit
 
     def pushFader(self, number, value):
-        #print(self.deviceRouting)   
-        for index in range(7):
-            if self.deviceRouting[self.current_page-1][index] == number:
-                self.fader_values[index] = value
-                msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
-                lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
-                index = int(str(index), 16)
-                msg1 = mido.Message('control_change', channel=0, control=int(      str(index), 16), value=msb, time=0)
-                msg2 = mido.Message('control_change', channel=0, control=int("2" + str(index), 16), value=lsb, time=0)
-                self.outport.send(msg1)
-                self.outport.send(msg2)
-                self.displayFaderValues(index, value)
-            else:
-                print("Device: " + str(number) + " not found on page: " + str(self.current_page))
+        if number == 0:
+            self.fader_values[7] = value
+            msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
+            lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
+            index = int(str(7), 16)
+            msg1 = mido.Message('control_change', channel=0, control=int(      str(index), 16), value=msb, time=0)
+            msg2 = mido.Message('control_change', channel=0, control=int("2" + str(index), 16), value=lsb, time=0)
+            self.outport.send(msg1)
+            self.outport.send(msg2)
+            self.displayFaderValues(index, value)
+            return
+        else:   
+            for index in range(7):
+                if self.deviceRouting[self.current_page-1][index] == number:
+                    self.fader_values[index] = value
+                    msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
+                    lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
+                    index = int(str(index), 16)
+                    msg1 = mido.Message('control_change', channel=0, control=int(      str(index), 16), value=msb, time=0)
+                    msg2 = mido.Message('control_change', channel=0, control=int("2" + str(index), 16), value=lsb, time=0)
+                    self.outport.send(msg1)
+                    self.outport.send(msg2)
+                    self.displayFaderValues(index, value)
+                else:
+                    print("Device: " + str(number) + " not found on page: " + str(self.current_page))
 
     #-------------------- LCD Display --------------------
     def displayASCII_perChannel(self, channel, row, text):
@@ -331,12 +343,13 @@ class Driver:
     
     def fader_mapping(self, fader, value):
         if fader == 7:
-            faderNew = 0
+            number = 0
         else:
-            faderNew = (self.current_page - 1) * 7 + fader + 1
-            
-        self.callback(faderNew, self.fader_values[fader])
-        self.displayFaderValues(fader,value)
+            number = self.deviceRouting[self.current_page-1][fader]
+
+        if number != None:
+            self.callback(number, value)
+            self.displayFaderValues(fader,value)
         
         
    #---------------- Channel Pull ----------------
@@ -352,16 +365,24 @@ class Driver:
             self.current_page = 1
         if self.current_page > self.num_pages:
             self.current_page = self.num_pages
-        
-          
+         
         self.displayPageNumber(str(self.current_page))
         self.update_deviceDisplay()
-        print("Seite: " + str(self.current_page))         
+        print("Seite: " + str(self.current_page))
+        #self.getDeviceValues()
 
     def update_deviceDisplay(self):
         for channel in range(7):
             self.displayASCII_perChannel(channel, 0, str(self.deviceRouting[self.current_page - 1][channel]))
         print(self.deviceRouting[self.current_page - 1])
+
+    def getDeviceValues(self):
+        if self.devices != None:
+            for i, device in enumerate(self.deviceRouting[self.current_page - 1]):
+                value = self.devices[i]["attributes"]["channel"][0]["sliderValue"]
+                number = self.devices[i]["id"]
+                self.pushFader(number, value)
+
 
     def deviceMapping(self):
         self.num_pages=(len(self.devices)-1) // 7 + 2
@@ -372,5 +393,6 @@ class Driver:
                     deviceNumber = self.devices[fader_number]["number"]
                     self.deviceRouting[page-1][channel] = deviceNumber
                     self.update_deviceDisplay()
+                    self.getDeviceValues()
                 else:
                     return

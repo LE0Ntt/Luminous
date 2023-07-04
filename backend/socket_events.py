@@ -23,7 +23,12 @@ def register_socketio_events(socketio):
     def callback(index, value):
         print("Eintrag", index, "wurde geändert:", value)
         faderSend(index, value, 0)
-        routes.devices[index]["attributes"]["channel"][0]["sliderValue"] = value
+
+        for i, device in enumerate(routes.devices):
+            if device["id"] == index:
+                index = i
+                routes.devices[index]["attributes"]["channel"][0]["sliderValue"] = value
+
 
     try:
         driver = Driver()
@@ -99,6 +104,7 @@ def register_socketio_events(socketio):
     # Fader value update
     @socketio.on('fader_value', namespace='/socket')
     def handle_fader_value(data):
+
         faderValue = int(data['value'])
         fader = int(data['deviceId'])
         channelId = int(data['channelId'])
@@ -148,8 +154,6 @@ def register_socketio_events(socketio):
                           "universe", universe)
                 except KeyError:
                     print('No dmx_channel key for non-master channel')
-
-        print(device)
 
     @socketio.on('connect', namespace='/socket')
     def connect():

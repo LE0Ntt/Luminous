@@ -25,7 +25,11 @@ class ola_handler:
               channel, "Value changed: ", faderValue)
         length = len(self.dmx_data)
         print("len", length)
-        self.dmx_data[channel] = faderValue
+        if channel == 0:  # Assuming Master fader has channel 0
+            for i in range(len(self.dmx_data)):
+                self.dmx_data[i] *= faderValue
+        else:
+            self.dmx_data[channel] = faderValue
 
         self.wrapper = ClientWrapper()
         client = self.wrapper.Client()

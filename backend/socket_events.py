@@ -10,7 +10,8 @@ from server.models import Scene
 # ola = ola_handler()
 # ola.setup()
 connections = 0
-socketio = SocketIO(app, cors_allowed_origins="*", logger=True, engineio_logger=True)
+socketio = SocketIO(app, cors_allowed_origins="*",
+                    logger=True, engineio_logger=True)
 
 
 def register_socketio_events(socketio):
@@ -111,6 +112,7 @@ def register_socketio_events(socketio):
 
             device["attributes"]["channel"] = channels
             routes.devices[fader] = device
+
         if driver is not None:
             driver.pushFader(fader, faderValue)
             driver.devices = routes.devices
@@ -119,17 +121,32 @@ def register_socketio_events(socketio):
             faderSend(fader, faderValue, channelId)
 
         # DMX-Data senden
+        """ 
         if fader < len(routes.devices):
             device = routes.devices[fader]
             channels = device["attributes"]["channel"]
             for channel in channels:
                 if int(channel["id"]) == channelId:
-                    dmx_channel = int(channel['dmx_channel'])
-                    universe = int(device['universe'][1:])
-                    # ola.send_dmx(dmx_channel, faderValue, universe=universe)
-                    print("dmx", dmx_channel, "value", faderValue,
-                          "universe", universe)
+                    channel["sliderValue"] = faderValue
                     break
+
+            device["attributes"]["channel"] = channels
+            routes.devices[fader] = device
+
+            if channelId == 0:  # Assuming Master fader has channelId 0
+                for value in ola.dmx_data:
+                    value *= faderValue
+            else:
+                try:
+                    dmx_channel = int(channel['dmx_channel'])
+                    # Assuming universe is always in the format U<num>
+                    universe = int(device['universe'][1:])
+                    ola.send_dmx(universe, dmx_channel, faderValue)
+                except KeyError:
+                    print('No dmx_channel key')
+
+            print(device) 
+            """
 
     @socketio.on('connect', namespace='/socket')
     def connect():

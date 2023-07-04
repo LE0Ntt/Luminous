@@ -140,7 +140,6 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
   };
 
   const saveScene = (sceneId: number) => { 
-    //emit("scene_save", { id: sceneId });
     sessionStorage.setItem('saveID', JSON.stringify(sceneId));
     if(setSaveSceneAdmin) {
       setSaveSceneAdmin(true);

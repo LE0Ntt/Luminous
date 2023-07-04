@@ -40,11 +40,21 @@ def register_socketio_events(socketio):
         scene = int(data['id'])
         if scene < len(routes.scenes):  # Make sure scene exists
             routes.scenes[scene]["status"] = status
+            # Send every channel to the device to the client
+            for device in routes.scenes[scene]["channel"]:
+                for channel in device["attributes"]["channel"]:
+                    if channel['id'] == 0: # !!! muss raus um alle channel zu schicken !!!
+                        if status:
+                            faderSend(device["id"], channel["sliderValue"], channel["id"])
+                        else:
+                            device1 = next((device1 for device1 in routes.devices if device1['id'] == device['id']), None)
+                            faderSend(device["id"], device1["attributes"]["channel"][channel['id']]["sliderValue"] if device else 0, channel["id"])       
+
         # Send update to all clients
         global connections
         if connections > 0:
             socketio.emit('scene_update', {
-                          'id': scene, 'status': status}, namespace='/socket')
+                'id': scene, 'status': status}, namespace='/socket')
 
     # Delete a scene and tell every client to update
     @socketio.on('scene_delete', namespace='/socket')
@@ -69,8 +79,14 @@ def register_socketio_events(socketio):
     def add_scene(data):
         scene = data['scene']
         scene['id'] = len(routes.scenes)
+        # Filter devices with sliderValue 0
+        filtered_devices = [
+            device for device in routes.devices[1:]  # Skip master fader
+            if device["attributes"]["channel"][0]["sliderValue"] > 0
+        ]
+        scene['channel'] = filtered_devices
         routes.scenes.append(scene)
-        if not scene['saved']:
+        if not scene['saved']: # If scene is not saved, don't add to database
             socketio.emit('scene_reload', namespace='/socket')
         else:
             save_scene(scene)
@@ -88,9 +104,17 @@ def register_socketio_events(socketio):
                     entry['id'] += 1
             sceneToSave['id'] = lastSavedIndex
             routes.scenes.insert(lastSavedIndex, sceneToSave)
+
+            if data['channel'] is not None:
+                # Filter devices with sliderValue 0
+                filtered_devices = [
+                    device for device in routes.devices[1:]  # Skip master fader
+                    if device["attributes"]["channel"][0]["sliderValue"] > 0
+                ]
+            else:
+                filtered_devices = data['channel']
             # Add scene to the database
-            new_scene = Scene(name='Scene1', number=1, color='red', channel=[
-                              1, 2, 3])  # beispiel test
+            new_scene = Scene(name=data['name'], number=scene, color='default', channel=filtered_devices)
             db.session.add(new_scene)
             db.session.commit()
         socketio.emit('scene_reload', namespace='/socket')

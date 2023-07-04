@@ -29,6 +29,14 @@ class Driver:
 
         self.left_button_flag  = False
         self.right_button_flag = False
+        self.center_button_flag_0 = False
+        self.center_button_flag_1 = False
+        self.center_button_flag_2 = False
+        self.center_button_flag_3 = False
+        self.center_button_flag_4 = False
+        self.center_button_flag_5 = False
+        self.center_button_flag_6 = False
+        self.center_button_flag_7 = False
         self.fader_touch       = [False] * 8
         self.fader_touch_flag  = False
         
@@ -57,7 +65,7 @@ class Driver:
         for message in self.inport:
             hex_message = ''.join(format(byte, '02X') for byte in message.bytes())
 
-           # print(hex_message)
+            print(hex_message)
             
             if hex_message.startswith('B04'): # Rotory message but potentially startup -> push faders, pages, display, button lights ??? Maybe not best practice
                 for faderIndex, value in enumerate(self.fader_values):
@@ -150,7 +158,21 @@ class Driver:
                     self.button_LED("RIGHT", 2, 1)
 
                 self.right_button_flag = False
-                
+
+
+            elif hex_message == 'B00F00':
+                self.center_button_flag_0 = True
+            elif self.center_button_flag_0:
+                if hex_message == "B02F41":
+                    print("SELECT 0 pressed")
+                elif hex_message == "B02F42":
+                    print("MUTE 0 pressed")
+                elif hex_message == "B02F43":
+                    print("SOLO 0 pressed")
+                elif hex_message == "B02F44":
+                    print("REC 0 pressed")
+                self
+
             elif hex_message == 'B04841':
                 self.rotary_pageUpdate(True)
                 
@@ -159,19 +181,9 @@ class Driver:
 
             
             else:
-                print("Unknown: " + hex_message)    
-            
-    '''
-    def parse_fader_position(self, hex1, hex2):
-        msb = int(hex1[-2:], 16)
-        #lsb = int(hex2[-2:], 16) # kann ignoriert werden für 7 bit
-        position = (msb << 7) #| lsb
-        return position
-
-    def map_14bit_to_8bit(self, value_14bit):
-        value_8bit = (value_14bit >> 6) & 0xFF
-        return value_8bit
-    '''
+                #print("Unknown: " + hex_message)
+                continue
+    
     def setup(self):
         
         self.clearDisplay()

@@ -5,6 +5,7 @@ import '../index.css';
 import './SettingsOla.css';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
+import { stringify } from 'postcss';
 
 interface SettingsOlaProps {
   onConfirm?: (isConfirmed: boolean) => void;
@@ -17,7 +18,12 @@ function SettingsOla({ onConfirm, onClose, isDelete }: SettingsOlaProps) {
   const { t } = useContext(TranslationContext);
   const [isOpen, setIsOpen] = useState(true);
   const [password, setPassword] = useState('');
+  const oldUrl = url.toString();
+  const newUrl = oldUrl.slice(0, -5) + ":9090";
   
+
+
+
   const handleClose = () => {
     setIsOpen(false);
     onClose();
@@ -26,46 +32,43 @@ function SettingsOla({ onConfirm, onClose, isDelete }: SettingsOlaProps) {
   if (!isOpen) {
     return null; // Render nothing if the modal is closed
   }
-  
-  const handlePasswordChange = (event: { target: { value: any; }; }) => {
+
+  const handlePasswordChange = (event: { target: { value: any } }) => {
     setPassword(event.target.value);
   };
-  
+
   const handleConfirm = () => {
     fetch(url + '/checkpassword', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({password: password})
+      body: JSON.stringify({ password: password })
     })
-    .then(response => response.json())
-    .then(data => {
-      if(data.match === 'true') {
-        console.log('Password correct');
-        if(onConfirm !== undefined) {
-          onConfirm(true);
-        } else {
-          if(isDelete) {
-            document.body.dispatchEvent(new Event('deleteScene'))
-            console.log('Delete scene');
+      .then(response => response.json())
+      .then(data => {
+        if (data.match === 'true') {
+          console.log('Password correct');
+          if (onConfirm !== undefined) {
+            onConfirm(true);
           } else {
-            document.body.dispatchEvent(new Event('saveScene'))
+            console.log(newUrl)
+            const link = newUrl;
+            window.open(newUrl, "_blank", "width=800,height=600");
           }
+          handleClose();
+        } else {
+          console.log('Password wrong');
+          // If the password is wrong, the text box will be highlighted in red
+          const textBox = document.getElementsByClassName('SettingsOlaTextBox')[0] as HTMLInputElement;
+          textBox.focus();
+          textBox.style.outline = '2px solid red';
+          textBox.style.outlineOffset = '-1px';
         }
-        handleClose();
-      } else {
-        console.log('Password wrong');
-        // If the password is wrong, the text box will be highlighted in red
-        const textBox = document.getElementsByClassName('SettingsOlaTextBox')[0] as HTMLInputElement;
-        textBox.focus();
-        textBox.style.outline = '2px solid red';
-        textBox.style.outlineOffset =  "-1px";
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   };
 
   return (
@@ -77,11 +80,11 @@ function SettingsOla({ onConfirm, onClose, isDelete }: SettingsOlaProps) {
         </Button>
         <div className='SettingsOlaContent'>
           <span className='SettingsOlaTitle'>{t("ap_title")}</span>
-          <input 
-            className='LightSettingsTextBox SettingsOlaTextBox' 
-            type="password" 
-            placeholder={t("ap_password")} 
-            value={password} 
+          <input
+            className='LightSettingsTextBox SettingsOlaTextBox'
+            type="password"
+            placeholder={t("ap_password")}
+            value={password}
             onChange={handlePasswordChange}
             autoFocus // Autofokus aktivieren
           />

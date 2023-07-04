@@ -3,16 +3,15 @@ from flask_socketio import SocketIO
 from server import app, routes, db
 from server.motorMix_driver import Driver
 from server.models import Scene
-import asyncio
 
 # OLA imports
-# from ola_handler import ola_handler
+#from ola_handler import ola_handler
 
-# ola = ola_handler()
-# ola.setup()
+#ola = ola_handler()
+#ola.setup()
 connections = 0
-socketio = SocketIO(app, cors_allowed_origins="*", logger=False,
-                    engineio_logger=False)
+socketio = SocketIO(app, cors_allowed_origins="*",
+                    logger=True, engineio_logger=True)
 
 
 def register_socketio_events(socketio):
@@ -115,15 +114,42 @@ def register_socketio_events(socketio):
             device["attributes"]["channel"] = channels
             routes.devices[fader] = device
 
-        driver.pushFader(fader, faderValue) if driver is not None else None
-        # driver.devices = routes.devices if driver is not None else None   # weil buggy wenn kein MotorMix angeschlossen ist
+        if driver is not None:
+            driver.pushFader(fader, faderValue)
+            driver.devices = routes.devices
         # Send update to all clients
-        # if connections > 1: # ggf. raus, weil buggy durch neue implementation
-        faderSend(fader, faderValue, channelId)
+        if connections > 1:
+            faderSend(fader, faderValue, channelId)
 
         # DMX-Data senden
-        # ola.send_dmx(fader, faderValue, universe=0) # 0 ist placeholder für universe
-        #print(device)
+        if fader < len(routes.devices):
+            device = routes.devices[fader]
+            channels = device["attributes"]["channel"]
+            for channel in channels:
+                if int(channel["id"]) == channelId:
+                    channel["sliderValue"] = faderValue
+                    break
+
+            device["attributes"]["channel"] = channels
+            routes.devices[fader] = device
+
+            if fader == 0 and channelId == 0:  # Assuming Master fader has channelId 0
+                # auskommentiert weil ola
+                print("Masterfader")
+                #ola.master_fader(faderValue)
+            else:
+                try:
+                    dmx_channel = int(channel['dmx_channel'])
+                    # Assuming universe is always in the format U<num>
+                    universe = int(device['universe'][1:])
+                    # auskommentiert weil ola
+                    #ola.send_dmx(universe, dmx_channel -1, faderValue)
+                    print("dmx", dmx_channel, "value", faderValue,
+                          "universe", universe)
+                except KeyError:
+                    print('No dmx_channel key for non-master channel')
+
+        print(device)
 
     @socketio.on('connect', namespace='/socket')
     def connect():

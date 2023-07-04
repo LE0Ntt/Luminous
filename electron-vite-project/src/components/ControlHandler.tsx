@@ -14,7 +14,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
           }
           console.log('setFaderValue', device.id, channel.id, value)
           setFaderValue(device.id, channel.id, value);
-          emit('setFaderValue', { deviceId: device.id, channelId: channel.id, value });
+          emit("fader_value", { deviceId: device.id, value, channelId: channel.id});
           break;
         case "BiColor":
           switch(channel.id.toString()) {
@@ -23,7 +23,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
           }
           console.log('setFaderValue', device.id, channel.id, value)
           setFaderValue(device.id, channel.id, value);
-          emit('setFaderValue', { deviceId: device.id, channelId: channel.id, value });
+          emit("fader_value", { deviceId: device.id, value, channelId: channel.id});
           break;
         case "Spot":
         case "Fill":
@@ -33,7 +33,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
           }
           console.log('setFaderValue', device.id, channel.id, value)
           setFaderValue(device.id, channel.id, value);
-          emit('setFaderValue', { deviceId: device.id, channelId: channel.id, value });
+          emit("fader_value", { deviceId: device.id, value, channelId: channel.id});
           break;
         default:
           console.log("Unbekannter Gerätetyp: ", device.deviceType);

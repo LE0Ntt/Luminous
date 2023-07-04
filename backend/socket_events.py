@@ -11,8 +11,8 @@ import asyncio
 # ola = ola_handler()
 # ola.setup()
 connections = 0
-socketio = SocketIO(app, cors_allowed_origins="*", logger=True,
-                    engineio_logger=True, async_mode='threading')
+socketio = SocketIO(app, cors_allowed_origins="*", logger=False,
+                    engineio_logger=False)
 
 
 def register_socketio_events(socketio):
@@ -29,7 +29,8 @@ def register_socketio_events(socketio):
     try:
         driver = Driver()
         driver.set_callback(callback)
-        driver.devices = routes.devices if driver is not None else None
+        driver.devices = routes.devices
+        driver.deviceMapping()
     except OSError as e:
         print("Possibly the MIDI interface is not connected.", str(e))
         driver = None
@@ -122,16 +123,16 @@ def register_socketio_events(socketio):
 
         # DMX-Data senden
         # ola.send_dmx(fader, faderValue, universe=0) # 0 ist placeholder für universe
-        print(device)
+        #print(device)
 
     @socketio.on('connect', namespace='/socket')
-    async def connect():
+    def connect():
         global connections
         connections += 1
         print('Client connected', connections)
 
     @socketio.on('disconnect', namespace='/socket')
-    async def disconnect():
+    def disconnect():
         global connections
         connections = max(connections - 1, 0)
         print('Client disconnected')

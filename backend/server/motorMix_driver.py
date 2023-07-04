@@ -20,6 +20,13 @@ class Driver:
         self.fader_values      = [0] * 8 # values of MotorMix faders
         self.devices = []
 
+        #routing array for devices
+        self.num_pages = 99
+        self.num_devices_per_page = 7
+
+        self.deviceRouting = [[None] * self.num_devices_per_page for _ in range(self.num_pages)]
+
+
         self.left_button_flag  = False
         self.right_button_flag = False
         self.fader_touch       = [False] * 8
@@ -168,9 +175,9 @@ class Driver:
     def setup(self):
         
         self.clearDisplay()
-        self.pushFader(0, 255) # set master to 255
+        """ self.pushFader(0, 255) # set master to 255
         for index in range(1, 8): # every other fader to 0
-            self.pushFader(index, 0)
+            self.pushFader(index, 0) """
         
         if self.light_mode:
             self.displayASCII_perChannel(7,0,"LIGHT")
@@ -200,16 +207,21 @@ class Driver:
         value_14bit = value_8bit << 6
         return value_14bit
 
-    def pushFader(self, faderIndex, value):   
-        self.fader_values[faderIndex] = value
-        msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
-        lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
-        faderIndex = int(str(faderIndex), 16)
-        msg1 = mido.Message('control_change', channel=0, control=int(      str(faderIndex), 16), value=msb, time=0)
-        msg2 = mido.Message('control_change', channel=0, control=int("2" + str(faderIndex), 16), value=lsb, time=0)
-        self.outport.send(msg1)
-        self.outport.send(msg2)
-        self.displayFaderValues(faderIndex, value)
+    def pushFader(self, number, value):
+        #print(self.deviceRouting)   
+        for index in range(7):
+            if self.deviceRouting[self.current_page-1][index] == number:
+                self.fader_values[index] = value
+                msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
+                lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
+                index = int(str(index), 16)
+                msg1 = mido.Message('control_change', channel=0, control=int(      str(index), 16), value=msb, time=0)
+                msg2 = mido.Message('control_change', channel=0, control=int("2" + str(index), 16), value=lsb, time=0)
+                self.outport.send(msg1)
+                self.outport.send(msg2)
+                self.displayFaderValues(index, value)
+            else:
+                print("Device: " + str(number) + " not found on page: " + str(self.current_page))
 
     #-------------------- LCD Display --------------------
     def displayASCII_perChannel(self, channel, row, text):
@@ -264,6 +276,7 @@ class Driver:
         value = (value / 255) * 100
         self.displayASCII_perChannel(channel, 1, "     ")
         self.displayASCII_perChannel(channel, 1, ( str(int(value))) + "%" )
+    
     #-------------------- LCD Display END --------------------
     
     #-------------------- page Display --------------------
@@ -281,7 +294,6 @@ class Driver:
             hex_string += format(hi_nibble, '02X')+ " " + format(lo_nibble, '02X') + " "
         
         hex_string += "F7"
-        print(hex_string)
         self.outport.send(mido.Message.from_hex(hex_string))
 
     #-------------------- page Display END --------------------
@@ -338,22 +350,27 @@ class Driver:
         #range control
         if self.current_page < 1:
             self.current_page = 1
-        if self.current_page > 99:
-            self.current_page = 99
+        if self.current_page > self.num_pages:
+            self.current_page = self.num_pages
         
           
         self.displayPageNumber(str(self.current_page))
-        self.deviceMapping()
+        self.update_deviceDisplay()
         print("Seite: " + str(self.current_page))         
-        #self.devicePull(self.current_page)
+
+    def update_deviceDisplay(self):
+        for channel in range(7):
+            self.displayASCII_perChannel(channel, 0, str(self.deviceRouting[self.current_page - 1][channel]))
+        print(self.deviceRouting[self.current_page - 1])
 
     def deviceMapping(self):
-        for channel in range(7):
-            self.displayASCII_perChannel(channel, 0, "     ")
-            fader_number = (self.current_page - 1) * 7 + channel + 1
-            if fader_number < len(self.devices):
-                deviceNumber = self.devices[fader_number]["number"]
-                self.displayASCII_perChannel(channel, 0, str(deviceNumber))
-                self.pushFader(channel, self.devices[fader_number]["attributes"]["channel"][0]["sliderValue"])
-            else:
-                self.pushFader(0, 0)
+        self.num_pages=(len(self.devices)-1) // 7 + 2
+        for page in range(1,self.num_pages):
+            for channel in range(7):
+                fader_number = (page - 1) * 7 + channel + 1
+                if fader_number < len(self.devices):
+                    deviceNumber = self.devices[fader_number]["number"]
+                    self.deviceRouting[page-1][channel] = deviceNumber
+                    self.update_deviceDisplay()
+                else:
+                    return

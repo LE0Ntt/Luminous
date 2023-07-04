@@ -121,7 +121,6 @@ def register_socketio_events(socketio):
             faderSend(fader, faderValue, channelId)
 
         # DMX-Data senden
-        """ 
         if fader < len(routes.devices):
             device = routes.devices[fader]
             channels = device["attributes"]["channel"]
@@ -133,20 +132,21 @@ def register_socketio_events(socketio):
             device["attributes"]["channel"] = channels
             routes.devices[fader] = device
 
-            if channelId == 0:  # Assuming Master fader has channelId 0
-                for value in ola.dmx_data:
-                    value *= faderValue
+            if fader == 0:  # Assuming Master fader has channelId 0
+                # auskommentiert weil ola
+                print("Masterfader")
+                """ for value in ola.dmx_data:
+                    value *= faderValue """
             else:
                 try:
                     dmx_channel = int(channel['dmx_channel'])
                     # Assuming universe is always in the format U<num>
                     universe = int(device['universe'][1:])
-                    ola.send_dmx(universe, dmx_channel, faderValue)
+                    # ola.send_dmx(universe, dmx_channel, faderValue)
                 except KeyError:
-                    print('No dmx_channel key')
+                    print('No dmx_channel key for non-master channel')
 
-            print(device) 
-            """
+        print(device)
 
     @socketio.on('connect', namespace='/socket')
     def connect():

@@ -17,7 +17,7 @@ import { FaderProvider } from './components/FaderContext'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   /*<React.StrictMode>*/
-    <ConnectionProvider url="http://127.0.0.1:5000">
+    <ConnectionProvider url="http://192.168.178.14:5000">
       <FaderProvider>
         <App />
       </FaderProvider>

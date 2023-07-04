@@ -143,6 +143,8 @@ def register_socketio_events(socketio):
                     # Assuming universe is always in the format U<num>
                     universe = int(device['universe'][1:])
                     # ola.send_dmx(universe, dmx_channel, faderValue)
+                    print("dmx", dmx_channel, "value", faderValue,
+                          "universe", universe)
                 except KeyError:
                     print('No dmx_channel key for non-master channel')
 

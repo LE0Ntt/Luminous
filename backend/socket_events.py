@@ -5,10 +5,10 @@ from server.motorMix_driver import Driver
 from server.models import Scene
 
 # OLA imports
-# from ola_handler import ola_handler
+#from ola_handler import ola_handler
 
-# ola = ola_handler()
-# ola.setup()
+#ola = ola_handler()
+#ola.setup()
 connections = 0
 socketio = SocketIO(app, cors_allowed_origins="*",
                     logger=True, engineio_logger=True)
@@ -132,17 +132,16 @@ def register_socketio_events(socketio):
             device["attributes"]["channel"] = channels
             routes.devices[fader] = device
 
-            if fader == 0:  # Assuming Master fader has channelId 0
+            if fader == 0 and channelId == 0:  # Assuming Master fader has channelId 0
                 # auskommentiert weil ola
                 print("Masterfader")
-                """ for value in ola.dmx_data:
-                    value *= faderValue """
+                #ola.master_fader(faderValue)
             else:
                 try:
                     dmx_channel = int(channel['dmx_channel'])
                     # Assuming universe is always in the format U<num>
                     universe = int(device['universe'][1:])
-                    # ola.send_dmx(universe, dmx_channel, faderValue)
+                    #ola.send_dmx(universe, dmx_channel -1, faderValue)
                     print("dmx", dmx_channel, "value", faderValue,
                           "universe", universe)
                 except KeyError:

@@ -141,6 +141,7 @@ def register_socketio_events(socketio):
                     dmx_channel = int(channel['dmx_channel'])
                     # Assuming universe is always in the format U<num>
                     universe = int(device['universe'][1:])
+                    # auskommentiert weil ola
                     #ola.send_dmx(universe, dmx_channel -1, faderValue)
                     print("dmx", dmx_channel, "value", faderValue,
                           "universe", universe)

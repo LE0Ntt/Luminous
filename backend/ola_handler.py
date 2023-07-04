@@ -24,15 +24,15 @@ class ola_handler:
 
     def send_dmx(self, universe, channel, faderValue):
         self.fader_data[channel] = faderValue
-        print("fader Data: ", self.fader_data)
-        print("Universe", universe, "Fader",
+        #print("fader Data: ", self.fader_data)
+        #print("Universe", universe, "Fader",
               channel, "Value changed: ", faderValue)
         length = len(self.dmx_data)
-        print("len", length)
+        #print("len", length)
         fader_value = int(faderValue * self.master)
         
-        print( "new Dmx data: ", int(self.fader_data[channel] * self.master))
-        print( "sel master: ", self.master)
+        #print( "new Dmx data: ", int(self.fader_data[channel] * self.master))
+        #print( "sel master: ", self.master)
         self.dmx_data[channel] = int(self.fader_data[channel] * self.master)
 
         self.wrapper = ClientWrapper()
@@ -41,9 +41,9 @@ class ola_handler:
         self.wrapper.Run()
 
     def master_fader(self, faderValue):
-            print("Masterfader")
-            print("Fader Value: ", faderValue)
-            print("DMX Data: ", self.dmx_data)
+            #print("Masterfader")
+            #print("Fader Value: ", faderValue)
+            #print("DMX Data: ", self.dmx_data)
             self.master = faderValue / 255
             for i, value in enumerate(self.fader_data):
                 self.dmx_data[i] = int(value * self.master)

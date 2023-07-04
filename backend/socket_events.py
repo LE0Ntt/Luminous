@@ -11,15 +11,16 @@ import asyncio
 # ola = ola_handler()
 # ola.setup()
 connections = 0
-socketio = SocketIO(app, cors_allowed_origins="*", logger=True, engineio_logger=True, async_mode='threading')
+socketio = SocketIO(app, cors_allowed_origins="*", logger=True,
+                    engineio_logger=True, async_mode='threading')
+
 
 def register_socketio_events(socketio):
     # Mutator method to get updates from driver
     def faderSend(index, value, channelid):
-         socketio.emit('variable_update', {
-                        'deviceId': index, 'value': value, 'channelId': channelid}, namespace='/socket')
-        
-    
+        socketio.emit('variable_update', {
+            'deviceId': index, 'value': value, 'channelId': channelid}, namespace='/socket')
+
     def callback(index, value):
         print("Eintrag", index, "wurde geändert:", value)
         faderSend(index, value, 0)
@@ -106,7 +107,7 @@ def register_socketio_events(socketio):
             device = routes.devices[fader]
             channels = device["attributes"]["channel"]
             for channel in channels:
-                if int(channel["id"]) - 1 == channelId:
+                if int(channel["id"]) == channelId:
                     channel["sliderValue"] = faderValue
                     break
 
@@ -114,13 +115,14 @@ def register_socketio_events(socketio):
             routes.devices[fader] = device
 
         driver.pushFader(fader, faderValue) if driver is not None else None
-        driver.devices = routes.devices if driver is not None else None
+        # driver.devices = routes.devices if driver is not None else None   # weil buggy wenn kein MotorMix angeschlossen ist
         # Send update to all clients
-        if connections > 1:
-            faderSend(fader, faderValue, channelId)
+        # if connections > 1: # ggf. raus, weil buggy durch neue implementation
+        faderSend(fader, faderValue, channelId)
 
         # DMX-Data senden
-        # ola.send_dmx(fader, faderValue)
+        # ola.send_dmx(fader, faderValue, universe=0) # 0 ist placeholder für universe
+        print(device)
 
     @socketio.on('connect', namespace='/socket')
     async def connect():

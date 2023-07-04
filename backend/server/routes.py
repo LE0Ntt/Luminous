@@ -20,7 +20,7 @@ def get_devices():
         "attributes": {
             "channel": [
                 {
-                    "id": "1",
+                    "id": "0",
                     "sliderValue": 255
                 }
             ]
@@ -101,11 +101,11 @@ def add_light():
     db.session.add(device)
     db.session.commit()
     global devices
-    
+
     channels = device.attributes.get("channel", [])
     for channel in channels:
         channel["sliderValue"] = 0
-        
+
     device_dict = {
         "id": int(device.number),
         "name": device.name,
@@ -121,7 +121,7 @@ def add_light():
         if devices[i]['id'] > device_dict['id']:
             devices.insert(i, device_dict)
             break
-        
+
     return {'message': 'success'}
 
 
@@ -144,11 +144,11 @@ def update_light():
     device.universe = data['universe']
     device.attributes = data['attributes']
     db.session.commit()
-    
+
     channels = device.attributes.get("channel", [])
     for channel in channels:
         channel["sliderValue"] = 0
-        
+
     device_dict = {
         "id": int(device.number),
         "name": device.name,
@@ -160,7 +160,7 @@ def update_light():
         }
     }
     print(device_dict)
-    global devices        
+    global devices
     for i in range(len(devices)):
         if deviceId != newNumber:
             if devices[i]['id'] == deviceId:

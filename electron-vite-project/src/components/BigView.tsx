@@ -106,8 +106,8 @@ function BigView({ onClose }: BigViewProps) {
                       <h2 className='faderText'>{slider.id}</h2>
                       <Fader
                         key={slider.id}
-                        id={slider.id}
-                        sliderGroupId={1}
+                        id={0}
+                        sliderGroupId={slider.id}
                         name={slider.name}
                       />
                     </div>

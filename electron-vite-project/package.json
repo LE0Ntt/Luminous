@@ -20,7 +20,7 @@
     "e2e": "playwright test"
   },
   "dependencies": {
-
+    "debug": "^4.3.4",
     "electron-updater": "^5.3.0",
     "react-router-dom": "^6.9.0",
     "socket.io-client": "^4.6.1",

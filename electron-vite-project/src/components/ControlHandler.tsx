@@ -4,7 +4,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
   selectedDevices.forEach((device: any) => {
     device.attributes.channel.forEach((channel: any) => {
       let value;
-      switch(device.deviceType) {
+      switch(device.device_type) {
         case "RGBDim":
           switch(channel.id.toString()) {
             case '0': value = values.master || 0; break;
@@ -23,6 +23,17 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
           }
           console.log('setFaderValue', device.id, channel.id, value)
           setFaderValue(device.id, channel.id, value);
+          emit('setFaderValue', { deviceId: device.id, channelId: channel.id, value });
+          break;
+        case "Spot":
+        case "Fill":
+        case "Misc":
+          switch(channel.id.toString()) {
+            case '0': value = values.master || 0; break;
+          }
+          console.log('setFaderValue', device.id, channel.id, value)
+          setFaderValue(device.id, channel.id, value);
+          emit('setFaderValue', { deviceId: device.id, channelId: channel.id, value });
           break;
         default:
           console.log("Unbekannter Gerätetyp: ", device.deviceType);

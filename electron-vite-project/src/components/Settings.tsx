@@ -6,6 +6,7 @@ import "./LightSettings.css";
 import Toggle from "./Toggle";
 import { TranslationContext } from "./TranslationContext";
 import { useConnectionContext } from "./ConnectionContext";
+import SettingsOla from "./SettingsOla";
 
 interface SettingsProps {
   onClose: () => void;
@@ -20,6 +21,7 @@ function Settings({ onClose }: SettingsProps) {
   const [successMessage, setSuccessMessage] = useState("");
   const { t, language, setLanguage } = useContext(TranslationContext);
   const { url } = useConnectionContext();
+  const [isOlaWindowOpen, setIsOlaWindowOpen] = useState(false);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -58,8 +60,19 @@ function Settings({ onClose }: SettingsProps) {
         setSuccessMessage("");
         console.error(error);
       });
+
+
+      
   };
 
+  const handleOpenOlaWindow = () => {
+    setIsOlaWindowOpen(true);
+  };
+
+  const handleCloseOlaWindow = () => {
+    setIsOlaWindowOpen(false);
+  };
+ 
   if (!isOpen) {
     return null; // Render nothing if the modal is closed
   }
@@ -121,46 +134,41 @@ function Settings({ onClose }: SettingsProps) {
                 {t("as_save")}
               </button>
             </div>
-            
-          </div>
-          
-          <div className="SettingsOption">
-          <hr />
-            <div className="LightSettingsSubTitle">
-              <span>{t("set_language")}</span> 
-            </div>
-            <div className="SettingsTextBoxContainer">
-              <select
-              className="SettingsLanguageSelection"
-              value={language}
-              onChange={handleLanguageChange}
-            >
-              <option value="en">{t("English 🇬🇧")}</option>
-              <option value="de">{t("German 🇩🇪")}</option>
-            </select>
-            </div>
-            
           </div>
 
           <div className="SettingsOption">
             <hr />
             <div className="LightSettingsSubTitle">
-              <span>OLA</span> 
+              <span>{t("set_language")}</span>
             </div>
             <div className="SettingsTextBoxContainer">
-            Hier könnte ihre Werbung stehen
-            </div>    
-          </div>
-          <div className="SettingsOption">
-            <hr />
-            <div className="LightSettingsSubTitle">
-              <span>{t("set_view")}</span> 
+              <select
+                className="SettingsLanguageSelection"
+                value={language}
+                onChange={handleLanguageChange}
+              >
+                <option value="en">{t("English 🇬🇧")}</option>
+                <option value="de">{t("German 🇩🇪")}</option>
+              </select>
             </div>
           </div>
+
           <div className="SettingsOption">
             <hr />
             <div className="LightSettingsSubTitle">
-              <span>{t("set_overview")}</span> 
+              <span>OLA</span>
+            </div>
+            
+            <button className="SettingsButton" onClick={handleOpenOlaWindow}>
+            OLA öffnen
+          </button>
+          {isOlaWindowOpen && <SettingsOla onClose={handleCloseOlaWindow} />}
+            
+          </div>
+          <div className="SettingsOption">
+            <hr />
+            <div className="LightSettingsSubTitle">
+              <span>{t("set_overview")}</span>
             </div>
           </div>
           <div className="SettingsOption"></div>

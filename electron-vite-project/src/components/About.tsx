@@ -6,6 +6,7 @@ import Toggle from "./Toggle";
 import { TranslationContext } from "./TranslationContext";
 import DeviceList from "./DeviceList";
 import { useConnectionContext } from "./ConnectionContext";
+import packageJson from "../../package.json";
 
 interface SettingsProps {
   onClose: () => void;
@@ -25,6 +26,8 @@ function About({ onClose }: SettingsProps) {
     return null; // Render nothing if the modal is closed
   }
 
+  const version: string = packageJson.version;
+
   return (
     <div>
       <div className="LightSettingsOverlay" onClick={handleClose} /> Overlay to
@@ -39,7 +42,7 @@ function About({ onClose }: SettingsProps) {
         <div className="SettingsContent innerWindow">
           <div className="SettingsOptions">
             <div className="SettingsTextBoxContainer">
-              <span > Version 1.0.0 </span>
+              <span>Version {version}</span>
             </div>
           </div>
         </div>

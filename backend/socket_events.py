@@ -12,13 +12,13 @@ from server.models import Scene
 connections = 0
 socketio = SocketIO(app, cors_allowed_origins="*", logger=True, engineio_logger=True)
 
+
 def register_socketio_events(socketio):
     # Mutator method to get updates from driver
     def faderSend(index, value, channelid):
-         socketio.emit('variable_update', {
-                        'deviceId': index, 'value': value, 'channelId': channelid}, namespace='/socket')
-        
-    
+        socketio.emit('variable_update', {
+            'deviceId': index, 'value': value, 'channelId': channelid}, namespace='/socket')
+
     def callback(index, value):
         print("Eintrag", index, "wurde geändert:", value)
         faderSend(index, value, 0)
@@ -105,7 +105,7 @@ def register_socketio_events(socketio):
             device = routes.devices[fader]
             channels = device["attributes"]["channel"]
             for channel in channels:
-                if int(channel["id"]) - 1 == channelId:
+                if int(channel["id"]) == channelId:
                     channel["sliderValue"] = faderValue
                     break
 
@@ -119,7 +119,17 @@ def register_socketio_events(socketio):
             faderSend(fader, faderValue, channelId)
 
         # DMX-Data senden
-        # ola.send_dmx(fader, faderValue)
+        if fader < len(routes.devices):
+            device = routes.devices[fader]
+            channels = device["attributes"]["channel"]
+            for channel in channels:
+                if int(channel["id"]) == channelId:
+                    dmx_channel = int(channel['dmx_channel'])
+                    universe = int(device['universe'][1:])
+                    # ola.send_dmx(dmx_channel, faderValue, universe=universe)
+                    print("dmx", dmx_channel, "value", faderValue,
+                          "universe", universe)
+                    break
 
     @socketio.on('connect', namespace='/socket')
     def connect():

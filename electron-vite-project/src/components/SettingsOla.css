@@ -1,0 +1,112 @@
+@import url(../Color.css);
+
+.SettingsOlaOverlay {
+    position: fixed;
+    z-index: 9997;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    backdrop-filter: blur(2px);
+    animation-name: fadeIn;
+    animation-duration: .2s;
+    animation-timing-function: ease;
+}
+
+@keyframes fadeIn {
+    0% {
+        backdrop-filter: blur(0px);
+        background-color: rgba(0, 0, 0, 0);
+    }
+    100% {
+        backdrop-filter: blur(2px);
+        background-color: rgba(0, 0, 0, 0.25);
+    }
+}
+
+.SettingsOlaContainer {
+    height: 362px;
+    width: 886px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px;
+    backdrop-filter: var(--windowBackdrop);
+    -webkit-backdrop-filter: var(--windowBackdrop);
+    z-index: 9998;
+    overflow: hidden;
+    background-color: var(--fillMedium);
+    color: var(--primary);
+}
+
+.buttonClose {
+    z-index: 9999;
+}
+
+.SettingsOlaTitle {
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.SettingsOlaContent {
+    height: 200px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--primary);
+}
+
+.SettingsOlaTextBox {
+    width: 397px !important;
+}
+
+.SettingsOlaChecker input {
+    margin-right: 10px;
+}
+
+.SettingsOlaNote {
+    color: var(--secondary);
+}
+
+.SettingsOlaFooter {
+    top: 254px;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: var(--fillMedium);
+    left: 0;
+}
+
+.SettingsOlaButtons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    padding: 30px;
+}
+
+.SettingsOlaButtons button {
+    height: 46px;
+    flex-grow: 1;
+    background-color: var(--mainColor);
+    color: var(--primaryDark);
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.SettingsOlaButtons button:last-child {
+    background-color: var(--secondary);
+    color: var(--fillMedium);
+}
+

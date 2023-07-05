@@ -1,91 +1,54 @@
 # Luminous
 
-PMPT and WEB3 Project
+Luminous is an innovative lighting software developed as a university project for the classes Web Development and "Projekt Medienproduktionstechnik" at Cologne University of Applied Sciences.
 
-Doku für electron-vite-project
+## Description
 
-```
-\---electron-vite-project
-    |
-    |   .gitgnore
-    |       -was soll von git ignoriert werden... gut zu wissen
-    |
-    |   .npmrc
-    |       -gehört zu npm, weiß nicht ob wir es nutzen mussen/wollen
-    |
-    |   electron-builder.json5
-    |       -macht was der name sagt
-    |
-    |   index.html
-    |       -look inside
-    |
-    |   LICENSE
-    |       -von dem clone, kp ob wir es löschen können
-    |
-    |   package-lock.json
-    |       -von npm für dependencies, DO NOT EDIT
-    |
-    |   package.json
-    |       -settings -> kp ob wir da die sachen ändern, ist vom clone
-    |
-    |   playwright.config.ts
-    |       -siehe unten
-    |
-    |   postcss.config.js
-    |       - von PostCSS, kp ob wir es brauchen/nutzen wollen
-    |
-    |   README.md
-    |       -vom clone
-    |
-    |   tailwind.config.js
-    |       -tailwind config
-    |
-    |   tsconfig.json
-    |       -TypeScript config file
-    |
-    |   tsconfig.node.json
-    |       -TypeScript compiler
-    |
-    |   vite.config.ts
-    |       -configuration file for Vite
-    |
-    +---build
-    |       files for building electron
-    |
-    +---dist-electron
-    |       files for building electron
-    |
-    +---e2e
-    |       E2E ist end-to-end testing, ggf. nicht benötigt.
-    |       Bei der Boilerplate wird playwright genutzt. Wird also ggf. noch gelöscht.
-    |       Was dazu gehört:
-    |       - e2e ordner
-    |           - alles was drin ist
-    |
-    |       - playwright.config.ts
-    |
-    |       - package.json
-    |           "scripts": {
-    |               "e2e": "playwright test"
-    |           },
-    |           "devDependencies": {
-    |               "@playwright/test": "^1.31.0",
-    |           },
-    |       - package-lock.json
-    |           mehrere sachen, einfach nach playwright suchen
-    |
-    +---electron
-    |       Electron App
-    |       stuff für die App, mehr kommt später
-    |
-    +---node_modules
-    |
-    |
-    +---public
-    |       React modul
-    |       -für static stuff bei react (bilder, usw.)
-    |
-    \---src
-            React modul
-            -für code stuff bei react (components, assets, usw.)
-```
+Luminous is a powerful lighting software that allows users to control and create captivating light scenes. It was developed as part of the coursework for the Web Development and "Projekt Medienproduktionstechnik" classes at Cologne University of Applied Sciences.
+
+## Features
+
+- **Scene Creation**: Easily create and customize scenes to set up different lighting moods and effects.
+- **Light Control**: Take full control over individual lights, adjusting brightness, color, and other settings.
+- **Group Control**: Manage lights in groups for synchronized control and easy scene creation.
+- **Lightshows**: Create and play simple lightshows using a combination of scenes for an immersive visual experience.
+- **Multi-Platform Compatibility**: Access Luminous on various devices including PCs (Electron app) and tablets (web application).
+- **Haptic Control**: Integrate with MotorMix for haptic feedback and enhanced control experience.
+
+## Getting Started
+
+### Installation
+
+1. Clone the repository: `git clone https://github.com/LE0Ntt/luminous.git`
+2. Install dependencies: `npm install`
+3. Setup Server:
+   - Install Python3 and pip3 if they are not already installed on your system.
+   - Open a terminal or command prompt.
+   - Navigate to the main directory of the Luminous project.
+   - Run the following command to install the Python server module: `pip3 install -r .\requirements.txt`
+   - Once the installation is complete, start the server by running the following command:
+     `python3 server.py`
+   - The server should now be running on the default port 5000.
+   - You can access the server in your web browser by entering `http://localhost:5000.`
+
+### Usage
+
+1. Start the application: `npm start`
+2. Access Luminous in your web browser at `http://localhost:3000` (for web version) or launch the Electron app.
+
+## Contributing
+
+Contributions to Luminous are not currently being accepted as it was a completed university project. However, you are welcome to explore the codebase and use it for learning purposes.
+
+## License
+
+Luminous is licensed under the [MIT License](LICENSE).
+
+## Contact
+
+For any inquiries related to Luminous or the university project, you can reach out to the team members:
+
+- Leon Hölzel
+- Darwin Pietas
+- Marvin Plate
+- Andree Tomek

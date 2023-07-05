@@ -66,6 +66,7 @@ function LightSettings({ onClose }: SettingsProps) {
       const parsedData = JSON.parse(data);
       parsedData.shift(); // remove master
       setDevices(parsedData);
+      setUnselectedDevices(parsedData);
     } catch (error) {
       console.log(error);
     }
@@ -131,7 +132,7 @@ function LightSettings({ onClose }: SettingsProps) {
 
   const handleSelectDevice = (device: DeviceConfig) => {
     setSelectedDevice(device);
-    setUnselectedDevices(unselectedDevices.filter(item => item.id !== device.id));
+    setUnselectedDevices(devices.filter(item => item.id !== device.id));
     setIsNewDevice(false);
     setInputName(device.name);
     setInputDMXstart(device.attributes.channel[0].dmx_channel);
@@ -370,7 +371,7 @@ function LightSettings({ onClose }: SettingsProps) {
             }
           </div>
           <div className='LightSettingsList innerWindow'>
-            <DeviceList devices={devices} isAddButton={true} onDeviceButtonClick={handleSelectDevice} />
+            <DeviceList devices={unselectedDevices} isAddButton={true} onDeviceButtonClick={handleSelectDevice} />
           </div>  
         </div>
         {selectedDevice !== undefined && (

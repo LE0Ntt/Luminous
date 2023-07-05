@@ -39,11 +39,12 @@ function About({ onClose }: SettingsProps) {
         <div className="SettingsTitle">
           <span>{t("dd_about")}</span>
         </div>
-        <div className="SettingsContent innerWindow">
-          <div className="SettingsOptions">
-            <div className="SettingsTextBoxContainer">
-              <span>Version {version}</span>
-            </div>
+        <div className="AboutContainer">
+          <div className="AboutTextBoxContainer">
+            <div className="logoBig"></div>
+            <small><i>Multi-client DMX light control app with MIDI support</i></small><br /><br />
+            <span>Version {version}</span><br />
+            <span>Leon Hölzel, Darwin Pietas, Marvin Plate, Andree Tomek</span>
           </div>
         </div>
       </div>

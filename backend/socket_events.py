@@ -52,9 +52,15 @@ def register_socketio_events(socketio):
                     if channel['id'] == 0: # !!! muss raus um alle channel zu schicken !!!
                         if status:
                             faderSend(device["id"], channel["sliderValue"], channel["id"])
+                            device1 = next((device1 for device1 in routes.devices if device1['id'] == device['id']), None)
+                            device1["attributes"]["channel"][channel['id']]["sliderValue"] = channel["sliderValue"]
                         else:
                             device1 = next((device1 for device1 in routes.devices if device1['id'] == device['id']), None)
-                            faderSend(device["id"], device1["attributes"]["channel"][channel['id']]["sliderValue"] if device else 0, channel["id"])       
+                            device1["attributes"]["channel"][channel['id']]["sliderValue"] = device1["attributes"]["channel"][channel['id']]["backupValue"]
+                            faderSend(device["id"], device1["attributes"]["channel"][channel['id']]["backupValue"] if device else 0, channel["id"])
+                            
+                        # !!! Ola Zeug muss hier noch hin !!!    
+                        
 
         # Send update to all clients
         global connections
@@ -139,6 +145,7 @@ def register_socketio_events(socketio):
             for channel in channels:
                 if int(channel["id"]) == channelId:
                     channel["sliderValue"] = faderValue
+                    channel["backupValue"] = faderValue
                     break
 
             device["attributes"]["channel"] = channels
@@ -151,7 +158,7 @@ def register_socketio_events(socketio):
         if connections > 1:
             faderSend(fader, faderValue, channelId)
 
-        # DMX-Data senden
+        # DMX-Data senden                           ??? warum 2 mal ???
         if fader < len(routes.devices):
             device = routes.devices[fader]
             channels = device["attributes"]["channel"]
@@ -171,11 +178,11 @@ def register_socketio_events(socketio):
                 try:
                     dmx_channel = int(channel['dmx_channel'])
                     # Assuming universe is always in the format U<num>
-                    universe = int(device['universe'][1:])
+                    #universe = int(device['universe'][1:])
                     # auskommentiert weil ola
                     #ola.send_dmx(universe, dmx_channel -1, faderValue)
-                    print("dmx", dmx_channel, "value", faderValue,
-                          "universe", universe)
+                    #print("dmx", dmx_channel, "value", faderValue,
+                    #      "universe", universe)
                 except KeyError:
                     print('No dmx_channel key for non-master channel')
 

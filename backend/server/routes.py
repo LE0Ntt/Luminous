@@ -34,12 +34,14 @@ def get_devices():
             channels = device.attributes.get("channel", [])
             for channel in channels:
                 channel["sliderValue"] = 0
+                channel["backupValue"] = 0
             device = {
                 "id": device.id,
                 "name": device.name,
                 "device_type": device.device_type,
                 "number": device.number,
                 "universe": device.universe,
+                "mute": False,
                 "attributes": {
                     "channel": channels
                 }
@@ -105,7 +107,7 @@ def add_light():
     channels = device.attributes.get("channel", [])
     for channel in channels:
         channel["sliderValue"] = 0
-
+        channel["backupValue"] = 0
     device_dict = {
         "id": int(device.number),
         "name": device.name,
@@ -148,7 +150,7 @@ def update_light():
     channels = device.attributes.get("channel", [])
     for channel in channels:
         channel["sliderValue"] = 0
-
+        channel["backupValue"] = 0
     device_dict = {
         "id": int(device.number),
         "name": device.name,

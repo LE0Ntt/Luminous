@@ -89,7 +89,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
         case "BiColor":
           switch(channel.id.toString()) {
             case '0': value = values.master || 0; break;
-            case '1': value = values.kelvin || 0; break; // muss noch durch kelvin ersetzt werden
+            case '1': value = kelvin || 0; break;
           }
           console.log('setFaderValue', device.id, channel.id, value)
           setFaderValue(device.id, channel.id, value);

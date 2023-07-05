@@ -5,13 +5,27 @@ from server.motorMix_driver import Driver
 from server.models import Scene
 import json
 # OLA imports
-#from ola_handler import ola_handler
+# from ola_handler import ola_handler
 
-#ola = ola_handler()
-#ola.setup()
+# ola = ola_handler()
+# ola.setup()
 connections = 0
 socketio = SocketIO(app, cors_allowed_origins="*",
                     logger=False, engineio_logger=False)
+
+
+def send_dmx(fader: int, channelId: int, fader_value: int, device: dict, channel: dict) -> None:
+    if fader == 0 and channelId == 0:
+        print("Masterfader")
+        # ola.master_fader(fader_value)
+    else:
+        try:
+            dmx_channel = int(channel['dmx_channel'])
+            universe = int(device['universe'][1:])
+            # ola.send_dmx(universe, dmx_channel - 1, fader_value)
+            print(f"dmx {dmx_channel}, value {fader_value}, universe {universe}")
+        except KeyError:
+            print('No dmx_channel key for non-master channel')
 
 
 def register_socketio_events(socketio):
@@ -28,7 +42,6 @@ def register_socketio_events(socketio):
             if device["id"] == index:
                 index = i
                 routes.devices[index]["attributes"]["channel"][0]["sliderValue"] = value
-
 
     try:
         driver = Driver()
@@ -50,18 +63,22 @@ def register_socketio_events(socketio):
             # Send every channel to the device to the client
             for device in routes.scenes[scene]["channel"]:
                 for channel in device["attributes"]["channel"]:
-                    if channel['id'] == 0: # !!! muss raus um alle channel zu schicken !!!
-                        device1 = next((device1 for device1 in routes.devices if device1['id'] == device['id']), None)
+                    if channel['id'] == 0:  # !!! muss raus um alle channel zu schicken !!!
+                        device1 = next(
+                            (device1 for device1 in routes.devices if device1['id'] == device['id']), None)
                         deviceChannel = device1["attributes"]["channel"][channel['id']]
-                        if status: # on
-                            faderSend(device["id"], channel["sliderValue"], channel["id"])
+                        if status:  # on
+                            faderSend(
+                                device["id"], channel["sliderValue"], channel["id"])
                             deviceChannel["sliderValue"] = channel["sliderValue"]
+                            send_dmx(device["id"], channel["id"],
+                                     channel["sliderValue"], device, channel)
                         else:      # off
                             deviceChannel["sliderValue"] = deviceChannel["backupValue"]
-                            faderSend(device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
-                            
-                        # !!! Ola Zeug muss hier noch hin !!!    
-                        
+                            faderSend(
+                                device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
+                            send_dmx(device["id"], channel["id"],
+                                     channel["backupValue"], device, channel)
 
         # Send update to all clients
         global connections
@@ -92,7 +109,7 @@ def register_socketio_events(socketio):
     def add_scene(data):
         scene = data['scene']
         scene['id'] = len(routes.scenes)
-        
+
         # Filter devices with sliderValue 0
         filtered_devices = [
             device for device in routes.devices[1:]  # Skip master fader
@@ -100,7 +117,7 @@ def register_socketio_events(socketio):
         ]
         scene['channel'] = json.loads(json.dumps(filtered_devices))
         routes.scenes.append(scene)
-        if not scene['saved']: # If scene is not saved, don't add to database
+        if not scene['saved']:  # If scene is not saved, don't add to database
             socketio.emit('scene_reload', namespace='/socket')
         else:
             save_scene(scene)
@@ -118,20 +135,22 @@ def register_socketio_events(socketio):
                     entry['id'] += 1
             sceneToSave['id'] = lastSavedIndex
             routes.scenes.insert(lastSavedIndex, sceneToSave)
-            
+
             try:
                 if 'channel' in data:
                     filtered_devices = data['channel']
                 else:
                     filtered_devices = [
-                        device for device in routes.devices[1:]  # Skip master fader
+                        # Skip master fader
+                        device for device in routes.devices[1:]
                         if device["attributes"]["channel"][0]["sliderValue"] > 0
                     ]
-                    data['name'] = routes.scenes[scene]['name']    
-            except KeyError: 
+                    data['name'] = routes.scenes[scene]['name']
+            except KeyError:
                 print('No channel key for scene')
             # Add scene to the database
-            new_scene = Scene(name=data['name'], number=scene, color='default', channel=filtered_devices)
+            new_scene = Scene(
+                name=data['name'], number=scene, color='default', channel=filtered_devices)
             db.session.add(new_scene)
             db.session.commit()
         socketio.emit('scene_reload', namespace='/socket')
@@ -140,7 +159,7 @@ def register_socketio_events(socketio):
     @socketio.on('fader_value', namespace='/socket')
     def handle_fader_value(data):
 
-        faderValue = int(data['value'])
+        fader_value = int(data['value'])
         fader = int(data['deviceId'])
         channelId = int(data['channelId'])
 
@@ -149,36 +168,20 @@ def register_socketio_events(socketio):
             channels = device["attributes"]["channel"]
             for channel in channels:
                 if int(channel["id"]) == channelId:
-                    channel["sliderValue"] = faderValue
-                    channel["backupValue"] = faderValue
+                    channel["sliderValue"] = fader_value
+                    channel["backupValue"] = fader_value
+                    send_dmx(fader, channelId, fader_value, device, channel)
                     break
 
             device["attributes"]["channel"] = channels
             routes.devices[fader] = device
 
-            if fader == 0 and channelId == 0:  # Assuming Master fader has channelId 0
-                # auskommentiert weil ola
-                print("Masterfader")
-                #ola.master_fader(faderValue)
-            else:
-                try:
-                    dmx_channel = int(channel['dmx_channel'])
-                    # Assuming universe is always in the format U<num>
-                    universe = int(device['universe'][1:])
-                    # auskommentiert weil ola
-                    #ola.send_dmx(universe, dmx_channel -1, faderValue)
-                    
-                    #print("dmx", dmx_channel, "value", faderValue,
-                    #      "universe", universe)
-                except KeyError:
-                    print('No dmx_channel key for non-master channel')
-                    
         if driver is not None:
-            driver.pushFader(fader, faderValue)
+            driver.pushFader(fader, fader_value)
             driver.devices = routes.devices
-        # Send update to all clients
+
         if connections > 1:
-            faderSend(fader, faderValue, channelId)
+            faderSend(fader, fader_value, channelId)
 
     @socketio.on('connect', namespace='/socket')
     def connect():

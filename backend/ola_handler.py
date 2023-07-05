@@ -6,19 +6,17 @@ from ola.ClientWrapper import ClientWrapper
 class ola_handler:
     def __init__(self):
         self.wrapper = None
-        self.dmx_data = array.array('B', [0]*512)
         self.master = 1
-        universe = 2
-        length = 512
-        self.fader_data = [array.array('B', [0] * length)
-                           for _ in range(universe)]
+        self.dmx_data = {1: array.array(
+            'B', [0]*512), 2: array.array('B', [0]*512)}
+        self.fader_data = {1: array.array(
+            'B', [0]*512), 2: array.array('B', [0]*512)}
 
     def DmxSent(self, status):
         if status.Succeeded():
             print('Success!')
         else:
-            print('Error: %s' % status.message, file=sys.stderr)
-
+            print(f'Error: {status.message}', file=sys.stderr)
         if self.wrapper:
             self.wrapper.Stop()
 
@@ -26,38 +24,29 @@ class ola_handler:
         print("Setting up...")
         self.wrapper = ClientWrapper()
         client = self.wrapper.Client()
-        client.SendDmx(1, self.dmx_data, self.DmxSent)
+        for universe in [1, 2]:
+            client.SendDmx(universe, self.dmx_data[universe], self.DmxSent)
         self.wrapper.Run()
         print("Setup done")
 
     def send_dmx(self, universe, channel, faderValue):
-        self.fader_data[universe][channel] = faderValue
-        # print("fader Data: ", self.fader_data)
-        # print("Universe", universe, "Fader", channel, "Value changed: ", faderValue)
-        length = len(self.dmx_data)
-        # print("len", length)
-        fader_value = int(faderValue * self.master)
+        if universe in [1, 2]:
+            self.fader_data[universe][channel] = faderValue
+            self.dmx_data[universe][channel] = int(
+                self.fader_data[universe][channel] * self.master)
+            self.send_to_universe(universe)
+        else:
+            print(f'Error: Invalid universe {universe}', file=sys.stderr)
 
-        # print( "new Dmx data: ", int(self.fader_data[channel] * self.master))
-        # print( "sel master: ", self.master)
-        self.dmx_data[channel] = int(
-            self.fader_data[universe][channel] * self.master)
-
+    def send_to_universe(self, universe):
         self.wrapper = ClientWrapper()
         client = self.wrapper.Client()
-        client.SendDmx(universe, self.dmx_data, self.DmxSent)
+        client.SendDmx(universe, self.dmx_data[universe], self.DmxSent)
         self.wrapper.Run()
 
     def master_fader(self, faderValue):
-        # print("Masterfader")
-        # print("Fader Value: ", faderValue)
-        # print("DMX Data: ", self.dmx_data)
         self.master = faderValue / 255
-        for i, value in enumerate(self.fader_data):
-            self.dmx_data[i] = int(value * self.master)
-
-        self.wrapper = ClientWrapper()
-        client = self.wrapper.Client()
-        client.SendDmx(1, self.dmx_data, self.DmxSent)
-        client.SendDmx(2, self.dmx_data, self.DmxSent)
-        self.wrapper.Run()
+        for universe in [1, 2]:
+            for i, value in enumerate(self.fader_data[universe]):
+                self.dmx_data[universe][i] = int(value * self.master)
+            self.send_to_universe(universe)

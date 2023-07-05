@@ -32,11 +32,11 @@ class Driver:
         self.fader_touch       = [False] * 8
         self.fader_touch_flag  = False
         
-        self.outport = mido.open_output('USB MIDI Interface 1')
-        self.inport  = mido.open_input( 'USB MIDI Interface 0')
+        #self.outport = mido.open_output('USB MIDI Interface 1')
+        #self.inport  = mido.open_input( 'USB MIDI Interface 0')
         #--MMix Config - DONT CHANGE -
-        #self.outport = mido.open_output('USB MIDI Interface MIDI 1')
-        #self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
+        self.outport = mido.open_output('USB MIDI Interface MIDI 1')
+        self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
         
         self.current_page = 1
         
@@ -209,7 +209,7 @@ class Driver:
         return value_14bit
 
     def pushFader(self, number, value):
-        if number == 0:
+        if number == 0 and self.devices[number]["attributes"]["channel"] == 0:
             self.fader_values[7] = value
             msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
             lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
@@ -369,7 +369,7 @@ class Driver:
         self.displayPageNumber(str(self.current_page))
         self.update_deviceDisplay()
         print("Seite: " + str(self.current_page))
-        #self.getDeviceValues()
+        self.getDeviceValues()
 
     def update_deviceDisplay(self):
         for channel in range(7):
@@ -379,9 +379,11 @@ class Driver:
     def getDeviceValues(self):
         if self.devices != None:
             for i, device in enumerate(self.deviceRouting[self.current_page - 1]):
-                value = self.devices[i]["attributes"]["channel"][0]["sliderValue"]
-                number = self.devices[i]["id"]
-                self.pushFader(number, value)
+                print(i)
+                if (i < len(self.devices)):
+                    value = self.devices[i]["attributes"]["channel"][0]["sliderValue"]
+                    number = self.devices[i]["id"]
+                    self.pushFader(number, value)
 
 
     def deviceMapping(self):

@@ -37,6 +37,8 @@ def register_socketio_events(socketio):
     def callback(index, value):
         print("Eintrag", index, "wurde geändert:", value)
         faderSend(index, value, 0)
+        # muss noch getestet werden
+        send_dmx(device["id"], 0, value, device, 0)
 
         for i, device in enumerate(routes.devices):
             if device["id"] == index:

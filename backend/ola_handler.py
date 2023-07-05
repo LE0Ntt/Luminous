@@ -6,9 +6,12 @@ from ola.ClientWrapper import ClientWrapper
 class ola_handler:
     def __init__(self):
         self.wrapper = None
-        self.dmx_data = array.array('B', [0]*256)
+        self.dmx_data = array.array('B', [0]*512)
         self.master = 1
-        self.fader_data = array.array('B', [0]*256)
+        universe = 2
+        length = 512
+        self.fader_data = [array.array('B', [0] * length)
+                           for _ in range(universe)]
 
     def DmxSent(self, status):
         if status.Succeeded():
@@ -21,9 +24,14 @@ class ola_handler:
 
     def setup(self):
         print("Setting up...")
+        self.wrapper = ClientWrapper()
+        client = self.wrapper.Client()
+        client.SendDmx(1, self.dmx_data, self.DmxSent)
+        self.wrapper.Run()
+        print("Setup done")
 
     def send_dmx(self, universe, channel, faderValue):
-        self.fader_data[channel] = faderValue
+        self.fader_data[universe][channel] = faderValue
         # print("fader Data: ", self.fader_data)
         # print("Universe", universe, "Fader", channel, "Value changed: ", faderValue)
         length = len(self.dmx_data)
@@ -32,7 +40,8 @@ class ola_handler:
 
         # print( "new Dmx data: ", int(self.fader_data[channel] * self.master))
         # print( "sel master: ", self.master)
-        self.dmx_data[channel] = int(self.fader_data[channel] * self.master)
+        self.dmx_data[channel] = int(
+            self.fader_data[universe][channel] * self.master)
 
         self.wrapper = ClientWrapper()
         client = self.wrapper.Client()
@@ -50,4 +59,5 @@ class ola_handler:
         self.wrapper = ClientWrapper()
         client = self.wrapper.Client()
         client.SendDmx(1, self.dmx_data, self.DmxSent)
+        client.SendDmx(2, self.dmx_data, self.DmxSent)
         self.wrapper.Run()

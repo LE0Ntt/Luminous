@@ -110,8 +110,8 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
 
   const toggleSceneStatus = (sceneId: number) => { 
     const layer = localStorage.getItem('layer')  === 'true';
-    setScenes((prevScenes) =>
-      prevScenes.map((scene) => {
+    setScenes((prevScenes) => {
+      /* prevScenes.map((scene) => {
         if (scene.id === sceneId) {
           const newStatus = !scene.status;
           emit("scene_update", { id: sceneId, status: newStatus });
@@ -122,8 +122,28 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
           return { ...scene, status: false };
         }
         return scene;
-      })
-    );
+      }) */
+      // Update scenes with status false if layer is off
+      if (!layer) {
+        prevScenes.forEach((scene) => {
+          if (scene.status) {
+            emit("scene_update", { id: scene.id, status: false });
+          }
+        });
+      }
+
+      // Update the desired scene with the new status
+      const updatedScenes = prevScenes.map((scene) => {
+        if (scene.id === sceneId) {
+          const newStatus = !scene.status;
+          emit("scene_update", { id: sceneId, status: newStatus });
+          return { ...scene, status: newStatus };
+        }
+        return scene;
+      });
+
+      return updatedScenes;
+    });
   };
 
   const deleteScene = (sceneId: number, saved: boolean) => { 
@@ -140,7 +160,6 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
   };
 
   const saveScene = (sceneId: number) => { 
-    //emit("scene_save", { id: sceneId });
     sessionStorage.setItem('saveID', JSON.stringify(sceneId));
     if(setSaveSceneAdmin) {
       setSaveSceneAdmin(true);

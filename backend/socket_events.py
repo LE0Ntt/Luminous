@@ -56,9 +56,13 @@ def register_socketio_events(socketio):
                         if status: # on
                             faderSend(device["id"], channel["sliderValue"], channel["id"])
                             deviceChannel["sliderValue"] = channel["sliderValue"]
+                            driver.pushFader(device["id"], deviceChannel["sliderValue"] if device else 0)
+                            driver.devices = routes.devices
                         else:      # off
                             deviceChannel["sliderValue"] = deviceChannel["backupValue"]
                             faderSend(device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
+                            driver.pushFader(device["id"], deviceChannel["backupValue"] if device else 0)
+                            driver.devices = routes.devices
                             
                         # !!! Ola Zeug muss hier noch hin !!!    
                         

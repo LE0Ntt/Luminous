@@ -40,11 +40,11 @@ class Driver:
         self.fader_touch       = [False] * 8
         self.fader_touch_flag  = False
         
-        #self.outport = mido.open_output('USB MIDI Interface 1')
-        #self.inport  = mido.open_input( 'USB MIDI Interface 0')
+        self.outport = mido.open_output('USB MIDI Interface 1')
+        self.inport  = mido.open_input( 'USB MIDI Interface 0')
         #--MMix Config - DONT CHANGE -
-        self.outport = mido.open_output('USB MIDI Interface MIDI 1')
-        self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
+        #self.outport = mido.open_output('USB MIDI Interface MIDI 1')
+        #self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
         
         self.current_page = 1
         
@@ -221,7 +221,7 @@ class Driver:
         return value_14bit
 
     def pushFader(self, number, value):
-        if number == 0 and self.devices[number]["attributes"]["channel"] == 0:
+        if number == 0:
             self.fader_values[7] = value
             msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
             lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
@@ -245,7 +245,8 @@ class Driver:
                     self.outport.send(msg2)
                     self.displayFaderValues(index, value)
                 else:
-                    print("Device: " + str(number) + " not found on page: " + str(self.current_page))
+                    pass
+                    #print("Device: " + str(number) + " not found on page: " + str(self.current_page) + " at index: " + str(index))
 
     #-------------------- LCD Display --------------------
     def displayASCII_perChannel(self, channel, row, text):
@@ -386,27 +387,41 @@ class Driver:
     def update_deviceDisplay(self):
         for channel in range(7):
             self.displayASCII_perChannel(channel, 0, str(self.deviceRouting[self.current_page - 1][channel]))
-        print(self.deviceRouting[self.current_page - 1])
-
+            
+            # push Fader to 0 if device is not assigned
+            if self.deviceRouting[self.current_page - 1][channel] == None:
+                self.displayFaderValues(channel, 0)
+                msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(0))[0], 16)
+                lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(0))[1], 16)
+                index = int(str(7), 16)
+                msg1 = mido.Message('control_change', channel=0, control=int(      str(channel), 16), value=msb, time=0)
+                msg2 = mido.Message('control_change', channel=0, control=int("2" + str(channel), 16), value=lsb, time=0)
+                self.outport.send(msg1)
+                self.outport.send(msg2)
+    
     def getDeviceValues(self):
         if self.devices != None:
-            for i, device in enumerate(self.deviceRouting[self.current_page - 1]):
-                print(i)
-                if (i < len(self.devices)):
-                    value = self.devices[i]["attributes"]["channel"][0]["sliderValue"]
-                    number = self.devices[i]["id"]
-                    self.pushFader(number, value)
-
+            for device in self.devices:
+                #find the 7 devices for the current page
+                if device["id"] in self.deviceRouting[self.current_page - 1]:
+                    #find the channel for the current device
+                    for channel in device["attributes"]["channel"]:
+                        if channel["id"] == 0:
+                            self.pushFader(device["id"], channel["sliderValue"])
+                            print("Device: " + str(device["id"]) + " Value: " + str(channel["sliderValue"]))
+                            break
+    
 
     def deviceMapping(self):
-        self.num_pages=(len(self.devices)-1) // 7 + 2
-        for page in range(1,self.num_pages):
+        self.num_pages = (len(self.devices) - 1) // 7 + 2
+        for page in range(1, self.num_pages):
             for channel in range(7):
                 fader_number = (page - 1) * 7 + channel + 1
                 if fader_number < len(self.devices):
                     deviceNumber = self.devices[fader_number]["number"]
-                    self.deviceRouting[page-1][channel] = deviceNumber
-                    self.update_deviceDisplay()
-                    self.getDeviceValues()
-                else:
-                    return
+                    self.deviceRouting[page - 1][channel] = deviceNumber
+
+            self.update_deviceDisplay()
+            self.getDeviceValues()
+        
+        return

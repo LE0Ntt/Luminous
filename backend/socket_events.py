@@ -4,41 +4,51 @@ from server import app, routes, db
 from server.motorMix_driver import Driver
 from server.models import Scene
 import json
+import time
 # OLA imports
-# from ola_handler import ola_handler
+from ola_handler import ola_handler
 
-# ola = ola_handler()
-# ola.setup()
+ola = ola_handler()
+ola.setup()
 connections = 0
 socketio = SocketIO(app, cors_allowed_origins="*",
                     logger=False, engineio_logger=False)
 
+last_send_time = 0
 
 def send_dmx(fader: int, channelId: int, fader_value: int, device: dict, channel: dict) -> None:
     if fader == 0 and channelId == 0:
         print("Masterfader")
-        # ola.master_fader(fader_value)
+        ola.master_fader(fader_value)
     else:
         try:
             dmx_channel = int(channel['dmx_channel'])
             universe = int(device['universe'][1:])
-            # ola.send_dmx(universe, dmx_channel - 1, fader_value)
-            print(f"dmx {dmx_channel}, value {fader_value}, universe {universe}")
+            ola.send_dmx(universe, dmx_channel - 1, fader_value)
+            # print(f"dmx {dmx_channel}, value {fader_value}, universe {universe}")
         except KeyError:
             print('No dmx_channel key for non-master channel')
 
 
 def register_socketio_events(socketio):
     # Mutator method to get updates from driver
-    def faderSend(index, value, channelid):
+    def faderSend(index, value, channelId):
+        global last_send_time
+        current_time = time.time() * 1000
         socketio.emit('variable_update', {
-            'deviceId': index, 'value': value, 'channelId': channelid}, namespace='/socket')
+            'deviceId': index, 'value': value, 'channelId': channelId}, namespace='/socket')
+        
+        if current_time - last_send_time >= 20:
+            # Den Zeitstempel für den aktuellen Aufruf aktualisieren
+            last_send_time = current_time
+            
+            # Die "send" Funktion aufrufen
+            send_dmx(index, channelId, value, routes.devices[index], routes.devices[index]["attributes"]["channel"][channelId])
 
     def callback(index, value):
         print("Eintrag", index, "wurde geändert:", value)
         faderSend(index, value, 0)
         # muss noch getestet werden
-        send_dmx(device["id"], 0, value, device, 0)
 
         for i, device in enumerate(routes.devices):
             if device["id"] == index:
@@ -65,22 +75,22 @@ def register_socketio_events(socketio):
             # Send every channel to the device to the client
             for device in routes.scenes[scene]["channel"]:
                 for channel in device["attributes"]["channel"]:
-                    if channel['id'] == 0:  # !!! muss raus um alle channel zu schicken !!!
-                        device1 = next(
-                            (device1 for device1 in routes.devices if device1['id'] == device['id']), None)
-                        deviceChannel = device1["attributes"]["channel"][channel['id']]
-                        if status:  # on
-                            faderSend(
-                                device["id"], channel["sliderValue"], channel["id"])
-                            deviceChannel["sliderValue"] = channel["sliderValue"]
-                            send_dmx(device["id"], channel["id"],
-                                     channel["sliderValue"], device, channel)
-                        else:      # off
-                            deviceChannel["sliderValue"] = deviceChannel["backupValue"]
-                            faderSend(
-                                device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
-                            send_dmx(device["id"], channel["id"],
-                                     channel["backupValue"], device, channel)
+                    #if channel['id'] == 0:  # !!! muss raus um alle channel zu schicken !!!
+                    device1 = next(
+                        (device1 for device1 in routes.devices if device1['id'] == device['id']), None)
+                    deviceChannel = device1["attributes"]["channel"][channel['id']]
+                    if status:  # on
+                        faderSend(
+                            device["id"], channel["sliderValue"], channel["id"])
+                        deviceChannel["sliderValue"] = channel["sliderValue"]
+                        send_dmx(device["id"], channel["id"],
+                                    channel["sliderValue"], device, channel)
+                    else:       # off
+                        deviceChannel["sliderValue"] = deviceChannel["backupValue"]
+                        faderSend(
+                            device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
+                        send_dmx(device["id"], channel["id"],
+                                    deviceChannel["backupValue"], device, channel)
 
         # Send update to all clients
         global connections

@@ -40,11 +40,11 @@ class Driver:
         self.fader_touch       = [False] * 8
         self.fader_touch_flag  = False
         
-        self.outport = mido.open_output('USB MIDI Interface 1')
-        self.inport  = mido.open_input( 'USB MIDI Interface 0')
+        #self.outport = mido.open_output('USB MIDI Interface 1')
+        #self.inport  = mido.open_input( 'USB MIDI Interface 0')
         #--MMix Config - DONT CHANGE -
-        #self.outport = mido.open_output('USB MIDI Interface MIDI 1')
-        #self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
+        self.outport = mido.open_output('USB MIDI Interface MIDI 1')
+        self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
         
         self.current_page = 1
         
@@ -187,9 +187,9 @@ class Driver:
     def setup(self):
         
         self.clearDisplay()
-        """ self.pushFader(0, 255) # set master to 255
+        self.pushFader(0, 255) # set master to 255
         for index in range(1, 8): # every other fader to 0
-            self.pushFader(index, 0) """
+            self.pushFader(index, 0)
         
         if self.light_mode:
             self.displayASCII_perChannel(7,0,"LIGHT")

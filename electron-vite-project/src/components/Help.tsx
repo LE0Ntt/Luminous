@@ -51,8 +51,8 @@ function Help({ onClose }: SettingsProps) {
           <span>{t("help")}</span>
         </div>
         <div className="SettingsContent innerWindow">
-          <div className="SettingsTextBoxContainer">
-          {t("help_text")}
+          <div className="SettingsOption ">
+          <span>{t("help_text")}</span>
           </div>
         </div>
       </div>

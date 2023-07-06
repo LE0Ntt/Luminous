@@ -68,7 +68,7 @@ function SettingsOla({ onConfirm, onClose, isDelete }: SettingsOlaProps) {
           } else {
             console.log(newUrl)
             const link = newUrl;
-            window.open(newUrl, "_blank", "width=800,height=600");
+            window.open("192.168.0.251:9090", "_blank", "width=800,height=600");
           }
           handleClose();
         } else {

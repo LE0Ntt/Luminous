@@ -173,8 +173,8 @@ function Settings({ onClose }: SettingsProps) {
               <span>OLA</span>
             </div>
             
-            <button className="SettingsButton" onClick={handleOpenOlaWindow}>
-            OLA öffnen
+            <button className="SettingsButton controlButton" onClick={handleOpenOlaWindow}>
+            {t("set_ola")}
           </button>
           {isOlaWindowOpen && <SettingsOla onClose={handleCloseOlaWindow} />}
             
@@ -184,8 +184,8 @@ function Settings({ onClose }: SettingsProps) {
             <div className="LightSettingsSubTitle">
               <span>{t("set_overview")}</span>
             </div>
-          </div> */}
-          <div className="SettingsOption"></div>
+          </div>
+          <div className="SettingsOption"></div> */}
         </div>
       </div>
     </div>

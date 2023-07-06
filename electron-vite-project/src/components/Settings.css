@@ -80,7 +80,7 @@
   background-color: var(--fillLight);
   border: var(--onepStrokeSwitched) 1px solid;
   border-radius: 5px;
-  width: 160px;
+  width: 10vw;
   height: 35px;
   position: relative;
   padding-left: 10px;
@@ -137,12 +137,14 @@
 }
 
 .SettingsButton {
-  height: 36px;
-  width: 225px;
-  left: 122px;
-  display: flex;
-  gap: 20px;
-  padding: 20px;
+  position: relative;
+  height: 60px;
+  width: 15vw;
+  top: 20px;
+  
+  
+  
+  
 }
 
 .SettingsSavePWButton {
@@ -153,11 +155,13 @@
   bottom: 0px;
 }
 
+
 .SettingsLanguageSelection {
   background-color: var(--fillLight);
   border: var(--onepStrokeSwitched) 1px solid;
   border-radius: 5px;
   height: 35px;
+  width: 10vw;
   position: relative;
   padding-left: 10px;
   outline: none;

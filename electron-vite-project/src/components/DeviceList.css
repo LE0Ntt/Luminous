@@ -24,6 +24,28 @@ hr {
     background: rgba(148, 148, 148, .2);
     margin-right: 14px;
     border: solid 1px var(--onepStroke);
+    background-size: cover;
+    background-position: center;
+}
+
+.spotIcon {
+    background-image: url('../assets/spotIcon.png');
+}
+
+.rgbIcon {
+    background-image: url('../assets/rgbIcon.png');
+}
+
+.biIcon {
+    background-image: url('../assets/biIcon.png');
+}
+
+.fillIcon {
+    background-image: url('../assets/fillIcon.png');
+}
+
+.miscIcon {
+    background-image: url('../assets/miscIcon.png');
 }
 
 .number {

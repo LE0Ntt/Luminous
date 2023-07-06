@@ -1,3 +1,17 @@
+/**
+ * Luminous - A Web-Based Lighting Control System
+ * 
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ * 
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ * 
+ * @file LightSettings.css
+ */
 @import url(../Color.css);
 
 .LightSettingsOverlay {
@@ -56,7 +70,7 @@
 }
 
 .LightSettingsSelectedDevice span,
-.LightSettingsSelectedDevice .nameNumberBox{
+.LightSettingsSelectedDevice .nameNumberBox {
   color: var(--primaryDark);
 }
 
@@ -142,7 +156,7 @@
   border-radius: 5px;
 }
 
-.LightSettingsDMXBoxLeft{
+.LightSettingsDMXBoxLeft {
   position: relative;
   display: flex;
   width: 80px;
@@ -155,7 +169,7 @@
   border: var(--onepStroke) 1px solid;
 }
 
-.LightSettingsDMXBoxRight{
+.LightSettingsDMXBoxRight {
   position: relative;
   display: flex;
   width: stretch;
@@ -169,11 +183,11 @@
   padding: 0px 10px 0px 10px;
 }
 
-.LightSettingsDMXBoxRight select{
+.LightSettingsDMXBoxRight select {
   width: stretch;
 }
 
-.LightSettingsTextBoxContainer{
+.LightSettingsTextBoxContainer {
   width: stretch;
   display: flex;
   position: relative;
@@ -184,7 +198,7 @@
   overflow: auto;
 }
 
-.LightSettingsTextBox{
+.LightSettingsTextBox {
   background-color: var(--fillLight);
   border: var(--onepStrokeSwitched) 1px solid;
   border-radius: 5px;
@@ -196,7 +210,7 @@
   /* margin-bottom: 10px; */
 }
 
-.LightSettingsTextBoxSmall{
+.LightSettingsTextBoxSmall {
   background-color: var(--fillLight);
   border: var(--onepStrokeSwitched) 1px solid;
   border-radius: 5px;
@@ -211,9 +225,9 @@
 .LightSettingsTextBoxSmall::-webkit-outer-spin-button,
 .LightSettingsTextBoxSmall::-webkit-inner-spin-button,
 .LightSettingsChannelInput::-webkit-outer-spin-button,
-.LightSettingsChannelInput::-webkit-inner-spin-button  {
-    -webkit-appearance: none;
-    margin: 0;
+.LightSettingsChannelInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .LightSettingsTitle {

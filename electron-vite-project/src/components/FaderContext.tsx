@@ -18,7 +18,6 @@ import { useConnectionContext } from "./ConnectionContext";
 interface FaderContextProps {
   faderValues: number[][];
   setFaderValue: (sliderGroupId: number, faderId: number, value: number) => void;
-  
   isDragging?: boolean;
   setIsDragging: (isDragging: boolean) => void;
 }
@@ -30,11 +29,17 @@ interface FaderProviderProps {
 const FaderContext = createContext<FaderContextProps | undefined>(undefined);
 
 export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
-  const sliderGroupId = 693;
-  const initialFaderValues = Array.from({ length: sliderGroupId }, () => new Array(6).fill(0));
+  const sliderGroupId = 694;
+  const initialFaderValues = Array.from({ length: sliderGroupId }, (_, x) => {
+    if (x >= sliderGroupId - 2) { // Last 2 sliders are reserved for DMX
+      return new Array(513).fill(0);
+    } else {
+      return new Array(6).fill(0);
+    }
+  });
   const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
   const [isDragging, setIsDragging] = useState(false);
-  const { on, off, url} = useConnectionContext();
+  const { on, off } = useConnectionContext();
 
   const setFaderValue = (sliderGroupId: number, faderId: number, value: number) => {
     const newFaderValues = [...faderValues];
@@ -44,15 +49,13 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const eventListener = (data: any) => {
-      console.log("Received data from server:", data);
       if (!isDragging && data.deviceId !== undefined) { 
-        console.log("Received data from server:", data.value);
-        setFaderValue(data.deviceId, data.channelId, data.value); // 0 ist platzhalter
+        setFaderValue(data.deviceId, data.channelId, data.value);
       }
     };
   
     on("variable_update", eventListener);
-  
+
     return () => off("variable_update", eventListener);
   }, [on, off, setFaderValue, isDragging]);
 

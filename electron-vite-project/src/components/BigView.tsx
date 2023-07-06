@@ -97,11 +97,85 @@ function BigView({ onClose }: BigViewProps) {
                 <div className="universeLabel window">
                   U1
                 </div>
+                { connected && (
+                  <div className="sliders">
+                    {Array.from({ length: 512 }).map((_, index) => {
+                      const mappedIndex = index + 1;
+                      const matchedSlider = sliders.find((slider) =>
+                        slider.universe === "U1" &&
+                        slider.attributes.channel.some((channel: { dmx_channel: string; }) => parseInt(channel.dmx_channel) === mappedIndex)
+                      );
+                      if (matchedSlider) {
+                        const matchedChannel = matchedSlider.attributes.channel.find((channel: { dmx_channel: string; }) => parseInt(channel.dmx_channel) === mappedIndex);
+                        return (
+                          <div key={index} className="sliderHeight">
+                            <h2 className="faderText">{mappedIndex}</h2>
+                            <Fader
+                              key={index}
+                              id={matchedChannel.id}
+                              sliderGroupId={matchedSlider.id}
+                              name={matchedSlider.name + " " + matchedChannel.channel_type}
+                            />
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div key={index} className="sliderHeight">
+                            <h2 className="faderText">{mappedIndex}</h2>
+                            <Fader
+                              key={index}
+                              id={mappedIndex}
+                              sliderGroupId={692}
+                              name="Channel"
+                            />
+                          </div>
+                        );
+                      }
+                    })}
+                  </div>
+                )}
               </div>
               <div className='BigViewContent innerWindow'>
                 <div className="universeLabel window">
                   U2
                 </div>
+                { connected && (
+                  <div className="sliders">
+                    {Array.from({ length: 512 }).map((_, index) => {
+                      const mappedIndex = index + 1;
+                      const matchedSlider = sliders.find((slider) =>
+                        slider.universe === "U2" &&
+                        slider.attributes.channel.some((channel: { dmx_channel: string; }) => parseInt(channel.dmx_channel) === mappedIndex)
+                      );
+                      if (matchedSlider) {
+                        const matchedChannel = matchedSlider.attributes.channel.find((channel: { dmx_channel: string; }) => parseInt(channel.dmx_channel) === mappedIndex);
+                        return (
+                          <div key={index} className="sliderHeight">
+                            <h2 className="faderText">{mappedIndex}</h2>
+                            <Fader
+                              key={index}
+                              id={matchedChannel.id}
+                              sliderGroupId={matchedSlider.id}
+                              name={matchedSlider.name + " " + matchedChannel.channel_type}
+                            />
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div key={index} className="sliderHeight">
+                            <h2 className="faderText">{mappedIndex}</h2>
+                            <Fader
+                              key={index}
+                              id={mappedIndex}
+                              sliderGroupId={693}
+                              name="Channel"
+                            />
+                          </div>
+                        );
+                      }
+                    })}
+                  </div>
+                )}
               </div>
             </>
           ) : (
@@ -118,10 +192,10 @@ function BigView({ onClose }: BigViewProps) {
                       .map((slider) => (
                         <React.Fragment key={slider.id}>
                           {slider.attributes.channel.map((channel: { id: number; channel_type: string }) => (
-                            <div key={slider.id} className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}>
+                            <div key={slider.id + '-' + channel.id} className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}>
                               <h2 className="faderText">{slider.id}</h2>
                               <Fader
-                                key={slider.id}
+                                key={slider.id + '-' + channel.id}
                                 id={channel.id}
                                 sliderGroupId={slider.id}
                                 name={channel.id !== 0 ? channel.channel_type : slider.name}
@@ -145,10 +219,10 @@ function BigView({ onClose }: BigViewProps) {
                       .map((slider) => (
                         <React.Fragment key={slider.id}>
                           {slider.attributes.channel.map((channel: { id: number; channel_type: string }) => (
-                            <div key={slider.id} className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}>
+                            <div key={slider.id + '-' + channel.id} className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}>
                               <h2 className="faderText">{slider.id}</h2>
                               <Fader
-                                key={slider.id}
+                                key={slider.id + '-' + channel.id}
                                 id={channel.id}
                                 sliderGroupId={slider.id}
                                 name={channel.id !== 0 ? channel.channel_type : slider.name}

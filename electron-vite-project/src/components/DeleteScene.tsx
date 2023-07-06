@@ -1,3 +1,17 @@
+/**
+ * Luminous - A Web-Based Lighting Control System
+ * 
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ * 
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ * 
+ * @file DeleteScene.tsx
+ */
 import React, { useState, useCallback, useContext } from 'react';
 import './BigView.css';
 import Button from './Button';

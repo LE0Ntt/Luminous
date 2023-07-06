@@ -1,3 +1,17 @@
+/**
+ * Luminous - A Web-Based Lighting Control System
+ * 
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ * 
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ * 
+ * @file Settings.css
+ */
 @import url(../Color.css);
 
 .SettingsOverlay {
@@ -23,11 +37,16 @@
   top: 293px;
   left: 535px;
   */
-  height: 70vh; /* Verwendet 50% der Höhe des Viewports */
-  width: 70vw; /* Verwendet 50% der Breite des Viewports */
-  top: 50%; /* Platziert das Element in der vertikalen Mitte */
-  left: 50%; /* Platziert das Element in der horizontalen Mitte */
-  transform: translate(-50%, -50%); /* Zentriert das Element */
+  height: 70vh;
+  /* Verwendet 50% der Höhe des Viewports */
+  width: 70vw;
+  /* Verwendet 50% der Breite des Viewports */
+  top: 50%;
+  /* Platziert das Element in der vertikalen Mitte */
+  left: 50%;
+  /* Platziert das Element in der horizontalen Mitte */
+  transform: translate(-50%, -50%);
+  /* Zentriert das Element */
   border-radius: 10px;
   background-color: var(--fillMedium);
   color: var(--primary);
@@ -57,7 +76,7 @@
   font-size: 20px;
 }
 
-.SettingsTextBox{
+.SettingsTextBox {
   background-color: var(--fillLight);
   border: var(--onepStrokeSwitched) 1px solid;
   border-radius: 5px;
@@ -79,14 +98,14 @@
   display: flex;
   flex-direction: column;
   height: stretch;
-  
+
   top: 40px;
   margin-bottom: 40px;
   overflow: auto;
   bottom: 0;
 }
 
-.SettingsTextBoxContainer{
+.SettingsTextBoxContainer {
   width: stretch;
   display: flex;
   position: relative;
@@ -103,7 +122,7 @@
   position: relative;
   width: stretch;
   padding: 15px 20px 20px 20px;
- 
+
 }
 
 .SettingsLayer {
@@ -165,7 +184,7 @@
 
 .logoBig {
   height: 100px;
-  width:  540px;
+  width: 540px;
   mask: url(../assets/Luminous_Logo.svg);
   mask-repeat: no-repeat;
   background: var(--secondary);

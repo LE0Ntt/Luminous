@@ -1,6 +1,16 @@
 /**
- * Toggle.tsx
- * @author Leon Hölzel
+ * Luminous - A Web-Based Lighting Control System
+ * 
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ * 
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ * 
+ * @file Toggle.tsx
  */
 import { useState } from 'react';
 import './Toggle.css';

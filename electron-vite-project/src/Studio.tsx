@@ -1,6 +1,16 @@
 /**
- * Control.tsx
- * @author Leon Hölzel, Darwin Pietas
+ * Luminous - A Web-Based Lighting Control System
+ * 
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ * 
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ * 
+ * @file Studio.tsx
  */
 import './index.css';
 import './Studio.css';
@@ -130,8 +140,8 @@ const Studio = () => {
             <div className='studio_overview_infopanel studio_overview_infopanel_greenscreen'>
               <div className='studio_overview_infopanel_text'>Greenscreen</div>
               <div className='studio_overview_infopanel_brightness'>
-                {(((faderValues[1][16] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
-                (((faderValues[1][16] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"} {/* muss noch an neue variante angepasst werden */}
+                {(((faderValues[1][13] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
+                (((faderValues[1][13] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"} {/* muss noch an neue variante angepasst werden */}
               </div>
             </div>
             <div className='studio_overview_light'>
@@ -211,8 +221,8 @@ const Studio = () => {
                               <div className='studio_overview_infopanel_text'>#{slider.id}</div>
                               <div className='studio_overview_infopanel_brightness'>
                                 {((solo && !soloLights.includes(slider.id)) ? 0 : 
-                                ((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
-                                (((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+                                ((faderValues[11][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
+                                (((faderValues[11][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
                               </div>
                             </div>                        
                           </>

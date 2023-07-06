@@ -47,7 +47,7 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
       console.log("Received data from server:", data);
       if (!isDragging && data.deviceId !== undefined) { 
         console.log("Received data from server:", data.value);
-        setFaderValue(data.deviceId, 0, data.value); // 0 ist platzhalter
+        setFaderValue(data.deviceId, data.channelId, data.value); // 0 ist platzhalter
       }
     };
   

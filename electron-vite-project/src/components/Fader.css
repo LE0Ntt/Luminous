@@ -242,3 +242,7 @@
     width: 80%;
     white-space: nowrap;
 }
+
+.faderName::first-letter {
+    text-transform: uppercase;
+}

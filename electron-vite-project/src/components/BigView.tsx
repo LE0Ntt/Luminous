@@ -21,12 +21,15 @@ import Fader from './Fader';
 import { useConnectionContext } from './ConnectionContext';
 import { useFaderContext } from './FaderContext';
 import { TranslationContext } from './TranslationContext';
+import React from 'react';
 
 interface BigViewProps {
   onClose: () => void;
 }
 
 interface SliderConfig {
+  attributes: any;
+  universe: string;
   id: number;
   sliderValue: number;
   name: string;
@@ -107,26 +110,54 @@ function BigView({ onClose }: BigViewProps) {
                 <div className="universeLabel window">
                   U1
                 </div>
-                
+                { connected && (
+                  <div className="sliders">
+                    {sliders
+                      .slice(1)
+                      .filter((slider) => slider.universe === "U1")
+                      .map((slider) => (
+                        <React.Fragment key={slider.id}>
+                          {slider.attributes.channel.map((channel: { id: number; channel_type: string }) => (
+                            <div key={slider.id} className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}>
+                              <h2 className="faderText">{slider.id}</h2>
+                              <Fader
+                                key={slider.id}
+                                id={channel.id}
+                                sliderGroupId={slider.id}
+                                name={channel.id !== 0 ? channel.channel_type : slider.name}
+                              />
+                            </div>
+                          ))}
+                        </React.Fragment>
+                      ))}
+                  </div>
+                )}
               </div>
               <div className='BigViewContent innerWindow'>
                 <div className="universeLabel window">
                   U2
                 </div>
-              { connected && (
-                <div className="sliders">
-                  { sliders.slice(1).map((slider) => (
-                    <div key={slider.id} className='slidersHeight'>
-                      <h2 className='faderText'>{slider.id}</h2>
-                      <Fader
-                        key={slider.id}
-                        id={0}
-                        sliderGroupId={slider.id}
-                        name={slider.name}
-                      />
-                    </div>
-                  ))}
-                </div>
+                { connected && (
+                  <div className="sliders">
+                    {sliders
+                      .slice(1)
+                      .filter((slider) => slider.universe === "U2")
+                      .map((slider) => (
+                        <React.Fragment key={slider.id}>
+                          {slider.attributes.channel.map((channel: { id: number; channel_type: string }) => (
+                            <div key={slider.id} className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}>
+                              <h2 className="faderText">{slider.id}</h2>
+                              <Fader
+                                key={slider.id}
+                                id={channel.id}
+                                sliderGroupId={slider.id}
+                                name={channel.id !== 0 ? channel.channel_type : slider.name}
+                              />
+                            </div>
+                          ))}
+                        </React.Fragment>
+                      ))}
+                  </div>
                 )}
               </div>
             </>

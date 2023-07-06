@@ -187,6 +187,10 @@
   width: stretch;
 }
 
+.LightSettingsDMXBoxRight span::first-letter {
+  text-transform: uppercase;
+}
+
 .LightSettingsTextBoxContainer {
   width: stretch;
   display: flex;

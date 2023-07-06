@@ -146,6 +146,7 @@ function Control() {
   const selected = selectedDevices[0] && devices.length > 0;
   var deviceWindow = 'devices window' + (selected ? ' devicesSmall' : ''); // 5px upper right corner if selected
   deviceWindow = animiation ? (deviceWindow + ' devicesAnimation') : deviceWindow
+  const mainAnimation = 'controlMain' + (animiation ? ' mainAnimation' : '');
   const hide   = 'noSelectWindow window' + (selected ? ' hide' : '');
   const selectAnimation = 'selectedDevices' + (animiation ? ' devicesAnimation' : '');
 
@@ -261,7 +262,7 @@ function Control() {
           </div>
         </div>
         
-        <svg className="controlMain" width="1860" height="930" viewBox="0 0 1860 930" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={mainAnimation} width="1860" height="930" viewBox="0 0 1860 930" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g filter="url(#filter0_b_873_8277)">
             <g filter="url(#filter1_d_873_8277)" shapeRendering="geometricPrecision">
               <path d={pathFill} fill="var(--fillMedium)"/>

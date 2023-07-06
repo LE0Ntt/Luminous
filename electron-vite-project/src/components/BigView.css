@@ -107,3 +107,7 @@
     top: 56px;
     position: absolute;
 }
+
+.grayBackground .fader {
+    background-color: var(--color00000010);
+}

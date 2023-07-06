@@ -179,12 +179,12 @@ function Settings({ onClose }: SettingsProps) {
           {isOlaWindowOpen && <SettingsOla onClose={handleCloseOlaWindow} />}
             
           </div>
-          <div className="SettingsOption">
+          {/* <div className="SettingsOption">
             <hr />
             <div className="LightSettingsSubTitle">
               <span>{t("set_overview")}</span>
             </div>
-          </div>
+          </div> */}
           <div className="SettingsOption"></div>
         </div>
       </div>

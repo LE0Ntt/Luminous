@@ -52,7 +52,7 @@ function Help({ onClose }: SettingsProps) {
         </div>
         <div className="SettingsContent innerWindow">
           <div className="SettingsTextBoxContainer">
-            Für weitere Informationen wenden Sie sich bitte an das Studio Personal.
+          {t("help_text")}
           </div>
         </div>
       </div>

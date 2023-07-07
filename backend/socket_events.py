@@ -108,7 +108,8 @@ def register_socketio_events(socketio):
     def update_scene(data):
         status = bool(data['status'])
         scene = int(data['id'])
-        driver.quickSceneButtonUpdate(scene, status)
+        if driver is not None:
+            driver.quickSceneButtonUpdate(scene, status)
         if scene < len(routes.scenes):  # Make sure scene exists
             routes.scenes[scene]["status"] = status
             print(routes.scenes[scene])

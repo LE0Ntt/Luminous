@@ -62,18 +62,15 @@ function SettingsOla({ onConfirm, onClose, isDelete }: SettingsOlaProps) {
       .then(response => response.json())
       .then(data => {
         if (data.match === 'true') {
-          console.log('Password correct');
           if (onConfirm !== undefined) {
             onConfirm(true);
           } else {
-            console.log(newUrl)
             const link = newUrl;
             window.open(newUrl, 'noopener');
             shell.openExternal(newUrl);
           }
           handleClose();
         } else {
-          console.log('Password wrong');
           // If the password is wrong, the text box will be highlighted in red
           const textBox = document.getElementsByClassName('SettingsOlaTextBox')[0] as HTMLInputElement;
           textBox.focus();

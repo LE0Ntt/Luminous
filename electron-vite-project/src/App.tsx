@@ -24,8 +24,6 @@ import { TranslationProvider } from "./components/TranslationContext";
 import translations from "./translations.json";
 import Titlebar from './components/Titlebar';
 
-console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}!`)
-
 function App() {
   const mainContentRef = useRef<HTMLDivElement>(null);
   const [contentScale, setContentScale] = useState(1);

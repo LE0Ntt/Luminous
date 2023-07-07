@@ -81,10 +81,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
 
   let tempInKelvin = rgbToKelvin(red, green, blue);
   kelvin = (tempInKelvin - 2220) / 8648 * 255;
-  console.log("Kelvin: ",tempInKelvin);
-  console.log("Kelvin0-255: ",kelvin);
 
-  console.log(selectedDevices)
   selectedDevices.forEach((device: any) => {
     device.attributes.channel.forEach((channel: any) => {
       let value;
@@ -96,7 +93,6 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
             case '2': value = values.green || 0; break;
             case '3': value = values.blue || 0; break;
           }
-          console.log('setFaderValue', device.id, channel.id, value)
           setFaderValue(device.id, channel.id, value);
           emit("fader_value", { deviceId: device.id, value, channelId: channel.id});
           break;
@@ -105,7 +101,6 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
             case '0': value = values.master || 0; break;
             case '1': value = kelvin || 0; break;
           }
-          console.log('setFaderValue', device.id, channel.id, value)
           setFaderValue(device.id, channel.id, value);
           emit("fader_value", { deviceId: device.id, value, channelId: channel.id});
           break;
@@ -115,7 +110,6 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
           switch(channel.id.toString()) {
             case '0': value = values.master || 0; break;
           }
-          console.log('setFaderValue', device.id, channel.id, value)
           setFaderValue(device.id, channel.id, value);
           emit("fader_value", { deviceId: device.id, value, channelId: channel.id});
           break;

@@ -30,7 +30,7 @@ function LightSettings({ onClose }: SettingsProps) {
     id: number;
     deviceValue: number;
     name: string;
-  };
+  }
 
   const handleClose = () => {
     setIsOpen(false);

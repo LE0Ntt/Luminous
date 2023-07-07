@@ -6,10 +6,10 @@ from server.models import Scene
 import json
 import time
 # OLA imports
-from ola_handler import ola_handler
+#from ola_handler import ola_handler
 
-ola = ola_handler()
-ola.setup()
+#ola = ola_handler()
+#ola.setup()
 connections = 0
 socketio = SocketIO(app, cors_allowed_origins="*",
                     logger=False, engineio_logger=False)
@@ -68,6 +68,11 @@ def register_socketio_events(socketio):
     except OSError as e:
         print("Possibly the MIDI interface is not connected.", str(e))
         driver = None
+        
+        # send every channel of each device to ola on starqup
+        for device in routes.devices:
+            for channel in device["attributes"]["channel"]:
+                send_dmx(device["id"], channel["id"], channel["sliderValue"], device, channel)
 
     # Update status (on/off) of a scene
     @socketio.on('scene_update', namespace='/socket')

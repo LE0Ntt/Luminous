@@ -184,7 +184,7 @@ const Studio = () => {
               display: 'grid',
               gridTemplateRows: `repeat(${studioRows}, 1fr)`,
               gridTemplateColumns: `repeat(${studioColumns}, 1fr)`,
-              gap: '5px', // Abstand zwischen den Zellen
+              gap: '5px',
               width: '604px',
               height: '672px',
               alignItems: 'center',

@@ -327,7 +327,6 @@ function LightSettings({ onClose }: SettingsProps) {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data);
       setSelectedDevice(undefined);
       fetchDevices();
     })

@@ -50,22 +50,18 @@ function TitleBar() {
   };
 
   const openSettings = () => {
-    console.log('Settings opened!');
     setSettingsOpen(true);
   };
 
   const closeSettings = () => {
-    console.log('Settings closed!');
     setSettingsOpen(false);
   };
 
   const openLightSettings = () => {
-    console.log('Light-Settings opened!');
     setLightSettingsOpen(true);
   };
 
   const closeLightSettings = () => {
-    console.log('Light-Settings closed!');
     setLightSettingsOpen(false);
   };
 
@@ -99,6 +95,6 @@ function TitleBar() {
       {lightSettingsOpen && <LightSettings onClose={closeLightSettings} />}
     </div>
   );
-};
+}
 
 export default TitleBar;

@@ -9,6 +9,21 @@ from server import app, db
 from server.models import Device, Admin, Scene, Settings
 
 
+# initial values for channels
+def set_channel_values(channels):
+    for channel in channels:
+        if channel["channel_type"] in ["r", "g", "b"]:
+            channel["sliderValue"] = 255
+            channel["backupValue"] = 255
+        elif channel["channel_type"] == "bi":
+            channel["sliderValue"] = 128
+            channel["backupValue"] = 128
+        else:
+            channel["sliderValue"] = 0
+            channel["backupValue"] = 0
+    return channels        
+
+
 # load devices from database
 @app.route('/devices')
 def get_devices():
@@ -31,10 +46,7 @@ def get_devices():
     with app.app_context():
         devices = Device.query.all()
         for device in devices:
-            channels = device.attributes.get("channel", [])
-            for channel in channels:
-                channel["sliderValue"] = 0
-                channel["backupValue"] = 0
+            channels = set_channel_values(device.attributes.get("channel", []))
             device = {
                 "id": device.id,
                 "name": device.name,
@@ -51,10 +63,10 @@ def get_devices():
 
 
 devices = get_devices()
-
-
+            
+            
 # load scenes from database
-def get_scenes():  # wird ersetzt durch db abfrage
+def get_scenes():
     scenes_list = []
 
     with app.app_context():
@@ -104,10 +116,7 @@ def add_light():
     db.session.commit()
     global devices
 
-    channels = device.attributes.get("channel", [])
-    for channel in channels:
-        channel["sliderValue"] = 0
-        channel["backupValue"] = 0
+    channels = set_channel_values(device.attributes.get("channel", []))
     device_dict = {
         "id": int(device.number),
         "name": device.name,
@@ -147,10 +156,7 @@ def update_light():
     device.attributes = data['attributes']
     db.session.commit()
 
-    channels = device.attributes.get("channel", [])
-    for channel in channels:
-        channel["sliderValue"] = 0
-        channel["backupValue"] = 0
+    channels = set_channel_values(device.attributes.get("channel", []))
     device_dict = {
         "id": int(device.number),
         "name": device.name,

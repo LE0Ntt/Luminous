@@ -114,7 +114,6 @@ def add_light():
     print(device)
     db.session.add(device)
     db.session.commit()
-    global devices
 
     channels = set_channel_values(device.attributes.get("channel", []))
     device_dict = {
@@ -128,19 +127,23 @@ def add_light():
         }
     }
     # Add device to devices list to the right position based on the id
-    for i in range(len(devices)):
-        if devices[i]['id'] > device_dict['id']:
-            devices.insert(i, device_dict)
-            break
-
+    global devices
+    if devices and device_dict['id'] > devices[-1]['id']:
+        devices.append(device_dict)
+    else:
+        for i in range(len(devices)):
+            if devices[i]['id'] > device_dict['id']:
+                devices.insert(i, device_dict)
+                break
+    
     return {'message': 'success'}
 
 
 @app.route('/updatelight', methods=['POST'])
 def update_light():
     data = request.get_json()
-    deviceId = int(data['id'])
-    newNumber = int(data['number'])
+    deviceId = int(data['id'])      # Old device number/id
+    newNumber = int(data['number']) # New device number/id
 
     # Check if device exists
     device = Device.query.filter_by(number=deviceId).first()
@@ -170,15 +173,19 @@ def update_light():
     print(device_dict)
     global devices
     for i in range(len(devices)):
-        if deviceId != newNumber:
+        if deviceId != newNumber: # If device number changed, remove old device and add new one
             if devices[i]['id'] == deviceId:
                 devices.pop(i)
-            if devices[i]['id'] > newNumber:
-                devices.insert(i, device_dict)
                 break
         elif devices[i]['id'] == newNumber:
             devices[i] = device_dict
             break
+    for i in range(len(devices)):    
+        if deviceId != newNumber:
+            if devices[i]['id'] > newNumber:
+                devices.insert(i, device_dict)
+                break
+            
     return {'message': 'success'}
 
 

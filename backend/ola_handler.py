@@ -29,12 +29,19 @@ class ola_handler:
         self.wrapper.Run()
         print("Setup done")
 
-    def send_dmx(self, universe, channel, faderValue):
+    def send_dmx(self, universe, channel, faderValue, isMaster):
         if universe in [1, 2]:
             self.fader_data[universe][channel] = faderValue
-            self.dmx_data[universe][channel] = int(
-                self.fader_data[universe][channel] * self.master)
-            self.send_to_universe(universe)
+            if (isMaster == True):
+                self.dmx_data[universe][channel] = int(
+                    self.fader_data[universe][channel] * self.master)
+                self.send_to_universe(universe)
+
+            else:
+                self.dmx_data[universe][channel] = int(
+                    self.fader_data[universe][channel])
+                self.send_to_universe(universe)
+
         else:
             print(f'Error: Invalid universe {universe}', file=sys.stderr)
 

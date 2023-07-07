@@ -19,12 +19,12 @@ last_send_time = 0
 def send_dmx(fader: int, channelId: int, fader_value: int, device: dict, channel: dict) -> None:
     if fader == 0 and channelId == 0:
         print("Masterfader")
-        ola.master_fader(fader_value)
+        #ola.master_fader(fader_value)
     else:
         try:
             dmx_channel = int(channel['dmx_channel'])
             universe = int(device['universe'][1:])
-            ola.send_dmx(universe, dmx_channel - 1, fader_value)
+            #ola.send_dmx(universe, dmx_channel - 1, fader_value)
             # print(f"dmx {dmx_channel}, value {fader_value}, universe {universe}")
         except KeyError:
             print('No dmx_channel key for non-master channel')
@@ -69,11 +69,27 @@ def register_socketio_events(socketio):
         print("Possibly the MIDI interface is not connected.", str(e))
         driver = None
         
-        # send every channel of each device to ola on starqup
-        for device in routes.devices:
-            for channel in device["attributes"]["channel"]:
-                send_dmx(device["id"], channel["id"], channel["sliderValue"], device, channel)
+    # send every channel of each device to ola on startup
+    for device in routes.devices:
+        for channel in device["attributes"]["channel"]:
+            send_dmx(device["id"], channel["id"], channel["sliderValue"], device, channel)
 
+    # Solo for control (LightFX) selection
+    @socketio.on('controlSolo', namespace='/socket')
+    def controlSolo(data):
+        solo = bool(data['solo'])
+        selection = data['devices']
+        for device in routes.devices:
+            if solo:
+                if not any(device['id'] == dev['id'] for dev in selection) and device['attributes']['channel'][0]['sliderValue'] > 0:
+                    device["attributes"]["channel"][0]["sliderValue"] = 0
+                    faderSend(device["id"], 0, 0)
+            else: # unsolo
+                if device['attributes']['channel'][0]['sliderValue'] == 0 and device['id'] != 0:
+                    device["attributes"]["channel"][0]["sliderValue"] = device["attributes"]["channel"][0]["backupValue"]
+                    faderSend(device["id"], device["attributes"]["channel"][0]["backupValue"], 0)
+                
+                
     # Update status (on/off) of a scene
     @socketio.on('scene_update', namespace='/socket')
     def update_scene(data):
@@ -84,7 +100,6 @@ def register_socketio_events(socketio):
             # Send every channel to the device to the client
             for device in routes.scenes[scene]["channel"]:
                 for channel in device["attributes"]["channel"]:
-                    #if channel['id'] == 0:  # !!! muss raus um alle channel zu schicken !!!
                     device1 = next(
                         (device1 for device1 in routes.devices if device1['id'] == device['id']), None)
                     deviceChannel = device1["attributes"]["channel"][channel['id']]
@@ -106,7 +121,7 @@ def register_socketio_events(socketio):
         if connections > 0:
             socketio.emit('scene_update', {
                 'id': scene, 'status': status}, namespace='/socket')
-
+    
     # Delete a scene and tell every client to update
     @socketio.on('scene_delete', namespace='/socket')
     def delete_scene(data):

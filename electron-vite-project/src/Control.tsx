@@ -153,10 +153,9 @@ function Control() {
 
   // Solo Button
   const toggleSolo = () => {
+    emit("controlSolo", { solo: !isSolo, devices: selectedDevices });
     sessionStorage.setItem('controlSolo', `${!isSolo}`);
     setIsSolo(!isSolo);
-    // auswahl mit solo status an server senden
-    
   };
 
   // Color Picker

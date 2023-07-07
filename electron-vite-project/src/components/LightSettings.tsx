@@ -227,7 +227,7 @@ function LightSettings({ onClose }: SettingsProps) {
   };
 
   const updateDevice = () => {
-    if(isNewDevice) {
+    if(isNewDevice) { // Create new device
       fetch(url + '/addlight', {
         method: 'POST',
         headers: {

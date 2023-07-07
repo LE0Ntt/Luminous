@@ -35,7 +35,7 @@ function SettingsOla({ onConfirm, onClose, isDelete }: SettingsOlaProps) {
   const oldUrl = url.toString();
   const newUrl = oldUrl.slice(0, -5) + ":9090";
   
-
+  const { shell } = require('electron');
 
 
   const handleClose = () => {
@@ -68,7 +68,8 @@ function SettingsOla({ onConfirm, onClose, isDelete }: SettingsOlaProps) {
           } else {
             console.log(newUrl)
             const link = newUrl;
-            window.open("192.168.0.251:9090", "_blank", "width=800,height=600");
+            window.open(newUrl, 'noopener');
+            shell.openExternal(newUrl);
           }
           handleClose();
         } else {
@@ -100,7 +101,7 @@ function SettingsOla({ onConfirm, onClose, isDelete }: SettingsOlaProps) {
             placeholder={t("ap_password")}
             value={password}
             onChange={handlePasswordChange}
-            autoFocus // Autofokus aktivieren
+            autoFocus 
           />
           <p className='hide'>a</p> {/* Hidden element for spacing */}
           <div className='SettingsOlaNote'>

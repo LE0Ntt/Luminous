@@ -16,9 +16,11 @@ Todo:
 '''
 
 class Driver:
+    # -------------- Essential and Setup -----------------#
     def __init__(self):
         self.fader_values      = [0] * 8 # values of MotorMix faders
         self.devices = []
+        self.scenes = []
         self.socketio = None
         self.sceneQuickSelectStatus = [False] * 15
 
@@ -27,21 +29,17 @@ class Driver:
         self.num_devices_per_page = 7
 
         self.deviceRouting = [[None] * self.num_devices_per_page for _ in range(self.num_pages)]
+        self.sceneRouting = [[None] * self.num_devices_per_page for _ in range(self.num_pages)]
         self.quickSceneButtonRouting = [ ["LEFT", 7], ["LEFT", 6], ["LEFT", 5], ["LEFT", 4], ["LEFT", 3], ["LEFT", 2], ["LEFT", 1], ["LEFT", 0],
-                                        ["RIGHT", 0], ["RIGHT", 1], ["RIGHT", 2], ["RIGHT", 3], ["RIGHT", 4], ["RIGHT", 5], ["RIGHT", 6] ]
+                                        ["RIGHT", 7], ["RIGHT", 6], ["RIGHT", 5], ["RIGHT", 4], ["RIGHT", 3], ["RIGHT", 2], ["RIGHT", 1] ]
 
+
+        self.current_flagged_channel = 0
         self.left_button_flag  = False
         self.right_button_flag = False
-        self.center_button_flag_0 = False
-        self.center_button_flag_1 = False
-        self.center_button_flag_2 = False
-        self.center_button_flag_3 = False
-        self.center_button_flag_4 = False
-        self.center_button_flag_5 = False
-        self.center_button_flag_6 = False
-        self.center_button_flag_7 = False
+        self.navigation_button_flag = False
         self.fader_touch       = [False] * 8
-        self.fader_touch_flag  = False
+        self.channel_flag  = False
         
         self.outport = mido.open_output('USB MIDI Interface 1')
         self.inport  = mido.open_input( 'USB MIDI Interface 0')
@@ -54,6 +52,7 @@ class Driver:
         self.light_mode = True # False: Scene mode
         self.callback = None
         self.sceneQuickCallback = None
+        self.sceneCallback = None
 
         self.last_value   = [0] * 8
         self.last_time    = [float()] * 8
@@ -83,19 +82,20 @@ class Driver:
                     self.outport.send(msg2)
                 
             if hex_message.startswith('B00F0') and int(hex_message[5], 16) < 8: # Fader
-                self.fader_touch_flag = True
+                self.channel_flag = True
+                self.current_flagged_channel = int(hex_message[5], 16)
                 if self.last_active != int(hex_message[-1:]):
                     self.last_active = int(hex_message[-1:])
                 continue
-            elif (hex_message == 'B02F40') & self.fader_touch_flag:
+            elif (hex_message == 'B02F40') & self.channel_flag:
                 self.fader_touch[self.last_active] = True
-                self.fader_touch_flag = False
+                self.channel_flag = False
                 self.last_time[self.last_active] = time.monotonic() - 0.01
                 print(f"FADER {self.last_active} ACTIVE")
                 continue
-            elif (hex_message == 'B02F00') & self.fader_touch_flag:
+            elif (hex_message == 'B02F00') & self.channel_flag:
                 self.fader_touch[self.last_active] = False
-                self.fader_touch_flag = False
+                self.channel_flag = False
                 print(f"FADER {self.last_active} INACTIVE")
                 continue
             elif hex_message.startswith('B00') & hex_message[3].isdigit(): # Fader movement
@@ -113,6 +113,28 @@ class Driver:
             elif hex_message.startswith('B02') & hex_message[3].isdigit(): # Unnecessary LSB
                 #print("LSB:", hex_message)
                 continue
+            elif (hex_message == 'B02F41') & self.channel_flag:
+                print("Select Channel: " + str(self.current_flagged_channel))
+                self.channel_flag = False
+            elif (hex_message == 'B02F42') & self.channel_flag:
+                print("MUTE Channel: " + str(self.current_flagged_channel))
+                self.channel_flag = False
+            elif (hex_message == 'B02F43') & self.channel_flag:
+                print("SOLO Channel: " + str(self.current_flagged_channel))
+                self.channel_flag = False
+            elif (hex_message == 'B02F44') & self.channel_flag:
+                print("Max Channel: " + str(self.current_flagged_channel))
+                self.fader_mapping(self.current_flagged_channel, 255)
+                self.pushFader(self.deviceRouting[self.current_page-1][self.current_flagged_channel], 255)
+                self.channel_flag = False
+            elif (hex_message == 'B02F45') & self.channel_flag:
+                print("Min Channel: " + str(self.current_flagged_channel))
+                self.pushFader(self.deviceRouting[self.current_page-1][self.current_flagged_channel], 0)
+                self.fader_mapping(self.current_flagged_channel, 0)
+                self.channel_flag = False
+            
+            
+            
             elif hex_message == 'B00F08': # left Button-Block
                 self.left_button_flag = True
             elif self.left_button_flag:
@@ -138,7 +160,7 @@ class Driver:
                     print("MotorMix Scene 1")
                     self.toggleSceneQuickSelect(1)
                 elif hex_message == 'B02F47':
-                    print("MotorMix Scene 0")
+                    print("Scenes: " + str(self.scenes))
                     self.toggleSceneQuickSelect(0)
 
 
@@ -174,30 +196,46 @@ class Driver:
                 self.right_button_flag = False
 
 
-            elif hex_message == 'B00F00':
-                self.center_button_flag_0 = True
-            elif self.center_button_flag_0:
-                if hex_message == "B02F41":
-                    print("SELECT 0 pressed")
-                elif hex_message == "B02F42":
-                    print("MUTE 0 pressed")
-                elif hex_message == "B02F43":
-                    print("SOLO 0 pressed")
-                elif hex_message == "B02F44":
-                    print("REC 0 pressed")
-                self
+            elif hex_message == 'B00F0A':
+                self.navigation_button_flag = True 
+            elif self.navigation_button_flag:
+                if hex_message == 'B02F42':
+                    self.switchModes("light")
+                if hex_message == 'B02F43':
+                    self.switchModes("scene")
 
+
+
+
+
+                #Page forward and backward
+                if hex_message == 'B02F41':
+                    self.rotary_pageUpdate(True)
+                elif hex_message == 'B02F40':
+                    self.rotary_pageUpdate(False)
+                self.navigation_button_flag = False
             elif hex_message == 'B04841':
                 self.rotary_pageUpdate(True)
-                
             elif hex_message == 'B04801':
                 self.rotary_pageUpdate(False)
 
-            
+                
             else:
-                #print("Unknown: " + hex_message)
+                print("Unknown: " + hex_message)
                 continue
     
+    def switchModes(self,mode):
+        if mode == "scene" and self.light_mode:
+            self.current_page = 1
+            self.light_mode = False
+            self.setup()
+        elif mode == "light" and not self.light_mode:
+            self.current_page = 1
+            self.light_mode = True
+            self.setup()
+        else:
+            print("MotorMix: Already in " + mode + " mode")
+
     def setup(self):
         
         self.clearDisplay()
@@ -207,13 +245,14 @@ class Driver:
         
         if self.light_mode:
             self.displayASCII_perChannel(7,0,"LIGHT")
+            self.deviceMapping()
+            self.getDeviceValues()
         else:
             self.displayASCII_perChannel(7,0,"SCENE")
+            self.sceneMapping()
 
         self.displayPageNumber(str(self.current_page))
-
-
-    
+  
     def interpolate_thread(self, value, time_to_sleep, fader):
         while time.monotonic() < self.current_time[fader] + time_to_sleep:
             if value != self.fader_values[fader] or not self.fader_touch[fader]:
@@ -226,9 +265,17 @@ class Driver:
             self.fader_mapping(fader, self.fader_values[fader])
         self.last_time[fader] = self.current_time[fader]
         self.last_value[fader] = value
+    # ----------------- Essential and Setup END -----------------
 
+    # ----------------- Callbacks and Communication-----------------
     def set_callback(self, callback):
             self.callback = callback
+
+    def set_sceneQuickCallback(self, sceneQuickCallback):
+        self.sceneQuickCallback = sceneQuickCallback
+    
+    def set_sceneCallback(self, sceneCallback):
+        self.sceneCallback = sceneCallback
 
     def map_8bit_to_14bit(self, value_8bit):
         value_14bit = value_8bit << 6
@@ -238,6 +285,9 @@ class Driver:
         print("pushFader", number, value)
         if number == 0:
             self.fader_values[7] = value
+            if value == 0:
+                self.displayASCII_perChannel(7,0,"OFF")
+
             msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
             lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
             index = int(str(7), 16)
@@ -262,12 +312,9 @@ class Driver:
                 else:
                     pass
                     #print("Device: " + str(number) + " not found on page: " + str(self.current_page) + " at index: " + str(index))
-    
+    # ----------------- Callbacks and Communication END -----------------
     
     #-------------------- Scene Quick select --------------------
-    def set_sceneQuickCallback(self, sceneQuickCallback):
-        self.sceneQuickCallback = sceneQuickCallback
-    
     def toggleSceneQuickSelect(self, sceneIndex):
         if self.socketio != None:
             if self.sceneQuickSelectStatus[sceneIndex] == False:
@@ -281,6 +328,11 @@ class Driver:
         else:
             print("SocketIO not connected")
             print(self.socketio)
+    
+    def quickSceneButtonUpdate(self, sceneIndex, state):
+        if sceneIndex < len(self.quickSceneButtonRouting):
+            self.button_LED(self.quickSceneButtonRouting[sceneIndex][0], self.quickSceneButtonRouting[sceneIndex][1], state)
+            self.sceneQuickSelectStatus[sceneIndex] = state
     #-------------------- Scene Quick select END--------------------
 
     #-------------------- Blackout --------------------
@@ -365,12 +417,7 @@ class Driver:
 
     #-------------------- page Display END --------------------
 
-    #-------------------- Button LED --------------------
-    def quickSceneButtonUpdate(self, sceneIndex, state):
-        if sceneIndex < len(self.quickSceneButtonRouting):
-            self.button_LED(self.quickSceneButtonRouting[sceneIndex][0], self.quickSceneButtonRouting[sceneIndex][1], state)
-            self.sceneQuickSelectStatus[sceneIndex] = state
-
+    #-------------------- Button LED -------------------
     def button_LED(self, buttonGroup, buttonIndex, state):
         syntax_on = "B0 2C 4"
         syntax_off = "B0 2C 0"
@@ -390,7 +437,14 @@ class Driver:
             if state == 0:
                 message = syntax_off + str(buttonIndex)
             self.outport.send(mido.Message.from_hex(prefix))
-            self.outport.send(mido.Message.from_hex(message))    
+            self.outport.send(mido.Message.from_hex(message))
+
+    def channel_button_LED(self, channel, index, state):
+        prefix = "B0 0C 0"
+        syntax_on = " 2C 4"
+        syntax_off = " 2C 0"
+
+        message = prefix + str(channel) + syntax_on + str(index)
     #-------------------- Button LED END --------------------
     def to_msb_lsb(self, num):
         # Split number into two 7-bit parts
@@ -402,17 +456,23 @@ class Driver:
         return msb_hex, lsb_hex
     
     def fader_mapping(self, fader, value):
-        if fader == 7:
-            number = 0
+        if self.light_mode:
+            if fader == 7:
+                number = 0
+            else:
+                number = self.deviceRouting[self.current_page-1][fader]
+            if number != None:
+                self.callback(number, value)
+                self.displayFaderValues(fader,value)
         else:
-            number = self.deviceRouting[self.current_page-1][fader]
-
-        if number != None:
-            self.callback(number, value)
-            self.displayFaderValues(fader,value)
-        
-        
-   #---------------- Channel Pull ----------------
+            if fader == 7:
+                number = 0
+                self.callback(number, value)
+            else:
+                id = self.sceneRouting[self.current_page-1][fader]
+                if id != None:
+                    self.sceneCallback(id, value)
+                    self.displayFaderValues(id,value)
    
     def rotary_pageUpdate(self, forward):
         if forward:
@@ -427,10 +487,16 @@ class Driver:
             self.current_page = self.num_pages
          
         self.displayPageNumber(str(self.current_page))
-        self.update_deviceDisplay()
-        print("Seite: " + str(self.current_page))
-        self.getDeviceValues()
+        if self.light_mode:
+            self.update_deviceDisplay()
+            print("Seite: " + str(self.current_page))
+            self.getDeviceValues()
+        else:
+            self.update_sceneDisplay()
+            print("Seite: " + str(self.current_page))
+            #self.getSceneValues()
 
+    # -------------------- Device Mode Functions--------------------
     def update_deviceDisplay(self):
         for channel in range(7):
             self.displayASCII_perChannel(channel, 0, str(self.deviceRouting[self.current_page - 1][channel]))
@@ -472,3 +538,64 @@ class Driver:
             self.getDeviceValues()
         
         return
+    # -------------------- Device Mode Functions END--------------------
+
+    # -------------------- Scene Mode Functions--------------------   
+    def update_sceneDisplay(self):
+        for channel in range(6):
+            self.clearChannel(channel)
+
+        scenes_on_this_page = self.sceneRouting[self.current_page -1 ]
+        print(scenes_on_this_page)
+        index = 0
+        for scene in scenes_on_this_page:
+            index = index + 1
+            if scene != None:
+                name = str(self.scenes[scene]["name"])
+                self.displayASCII_perChannel(scene, 0, str(self.generate_abbreviation(name)))
+                print("Scene: " + str(scene) + " Name: " + str(name))
+                lastSceneIndex = scene
+            else:
+                lastSceneIndex = lastSceneIndex + 1
+                self.displayFaderValues(lastSceneIndex, 0)
+                msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(0))[0], 16)
+                lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(0))[1], 16)
+                index = int(str(7), 16)
+                msg1 = mido.Message('control_change', channel=0, control=int(      str(lastSceneIndex), 16), value=msb, time=0)
+                msg2 = mido.Message('control_change', channel=0, control=int("2" + str(lastSceneIndex), 16), value=lsb, time=0)
+                self.outport.send(msg1)
+                self.outport.send(msg2)
+                
+                
+        print(index)
+    
+    def sceneMapping(self):
+        self.num_pages = (len(self.scenes) - 1) // 7 + 2
+        for page in range(1, self.num_pages):
+            for channel in range(7):
+                fader_number = ((page - 1) * 7 + channel)
+                if fader_number < len(self.scenes):
+                    sceneId = int(self.scenes[fader_number]["id"])
+                    self.sceneRouting[page - 1][channel] = sceneId
+
+            if self.light_mode == False:
+                self.update_sceneDisplay()
+        
+        return
+    
+    def generate_abbreviation(self, word):
+        word = word.upper()
+
+        abbreviation = word[0]
+        consonant_count = 0
+        i = 1
+        while consonant_count < 3 and i < len(word):
+            if word[i] not in 'AEIOU':
+                abbreviation += word[i]
+                consonant_count += 1
+            i += 1
+
+        while len(abbreviation) < 4:
+            abbreviation += ' '
+        print(abbreviation)
+        return abbreviation

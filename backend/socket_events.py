@@ -63,12 +63,18 @@ def register_socketio_events(socketio):
     def quickSceneCallback(scene, status):
         update_scene({"id": scene, "status": status})
 
+    def sceneCallback(scene, value):
+        print("Scene", scene, "wurde geändert:", value)
+    
     try:
         driver = Driver()
         driver.set_callback(callback)
         driver.set_sceneQuickCallback(quickSceneCallback)
+        driver.set_sceneCallback(sceneCallback)
         driver.devices = routes.devices
+        driver.scenes = routes.scenes
         driver.deviceMapping()
+        driver.sceneMapping()
         driver.socketio = socketio
     except OSError as e:
         print("Possibly the MIDI interface is not connected.", str(e))
@@ -99,14 +105,16 @@ def register_socketio_events(socketio):
                             send_dmx(device["id"], channel["id"],
                                     channel["sliderValue"], device, channel)
                             deviceChannel["sliderValue"] = channel["sliderValue"]
-                            driver.pushFader(device["id"], deviceChannel["sliderValue"] if device else 0)
+                            if driver.light_mode:
+                                driver.pushFader(device["id"], deviceChannel["sliderValue"] if device else 0)
                             driver.devices = routes.devices
                         else:      # off
                             deviceChannel["sliderValue"] = deviceChannel["backupValue"]
                             send_dmx(device["id"], channel["id"],
                                     deviceChannel["backupValue"], device, channel)
                             faderSend(device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
-                            driver.pushFader(device["id"], deviceChannel["backupValue"] if device else 0)
+                            if driver.light_mode:
+                                driver.pushFader(device["id"], deviceChannel["backupValue"] if device else 0)
                             driver.devices = routes.devices
 
 
@@ -120,6 +128,12 @@ def register_socketio_events(socketio):
     @socketio.on('scene_delete', namespace='/socket')
     def delete_scene(data):
         scene = int(data['id'])
+        
+        #update scenes on MotorMix
+        if driver is not None:
+            driver.scenes = routes.scenes
+            driver.scenesMapping()
+        
         if scene < len(routes.scenes):  # Make sure scene exists
             routes.scenes.pop(scene)
             for entry in routes.scenes:  # Update ID of the following scenes
@@ -156,6 +170,12 @@ def register_socketio_events(socketio):
     @socketio.on('scene_save', namespace='/socket')
     def save_scene(data):
         scene = int(data['id'])
+
+        #update scenes on MotorMix
+        if driver is not None:
+            driver.scenes = routes.scenes
+            driver.scenesMapping()
+
         if scene < len(routes.scenes):  # Make sure scene exists
             sceneToSave = routes.scenes.pop(scene)
             lastSavedIndex = Scene.query.count()

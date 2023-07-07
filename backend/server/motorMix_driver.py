@@ -19,13 +19,16 @@ class Driver:
     def __init__(self):
         self.fader_values      = [0] * 8 # values of MotorMix faders
         self.devices = []
+        self.socketio = None
+        self.sceneQuickSelectStatus = [False] * 15
 
         #routing array for devices
         self.num_pages = 99
         self.num_devices_per_page = 7
 
         self.deviceRouting = [[None] * self.num_devices_per_page for _ in range(self.num_pages)]
-
+        self.quickSceneButtonRouting = [ ["LEFT", 7], ["LEFT", 6], ["LEFT", 5], ["LEFT", 4], ["LEFT", 3], ["LEFT", 2], ["LEFT", 1], ["LEFT", 0],
+                                        ["RIGHT", 0], ["RIGHT", 1], ["RIGHT", 2], ["RIGHT", 3], ["RIGHT", 4], ["RIGHT", 5], ["RIGHT", 6] ]
 
         self.left_button_flag  = False
         self.right_button_flag = False
@@ -40,16 +43,18 @@ class Driver:
         self.fader_touch       = [False] * 8
         self.fader_touch_flag  = False
         
-        #self.outport = mido.open_output('USB MIDI Interface 1')
-        #self.inport  = mido.open_input( 'USB MIDI Interface 0')
+        self.outport = mido.open_output('USB MIDI Interface 1')
+        self.inport  = mido.open_input( 'USB MIDI Interface 0')
         #--MMix Config - DONT CHANGE -
-        self.outport = mido.open_output('USB MIDI Interface MIDI 1')
-        self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
+        #self.outport = mido.open_output('USB MIDI Interface MIDI 1')
+        #self.inport  = mido.open_input( 'USB MIDI Interface MIDI 1')
         
         self.current_page = 1
         
         self.light_mode = True # False: Scene mode
         self.callback = None
+        self.sceneQuickCallback = None
+
         self.last_value   = [0] * 8
         self.last_time    = [float()] * 8
         self.current_time = [float()] * 8
@@ -65,7 +70,7 @@ class Driver:
         for message in self.inport:
             hex_message = ''.join(format(byte, '02X') for byte in message.bytes())
 
-            print(hex_message)
+            #print(hex_message)
             
             if hex_message.startswith('B04'): # Rotory message but potentially startup -> push faders, pages, display, button lights ??? Maybe not best practice
                 for faderIndex, value in enumerate(self.fader_values):
@@ -112,26 +117,29 @@ class Driver:
                 self.left_button_flag = True
             elif self.left_button_flag:
                 if hex_message == 'B02F40':
-                    print("SHIFT pressed")
+                    print("MotorMix Scene 7")
+                    self.toggleSceneQuickSelect(7)
                 elif hex_message == 'B02F41':
-                    print("UNDO pressed")
-                    self.clearDisplay()
-                    self.clear_pageNumber()
+                    print("MotorMix Scene 6")
+                    self.toggleSceneQuickSelect(6)
                 elif hex_message == 'B02F42':
-                    print("DEF pressed")
-                    self.clearChannel(2)
+                    print("MotorMix Scene 5")
+                    self.toggleSceneQuickSelect(5)
                 elif hex_message == 'B02F43':
-                    print("ALL pressed")
-                    self.sevenSegment("AB")
+                    print("MotorMix Scene 4")
+                    self.toggleSceneQuickSelect(4)
                 elif hex_message == 'B02F44':
-                    print("WIND pressed")
+                    print("MotorMix Scene 3")
+                    self.toggleSceneQuickSelect(3)
                 elif hex_message == 'B02F45':
-                    print("PLUG pressed")
+                    print("MotorMix Scene 2")
+                    self.toggleSceneQuickSelect(2)
                 elif hex_message == 'B02F46':
-                    print("SUS pressed")
+                    print("MotorMix Scene 1")
+                    self.toggleSceneQuickSelect(1)
                 elif hex_message == 'B02F47':
-                    self.setup()
-                    print("MOTOR_MIX restartet")
+                    print("MotorMix Scene 0")
+                    self.toggleSceneQuickSelect(0)
 
 
                 self.left_button_flag = False
@@ -139,24 +147,30 @@ class Driver:
                 self.right_button_flag = True
             elif self.right_button_flag:
                 if hex_message == 'B02F40':
-                    print("ESC pressed")
+                    print("Blackout")
+                    self.blackout()
+                    
                 elif hex_message == 'B02F41':
-                    print("ENTER pressed")
+                    print("MotorMix Scene 14")
+                    self.toggleSceneQuickSelect(14)
                 elif hex_message == 'B02F42':
-                    print("LAST pressed")
+                    print("MotorMix Scene 13")
+                    self.toggleSceneQuickSelect(13)
                 elif hex_message == 'B02F43':
-                    print("NEXT pressed")
+                    print("MotorMix Scene 12")
+                    self.toggleSceneQuickSelect(12)
                 elif hex_message == 'B02F44':
-                    print("REWIND pressed")
+                    print("MotorMix Scene 11")
+                    self.toggleSceneQuickSelect(11)
                 elif hex_message == 'B02F45':
-                    print("FWD pressed")
+                    print("MotorMix Scene 10")
+                    self.toggleSceneQuickSelect(10)
                 elif hex_message == 'B02F46':
-                    print("STOP pressed")
+                    print("MotorMix Scene 9")
+                    self.toggleSceneQuickSelect(9)
                 elif hex_message == 'B02F47':
-                    print("PLAY pressed")
-                    self.button_LED("LEFT", 0, 0)
-                    self.button_LED("RIGHT", 2, 1)
-
+                    print("MotorMix Scene 8")
+                    self.toggleSceneQuickSelect(8)
                 self.right_button_flag = False
 
 
@@ -221,6 +235,7 @@ class Driver:
         return value_14bit
 
     def pushFader(self, number, value):
+        print("pushFader", number, value)
         if number == 0:
             self.fader_values[7] = value
             msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
@@ -247,6 +262,33 @@ class Driver:
                 else:
                     pass
                     #print("Device: " + str(number) + " not found on page: " + str(self.current_page) + " at index: " + str(index))
+    
+    
+    #-------------------- Scene Quick select --------------------
+    def set_sceneQuickCallback(self, sceneQuickCallback):
+        self.sceneQuickCallback = sceneQuickCallback
+    
+    def toggleSceneQuickSelect(self, sceneIndex):
+        if self.socketio != None:
+            if self.sceneQuickSelectStatus[sceneIndex] == False:
+                self.sceneQuickCallback(sceneIndex, True)
+                self.sceneQuickSelectStatus[sceneIndex] = True
+
+            elif self.sceneQuickSelectStatus[sceneIndex] == True:
+                self.sceneQuickSelectStatus[sceneIndex] = False
+                self.sceneQuickCallback(sceneIndex, False)
+
+        else:
+            print("SocketIO not connected")
+            print(self.socketio)
+    #-------------------- Scene Quick select END--------------------
+
+    #-------------------- Blackout --------------------
+    def blackout(self):
+        for device in self.devices:
+            self.callback(device ["id"], 0)
+            self.pushFader(device ["id"], 0)
+    #-------------------- Blackout END--------------------
 
     #-------------------- LCD Display --------------------
     def displayASCII_perChannel(self, channel, row, text):
@@ -324,6 +366,11 @@ class Driver:
     #-------------------- page Display END --------------------
 
     #-------------------- Button LED --------------------
+    def quickSceneButtonUpdate(self, sceneIndex, state):
+        if sceneIndex < len(self.quickSceneButtonRouting):
+            self.button_LED(self.quickSceneButtonRouting[sceneIndex][0], self.quickSceneButtonRouting[sceneIndex][1], state)
+            self.sceneQuickSelectStatus[sceneIndex] = state
+
     def button_LED(self, buttonGroup, buttonIndex, state):
         syntax_on = "B0 2C 4"
         syntax_off = "B0 2C 0"

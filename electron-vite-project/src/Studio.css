@@ -117,7 +117,6 @@
     color: var(--primary);
     position: relative;
     display: inline-block;
-    /* background-color: aqua; */
 }
 
 .schein {
@@ -133,14 +132,11 @@
     width: calc(100% - 190px);
     position: relative;
     margin-left: 120px;
-    /* background-color: rgba(68, 138, 196, 0.411); */
 }
 
 .studio_overview_greenScreen_lamp {
     transform: scale(0.5);
     position: relative;
-    /* top: 30px; */
-    /* display: inline; */
     z-index: 2;
 }
 
@@ -153,7 +149,6 @@
     width: calc(100% - 200px);
     position: relative;
     margin-left: 100px;
-    /* background-color: rgba(104, 196, 68, 0.274); */
 }
 
 .studio_overview_testchart {
@@ -161,7 +156,6 @@
     width: 220px;
     position: relative;
     margin-left: 170px;
-    /* background-color: rgba(217, 96, 233, 0.274); */
 }
 
 .studio_overview_testchart_lamp {
@@ -216,10 +210,4 @@
     text-align: center;
     font-weight: 600;
     font-size: 18px;
-}
-
-.languageSelect {
-    /* !!!!!!!! -------- Kommt weg ---------- !!!!!!!! */
-    top: -40px;
-    position: absolute;
 }

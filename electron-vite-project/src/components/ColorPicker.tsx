@@ -13,6 +13,7 @@
  * @file ColorPicker.tsx
  */
 import React, { useEffect, useRef, useState } from 'react';
+import iro from '@jaames/iro';
 
 interface ColorPickerProps {
   pickerType: 'wheel' | 'kelvin';
@@ -32,9 +33,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
   const pickerRef = useRef(null);
   const [colorPicker, setColorPicker] = useState<any>(null);
 
-  useEffect(() => {
-    const iro = (window as any).iro;
-    
+  useEffect(() => {    
     if (iro && pickerRef.current && !colorPicker) {
       let layout;
 
@@ -49,7 +48,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
           layout = [{ component: iro.ui.Wheel, options: {} }];
       }
 
-      const newColorPicker = new iro.ColorPicker(pickerRef.current, {
+      const newColorPicker = iro.ColorPicker(pickerRef.current, {
         width: 320,
         color: `rgb(${red}, ${green}, ${blue})`,
         layout

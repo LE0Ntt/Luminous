@@ -24,6 +24,10 @@ import ScenesComponent from './components/ScenesComponent';
 import BigView from './components/BigView';
 import { useFaderContext } from './components/FaderContext';
 import AddScene from './components/AddScene';
+import lampImage from './assets/lamp.png'
+import schein from './assets/schein3.png'
+import schein2 from './assets/schein2.png'
+import fillLight from './assets/fillLight.png'
 
 const Studio = () => {
   const navigate = useNavigate();
@@ -140,27 +144,39 @@ const Studio = () => {
             <div className='studio_overview_infopanel studio_overview_infopanel_greenscreen'>
               <div className='studio_overview_infopanel_text'>Greenscreen</div>
               <div className='studio_overview_infopanel_brightness'>
-                {(((faderValues[1][13] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
-                (((faderValues[1][13] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"} {/* muss noch an neue variante angepasst werden */}
+                {(((faderValues[13][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
+                (((faderValues[13][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
               </div>
             </div>
             <div className='studio_overview_light'>
-              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
+              <img src={schein2} alt="schein" className={'schein'} style={{top:`-35px`, opacity: 
+                              (solo && !soloLights.includes(13)) ? 0 : (faderValues[13][0]/255) * (faderValues[0][0]/255)}} />
+              <img src={fillLight} alt="Lamp" className='studio_overview_greenScreen_lamp' style={{top:`20px`}}/>
             </div>
             <div className='studio_overview_light'>
-              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
+              <img src={schein2} alt="schein" className={'schein'} style={{top:`-35px`, opacity: 
+                              (solo && !soloLights.includes(13)) ? 0 : (faderValues[13][0]/255) * (faderValues[0][0]/255)}} />
+              <img src={fillLight} alt="Lamp" className='studio_overview_greenScreen_lamp' style={{top:`20px`}}/>
             </div>
             <div className='studio_overview_light'>
-              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
+              <img src={schein2} alt="schein" className={'schein'} style={{top:`-35px`, opacity: 
+                              (solo && !soloLights.includes(13)) ? 0 : (faderValues[13][0]/255) * (faderValues[0][0]/255)}} />
+              <img src={fillLight} alt="Lamp" className='studio_overview_greenScreen_lamp' style={{top:`20px`}}/>
             </div>
             <div className='studio_overview_light'>
-              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
+              <img src={schein2} alt="schein" className={'schein'} style={{top:`-35px`, opacity: 
+                              (solo && !soloLights.includes(13)) ? 0 : (faderValues[13][0]/255) * (faderValues[0][0]/255)}} />
+              <img src={fillLight} alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored' style={{top:`20px`}}/>
             </div>
             <div className='studio_overview_light'>
-              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
+              <img src={schein2} alt="schein" className={'schein'} style={{top:`-35px`, opacity: 
+                              (solo && !soloLights.includes(13)) ? 0 : (faderValues[13][0]/255) * (faderValues[0][0]/255)}} />
+              <img src={fillLight} alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored' style={{top:`20px`}}/>
             </div>
             <div className='studio_overview_light'>
-              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
+              <img src={schein2} alt="schein" className={'schein'} style={{top:`-35px`, opacity: 
+                              (solo && !soloLights.includes(13)) ? 0 : (faderValues[13][0]/255) * (faderValues[0][0]/255)}} />
+              <img src={fillLight} alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored' style={{top:`20px`}}/>
             </div>
           </div>
           <div className='studio_overview_lights'>
@@ -189,9 +205,9 @@ const Studio = () => {
                         <div className='studio_overview_light marginRight45'>
                         {slider && (
                           <>
-                            <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: 
+                            <img src={schein} alt="schein" className={'schein'} style={{opacity: 
                               (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[slider.id][0]/255) * (faderValues[0][0]/255)}} />
-                            <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp'/>
+                            <img src={lampImage} alt="Lamp" className='studio_overview_greenScreen_lamp'/>
                             <div className='studio_overview_infopanel'>
                               <div className='studio_overview_infopanel_text'>#{slider.id}</div>
                               <div className='studio_overview_infopanel_brightness'>
@@ -214,15 +230,15 @@ const Studio = () => {
                         <div className='studio_overview_light marginLeft45'>
                         {slider && (
                           <>
-                            <img src="/src/assets/schein3.png" alt="schein" className={'schein'} style={{opacity: 
+                            <img src={schein} alt="schein" className={'schein'} style={{opacity: 
                               (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[slider.id][0]/255) * (faderValues[0][0]/255)}} />
-                            <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
+                            <img src={lampImage} alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
                             <div className='studio_overview_infopanel'>
                               <div className='studio_overview_infopanel_text'>#{slider.id}</div>
                               <div className='studio_overview_infopanel_brightness'>
                                 {((solo && !soloLights.includes(slider.id)) ? 0 : 
-                                ((faderValues[11][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
-                                (((faderValues[11][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+                                ((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
+                                (((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
                               </div>
                             </div>                        
                           </>
@@ -246,7 +262,6 @@ const Studio = () => {
                       </div> 
                     )
                   }
-                  // Standardfall: Leerzeichen für nicht ausgewählte Slider
                   return <div key={`${rowIndex}-${colIndex}`} />;
                 })
               )}
@@ -256,15 +271,26 @@ const Studio = () => {
             <div className='studio_overview_infopanel studio_overview_infopanel_greenscreen'>
               <div className='studio_overview_infopanel_text'>{t('testchart')}</div>
               <div className='studio_overview_infopanel_brightness'>
-                {(((faderValues[1][15] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
-                (((faderValues[1][15] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"} {/* muss noch an neue variante angepasst werden */}
+                {(((faderValues[12][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
+                (((faderValues[12][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
+            </div>
+            </div>
+            <div className='studio_overview_infopanel studio_overview_infopanel_greenscreen' style={{top:`-20px`}}>
+              <div className='studio_overview_infopanel_text'>{t('testchart')}</div>
+              <div className='studio_overview_infopanel_brightness'>
+                {(((faderValues[11][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
+                (((faderValues[11][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
             </div>
             </div>
             <div className='studio_overview_light'>
-              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_testchart_lamp'/>
+              <img src={schein} alt="schein" className={'schein'} style={{top:`5px`, transform:`rotate(180deg)`, opacity: 
+                              (solo && !soloLights.includes(11)) ? 0 : (faderValues[11][0]/255) * (faderValues[0][0]/255)}} />
+              <img src={lampImage} alt="Lamp" className='studio_overview_testchart_lamp' style={{top:`-50px`}}/>
             </div>
             <div className='studio_overview_light'>
-              <img src="/src/assets/lamp.png" alt="Lamp" className='studio_overview_testchart_lamp'/>
+              <img src={schein} alt="schein" className={'schein'} style={{top:`5px`, transform:`rotate(180deg)`, opacity: 
+                              (solo && !soloLights.includes(12)) ? 0 : (faderValues[12][0]/255) * (faderValues[0][0]/255)}} />
+              <img src={lampImage} alt="Lamp" className='studio_overview_testchart_lamp' style={{top:`-50px`}}/>
             </div>
           </div>
         </div>

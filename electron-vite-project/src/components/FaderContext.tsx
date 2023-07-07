@@ -37,6 +37,11 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
       return new Array(6).fill(0);
     }
   });
+  initialFaderValues[0][1] = 255
+  initialFaderValues[0][2] = 128
+  initialFaderValues[0][3] = 255
+  initialFaderValues[0][4] = 255
+  initialFaderValues[0][5] = 255
   const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
   const [isDragging, setIsDragging] = useState(false);
   const { on, off } = useConnectionContext();

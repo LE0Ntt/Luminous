@@ -32,7 +32,7 @@ def send_dmx(fader: int, channelId: int, fader_value: int, device: dict, channel
 
 def send_dmx_direct(universe: int, value: int, channel: int) -> None:
     # ola.send_dmx(universe, channel - 1, value)
-    print(f"dmx {channel}, value {value}, universe {universe}")
+    return
 
 
 def register_socketio_events(socketio):
@@ -48,7 +48,6 @@ def register_socketio_events(socketio):
             send_dmx(index, channelId, value, routes.devices[index], routes.devices[index]["attributes"]["channel"][channelId])
 
     def callback(index, value):
-        print("Eintrag", index, "wurde geändert:", value)
         faderSend(index, value, 0)
         # muss noch getestet werden
 
@@ -61,17 +60,26 @@ def register_socketio_events(socketio):
         update_scene({"id": scene, "status": status})
 
     def sceneCallback(scene, value):
-        print("Scene", scene, "wurde geändert:", value)
-        for scene in routes.scenes:
-            for device in scene["channel"]:
-                device_id = device["id"]
-                master_channel = device["attributes"]["channel"][0]
-                if value == 255:
-                    master_channel["sliderValue"] = master_channel["backupValue"]
+        for currentScene in routes.scenes:
+            if currentScene["id"] == scene:
+                if value > 0:
                     update_scene({"id": scene, "status": True})
                 else:
-                    master_channel["sliderValue"] = 0
                     update_scene({"id": scene, "status": False})
+                for device in currentScene["channel"]:
+                    device_id = device["id"]
+                    master_channel = device["attributes"]["channel"][0]
+
+                    master_channel["backupValue"] = master_channel["sliderValue"]
+                    if master_channel["backupValue"] <= 5:
+                        master_channel["backupValue"] = 0
+                    
+                    if value > 0:
+                        master_channel["sliderValue"] = value
+                        faderSend(device_id, value, master_channel["id"])
+                    else:
+                        master_channel["sliderValue"] = master_channel["backupValue"]
+                        faderSend(device_id, device["attributes"]["channel"][0]["backupValue"], master_channel["id"])
     
     try:
         driver = Driver()
@@ -121,11 +129,10 @@ def register_socketio_events(socketio):
     def update_scene(data):
         status = bool(data['status'])
         scene = int(data['id'])
-        if driver is not None:
+        if driver is not None and scene is not None:
             driver.quickSceneButtonUpdate(scene, status)
         if scene < len(routes.scenes):  # Make sure scene exists
             routes.scenes[scene]["status"] = status
-            print(routes.scenes[scene])
             # Send every channel to the device to the client
             for device in routes.scenes[scene]["channel"]:
                 for channel in device["attributes"]["channel"]:
@@ -142,11 +149,12 @@ def register_socketio_events(socketio):
                         if driver is not None and driver.light_mode:
                             driver.pushFader(device["id"], deviceChannel["sliderValue"] if device else 0)
                             driver.devices = routes.devices
-                        else:      # off
-                            deviceChannel["sliderValue"] = deviceChannel["backupValue"]
-                            send_dmx(device["id"], channel["id"],
-                                    deviceChannel["backupValue"], device, channel)
-                            faderSend(device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
+                    else:      # off
+                        deviceChannel["sliderValue"] = deviceChannel["backupValue"]
+                        send_dmx(device["id"], channel["id"],
+                                deviceChannel["backupValue"], device, channel)
+                        faderSend(device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
+                        if driver is not None and driver.light_mode:
                             driver.pushFader(device["id"], deviceChannel["backupValue"] if device else 0)
                             driver.devices = routes.devices
         # Send update to all clients

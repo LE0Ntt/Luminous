@@ -284,12 +284,12 @@ const Studio = () => {
             </div>
             <div className='studio_overview_light'>
               <img src={schein} alt="schein" className={'schein'} style={{top:`5px`, transform:`rotate(180deg)`, opacity: 
-                              (solo && !soloLights.includes(13)) ? 0 : (faderValues[12][0]/255) * (faderValues[0][0]/255)}} />
+                              (solo && !soloLights.includes(11)) ? 0 : (faderValues[11][0]/255) * (faderValues[0][0]/255)}} />
               <img src={lampImage} alt="Lamp" className='studio_overview_testchart_lamp' style={{top:`-50px`}}/>
             </div>
             <div className='studio_overview_light'>
               <img src={schein} alt="schein" className={'schein'} style={{top:`5px`, transform:`rotate(180deg)`, opacity: 
-                              (solo && !soloLights.includes(13)) ? 0 : (faderValues[13][0]/255) * (faderValues[0][0]/255)}} />
+                              (solo && !soloLights.includes(12)) ? 0 : (faderValues[12][0]/255) * (faderValues[0][0]/255)}} />
               <img src={lampImage} alt="Lamp" className='studio_overview_testchart_lamp' style={{top:`-50px`}}/>
             </div>
           </div>

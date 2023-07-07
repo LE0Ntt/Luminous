@@ -20,7 +20,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
     let temperatureNorm = temperature / 100;
     let red, green, blue;
   
-    // Berechne Rot
+    // Calculate red
     if (temperatureNorm <= 66) {
       red = 255;
     } else {
@@ -30,7 +30,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
       if (red > 255) red = 255;
     }
   
-    // Berechne Grün
+    // Calculate green
     if (temperatureNorm <= 66) {
       green = temperatureNorm;
       green = 99.4708025861 * Math.log(green) - 161.1195681661;
@@ -43,7 +43,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
       if (green > 255) green = 255;
     }
   
-    // Berechne Blau
+    // Calculate blue
     if (temperatureNorm >= 66) {
       blue = 255;
     } else {

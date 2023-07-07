@@ -125,18 +125,6 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
   const toggleSceneStatus = (sceneId: number) => { 
     const layer = localStorage.getItem('layer')  === 'true';
     setScenes((prevScenes) => {
-      /* prevScenes.map((scene) => {
-        if (scene.id === sceneId) {
-          const newStatus = !scene.status;
-          emit("scene_update", { id: sceneId, status: newStatus });
-          return { ...scene, status: newStatus };
-        } // Deactivate already activated scenes if LAYER is off
-        else if (!layer && scene.status) {
-          emit("scene_update", { id: scene.id, status: false });
-          return { ...scene, status: false };
-        }
-        return scene;
-      }) */
       // Update scenes with status false if layer is off
       if (!layer) {
         prevScenes.forEach((scene) => {
@@ -145,7 +133,6 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
           }
         });
       }
-
       // Update the desired scene with the new status
       const updatedScenes = prevScenes.map((scene) => {
         if (scene.id === sceneId) {

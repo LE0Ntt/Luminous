@@ -66,9 +66,6 @@ hr {
     font-size: 20px;
     color: var(--primary);
     font-weight: 500;
-    /* font-display: block;
-    width: 3em;
-    text-align: right; */
 }
 
 .name {

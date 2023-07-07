@@ -14,61 +14,34 @@
  */
 :root {
     /* ----- Light Mode ----- */
-
-    /* defautl colors:display:
-     * text, usw.
-     */
     --primary: rgba(0, 0, 0, 0.85);
     --secondary: rgba(0, 0, 0, 0.5);
     --tertiary: rgba(0, 0, 0, 0.25);
 
-    /* switched colors:
-     * stellen wo die farben gewechselt werden müssen, zB highlights usw.
-     */
     --primarySwitched: rgba(255, 255, 255, 0.85);
     --secondarySwitched: rgba(255, 255, 255, 0.5);
     --tertiarySwitched: rgba(255, 255, 255, 0.25);
 
-    /* fill colors:
-     * farben für die füllung von elementen, zB fenster, flächen usw.
-     */
     --fillUltraLight: rgba(246, 246, 246, 0.36);
     --fillLight: rgba(246, 246, 246, 0.48);
     --fillMedium: rgba(246, 246, 246, 0.6);
     --fillThick: rgba(246, 246, 246, 0.72);
     --fillUltraThick: rgba(246, 246, 246, 0.84);
 
-    /* main color:
-     * hauptfarbe für die app, zB buttons highlights, usw.
-     */
     /* --mainColor: #4F53B1; */
     --mainColor: #4B4EA5;
 
-    /* button colors:
-     * farben für die buttons, zB hover, usw.
-     */
     --colorButton: #ffffff;
     --colorButtonHover: #e9e9e9;
-    /*#dfdfdf*/
 
-    /* stroke colors:
-     * farben für die umrandung von elementen, zB fenster, usw.
-     * manchmal auch nur als #fff verwendet
-     */
     --onepStroke: #fff;
     --onepStrokeSwitched: #000000;
 
-    /* fader colors:
-     * farben für linien, zB fader, usw.
-     */
     --midLine: #b7b7b7;
     --faderThumb: rgba(246, 246, 246, 0.84);
     --faderThumbHover: rgba(246, 246, 246, 1);
     --faderBorder: rgba(0, 0, 0, 0.2);
 
-    /* default dark colors:
-     * farben für text, zB in fenstern, usw. ggf. nicht mehr benötigt
-     */
     --primaryDark: rgb(255, 255, 255);
     --secondaryDark: rgba(255, 255, 255, 0.5);
     --tertiaryDark: rgba(255, 255, 255, 0.25);
@@ -79,9 +52,6 @@
     --fillThickDark: rgba(40, 40, 40, 0.7);
     --fillUltraThickDark: rgba(40, 40, 40, 0.8);
 
-    /* Szenen colors:
-     * button farben für die szenen
-     */
     --blue: rgba(150, 180, 226, 0.5);
     --cyan: rgba(170, 232, 236, 0.5);
     --green: rgba(172, 229, 152, 0.5);
@@ -89,10 +59,6 @@
     --red: rgba(240, 174, 174, 0.5);
     --yellow: rgba(241, 243, 145, 0.5);
 
-    /* other colors:
-     * andere farben
-     * unter anderem verschiedene schwarztöne mit transparenz
-     */
     --color7B7B7C: #7B7B7C;
     --colorB7B7B7: #B7B7B7;
     --colorFFFFFF50: rgba(255, 255, 255, 0.5);
@@ -103,9 +69,6 @@
     --color00000008: rgba(0, 0, 0, 0.08);
     --color00000003: rgba(0, 0, 0, 0.03);
 
-    /* shatten colors:
-     * verschiedene schatten + blur für fenster
-     */
     --windowShadow: 0px 18px 50px rgba(0, 0, 0, 0.15);
     --windowBackdrop: blur(100px);
 
@@ -113,15 +76,11 @@
     --shadowButton: 0px 1px 5px rgba(0, 0, 0, 0.1);
 
     --sceneOn: rgba(255, 255, 255, .8);
-    /* background image:
-     * hintergrundbild für die app
-     */
     --backgroundImage: url('./assets/bgLight.png');
 }
 
 .dark {
     /* ----- Dark Mode ----- */
-    /* die gleichen farben wie oben, nur für darkmode */
     --primary: rgba(255, 255, 255, 0.85);
     --secondary: rgba(255, 255, 255, 0.55);
     --tertiary: rgba(255, 255, 255, 0.25);

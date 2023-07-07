@@ -35,15 +35,14 @@ const Fader: React.FC<SliderProps> = ({
   color,
 }) => {
   const { emit } = useConnectionContext();
-  const { faderValues, setFaderValue } = useFaderContext(); // Verwenden Sie den Kontext
-  //const [isDragging, setIsDragging] = useState(false);
+  const { faderValues, setFaderValue } = useFaderContext();
   const [timerRunning, setTimerRunning] = useState<boolean | null>(null);
   const cacheValueRef = useRef<number>(faderValues[sliderGroupId][id]);
   const sendValueRef = useRef<number>(faderValues[sliderGroupId][id]);
   const faderClassName = height ? `fader faderMaster ${className}` : `fader ${className}`;
   const displayValue = Math.round((faderValues[sliderGroupId][id] / 255) * 100);
 
-  const { isDragging, setIsDragging } = useFaderContext(); // Verwenden Sie den Kontext
+  const { isDragging, setIsDragging } = useFaderContext();
 
   // Set fader height by the passed parameter
   useEffect(() => {

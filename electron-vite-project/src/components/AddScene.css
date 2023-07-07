@@ -17,7 +17,6 @@
 .AddSceneOverlay {
     position: relative;
     z-index: 9998;
-    /* Infinite background hack */
     height: 10000vh;
     width: 10000vw;
     left: -5000vw;

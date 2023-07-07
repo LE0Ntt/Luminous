@@ -42,7 +42,6 @@ const Studio = () => {
     navigate('/control', { state: { id: id } });
   };
 
-  // <- Big View:
   const [bigView, setBigView] = useState(false);
 
   const openBigView = () => {
@@ -52,12 +51,10 @@ const Studio = () => {
   const closeBigView = () => {
     setBigView(false);
   };
-  // :Big View End ->
 
-  // <- Studio Overview:
-  const studioRows = 6;     // Anzahl der Reihen, werden später in Settings einstellbar sein
-  const studioColumns = 4;  // Anzahl der Spalten, werden später in Settings einstellbar sein
-  const selectedSliders = [ // Slider, die in der Studio Overview angezeigt werden sollen (werden später in Settings einstellbar sein)
+  const studioRows = 6;
+  const studioColumns = 4;
+  const selectedSliders = [
     { id: 5, row: 0, col: 0 , fake: false},
     { id: 5, row: 0, col: 1, fake: false},
     { id: 6, row: 0, col: 2, fake: false},
@@ -79,12 +76,11 @@ const Studio = () => {
     { id: 15, row: 4, col: 2, fake: false},
     { id: 17, row: 4, col: 3, fake: false},
   ]
-// Erstellt ein Array mit der Anzahl der Reihen und Spalten, die in der Studio Overview angezeigt werden sollen
+// Creates an array with the number of rows and columns to be displayed in the Studio Overview
   const grid = Array(studioRows).fill(undefined).map(() => Array(studioColumns).fill(undefined)); 
 
-  const solo = false;               // Solo Button, wird später in LightFX (Control.tsx) einstellbar sein
-  const soloLights = [1, 2, 3];     // übernimmt Gruppen ID der Lampen, die solo geschaltet werden sollen
-  // :Studio Overview End ->
+  const solo = false;               // Solo button, will be adjustable later in LightFX (Control.tsx)
+  const soloLights = [1, 2, 3];     // Takes over group ID of the lamps that are to be switched solo
 
   interface SliderConfig {
     id: number;
@@ -99,7 +95,7 @@ const Studio = () => {
         const response = await fetch(url + '/fader');
         const data = await response.json();
         setSliders(JSON.parse(data));
-        loadFaderValues(JSON.parse(data)); // läd die Faderwerte aus der Datenbank
+        loadFaderValues(JSON.parse(data)); // Loads the fader values from the database
       } catch (error) {
         console.log(error);
       }
@@ -108,7 +104,7 @@ const Studio = () => {
     fetchSliders();
   }, []);
 
-  // läd die Faderwerte aus der Datenbank
+  // Loads the fader values from the database
   function loadFaderValues(sliders: any[]) {
     const array: any[][] = [];
     sliders.forEach(item => {

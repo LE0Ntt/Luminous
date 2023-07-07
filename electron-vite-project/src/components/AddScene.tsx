@@ -103,7 +103,7 @@ function AddScene({ onClose }: AddSceneProps) {
               placeholder="Name"
               value={name}
               onChange={handleNameChange}
-              autoFocus // Autofokus aktivieren
+              autoFocus // Activate autofocus
             />
             <div className="AddSceneChecker">
               <input type="checkbox" id="checkboxId" checked={isChecked} onChange={handleCheckboxChange} />

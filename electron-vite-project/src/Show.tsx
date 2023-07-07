@@ -17,7 +17,7 @@ import "./Show.css";
 import "./Color.css";
 import Fader from "./components/Fader";
 import ScenesComponent from "./components/ScenesComponent";
-import MyTimeline from "./components/Timeline"; // Importiere die Timeline-Komponente
+import MyTimeline from "./components/Timeline";
 import { useFaderContext } from "./components/FaderContext";
 
 function Show() {

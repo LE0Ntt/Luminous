@@ -14,7 +14,6 @@
  */
 @import url(./Color.css);
 
-/* Layer */
 .scenesLayer {
     height: 73px;
     width: 124px;
@@ -35,10 +34,6 @@
     justify-content: center;
 }
 
-/* Layer End */
-
-
-/* Scenes */
 .scenesMain {
     height: 910px;
     width: 1696px;
@@ -48,17 +43,12 @@
 }
 
 .scenesMainAlign {
-    background-color: aquamarine;
-    /* For testing */
     margin-top: 20px;
     margin-left: 20px;
     height: 870px;
     width: 1656px;
 }
 
-/* Scenes End */
-
-/* Master Fader */
 .scenesMaster {
     height: 818px;
     width: 124px;
@@ -72,5 +62,3 @@
     position: relative;
     left: 20px;
 }
-
-/* Master Fader End */

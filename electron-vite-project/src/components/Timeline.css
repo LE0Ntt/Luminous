@@ -43,13 +43,6 @@
   pointer-events: auto;
 }
 
-/* .red-box.dragged {
-  /* background-color: brown; 
-  opacity: .5;*/
-/* height: 0;
-  overflow:visible;
-} */
-
 .red-box-handle-left,
 .red-box-handle-right {
   position: absolute;

@@ -52,16 +52,3 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
     </TranslationContext.Provider>
   );
 };
-
-/* alternativ
-return (
-    <TranslationContext.Provider value={{ t, language, setLanguage }}>
-        {React.Children.map(children, (child) => {
-        return React.cloneElement(child as React.ReactElement<any>, {
-            translations,
-            defaultLanguage,
-        });
-        })}
-    </TranslationContext.Provider>
-);
-*/

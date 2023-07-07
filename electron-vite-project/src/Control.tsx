@@ -41,7 +41,6 @@ function Control() {
   const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
   const [isSolo, setIsSolo] = useState(false);
 
-  // <- Device:
   interface DeviceConfig {
     id: number;
     deviceValue: number;
@@ -118,8 +117,6 @@ function Control() {
         setUnselectedDevices(unselectedDevices.filter(item => item.id !== foundDevice.id));
       }
     }
-    //sessionStorage.setItem('selectedDevices', JSON.stringify(JSON.parse('[]'))) // zum reseten
-    //sessionStorage.setItem('unselectedDevices', JSON.stringify(JSON.parse('[]'))) // zum reseten
 
     // Deactivate solo if no device is selected
     if(selectedDevices.length == 0 && isSolo) {
@@ -190,7 +187,7 @@ function Control() {
           <div className="lightFader innerWindow">
             <Fader
               height={397}
-              id={1}            // muss geändert werden zu gruppe aller ausgewählten devices
+              id={1}
               sliderGroupId={0}
               name={t("group")}
             />

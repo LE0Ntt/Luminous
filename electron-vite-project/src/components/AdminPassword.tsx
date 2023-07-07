@@ -97,7 +97,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
             placeholder={t("ap_password")} 
             value={password} 
             onChange={handlePasswordChange}
-            autoFocus // Autofokus aktivieren
+            autoFocus // Activate autofocus
           />
           <p className='hide'>a</p> {/* Hidden element for spacing */}
           <div className='AddSceneNote'>

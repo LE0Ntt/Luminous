@@ -119,7 +119,7 @@ function TitleBar() {
     setAboutOpen(false);
   };
 
-  // MacOS Titlebar Settings                ---  nicht benötig, da es nie auf mac laufen soll
+  // MacOS Titlebar Settings
   const isMac = process.platform === 'darwin';
 
   return (
@@ -135,7 +135,7 @@ function TitleBar() {
               onClick={(): void => toggleDropDown()}
               ref={dropDownRef}
             >
-              <a href="#">⚙️</a> {/* {t("Settings")} */}
+              <a href="#">⚙️</a>
             {showDropDown && (
               <DropDown
                 settings={settings()}

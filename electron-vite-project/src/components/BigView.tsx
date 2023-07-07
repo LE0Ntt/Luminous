@@ -48,7 +48,6 @@ function BigView({ onClose }: BigViewProps) {
     return null; // Render nothing if the modal is closed
   }
 
-  const { faderValues, setFaderValue } = useFaderContext(); // FaderContext Test
   const { connected, url } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
   const [DMX, setDMX] = useState(false);

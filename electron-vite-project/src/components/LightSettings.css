@@ -17,7 +17,6 @@
 .LightSettingsOverlay {
   position: relative;
   z-index: 9998;
-  /* Infinite background hack */
   height: 10000vh;
   width: 10000vw;
   left: -5000vw;
@@ -211,7 +210,6 @@
   position: relative;
   padding-left: 10px;
   outline: none;
-  /* margin-bottom: 10px; */
 }
 
 .LightSettingsTextBoxSmall {

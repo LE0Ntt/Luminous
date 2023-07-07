@@ -44,10 +44,7 @@ def register_socketio_events(socketio):
             'deviceId': index, 'value': value, 'channelId': channelId}, namespace='/socket')
         
         if current_time - last_send_time >= 20:
-            # Den Zeitstempel für den aktuellen Aufruf aktualisieren
             last_send_time = current_time
-            
-            # Die "send" Funktion aufrufen
             send_dmx(index, channelId, value, routes.devices[index], routes.devices[index]["attributes"]["channel"][channelId])
 
     def callback(index, value):
@@ -65,6 +62,16 @@ def register_socketio_events(socketio):
 
     def sceneCallback(scene, value):
         print("Scene", scene, "wurde geändert:", value)
+        for scene in routes.scenes:
+            for device in scene["channel"]:
+                device_id = device["id"]
+                master_channel = device["attributes"]["channel"][0]
+                if value == 255:
+                    master_channel["sliderValue"] = master_channel["backupValue"]
+                    update_scene({"id": scene, "status": True})
+                else:
+                    master_channel["sliderValue"] = 0
+                    update_scene({"id": scene, "status": False})
     
     try:
         driver = Driver()
@@ -142,8 +149,6 @@ def register_socketio_events(socketio):
                             faderSend(device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
                             driver.pushFader(device["id"], deviceChannel["backupValue"] if device else 0)
                             driver.devices = routes.devices
-
-
         # Send update to all clients
         global connections
         if connections > 0:

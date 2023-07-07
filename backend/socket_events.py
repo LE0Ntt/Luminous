@@ -132,7 +132,7 @@ def register_socketio_events(socketio):
                         send_dmx(device["id"], channel["id"],
                                     channel["sliderValue"], device, channel)
                         deviceChannel["sliderValue"] = channel["sliderValue"]
-                        if driver is not none and driver.light_mode:
+                        if driver is not None and driver.light_mode:
                             driver.pushFader(device["id"], deviceChannel["sliderValue"] if device else 0)
                             driver.devices = routes.devices
                         else:      # off

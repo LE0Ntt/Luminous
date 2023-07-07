@@ -250,6 +250,7 @@ class Driver:
         else:
             self.displayASCII_perChannel(7,0,"SCENE")
             self.sceneMapping()
+            self.getSceneValues()
 
         self.displayPageNumber(str(self.current_page))
   
@@ -265,7 +266,30 @@ class Driver:
             self.fader_mapping(fader, self.fader_values[fader])
         self.last_time[fader] = self.current_time[fader]
         self.last_value[fader] = value
+    
+    def rotary_pageUpdate(self, forward):
+        if forward:
+            self.current_page = self.current_page + 1
+        else:
+            self.current_page = self.current_page - 1
+        
+        #range control
+        if self.current_page < 1:
+            self.current_page = 1
+        if self.current_page > self.num_pages:
+            self.current_page = self.num_pages
+         
+        self.displayPageNumber(str(self.current_page))
+        if self.light_mode:
+            self.update_deviceDisplay()
+            print("Seite: " + str(self.current_page))
+            self.getDeviceValues()
+        else:
+            self.update_sceneDisplay()
+            print("Seite: " + str(self.current_page))
+            #self.getSceneValues()
     # ----------------- Essential and Setup END -----------------
+
 
     # ----------------- Callbacks and Communication-----------------
     def set_callback(self, callback):
@@ -282,12 +306,8 @@ class Driver:
         return value_14bit
 
     def pushFader(self, number, value):
-        print("pushFader", number, value)
         if number == 0:
             self.fader_values[7] = value
-            if value == 0:
-                self.displayASCII_perChannel(7,0,"OFF")
-
             msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
             lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
             index = int(str(7), 16)
@@ -299,7 +319,7 @@ class Driver:
             return
         else:   
             for index in range(7):
-                if self.deviceRouting[self.current_page-1][index] == number:
+                if self.deviceRouting[self.current_page-1][index] == number and self.light_mode:
                     self.fader_values[index] = value
                     msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
                     lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
@@ -312,8 +332,37 @@ class Driver:
                 else:
                     pass
                     #print("Device: " + str(number) + " not found on page: " + str(self.current_page) + " at index: " + str(index))
-    # ----------------- Callbacks and Communication END -----------------
     
+    def fader_mapping(self, fader, value):
+        if self.light_mode:
+            if fader == 7:
+                number = 0
+            else:
+                number = self.deviceRouting[self.current_page-1][fader]
+            if number != None:
+                self.callback(number, value)
+                self.displayFaderValues(fader,value)
+        else:
+            if fader == 7:
+                number = 0
+                self.callback(number, value)
+            else:
+                id = self.sceneRouting[self.current_page-1][fader]
+                if id != None:
+                    self.sceneCallback(id, value)
+                    self.displayFaderValues(id,value)
+    
+    def to_msb_lsb(self, num):
+        # Split number into two 7-bit parts
+        msb = num >> 7 
+        lsb = num & 0x7F
+        # Convert to hexadecimal string
+        msb_hex = format(msb, '02X')
+        lsb_hex = format(lsb, '02X')
+        return msb_hex, lsb_hex
+    # ----------------- Callbacks and Communication END -----------------
+
+
     #-------------------- Scene Quick select --------------------
     def toggleSceneQuickSelect(self, sceneIndex):
         if self.socketio != None:
@@ -335,12 +384,14 @@ class Driver:
             self.sceneQuickSelectStatus[sceneIndex] = state
     #-------------------- Scene Quick select END--------------------
 
+
     #-------------------- Blackout --------------------
     def blackout(self):
         for device in self.devices:
             self.callback(device ["id"], 0)
             self.pushFader(device ["id"], 0)
     #-------------------- Blackout END--------------------
+
 
     #-------------------- LCD Display --------------------
     def displayASCII_perChannel(self, channel, row, text):
@@ -394,12 +445,11 @@ class Driver:
     def displayFaderValues(self, channel, value):
         value = (value / 255) * 100
         self.displayASCII_perChannel(channel, 1, "     ")
-        self.displayASCII_perChannel(channel, 1, ( str(int(value))) + "%" )
-    
+        self.displayASCII_perChannel(channel, 1, ( str(int(value))) + "%" )   
     #-------------------- LCD Display END --------------------
-    
-    #-------------------- page Display --------------------
-    
+
+
+    #-------------------- page Display -------------------- 
     def displayPageNumber(self, pageNumber):
         hex_string = "F0 00 01 0F 00 11 00 12 "
         
@@ -414,8 +464,8 @@ class Driver:
         
         hex_string += "F7"
         self.outport.send(mido.Message.from_hex(hex_string))
-
     #-------------------- page Display END --------------------
+
 
     #-------------------- Button LED -------------------
     def button_LED(self, buttonGroup, buttonIndex, state):
@@ -446,55 +496,7 @@ class Driver:
 
         message = prefix + str(channel) + syntax_on + str(index)
     #-------------------- Button LED END --------------------
-    def to_msb_lsb(self, num):
-        # Split number into two 7-bit parts
-        msb = num >> 7 
-        lsb = num & 0x7F
-        # Convert to hexadecimal string
-        msb_hex = format(msb, '02X')
-        lsb_hex = format(lsb, '02X')
-        return msb_hex, lsb_hex
-    
-    def fader_mapping(self, fader, value):
-        if self.light_mode:
-            if fader == 7:
-                number = 0
-            else:
-                number = self.deviceRouting[self.current_page-1][fader]
-            if number != None:
-                self.callback(number, value)
-                self.displayFaderValues(fader,value)
-        else:
-            if fader == 7:
-                number = 0
-                self.callback(number, value)
-            else:
-                id = self.sceneRouting[self.current_page-1][fader]
-                if id != None:
-                    self.sceneCallback(id, value)
-                    self.displayFaderValues(id,value)
-   
-    def rotary_pageUpdate(self, forward):
-        if forward:
-            self.current_page = self.current_page + 1
-        else:
-            self.current_page = self.current_page - 1
-        
-        #range control
-        if self.current_page < 1:
-            self.current_page = 1
-        if self.current_page > self.num_pages:
-            self.current_page = self.num_pages
-         
-        self.displayPageNumber(str(self.current_page))
-        if self.light_mode:
-            self.update_deviceDisplay()
-            print("Seite: " + str(self.current_page))
-            self.getDeviceValues()
-        else:
-            self.update_sceneDisplay()
-            print("Seite: " + str(self.current_page))
-            #self.getSceneValues()
+
 
     # -------------------- Device Mode Functions--------------------
     def update_deviceDisplay(self):
@@ -523,7 +525,6 @@ class Driver:
                             self.pushFader(device["id"], channel["sliderValue"])
                             print("Device: " + str(device["id"]) + " Value: " + str(channel["sliderValue"]))
                             break
-    
 
     def deviceMapping(self):
         self.num_pages = (len(self.devices) - 1) // 7 + 2
@@ -539,6 +540,7 @@ class Driver:
         
         return
     # -------------------- Device Mode Functions END--------------------
+
 
     # -------------------- Scene Mode Functions--------------------   
     def update_sceneDisplay(self):
@@ -583,6 +585,9 @@ class Driver:
         
         return
     
+    def getSceneValues(self):
+        print("getSceneValues")
+    
     def generate_abbreviation(self, word):
         word = word.upper()
 
@@ -599,3 +604,4 @@ class Driver:
             abbreviation += ' '
         print(abbreviation)
         return abbreviation
+    # -------------------- Scene Mode Functions END--------------------

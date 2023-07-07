@@ -100,7 +100,8 @@ def register_socketio_events(socketio):
     def update_scene(data):
         status = bool(data['status'])
         scene = int(data['id'])
-        driver.quickSceneButtonUpdate(scene, status)
+        if driver is not None:
+            driver.quickSceneButtonUpdate(scene, status)
         if scene < len(routes.scenes):  # Make sure scene exists
             routes.scenes[scene]["status"] = status
             print(routes.scenes[scene])
@@ -117,15 +118,17 @@ def register_socketio_events(socketio):
                         send_dmx(device["id"], channel["id"],
                                     channel["sliderValue"], device, channel)
                         deviceChannel["sliderValue"] = channel["sliderValue"]
-                        driver.pushFader(device["id"], deviceChannel["sliderValue"] if device else 0)
-                        driver.devices = routes.devices
+                        if driver is not None:
+                            driver.pushFader(device["id"], deviceChannel["sliderValue"] if device else 0)
+                            driver.devices = routes.devices
                     else:      # off
                         deviceChannel["sliderValue"] = deviceChannel["backupValue"]
                         send_dmx(device["id"], channel["id"],
                                 deviceChannel["backupValue"], device, channel)
                         faderSend(device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
-                        driver.pushFader(device["id"], deviceChannel["backupValue"] if device else 0)
-                        driver.devices = routes.devices
+                        if driver is not None:
+                            driver.pushFader(device["id"], deviceChannel["backupValue"] if device else 0)
+                            driver.devices = routes.devices
 
 
         # Send update to all clients

@@ -73,6 +73,11 @@ def register_socketio_events(socketio):
     except OSError as e:
         print("Possibly the MIDI interface is not connected.", str(e))
         driver = None
+        
+        # send every channel of each device to ola on starqup
+        for device in routes.devices:
+            for channel in device["attributes"]["channel"]:
+                send_dmx(device["id"], channel["id"], channel["sliderValue"], device, channel)
 
     # Update status (on/off) of a scene
     @socketio.on('scene_update', namespace='/socket')

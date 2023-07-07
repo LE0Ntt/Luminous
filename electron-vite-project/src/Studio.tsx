@@ -145,7 +145,7 @@ const Studio = () => {
               <div className='studio_overview_infopanel_text'>Greenscreen</div>
               <div className='studio_overview_infopanel_brightness'>
                 {(((faderValues[13][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
-                (((faderValues[13][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"} {/* muss noch an neue variante angepasst werden */}
+                (((faderValues[13][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
               </div>
             </div>
             <div className='studio_overview_light'>
@@ -272,14 +272,14 @@ const Studio = () => {
               <div className='studio_overview_infopanel_text'>{t('testchart')}</div>
               <div className='studio_overview_infopanel_brightness'>
                 {(((faderValues[12][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
-                (((faderValues[12][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"} {/* muss noch an neue variante angepasst werden */}
+                (((faderValues[12][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
             </div>
             </div>
             <div className='studio_overview_infopanel studio_overview_infopanel_greenscreen' style={{top:`-20px`}}>
               <div className='studio_overview_infopanel_text'>{t('testchart')}</div>
               <div className='studio_overview_infopanel_brightness'>
                 {(((faderValues[11][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
-                (((faderValues[11][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"} {/* muss noch an neue variante angepasst werden */}
+                (((faderValues[11][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
             </div>
             </div>
             <div className='studio_overview_light'>

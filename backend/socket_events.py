@@ -1,30 +1,30 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
-from server import app, routes, db
+from server import app, routes, db, motorMix_driver
 from server.motorMix_driver import Driver
 from server.models import Scene
 import json
 import time
 # OLA imports
-from ola_handler import ola_handler
+#from ola_handler import ola_handler
 
-ola = ola_handler()
-ola.setup()
+#ola = ola_handler()
+#ola.setup()
 connections = 0
+global socketio
 socketio = SocketIO(app, cors_allowed_origins="*",
                     logger=False, engineio_logger=False)
 
 last_send_time = 0
-
 def send_dmx(fader: int, channelId: int, fader_value: int, device: dict, channel: dict) -> None:
     if fader == 0 and channelId == 0:
         print("Masterfader")
-        ola.master_fader(fader_value)
+        #ola.master_fader(fader_value)
     else:
         try:
             dmx_channel = int(channel['dmx_channel'])
             universe = int(device['universe'][1:])
-            ola.send_dmx(universe, dmx_channel - 1, fader_value)
+            #ola.send_dmx(universe, dmx_channel - 1, fader_value)
             # print(f"dmx {dmx_channel}, value {fader_value}, universe {universe}")
         except KeyError:
             print('No dmx_channel key for non-master channel')
@@ -59,12 +59,17 @@ def register_socketio_events(socketio):
             if device["id"] == index:
                 index = i
                 routes.devices[index]["attributes"]["channel"][0]["sliderValue"] = value
+    
+    def quickSceneCallback(scene, status):
+        update_scene({"id": scene, "status": status})
 
     try:
         driver = Driver()
         driver.set_callback(callback)
+        driver.set_sceneQuickCallback(quickSceneCallback)
         driver.devices = routes.devices
         driver.deviceMapping()
+        driver.socketio = socketio
     except OSError as e:
         print("Possibly the MIDI interface is not connected.", str(e))
         driver = None
@@ -74,27 +79,31 @@ def register_socketio_events(socketio):
     def update_scene(data):
         status = bool(data['status'])
         scene = int(data['id'])
+        driver.quickSceneButtonUpdate(scene, status)
         if scene < len(routes.scenes):  # Make sure scene exists
             routes.scenes[scene]["status"] = status
+            print(routes.scenes[scene])
             # Send every channel to the device to the client
             for device in routes.scenes[scene]["channel"]:
                 for channel in device["attributes"]["channel"]:
-                    #if channel['id'] == 0:  # !!! muss raus um alle channel zu schicken !!!
-                    device1 = next(
-                        (device1 for device1 in routes.devices if device1['id'] == device['id']), None)
-                    deviceChannel = device1["attributes"]["channel"][channel['id']]
-                    if status:  # on
-                        faderSend(
-                            device["id"], channel["sliderValue"], channel["id"])
-                        deviceChannel["sliderValue"] = channel["sliderValue"]
-                        send_dmx(device["id"], channel["id"],
+                    if channel['id'] == 0: # !!! muss raus um alle channel zu schicken !!!
+                        device1 = next((device1 for device1 in routes.devices if device1['id'] == device['id']), None)
+                        deviceChannel = device1["attributes"]["channel"][channel['id']]
+                        if status: # on
+                            faderSend(device["id"], channel["sliderValue"], channel["id"])
+                            send_dmx(device["id"], channel["id"],
                                     channel["sliderValue"], device, channel)
-                    else:       # off
-                        deviceChannel["sliderValue"] = deviceChannel["backupValue"]
-                        faderSend(
-                            device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
-                        send_dmx(device["id"], channel["id"],
+                            deviceChannel["sliderValue"] = channel["sliderValue"]
+                            driver.pushFader(device["id"], deviceChannel["sliderValue"] if device else 0)
+                            driver.devices = routes.devices
+                        else:      # off
+                            deviceChannel["sliderValue"] = deviceChannel["backupValue"]
+                            send_dmx(device["id"], channel["id"],
                                     deviceChannel["backupValue"], device, channel)
+                            faderSend(device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
+                            driver.pushFader(device["id"], deviceChannel["backupValue"] if device else 0)
+                            driver.devices = routes.devices
+
 
         # Send update to all clients
         global connections

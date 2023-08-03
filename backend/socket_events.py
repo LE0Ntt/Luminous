@@ -48,10 +48,9 @@ def register_socketio_events(socketio):
             send_dmx(index, channelId, value, routes.devices[index], routes.devices[index]["attributes"]["channel"][channelId])
 
     def callback(index, value):
-        faderSend(index, value, 0)
-        # muss noch getestet werden
+        faderSend(index, value, 0) # invokes the corresponding socket event
 
-        for i, device in enumerate(routes.devices):
+        for i, device in enumerate(routes.devices): # sets the updated value in the device list
             if device["id"] == index:
                 index = i
                 routes.devices[index]["attributes"]["channel"][0]["sliderValue"] = value

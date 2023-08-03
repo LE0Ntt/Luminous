@@ -56,10 +56,8 @@ class Driver:
     def input(self):
         for message in self.inport:
             hex_message = ''.join(format(byte, '02X') for byte in message.bytes())
-
-            #print(hex_message)
             
-            if hex_message.startswith('B04'): # Rotory message but potentially startup -> push faders, pages, display, button lights ??? Maybe not best practice
+            if hex_message.startswith('B04'): # Checks if MototMix was restarted and sends fader positions again
                 for faderIndex, value in enumerate(self.fader_values):
                     msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
                     lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
@@ -69,7 +67,7 @@ class Driver:
                     self.outport.send(msg1)
                     self.outport.send(msg2)
                 
-            if hex_message.startswith('B00F0') and int(hex_message[5], 16) < 8: # Fader
+            if hex_message.startswith('B00F0') and int(hex_message[5], 16) < 8: # Sets marker that a fader change in specified channel is incoming
                 self.channel_flag = True
                 self.current_flagged_channel = int(hex_message[5], 16)
                 if self.last_active != int(hex_message[-1:]):
@@ -84,7 +82,8 @@ class Driver:
                 self.fader_touch[self.last_active] = False
                 self.channel_flag = False
                 continue
-            elif hex_message.startswith('B00') & hex_message[3].isdigit(): # Fader movement
+            # Recognizes fader change and sends it to the mapping function with the fader number and value to be mapped to curren occupation
+            elif hex_message.startswith('B00') & hex_message[3].isdigit(): 
                 fader = int(hex_message[3])
                 self.fader_values[fader] = int(hex_message[-2:], 16) * 2
                 self.fader_mapping(fader, self.fader_values[fader])
@@ -98,17 +97,19 @@ class Driver:
                 #Fader end
             elif hex_message.startswith('B02') & hex_message[3].isdigit(): # Unnecessary LSB
                 continue
+
+            # Channel Button-Block (Mute, Solo, Select, Max, Min)
             elif (hex_message == 'B02F41') & self.channel_flag:
                 self.channel_flag = False
             elif (hex_message == 'B02F42') & self.channel_flag:
                 self.channel_flag = False
             elif (hex_message == 'B02F43') & self.channel_flag:
                 self.channel_flag = False
-            elif (hex_message == 'B02F44') & self.channel_flag:
+            elif (hex_message == 'B02F44') & self.channel_flag: # set channel to 255 (max pressed)
                 self.fader_mapping(self.current_flagged_channel, 255)
                 self.pushFader(self.deviceRouting[self.current_page-1][self.current_flagged_channel], 255)
                 self.channel_flag = False
-            elif (hex_message == 'B02F45') & self.channel_flag:
+            elif (hex_message == 'B02F45') & self.channel_flag: # set channel to 0 (min pressed)
                 self.pushFader(self.deviceRouting[self.current_page-1][self.current_flagged_channel], 0)
                 self.fader_mapping(self.current_flagged_channel, 0)
                 self.channel_flag = False
@@ -274,7 +275,7 @@ class Driver:
         return value_14bit
 
     def pushFader(self, number, value):
-        if number == 0:
+        if number == 0: # If master fader is pushed
             self.fader_values[7] = value
             msb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[0], 16)
             lsb = int(self.to_msb_lsb(self.map_8bit_to_14bit(value))[1], 16)
@@ -285,7 +286,7 @@ class Driver:
             self.outport.send(msg2)
             self.displayFaderValues(index, value)
             return
-        else:   
+        else:   # If any other fader is pushed
             for index in range(7):
                 if self.deviceRouting[self.current_page-1][index] == number and self.light_mode:
                     self.fader_values[index] = value
@@ -562,6 +563,6 @@ class Driver:
             i += 1
 
         while len(abbreviation) < 4:
-            abbreviation += ' '
+            abbreviation += ' ' 
         return abbreviation
     # -------------------- Scene Mode Functions END--------------------

@@ -8,7 +8,7 @@ class ola_handler:
     def __init__(self):
         self.wrapper = ClientWrapper()
         self.master = 1
-        self.ignored_channels = {1: [], 2: []}
+        self.ignored_channels = {1: [], 2: []}  # ignored channels for master
         self.dmx_data = {1: array.array(
             'B', [0]*512), 2: array.array('B', [0]*512)}
         self.fader_data = {1: array.array(
@@ -29,15 +29,20 @@ class ola_handler:
         print("Setup done")
 
     def send_dmx(self, universe, channel, faderValue):
-        if channel in self.ignored_channels.get(universe, []):
-            print(f"Channel {channel} is ignoring the master.")
-            return
-        
         if universe in [1, 2]:
             self.fader_data[universe][channel] = faderValue
-            self.dmx_data[universe][channel] = int(
-                self.fader_data[universe][channel] * self.master)
-            self.send_to_universe(universe)
+
+            if channel in self.ignored_channels.get(universe, []):  # Check if channel is ignored
+                print(f"Channel {channel} is ignoring the master.")
+                self.dmx_data[universe][channel] = int(
+                    self.fader_data[universe][channel])
+                self.send_to_universe(universe)
+                
+            else:
+                self.dmx_data[universe][channel] = int(
+                    self.fader_data[universe][channel] * self.master)
+                self.send_to_universe(universe)
+
         else:
             print(f'Error: Invalid universe {universe}', file=sys.stderr)
 
@@ -49,5 +54,6 @@ class ola_handler:
         self.master = faderValue / 255
         for universe in [1, 2]:
             for i, value in enumerate(self.fader_data[universe]):
-                self.dmx_data[universe][i] = int(value * self.master)
+                if i not in self.ignored_channels.get(universe, []):        # ignore channels
+                    self.dmx_data[universe][i] = int(value * self.master)
             self.send_to_universe(universe)

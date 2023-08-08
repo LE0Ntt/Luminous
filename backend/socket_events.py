@@ -6,32 +6,35 @@ from server.models import Scene
 import json
 import time
 # OLA imports
-#from ola_handler import ola_handler
+from ola_handler import ola_handler
 
-#ola = ola_handler()
-#ola.setup()
+ola = ola_handler()
+ola.setup()
 connections = 0
 global socketio
 socketio = SocketIO(app, cors_allowed_origins="*",
                     logger=False, engineio_logger=False)
 
+def set_ignored_channels():
+    ola.ignore_channels = routes.ignored_channels
+
 last_send_time = 0
 def send_dmx(fader: int, channelId: int, fader_value: int, device: dict, channel: dict) -> None:
     if fader == 0 and channelId == 0:
         print("Masterfader")
-        ##ola.master_fader(fader_value)
+        ola.master_fader(fader_value)
     else:
         try:
             dmx_channel = int(channel['dmx_channel'])
             universe = int(device['universe'][1:])
-            ##ola.send_dmx(universe, dmx_channel - 1, fader_value)
+            ola.send_dmx(universe, dmx_channel - 1, fader_value)
             # print(f"dmx {dmx_channel}, value {fader_value}, universe {universe}")
         except KeyError:
             print('No dmx_channel key for non-master channel')
 
 
 def send_dmx_direct(universe: int, value: int, channel: int) -> None:
-    # ola.send_dmx(universe, channel - 1, value)
+    ola.send_dmx(universe, channel - 1, value)
     return
 
 
@@ -57,6 +60,8 @@ def register_socketio_events(socketio):
     
     def quickSceneCallback(scene, status):
         update_scene({"id": scene, "status": status})
+        if status: sceneCallback(scene, 255)
+        else: sceneCallback(scene, 0)
 
     def sceneCallback(scene, value):
         for currentScene in routes.scenes:
@@ -76,6 +81,7 @@ def register_socketio_events(socketio):
                     if value > 0:
                         master_channel["sliderValue"] = value
                         faderSend(device_id, value, master_channel["id"])
+                        
                     else:
                         master_channel["sliderValue"] = master_channel["backupValue"]
                         faderSend(device_id, device["attributes"]["channel"][0]["backupValue"], master_channel["id"])

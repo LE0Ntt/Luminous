@@ -1,12 +1,14 @@
 import sys
 import array
+import time
 from ola.ClientWrapper import ClientWrapper
 
 
 class ola_handler:
     def __init__(self):
-        self.wrapper = None
+        self.wrapper = ClientWrapper()
         self.master = 1
+        self.ignored_channels = {1: [], 2: []}
         self.dmx_data = {1: array.array(
             'B', [0]*512), 2: array.array('B', [0]*512)}
         self.fader_data = {1: array.array(
@@ -17,19 +19,20 @@ class ola_handler:
             print('Success!')
         else:
             print(f'Error: {status.message}', file=sys.stderr)
-        if self.wrapper:
-            self.wrapper.Stop()
+        self.wrapper.Stop()
 
     def setup(self):
         print("Setting up...")
-        self.wrapper = ClientWrapper()
-        client = self.wrapper.Client()
         for universe in [1, 2]:
-            client.SendDmx(universe, self.dmx_data[universe], self.DmxSent)
+            self.client.SendDmx(universe, self.dmx_data[universe], self.DmxSent)
         self.wrapper.Run()
         print("Setup done")
 
     def send_dmx(self, universe, channel, faderValue):
+        if channel in self.ignored_channels.get(universe, []):
+            print(f"Channel {channel} is ignoring the master.")
+            return
+        
         if universe in [1, 2]:
             self.fader_data[universe][channel] = faderValue
             self.dmx_data[universe][channel] = int(
@@ -39,10 +42,8 @@ class ola_handler:
             print(f'Error: Invalid universe {universe}', file=sys.stderr)
 
     def send_to_universe(self, universe):
-        self.wrapper = ClientWrapper()
-        client = self.wrapper.Client()
-        client.SendDmx(universe, self.dmx_data[universe], self.DmxSent)
-        self.wrapper.Run()
+        self.client.SendDmx(universe, self.dmx_data[universe], self.DmxSent)
+        time.sleep(0.002) # Sleep to prevent buffer overflow for scenes, maybe shorter?
 
     def master_fader(self, faderValue):
         self.master = faderValue / 255

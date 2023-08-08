@@ -6,7 +6,7 @@ from ola.ClientWrapper import ClientWrapper
 
 class ola_handler:
     def __init__(self):
-        self.wrapper = ClientWrapper()
+        self.wrapper = None
         self.master = 1
         self.ignored_channels = {1: [], 2: []}  # ignored channels for master
         self.dmx_data = {1: array.array(
@@ -19,10 +19,13 @@ class ola_handler:
             print('Success!')
         else:
             print(f'Error: {status.message}', file=sys.stderr)
-        self.wrapper.Stop()
+        if self.wrapper:
+            self.wrapper.Stop()
 
     def setup(self):
         print("Setting up...")
+        self.wrapper = ClientWrapper()
+        self.client = self.wrapper.Client()
         for universe in [1, 2]:
             self.client.SendDmx(universe, self.dmx_data[universe], self.DmxSent)
         self.wrapper.Run()
@@ -47,8 +50,10 @@ class ola_handler:
             print(f'Error: Invalid universe {universe}', file=sys.stderr)
 
     def send_to_universe(self, universe):
-        self.client.SendDmx(universe, self.dmx_data[universe], self.DmxSent)
-        time.sleep(0.002) # Sleep to prevent buffer overflow for scenes, maybe shorter?
+        self.wrapper = ClientWrapper()
+        client = self.wrapper.Client()
+        client.SendDmx(universe, self.dmx_data[universe], self.DmxSent)
+        self.wrapper.Run()
 
     def master_fader(self, faderValue):
         self.master = faderValue / 255

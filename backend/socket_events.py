@@ -9,6 +9,7 @@ import time
 from ola_handler import ola_handler
 
 ola = ola_handler()
+
 ola.setup()
 connections = 0
 global socketio
@@ -42,13 +43,26 @@ def register_socketio_events(socketio):
     # Mutator method to get updates from driver
     def faderSend(index, value, channelId):
         global last_send_time
+        global last_change
         current_time = time.time() * 1000
         socketio.emit('variable_update', {
             'deviceId': index, 'value': value, 'channelId': channelId}, namespace='/socket')
+
+        send_dmx(index, channelId, value, routes.devices[index], routes.devices[index]["attributes"]["channel"][channelId])
         
-        if current_time - last_send_time >= 20:
+        """ if current_time - last_send_time >= 1:
             last_send_time = current_time
+            
+            if(last_change):
+                send_dmx(last_change[0], last_change[1], last_change[2], routes.devices[last_change[0]], routes.devices[last_change[0]]["attributes"]["channel"][last_change[1]])
+            
+            print("Sending: " + str(value) + " to device index " + str(index) + " ,channel " + str(channelId))
             send_dmx(index, channelId, value, routes.devices[index], routes.devices[index]["attributes"]["channel"][channelId])
+        else:
+            last_change = (index, channelId, value) """
+
+           
+
 
     def callback(index, value):
         faderSend(index, value, 0) # invokes the corresponding socket event
@@ -249,10 +263,10 @@ def register_socketio_events(socketio):
             db.session.commit()
         socketio.emit('scene_reload', namespace='/socket')
 
-    # Fader value update
+# Fader value update
     @socketio.on('fader_value', namespace='/socket')
     def handle_fader_value(data):
-        fader_value = int(data['value'])
+        fader_value = int(data.get('value', 0))
         fader = int(data['deviceId'])
         channelId = int(data['channelId'])
         device = next((device for device in routes.devices if device['id'] == fader), None)
@@ -263,6 +277,9 @@ def register_socketio_events(socketio):
                     channel["sliderValue"] = fader_value
                     channel["backupValue"] = fader_value
                     send_dmx(fader, channelId, fader_value, device, channel)
+                    if driver is not None and channel['channel_type'] == 'main':
+                        driver.pushFader(fader, fader_value)
+                        driver.devices = routes.devices
                     break        
             device["attributes"]["channel"] = channels
             routes.devices[fader] = device
@@ -273,10 +290,6 @@ def register_socketio_events(socketio):
                 universe = 2    
             send_dmx_direct(universe, fader_value, channelId)
                 
-        if driver is not None:
-            driver.pushFader(fader, fader_value)
-            driver.devices = routes.devices
-
         if connections > 1:
             faderSend(fader, fader_value, channelId)
 

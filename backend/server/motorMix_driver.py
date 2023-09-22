@@ -84,9 +84,12 @@ class Driver:
                 continue
             # Recognizes fader change and sends it to the mapping function with the fader number and value to be mapped to curren occupation
             elif hex_message.startswith('B00') & hex_message[3].isdigit(): 
-                fader = int(hex_message[3])
-                self.fader_values[fader] = int(hex_message[-2:], 16) * 2
-                self.fader_mapping(fader, self.fader_values[fader])
+                try:
+                    fader = int(hex_message[3])
+                    self.fader_values[fader] = int(hex_message[-2:], 16) * 2
+                    self.fader_mapping(fader, self.fader_values[fader])
+                except:
+                    print("ERROR in sending value to fader: " + str(fader))
                 
                 # interpolation to simulate 7 to 8 bit
                 self.current_time[fader] = time.monotonic()
@@ -110,9 +113,12 @@ class Driver:
                 self.pushFader(self.deviceRouting[self.current_page-1][self.current_flagged_channel], 255)
                 self.channel_flag = False
             elif (hex_message == 'B02F45') & self.channel_flag: # set channel to 0 (min pressed)
-                self.pushFader(self.deviceRouting[self.current_page-1][self.current_flagged_channel], 0)
-                self.fader_mapping(self.current_flagged_channel, 0)
-                self.channel_flag = False
+                try:
+                    self.pushFader(self.deviceRouting[self.current_page-1][self.current_flagged_channel], 0)
+                    self.fader_mapping(self.current_flagged_channel, 0)
+                    self.channel_flag = False
+                except:
+                    print("ERROR: Could not push Fader: " + str(fader) + " to Minimum!")
             
             
             
@@ -357,6 +363,7 @@ class Driver:
         for device in self.devices:
             self.callback(device ["id"], 0)
             self.pushFader(device ["id"], 0)
+            time.sleep(0.2) #temporär 
     #-------------------- Blackout END--------------------
 
 
@@ -493,7 +500,7 @@ class Driver:
                             break
 
     def deviceMapping(self):
-        self.num_pages = (len(self.devices) - 1) // 7 + 2
+        self.num_pages = (len(self.devices) - 1) // 7 + 4
         for page in range(1, self.num_pages):
             for channel in range(7):
                 fader_number = (page - 1) * 7 + channel + 1

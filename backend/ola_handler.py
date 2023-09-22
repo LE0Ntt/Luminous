@@ -1,5 +1,7 @@
 import sys
 import array
+import time
+import threading
 from ola.ClientWrapper import ClientWrapper
 
 class ola_handler:
@@ -10,6 +12,10 @@ class ola_handler:
         self.ignored_channels = {1: [], 2: []}  # ignored channels for master
         self.dmx_data = {1: array.array('B', [0]*512), 2: array.array('B', [0]*512)}
         self.fader_data = {1: array.array('B', [0]*512), 2: array.array('B', [0]*512)}
+        #test
+        self.send_buffer = {1: False, 2: False}
+        self.send_timer = threading.Timer(0.02, self.timed_send)  # 20 ms Timer
+        self.send_timer.start()
 
     def DmxSent(self, status):
         if status.Succeeded():
@@ -40,7 +46,15 @@ class ola_handler:
             print(f'Error: Invalid universe {universe}', file=sys.stderr)
 
     def send_to_universe(self, universe):
-        self.client.SendDmx(universe, self.dmx_data[universe], self.DmxSent)
+        self.send_buffer[universe] = True
+
+    def timed_send(self):
+        for universe, ready in self.send_buffer.items():
+            if ready:
+                self.client.SendDmx(universe, self.dmx_data[universe], self.DmxSent)
+                self.send_buffer[universe] = False
+        self.send_timer = threading.Timer(0.02, self.timed_send)  # Restart the timer
+        self.send_timer.start()
 
     def master_fader(self, faderValue):
         self.master = faderValue / 255

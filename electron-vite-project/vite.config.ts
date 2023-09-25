@@ -43,7 +43,7 @@ export default defineConfig(({ command }) => {
       }),
       // Use Node.js API in the Renderer-process
       renderer({
-        nodeIntegration: true,
+        nodeIntegration: false,
       }),
     ],
     server: !!process.env.VSCODE_DEBUG ? (() => {

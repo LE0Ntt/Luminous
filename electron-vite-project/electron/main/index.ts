@@ -2,6 +2,7 @@ import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
 import { update } from './update'
+import Store from 'electron-store'
 
 // The built directory structure
 //
@@ -12,7 +13,7 @@ import { update } from './update'
 // │   └── index.js    > Preload-Scripts
 // ├─┬ dist
 // │ └── index.html    > Electron-Renderer
-//
+
 process.env.DIST_ELECTRON = join(__dirname, '../')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
 process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
@@ -43,10 +44,7 @@ const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 
-/**
- * Hier editiert man das Fenster von Electron.
- * Code änderungen werden Markiert.
- */
+
 async function createWindow() {
   win = new BrowserWindow({
     title: 'Luminous',
@@ -56,18 +54,18 @@ async function createWindow() {
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
       // Consider using contextBridge.exposeInMainWorld
       // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
     },
     width: 1920,  //ändert Fenster breite
     height: 1080, //ändert Fenster höhe
     minWidth: 1024,  // Mindestbreite des Fensters
     minHeight: 618, // Mindesthöhe des Fensters
-    titleBarStyle: 'hidden',
-    frame: false,
+    /* titleBarStyle: 'hidden',
+    frame: false, */
   })
 
-  win.setFullScreen(true); // Startet das Fenster im Fullscreen
+  //win.setFullScreen(true); // Startet das Fenster im Fullscreen
 
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(url)
@@ -93,17 +91,6 @@ async function createWindow() {
 }
 
 app.whenReady().then(createWindow)
-  // .then(() => {
-  //   ipcMain.handle('toggle-full-screen', () => { // Not used!
-  //     console.log('toggle-full-screen event received');
-  //     if (win?.isFullScreen()) {
-  //       win.setFullScreen(false);
-  //     } else {
-  //       win?.setFullScreen(true);
-  //     }
-  //     return 'Received';
-  //   });
-  // })
 
 // win/linux quit app when all windows closed
 app.on('window-all-closed', () => {
@@ -159,3 +146,30 @@ ipcMain.on('toggle-full-screen', () => {
     win?.setFullScreen(true);
   }
 })
+
+// Store 
+const schema = {
+  ip: {
+    type: 'string',
+    format: 'ipv4',
+    default: '127.0.0.1',
+  },
+};
+
+const store = new Store({ schema } as any); // as any, weil sonst ein Fehler kommt
+
+ipcMain.handle('get-ip', () => {
+  const ip = store.get('ip');
+  const port = '5000'; // Or get it from your config if it's dynamic.
+  return { ip, port };
+});
+
+const ip = store.get('ip');
+
+console.log(`Current IP: ${ip}`);
+
+let currentIp = store.get('ip');
+
+ipcMain.handle('get-platform', () => {
+  return process.platform;
+});

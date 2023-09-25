@@ -13,7 +13,6 @@
  * @file Titlebar.tsx
  */
 import React, { useState, useContext, useEffect, useRef } from 'react'
-import { ipcRenderer } from 'electron';
 import { TranslationContext } from './TranslationContext';
 import './Titlebar.css';
 import '../index.css';
@@ -33,7 +32,7 @@ function TitleBar() {
   const dropDownRef = useRef<HTMLButtonElement | null>(null);
 
   const toggleFullScreen = async () => {
-    ipcRenderer.send('toggle-full-screen');
+    (window as any).electron.send('toggle-full-screen');
   };
 
   const handleClose = () => {
@@ -41,7 +40,7 @@ function TitleBar() {
   };
 
   const handleMinimize = () => {
-    ipcRenderer.send('minimize');
+    (window as any).electron.send('minimize');
   };
 
   const settings = () => {
@@ -120,7 +119,14 @@ function TitleBar() {
   };
 
   // MacOS Titlebar Settings
-  const isMac = process.platform === 'darwin';
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const platform = await (window as any).electronAPI.getPlatform();
+      setIsMac(platform === 'darwin');
+    })();
+  }, []);
 
   return (
     <div className='titlebarComp'>

@@ -89,4 +89,29 @@ window.onmessage = (ev) => {
   ev.data.payload === 'removeLoading' && removeLoading()
 }
 
+// ----------------------------------------------------------------------
+
+const { ipcRenderer, contextBridge } = require('electron')
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  getIp: async () => {
+    return await ipcRenderer.invoke('get-ip')
+  },
+  send: (channel, data) => {
+    let validChannels = ['toggle-full-screen', 'minimize'];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.send(channel, data);
+    }
+  },
+  on: (channel, func) => {
+    let validChannels = [];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.on(channel, (event, ...args) => func(...args));
+    }
+  },
+  getPlatform: async () => {
+    return await ipcRenderer.invoke('get-platform');
+  },  
+});
+
 setTimeout(removeLoading, 4999)

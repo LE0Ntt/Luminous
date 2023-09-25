@@ -6,36 +6,36 @@ from server.models import Scene
 import json
 import time
 # OLA imports
-from ola_handler import ola_handler
+""" from ola_handler import ola_handler """ # ola
 
-ola = ola_handler()
+""" ola = ola_handler() """ # ola
 
-ola.setup()
+""" ola.setup() """ # ola
 connections = 0
 global socketio
 socketio = SocketIO(app, cors_allowed_origins="*",
                     logger=False, engineio_logger=False)
 
-def set_ignored_channels():
-    ola.ignore_channels = routes.ignored_channels
+""" def set_ignored_channels():
+    ola.ignore_channels = routes.ignored_channels """ # ola
 
 last_send_time = 0
 def send_dmx(fader: int, channelId: int, fader_value: int, device: dict, channel: dict) -> None:
     if fader == 0 and channelId == 0:
         print("Masterfader")
-        ola.master_fader(fader_value)
+        """ ola.master_fader(fader_value) """ # ola
     else:
         try:
             dmx_channel = int(channel['dmx_channel'])
             universe = int(device['universe'][1:])
-            ola.send_dmx(universe, dmx_channel - 1, fader_value)
+            """ ola.send_dmx(universe, dmx_channel - 1, fader_value) """ # ola
             # print(f"dmx {dmx_channel}, value {fader_value}, universe {universe}")
         except KeyError:
             print('No dmx_channel key for non-master channel')
 
 
 def send_dmx_direct(universe: int, value: int, channel: int) -> None:
-    ola.send_dmx(universe, channel - 1, value)
+    """ ola.send_dmx(universe, channel - 1, value) """ # ola
     return
 
 

@@ -54,7 +54,7 @@ def get_devices():
     with app.app_context():
         devices = Device.query.all()
         for device in devices:
-            channels = set_channel_values(device.attributes.get("channel", []))
+            channels = set_channel_values(device.attributes.get("channel", []), universe=device.universe)
             device = {
                 "id": device.id,
                 "name": device.name,

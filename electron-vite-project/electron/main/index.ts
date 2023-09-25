@@ -21,7 +21,8 @@ process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
   : process.env.DIST
 
 // Disable GPU Acceleration for Windows 7
-if (release().startsWith('6.1')) app.disableHardwareAcceleration()
+//if (release().startsWith('6.1')) app.disableHardwareAcceleration()
+//app.disableHardwareAcceleration()
 
 // Set application name for Windows 10+ notifications
 if (process.platform === 'win32') app.setAppUserModelId(app.getName())
@@ -61,8 +62,8 @@ async function createWindow() {
     height: 1080, //ändert Fenster höhe
     minWidth: 1024,  // Mindestbreite des Fensters
     minHeight: 618, // Mindesthöhe des Fensters
-    /* titleBarStyle: 'hidden',
-    frame: false, */
+    titleBarStyle: 'hidden',
+    frame: false,
   })
 
   //win.setFullScreen(true); // Startet das Fenster im Fullscreen
@@ -70,7 +71,9 @@ async function createWindow() {
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(url)
     // Open devTool if the app is not packaged
-    win.webContents.openDevTools()
+    win.webContents.on('did-finish-load', () => {
+      win?.webContents.openDevTools()
+    })
   } else {
     win.loadFile(indexHtml)
   }

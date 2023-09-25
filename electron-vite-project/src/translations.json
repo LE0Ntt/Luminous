@@ -66,7 +66,8 @@
     "ap_confirm": "Confirm",
     "ds_title": "Really delete scene?",
     "ds_note": "Note: This scene will also be deleted automatically when the system is restarted.",
-    "ds_delete": "Delete"
+    "ds_delete": "Delete",
+    "change_password": "Change Password"
   },
   "de": {
     "studio": "Studio",
@@ -135,6 +136,7 @@
     "ls_device_spot": "Spotlight",
     "ds_title": "Szene wirklich löschen?",
     "ds_note": "Hinweis: Diese Szene wird auch automatisch gelöscht, wenn das System neu gestartet wird.",
-    "ds_delete": "Löschen"
+    "ds_delete": "Löschen",
+    "change_password": "Passwort ändern"
   }
 }

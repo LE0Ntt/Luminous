@@ -44,6 +44,30 @@
   padding: 15px 20px 20px 20px;
 }
 
+.settings {
+  width: 150px;
+  border-right: 1px solid #ccc;
+}
+
+.setting-content {
+  flex: 1;
+  padding-left: 20px;
+}
+
+.settings button {
+  color: var(--primary);
+  padding: 10%;
+  margin: 5% 0;
+  cursor: pointer;
+  width: 95%;
+  border-radius: 5px;
+}
+
+.settings button.active {
+  background-color: var(--mainColor);
+  color: var(--colorButton);
+}
+
 .SettingsTitle {
   position: absolute;
   top: 10px;
@@ -84,21 +108,32 @@
   flex-grow: 1;
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: stretch;
-
   top: 40px;
   margin-bottom: 40px;
   overflow: auto;
   bottom: 0;
 }
 
+.SettingContainer {
+  margin-top: 20px;
+}
+
+.SettingsContainer .Heading {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.SettingsIPBox {
+  width: 30px;
+  text-align: center;
+}
+
 .SettingsTextBoxContainer {
   width: stretch;
   display: flex;
   position: relative;
-  bottom: 20px;
-  top: 20px;
   gap: 20px;
   flex-direction: row;
   overflow: auto;

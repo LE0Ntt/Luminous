@@ -32,7 +32,7 @@ function TitleBar() {
   const dropDownRef = useRef<HTMLButtonElement | null>(null);
 
   const toggleFullScreen = async () => {
-    (window as any).electron.send('toggle-full-screen');
+    (window as any).electronAPI.send('toggle-full-screen');
   };
 
   const handleClose = () => {
@@ -40,7 +40,7 @@ function TitleBar() {
   };
 
   const handleMinimize = () => {
-    (window as any).electron.send('minimize');
+    (window as any).electronAPI.send('minimize');
   };
 
   const settings = () => {

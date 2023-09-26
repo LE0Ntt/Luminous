@@ -78,7 +78,7 @@ function BigView({ onClose }: BigViewProps) {
   
   return (
     <div>
-      <div className="BigViewOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
+      <div className="backgroundOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
         <div className="BigViewContainer">
           <Button
             onClick={() => handleClose()}

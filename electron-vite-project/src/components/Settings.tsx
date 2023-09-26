@@ -97,7 +97,7 @@ function Settings({ onClose }: SettingsProps) {
 
   return (
     <div>
-      <div className="SettingsOverlay" onClick={handleClose} />
+      <div className="backgroundOverlay" onClick={handleClose} />
       <div className="SettingsContainer">
         <Button onClick={handleClose} className="buttonClose">
           <div className="removeIcon centerIcon"></div>

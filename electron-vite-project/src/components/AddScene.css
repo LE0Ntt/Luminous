@@ -14,33 +14,6 @@
  */
 @import url(../Color.css);
 
-.AddSceneOverlay {
-    position: relative;
-    z-index: 9998;
-    height: 10000vh;
-    width: 10000vw;
-    left: -5000vw;
-    top: -5000vh;
-    background-color: rgba(0, 0, 0, 0.25);
-    cursor: pointer;
-    backdrop-filter: blur(2px);
-    animation-name: fadeIn;
-    animation-duration: .2s;
-    animation-timing-function: ease;
-}
-
-@keyframes fadeIn {
-    0% {
-        backdrop-filter: blur(0px);
-        background-color: rgba(0, 0, 0, 0);
-    }
-
-    100% {
-        backdrop-filter: blur(2px);
-        background-color: rgba(0, 0, 0, 0.25);
-    }
-}
-
 .AddSceneContainer {
     height: 362px;
     width: 886px;

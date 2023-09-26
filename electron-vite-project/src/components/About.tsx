@@ -40,7 +40,7 @@ function About({ onClose }: SettingsProps) {
 
   return (
     <div>
-      <div className="LightSettingsOverlay" onClick={handleClose} />
+      <div className="backgroundOverlay" onClick={handleClose} />
       <div className="LightSettingsContainer">
         <Button onClick={() => handleClose()} className="buttonClose">
           <div className="removeIcon centerIcon"></div>

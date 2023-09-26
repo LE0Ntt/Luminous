@@ -42,8 +42,6 @@ const Fader: React.FC<SliderProps> = ({
   const faderClassName = height ? `fader faderMaster ${className}` : `fader ${className}`;
   const displayValue = Math.round((faderValues[sliderGroupId][id] / 255) * 100);
 
-  const { isDragging, setIsDragging } = useFaderContext();
-
   // Set fader height by the passed parameter
   useEffect(() => {
     if(height)
@@ -90,8 +88,6 @@ const Fader: React.FC<SliderProps> = ({
           step="1"
           value={faderValues[sliderGroupId][id]}
           onChange={handleSliderChange}
-          onMouseDown={() => setIsDragging(true)}
-          onMouseUp={() => setIsDragging(false)}
           style={{
             background: color ? `linear-gradient(to right, ${color} 0%, ${color} ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)` : `linear-gradient(to right, var(--mainColor) 0%, var(--mainColor) ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
           }}

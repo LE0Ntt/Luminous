@@ -354,7 +354,7 @@ function LightSettings({ onClose }: SettingsProps) {
 
   return (
     <div className='LightSettingsOverParent'>
-      <div className="LightSettingsOverlay" onClick={handleClose} />
+      <div className="backgroundOverlay" onClick={handleClose} />
       <div className="LightSettingsContainer">
         <Button
           onClick={() => handleClose()}

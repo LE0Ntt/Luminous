@@ -176,3 +176,7 @@ let currentIp = store.get('ip');
 ipcMain.handle('get-platform', () => {
   return process.platform;
 });
+
+ipcMain.on('open-external', (event, url) => {
+  shell.openExternal(url);
+});

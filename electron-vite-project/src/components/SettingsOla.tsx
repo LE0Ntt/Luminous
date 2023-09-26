@@ -34,9 +34,6 @@ function SettingsOla({ onConfirm, onClose, isDelete }: SettingsOlaProps) {
   const [password, setPassword] = useState('');
   const oldUrl = url.toString();
   const newUrl = oldUrl.slice(0, -5) + ":9090";
-  
-  const { shell } = require('electron');
-
 
   const handleClose = () => {
     setIsOpen(false);
@@ -66,8 +63,7 @@ function SettingsOla({ onConfirm, onClose, isDelete }: SettingsOlaProps) {
             onConfirm(true);
           } else {
             const link = newUrl;
-            window.open(newUrl, 'noopener');
-            shell.openExternal(newUrl);
+            window.electronAPI.openExternal(newUrl);
           }
           handleClose();
         } else {

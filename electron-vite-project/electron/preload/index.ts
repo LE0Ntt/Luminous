@@ -111,7 +111,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   getPlatform: async () => {
     return await ipcRenderer.invoke('get-platform');
-  },  
+  },
+  openExternal: (url) => {
+    ipcRenderer.send('open-external', url);
+  },
 });
 
 setTimeout(removeLoading, 4999)

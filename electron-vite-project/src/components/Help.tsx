@@ -12,13 +12,11 @@
  * 
  * @file Help.tsx
  */
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import "./Settings.css";
 import Button from "./Button";
 import "../index.css";
-import Toggle from "./Toggle";
 import { TranslationContext } from "./TranslationContext";
-import DeviceList from "./DeviceList";
 import { useConnectionContext } from "./ConnectionContext";
 
 interface SettingsProps {

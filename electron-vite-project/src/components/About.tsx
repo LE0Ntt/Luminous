@@ -12,14 +12,11 @@
  * 
  * @file About.tsx
  */
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import "./Settings.css";
 import Button from "./Button";
 import "../index.css";
-import Toggle from "./Toggle";
 import { TranslationContext } from "./TranslationContext";
-import DeviceList from "./DeviceList";
-import { useConnectionContext } from "./ConnectionContext";
 import packageJson from "../../package.json";
 
 interface SettingsProps {
@@ -29,7 +26,6 @@ interface SettingsProps {
 function About({ onClose }: SettingsProps) {
   const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
-  const { url } = useConnectionContext();
 
   const handleClose = () => {
     setIsOpen(false);
@@ -44,8 +40,7 @@ function About({ onClose }: SettingsProps) {
 
   return (
     <div>
-      <div className="LightSettingsOverlay" onClick={handleClose} /> Overlay to
-      close the modal when clicked outside
+      <div className="LightSettingsOverlay" onClick={handleClose} />
       <div className="LightSettingsContainer">
         <Button onClick={() => handleClose()} className="buttonClose">
           <div className="removeIcon centerIcon"></div>

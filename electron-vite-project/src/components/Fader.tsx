@@ -15,7 +15,7 @@
 import React, { useState, ChangeEvent, useEffect, useRef } from "react";
 import "./Fader.css";
 import { useConnectionContext } from './ConnectionContext';
-import { useFaderContext } from './FaderContext'; // Importieren Sie den Kontext
+import { useFaderContext } from './FaderContext';
 
 interface SliderProps {
   id: number;

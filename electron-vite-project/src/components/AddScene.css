@@ -50,7 +50,7 @@
     padding: 30px;
     backdrop-filter: var(--windowBackdrop);
     -webkit-backdrop-filter: var(--windowBackdrop);
-    position: absolute;
+    position: fixed;
     z-index: 9999;
     overflow: hidden;
 }

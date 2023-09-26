@@ -12,7 +12,7 @@
  * 
  * @file DeleteScene.tsx
  */
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import './BigView.css';
 import Button from './Button';
 import '../index.css';

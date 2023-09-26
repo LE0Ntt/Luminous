@@ -22,7 +22,6 @@ socketio = SocketIO(app, cors_allowed_origins="*",
 last_send_time = 0
 def send_dmx(fader: int, channelId: int, fader_value: int, device: dict, channel: dict) -> None:
     if fader == 0 and channelId == 0:
-        print("Masterfader")
         """ ola.master_fader(fader_value) """ # ola
     else:
         try:

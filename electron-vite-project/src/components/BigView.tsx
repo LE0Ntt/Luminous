@@ -19,7 +19,6 @@ import '../index.css';
 import Toggle from './Toggle';
 import Fader from './Fader';
 import { useConnectionContext } from './ConnectionContext';
-import { useFaderContext } from './FaderContext';
 import { TranslationContext } from './TranslationContext';
 import React from 'react';
 

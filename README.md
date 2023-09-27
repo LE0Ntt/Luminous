@@ -28,7 +28,6 @@ Download the latest installer for your operating system from the [Releases](http
 #### Installation Procedure
 ```bash
 # Clone the repository
-
 git clone https://github.com/LE0Ntt/luminous.git
 
 # Change directory to the project root

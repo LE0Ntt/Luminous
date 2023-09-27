@@ -33,6 +33,10 @@
   padding: 15px 20px 20px 20px;
 }
 
+.ContainerGap {
+  gap: 0px;
+}
+
 .LightSettingsListContainer {
   flex-grow: 1;
   min-width: 270px;
@@ -69,18 +73,28 @@
 
 .LightSettingsSelectedButton {
   position: absolute;
-  width: stretch;
+  width: calc(100% - 20px);
   height: stretch;
-  left: 20px;
+  right: 0px;
   font-size: 20px;
   font-weight: 500;
+  transition: width 200ms ease-out, opacity 200ms ease-out;
+  white-space: nowrap;
+  opacity: 1;
+}
+
+.transitionButton {
+  width: 0px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .LightSettingsList {
   flex-grow: 5;
   height: stretch;
   position: relative;
-  width: stretch;
+  width: 100%;
   overflow: auto;
   padding: 20px 0px 20px 20px;
 }
@@ -94,9 +108,19 @@
   top: 40px;
   margin-bottom: 40px;
   bottom: 0;
-  padding: 20px 20px 20px 20px;
+  padding: 20px;
   overflow: auto;
   gap: 20px;
+  width: 100%;
+  transition: width 200ms ease-out, flex-grow 200ms ease-out, opacity 200ms ease-out, padding 200ms ease-out;
+  opacity: 1;
+}
+
+.LightSettingsWindowInvisible {
+  flex-grow: 0;
+  width:   0;
+  opacity: 0;
+  padding: 20px 0px;
 }
 
 .innerWindow hr {
@@ -187,7 +211,7 @@
   top: 20px;
   gap: 20px;
   flex-direction: row;
-  overflow: auto;
+  overflow-x: scroll;
 }
 
 .LightSettingsTextBox {

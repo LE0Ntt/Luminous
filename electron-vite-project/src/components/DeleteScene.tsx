@@ -12,7 +12,7 @@
  * 
  * @file DeleteScene.tsx
  */
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import './BigView.css';
 import Button from './Button';
 import '../index.css';
@@ -43,7 +43,7 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
 
   return (
     <div>
-      <div className="AddSceneOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
+      <div className="backgroundOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
       <div className="AddSceneContainer window">
         <Button onClick={handleClose} className="buttonClose">
           <div className="removeIcon centerIcon"></div>

@@ -87,7 +87,7 @@ function AddScene({ onClose }: AddSceneProps) {
 
   return (
     <div>
-      <div className="AddSceneOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
+      <div className="backgroundOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
       {showAdminPassword ? (
         <AdminPassword onConfirm={handleAdminPasswordConfirm} onClose={() => setShowAdminPassword(false)} />
       ) : (

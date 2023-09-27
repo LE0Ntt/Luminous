@@ -84,7 +84,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
 
   return (
     <div>
-      <div className="AddSceneOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
+      <div className="backgroundOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
       <div className="AddSceneContainer window">
         <Button onClick={() => handleClose()} className="buttonClose">
           <div className='removeIcon centerIcon'></div>
@@ -97,7 +97,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
             placeholder={t("ap_password")} 
             value={password} 
             onChange={handlePasswordChange}
-            autoFocus // Activate autofocus
+            autoFocus
           />
           <p className='hide'>a</p> {/* Hidden element for spacing */}
           <div className='AddSceneNote'>

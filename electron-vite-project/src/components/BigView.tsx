@@ -19,7 +19,6 @@ import '../index.css';
 import Toggle from './Toggle';
 import Fader from './Fader';
 import { useConnectionContext } from './ConnectionContext';
-import { useFaderContext } from './FaderContext';
 import { TranslationContext } from './TranslationContext';
 import React from 'react';
 
@@ -79,7 +78,7 @@ function BigView({ onClose }: BigViewProps) {
   
   return (
     <div>
-      <div className="BigViewOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
+      <div className="backgroundOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
         <div className="BigViewContainer">
           <Button
             onClick={() => handleClose()}

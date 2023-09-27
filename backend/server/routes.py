@@ -123,7 +123,7 @@ def add_light():
     db.session.add(device)
     db.session.commit()
 
-    channels = set_channel_values(device.attributes.get("channel", []))
+    channels = set_channel_values(device.attributes.get("channel", []), universe=device.universe)
     device_dict = {
         "id": int(device.number),
         "name": device.name,

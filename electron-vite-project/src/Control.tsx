@@ -27,7 +27,7 @@ import AddScene from './components/AddScene';
 import AdminPassword from './components/AdminPassword';
 import ControlHandler from "./components/ControlHandler";
 
-function Control() {
+function Control() { // LightFX
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
@@ -209,13 +209,13 @@ function Control() {
           <div className="controlBiColor innerWindow">
             <span className="controlTitle">Bi-Color</span>
             <div className="controlKelvinPicker">
-               {<ColorPicker 
+              <ColorPicker 
                 pickerType="kelvin"
                 red={faderValues[0][3]}
                 green={faderValues[0][4]}
                 blue={faderValues[0][5]}
                 onColorChange={handleColorChange}
-              />}
+              />
             </div>
           </div>
           <div className="controlRGB innerWindow">

@@ -12,13 +12,11 @@
  * 
  * @file Help.tsx
  */
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import "./Settings.css";
 import Button from "./Button";
 import "../index.css";
-import Toggle from "./Toggle";
 import { TranslationContext } from "./TranslationContext";
-import DeviceList from "./DeviceList";
 import { useConnectionContext } from "./ConnectionContext";
 
 interface SettingsProps {
@@ -41,7 +39,7 @@ function Help({ onClose }: SettingsProps) {
 
   return (
     <div>
-      <div className="LightSettingsOverlay" onClick={handleClose} /> Overlay to
+      <div className="backgroundOverlay" onClick={handleClose} /> Overlay to
       close the modal when clicked outside
       <div className="LightSettingsContainer">
         <Button onClick={() => handleClose()} className="buttonClose">

@@ -156,9 +156,8 @@ function LightSettings({ onClose }: SettingsProps) {
     setInputNumber(device.id.toString());
   };
 
-  const handleDeselectDevice = (device: DeviceConfig) => {
+  const handleDeselectDevice = () => {
     setSelectedDevice(undefined);
-    setUnselectedDevices([...unselectedDevices, device]);
     setIsNewDevice(false);
   };
 
@@ -326,7 +325,7 @@ function LightSettings({ onClose }: SettingsProps) {
       })
     })
     .then(response => response.json())
-    .then(data => {
+    .then(() => {
       setSelectedDevice(undefined);
       fetchDevices();
     })
@@ -355,7 +354,7 @@ function LightSettings({ onClose }: SettingsProps) {
 
   return (
     <div className='LightSettingsOverParent'>
-      <div className="LightSettingsOverlay" onClick={handleClose} />
+      <div className="backgroundOverlay" onClick={handleClose} />
       <div className="LightSettingsContainer">
         <Button
           onClick={() => handleClose()}

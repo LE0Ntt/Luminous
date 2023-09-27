@@ -11,16 +11,19 @@ try:
     ola.setup()  # ola
 except ModuleNotFoundError:
     print("OLA module not found. Running without OLA support.")
+    ola = None
 
-def safe_ola_call(operation_type, func_or_attr, *args, **kwargs):
-    try:
-        if 'ola' in globals():
-            if operation_type == "func":
-                func_or_attr(*args, **kwargs)
-            elif operation_type == "attr":
-                setattr(ola, func_or_attr, args[0])
-    except NameError:
+def safe_ola_call(operation_type, func_or_attr_name, *args, **kwargs):
+    if ola is not None:
+        if operation_type == "func":
+            func = getattr(ola, func_or_attr_name)
+            func(*args, **kwargs)
+        elif operation_type == "attr":
+            setattr(ola, func_or_attr_name, args[0])
+    else:
         print("OLA not available, skipping call.")
+
+        
 
 
 
@@ -35,19 +38,19 @@ def set_ignored_channels():
 last_send_time = 0
 def send_dmx(fader: int, channelId: int, fader_value: int, device: dict, channel: dict) -> None:
     if fader == 0 and channelId == 0:
-        safe_ola_call("func", ola.master_fader, fader_value) # ola
+        safe_ola_call("func", "master_fader", fader_value) # ola
     else:
         try:
             dmx_channel = int(channel['dmx_channel'])
             universe = int(device['universe'][1:])
-            safe_ola_call("func", ola.send_dmx, universe, dmx_channel - 1, fader_value) # ola
+            safe_ola_call("func", "send_dmx", universe, dmx_channel - 1, fader_value) # ola
             # print(f"dmx {dmx_channel}, value {fader_value}, universe {universe}")
         except KeyError:
             print('No dmx_channel key for non-master channel')
 
 
 def send_dmx_direct(universe: int, value: int, channel: int) -> None:
-    safe_ola_call("func", ola.send_dmx, universe, channel - 1, value) # ola
+    safe_ola_call("func", "send_dmx", universe, channel - 1, value) # ola
     return
 
 

@@ -5,12 +5,13 @@ import socket_events
 from socket_events import socketio
 import signal
 import sys
-""" import RPi.GPIO as GPIO """
+import RPi.GPIO as GPIO
 
 socketio = SocketIO(app, cors_allowed_origins="*")
+socket_events.register_socketio_events(socketio)
 
 # --------------LED-----------------#
-""" LED_PIN = 24
+LED_PIN = 24
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED_PIN, GPIO.OUT)
 
@@ -24,21 +25,15 @@ def signal_handler(sig, frame):
     print('Server stopped.')
     turn_off_led()
     GPIO.cleanup()
-    sys.exit(0) """
+    sys.exit(0)
 # -------------LED-END----------------#
 
 
+def run_server():
+    socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
 
-def signal_handler(sig, frame):
-    print('Server stopped.')
-    sys.exit(0)
-
-
-signal.signal(signal.SIGINT, signal_handler)
-
-socket_events.register_socketio_events(socketio)
 
 if __name__ == '__main__':
-    # LED einschalten
-    # turn_on_led()
-    socketio.run(app, host='0.0.0.0', port=5000)
+    turn_on_led()
+    run_server()
+    

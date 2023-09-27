@@ -96,7 +96,7 @@ scenes = get_scenes()
 
 @app.route('/')
 def mein_endpunkt():
-    return render_template('faderTest.html')
+    return jsonify({"message": "Endpoint reached"})
 
 
 @app.route('/fader')
@@ -167,7 +167,7 @@ def update_light():
     device.attributes = data['attributes']
     db.session.commit()
 
-    channels = set_channel_values(device.attributes.get("channel", []))
+    channels = set_channel_values(device.attributes.get("channel", []), universe=device.universe)
     device_dict = {
         "id": int(device.number),
         "name": device.name,

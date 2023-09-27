@@ -28,11 +28,21 @@ function Scenes() {
   const [deleteScene, setDeleteScene] = useState(false);
   const [deleteSceneAdmin, setDeleteSceneAdmin] = useState(false);
   const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
-  
+  const [fadeDuration, setFadeDuration] = useState(() => {
+    const storedValue = sessionStorage.getItem('fadeDuration');
+    return storedValue ? parseInt(storedValue) : 0;
+  });
+
   const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
     localStorage.setItem('layer', `${status}`);
   };
   
+  const handleFadeDuration = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value === '' ? NaN : Math.min(60, Math.max(0, parseInt(event.target.value)));
+    setFadeDuration(inputValue);
+    sessionStorage.setItem('fadeDuration', inputValue.toString());
+  };
+
   return (
     <div>
       <div className='window scenesMain'>
@@ -41,7 +51,7 @@ function Scenes() {
       <div className='window scenesMaster mainfader'>
         <div className='scenesMasterAlign'>
           <Fader
-              height={700}
+              height={610}
               sliderGroupId={0}
               id={0}
               name='Master'
@@ -52,6 +62,12 @@ function Scenes() {
         <div className='scenesLayerAlign'>
           <Toggle onClick={handleToggleChange} enabled={localStorage.getItem('layer') === 'true'} />
           {t("layer")}
+        </div>
+      </div>
+      <div className='window scenesLayer scenesFade'>
+        <div className='scenesLayerAlign'>
+          <span>FADE</span>
+          <input className='scenesFadeInput' type="number" value={fadeDuration} onChange={handleFadeDuration} />
         </div>
       </div>
       {addScene && <AddScene onClose={() => setAddScene(false)} />}

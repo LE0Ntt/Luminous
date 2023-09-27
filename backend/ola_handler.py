@@ -3,18 +3,20 @@ import array
 import time
 import threading
 from ola.ClientWrapper import ClientWrapper
+import server.routes
 
 class ola_handler:
     def __init__(self):
         self.wrapper = ClientWrapper()
         self.client = self.wrapper.Client()
         self.master = 1
-        self.ignored_channels = {1: [], 2: []}  # ignored channels for master
+        self.ignored_channels = server.routes.ignored_channels   # ignored channels for master
+        print(f"Ignored channels when checking: {self.ignored_channels}")
         self.dmx_data = {1: array.array('B', [0]*512), 2: array.array('B', [0]*512)}
         self.fader_data = {1: array.array('B', [0]*512), 2: array.array('B', [0]*512)}
         #test
         self.send_buffer = {1: False, 2: False}
-        self.send_timer = threading.Timer(0.02, self.timed_send)  # 20 ms Timer
+        self.send_timer = threading.Timer(0.0, self.timed_send)  # 20 ms Timer
         self.send_timer.start()
 
     def DmxSent(self, status):
@@ -60,6 +62,6 @@ class ola_handler:
         self.master = faderValue / 255
         for universe in [1, 2]:
             for i, value in enumerate(self.fader_data[universe]):
-                if i not in self.ignored_channels.get(universe, []):        # ignore channels
+                if i+1 not in self.ignored_channels.get(universe, []):        # ignore channels
                     self.dmx_data[universe][i] = int(value * self.master)
             self.send_to_universe(universe)

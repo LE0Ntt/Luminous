@@ -166,7 +166,7 @@ def register_socketio_events(socketio):
             # Überprüfen, ob der Thread gestoppt werden soll
             if fade_threads.get((device_id, channel_id), {}).get("stop"):
                 break
-            current_value = start_value + (change_per_step * (i+1))
+            current_value = int(start_value + (change_per_step * (i+1)))
             deviceChannel["sliderValue"] = current_value
             faderSend(device_id, current_value, channel_id)
             send_dmx(device_id, channel_id, current_value, device, channel)
@@ -182,7 +182,7 @@ def register_socketio_events(socketio):
         scene = int(data['id'])
         fade_time = int(data.get('fadeTime', 0))  # Get the fade time, default to 0 if not provided
         print(fade_time)
-        interval = 0.03  # Seconds
+        interval = 0.02  # Seconds
         steps = int(fade_time / interval) if fade_time > 0 else 1  # Total steps for the entire fade duration
 
         if driver is not None and scene is not None:
@@ -206,7 +206,9 @@ def register_socketio_events(socketio):
                     if (device["id"], channel["id"]) in fade_threads:
                         fade_threads[(device["id"], channel["id"])]["stop"] = True
                         # Optional: Warten, bis der alte Thread beendet ist
-                        fade_threads[(device["id"], channel["id"])]["thread"].join()
+                        thread = fade_threads.get((device["id"], channel["id"]), {}).get("thread")
+                        if thread and thread.is_alive():
+                            thread.join()
 
                     t = threading.Thread(target=fade_device, args=(device, channel, start_value, end_value, steps, interval, deviceChannel))
                     fade_threads[(device["id"], channel["id"])] = {"thread": t, "stop": False}

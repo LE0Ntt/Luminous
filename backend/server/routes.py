@@ -12,12 +12,11 @@ from server.models import Device, Admin, Scene, Settings
 # initial values for channels
 def set_channel_values(channels, universe):
     global ignored_channels
+    universe = int(universe[1:])  # Stripping the 'U' and converting to int
     for channel in channels:
         if channel["channel_type"] in ["r", "g", "b", "bi"]:
-            if universe == 1:
-                ignored_channels[1].append(channel["dmx_channel"])
-            elif universe == 2:
-                ignored_channels[2].append(channel["dmx_channel"])
+            print(f"Appending {channel['dmx_channel']} to ignored_channels[{universe}]")
+            ignored_channels[universe].append(int(channel["dmx_channel"]))
         if channel["channel_type"] in ["r", "g", "b"]:
             channel["sliderValue"] = 255
             channel["backupValue"] = 255
@@ -27,7 +26,7 @@ def set_channel_values(channels, universe):
         else:
             channel["sliderValue"] = 0
             channel["backupValue"] = 0
-    return channels        
+    return channels    
 
 ignored_channels = {1: [], 2: []}     
 

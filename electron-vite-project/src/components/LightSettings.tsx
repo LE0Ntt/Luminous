@@ -156,8 +156,9 @@ function LightSettings({ onClose }: SettingsProps) {
     setInputNumber(device.id.toString());
   };
 
-  const handleDeselectDevice = () => {
+  const handleDeselectDevice = (device: DeviceConfig) => {
     setSelectedDevice(undefined);
+    !isNewDevice && setUnselectedDevices([...unselectedDevices, device]);
     setIsNewDevice(false);
   };
 

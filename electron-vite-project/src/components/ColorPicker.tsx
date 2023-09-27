@@ -49,7 +49,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
       }
 
       const newColorPicker = iro.ColorPicker(pickerRef.current, {
-        width: 320,
+        width: pickerType === 'kelvin' ? 431 : 320,
         color: `rgb(${red}, ${green}, ${blue})`,
         layout
       });

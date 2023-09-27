@@ -59,6 +59,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
   
     return [Math.round(red), Math.round(green), Math.round(blue)];
   }
+  
   function rgbToKelvin(r: number, g: number, b: number) {
     let minTemp = 1000;
     let maxTemp = 40000;
@@ -77,14 +78,31 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
     }
     return Math.round(temp || 0);
   }
-  
 
   let tempInKelvin = rgbToKelvin(red, green, blue);
   kelvin = (tempInKelvin - 2220) / 8648 * 255;
 
+  interface ChannelData {
+    channelId: number;
+    value: number;
+  }
+  
+  interface DeviceData {
+    deviceId: number;
+    channels: ChannelData[];
+  }
+  
+  let dataToSend: DeviceData[] = [];
+  
   selectedDevices.forEach((device: any) => {
+    let deviceData: DeviceData = {
+      deviceId: device.id,
+      channels: []
+    };
+  
     device.attributes.channel.forEach((channel: any) => {
-      let value;
+      let value: number | undefined;
+  
       switch(device.device_type) {
         case "RGBDim":
           switch(channel.id.toString()) {
@@ -93,16 +111,12 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
             case '2': value = values.green || 0; break;
             case '3': value = values.blue || 0; break;
           }
-          setFaderValue(device.id, channel.id, value);
-          emit("fader_value", { deviceId: device.id, value, channelId: channel.id});
           break;
         case "BiColor":
           switch(channel.id.toString()) {
             case '0': value = values.master || 0; break;
             case '1': value = kelvin || 0; break;
           }
-          setFaderValue(device.id, channel.id, value);
-          emit("fader_value", { deviceId: device.id, value, channelId: channel.id});
           break;
         case "Spot":
         case "Fill":
@@ -110,15 +124,21 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
           switch(channel.id.toString()) {
             case '0': value = values.master || 0; break;
           }
-          setFaderValue(device.id, channel.id, value);
-          emit("fader_value", { deviceId: device.id, value, channelId: channel.id});
           break;
         default:
           console.log("Unbekannter Gerätetyp: ", device.deviceType);
+          return;
+      }
+  
+      if (value !== undefined) {
+        deviceData.channels.push({ channelId: channel.id, value });
       }
     });
-});
-
+  
+    dataToSend.push(deviceData);
+  });
+  
+  emit("bulk_fader_values", dataToSend);
 }
 
 export default ControlHandler;

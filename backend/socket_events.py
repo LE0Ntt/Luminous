@@ -205,7 +205,7 @@ def register_socketio_events(socketio):
         #update scenes on MotorMix
         if driver is not None:
             driver.scenes = routes.scenes
-            driver.scenesMapping()
+            driver.sceneMapping()
         
         if scene < len(routes.scenes):  # Make sure scene exists
             routes.scenes.pop(scene)
@@ -247,7 +247,7 @@ def register_socketio_events(socketio):
         #update scenes on MotorMix
         if driver is not None:
             driver.scenes = routes.scenes
-            driver.scenesMapping()
+            driver.sceneMapping()
 
         if scene < len(routes.scenes):  # Make sure scene exists
             sceneToSave = routes.scenes.pop(scene)

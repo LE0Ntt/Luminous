@@ -5,6 +5,9 @@ from server.motorMix_driver import Driver
 from server.models import Scene
 import json
 import time
+from functools import partial
+import threading
+
 try:
     from ola_handler import ola_handler  # ola
     ola = ola_handler()  # ola
@@ -24,13 +27,9 @@ def safe_ola_call(operation_type, func_or_attr_name, *args, **kwargs):
         print("OLA not available, skipping call.")
 
         
-
-
-
 connections = 0
 global socketio
-socketio = SocketIO(app, cors_allowed_origins="*",
-                    logger=False, engineio_logger=False)
+socketio = SocketIO(app, cors_allowed_origins="*", logger=False, engineio_logger=False)
 
 def set_ignored_channels():
     safe_ola_call("attr", "ignore_channels", routes.ignored_channels) # ola
@@ -156,47 +155,71 @@ def register_socketio_events(socketio):
                     if driver is not None:
                         driver.pushFader(device["id"], device["attributes"]["channel"][0]["backupValue"])
                         driver.devices = routes.devices
-                
-                
+
+    fade_threads = {}
+
+    def fade_device(device, channel, start_value, end_value, steps, interval, deviceChannel):
+        device_id = device["id"]
+        channel_id = channel["id"]
+        change_per_step = (end_value - start_value) / steps
+        for i in range(steps):
+            # Überprüfen, ob der Thread gestoppt werden soll
+            if fade_threads.get((device_id, channel_id), {}).get("stop"):
+                break
+            current_value = int(start_value + (change_per_step * (i+1)))
+            deviceChannel["sliderValue"] = current_value
+            faderSend(device_id, current_value, channel_id)
+            send_dmx(device_id, channel_id, current_value, device, channel)
+            if driver is not None and driver.light_mode:
+                driver.pushFader(device_id, current_value)
+                driver.devices = routes.devices
+            time.sleep(interval)           
+            
     # Update status (on/off) of a scene
     @socketio.on('scene_update', namespace='/socket')
     def update_scene(data):
         status = bool(data['status'])
         scene = int(data['id'])
+        fade_time = int(data.get('fadeTime', 0))  # Get the fade time, default to 0 if not provided
+        print(fade_time)
+        interval = 0.02  # Seconds
+        steps = int(fade_time / interval) if fade_time > 0 else 1  # Total steps for the entire fade duration
+
         if driver is not None and scene is not None:
             driver.quickSceneButtonUpdate(scene, status)
-        if scene < len(routes.scenes):  # Make sure scene exists
+
+        if scene < len(routes.scenes):
             routes.scenes[scene]["status"] = status
-            # Send every channel to the device to the client
             for device in routes.scenes[scene]["channel"]:
                 for channel in device["attributes"]["channel"]:
                     device1 = next(
                         (device1 for device1 in routes.devices if device1['id'] == device['id']), None)
                     deviceChannel = device1["attributes"]["channel"][channel['id']]
+
+                    start_value = deviceChannel["sliderValue"]
                     if status:  # on
-                        faderSend(
-                            device["id"], channel["sliderValue"], channel["id"])
-                        deviceChannel["sliderValue"] = channel["sliderValue"]
-                        send_dmx(device["id"], channel["id"],
-                                    channel["sliderValue"], device, channel)
-                        deviceChannel["sliderValue"] = channel["sliderValue"]
-                        if driver is not None and driver.light_mode:
-                            driver.pushFader(device["id"], deviceChannel["sliderValue"] if device else 0)
-                            driver.devices = routes.devices
-                    else:      # off
-                        deviceChannel["sliderValue"] = deviceChannel["backupValue"]
-                        send_dmx(device["id"], channel["id"],
-                                deviceChannel["backupValue"], device, channel)
-                        faderSend(device["id"], deviceChannel["backupValue"] if device else 0, channel["id"])
-                        if driver is not None and driver.light_mode:
-                            driver.pushFader(device["id"], deviceChannel["backupValue"] if device else 0)
-                            driver.devices = routes.devices
-        # Send update to all clients
-        global connections
-        if connections > 0:
-            socketio.emit('scene_update', {
-                'id': scene, 'status': status}, namespace='/socket')
-    
+                        end_value = channel["sliderValue"]
+                    else:  # off
+                        end_value = deviceChannel["backupValue"]
+
+                    # If a fade thread for this device and channel already exists, stop it
+                    if (device["id"], channel["id"]) in fade_threads:
+                        fade_threads[(device["id"], channel["id"])]["stop"] = True
+                        # Optional: Warten, bis der alte Thread beendet ist
+                        thread = fade_threads.get((device["id"], channel["id"]), {}).get("thread")
+                        if thread and thread.is_alive():
+                            thread.join()
+
+                    t = threading.Thread(target=fade_device, args=(device, channel, start_value, end_value, steps, interval, deviceChannel))
+                    fade_threads[(device["id"], channel["id"])] = {"thread": t, "stop": False}
+                    t.start()
+
+            # Send update to all clients
+            global connections
+            if connections > 0:
+                socketio.emit('scene_update', {
+                    'id': scene, 'status': status}, namespace='/socket')
+        
     # Delete a scene and tell every client to update
     @socketio.on('scene_delete', namespace='/socket')
     def delete_scene(data):

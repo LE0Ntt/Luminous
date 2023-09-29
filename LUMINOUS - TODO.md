@@ -6,6 +6,7 @@
   - Display bugs with page wheel
   - Missing light values
   - Pages, only first two till switch to scenes
+- Random server crashes
 
 ### Necessary changes
 

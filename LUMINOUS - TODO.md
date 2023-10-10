@@ -1,11 +1,11 @@
 ### Known Issues
 
-- Jumping faders
 - MotorMix
-  - Black-Out Button
+  - Black-Out button
   - Display bugs with page wheel
   - Missing light values
-  - Pages, only first two till switch to scenes
+  - Pages, only first two will switch to scenes
+  - Faders sometimes jump randomly
 - Random server crashes
 
 ### Necessary changes

@@ -4,7 +4,7 @@
   - Black-Out button
   - Display bugs with page wheel
   - Missing light values
-  - Pages, only first two will switch to scenes
+  - Displays only two pages until switched to Scenes and back
   - Faders sometimes jump randomly
 - Random server crashes
 

@@ -15,9 +15,10 @@ Luminous is a state-of-the-art lighting control software developed as a collabor
 
 ### Quick Start: Using the Installer
 
-Download the latest installer for your operating system from the [Releases](https://chat.openai.com/c/LINK_TO_RELEASES_PAGE) page and follow the on-screen instructions to install Luminous. Launch the Electron app to start using Luminous right away.
+Download the latest installer for your operating system from the [Releases](https://github.com/LE0Ntt/Luminous/releases) page and follow the on-screen instructions to install Luminous. Launch the Electron app to start using Luminous right away.
 
 ### For Developers: Complete Setup
+
 #### Prerequisites
 
 - Node.js (v18.15.0)
@@ -26,6 +27,7 @@ Download the latest installer for your operating system from the [Releases](http
 - **For OLA Support**: [Open Lighting Architecture](https://www.openlighting.org/ola/) needs to be installed separately.
 
 #### Installation Procedure
+
 ```bash
 # Clone the repository
 git clone https://github.com/LE0Ntt/luminous.git
@@ -40,7 +42,9 @@ npm install
 pip3 install -r requirements.txt
 
 ```
+
 #### Execution Steps
+
 ```bash
 # Initialize the Python server
 python3 server.py

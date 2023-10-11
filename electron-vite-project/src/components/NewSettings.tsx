@@ -20,7 +20,6 @@ import "./LightSettings.css";
 import Toggle from "./Toggle";
 import { TranslationContext } from "./TranslationContext";
 import { useConnectionContext } from "./ConnectionContext";
-import SettingsOla from "./SettingsOla";
 
 interface SettingsProps {
   onClose: () => void;
@@ -86,7 +85,7 @@ function Settings({ onClose }: SettingsProps) {
   const handleCloseOlaWindow = () => {
     setIsOlaWindowOpen(false);
   };
- 
+
   if (!isOpen) {
     return null; // Render nothing if the modal is closed
   }
@@ -269,7 +268,7 @@ function Settings({ onClose }: SettingsProps) {
                   <button className="SettingsButton controlButton" onClick={handleOpenOlaWindow}>
                   {t("set_ola")}
                 </button>
-                {isOlaWindowOpen && <SettingsOla onClose={handleCloseOlaWindow} />}
+                {/* {isOlaWindowOpen && <SettingsOla onClose={handleCloseOlaWindow} />} */}
               </div> 
             ) : null}
           </div>

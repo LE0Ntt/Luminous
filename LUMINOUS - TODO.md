@@ -7,7 +7,8 @@
   - Displays only two pages until switched to Scenes and back
   - Faders sometimes jump randomly
 - Random server crashes
-
+- No connection on autostart
+- Possibly slower after long operation
 ### Necessary changes
 
 - [ ] Code cleanup / comments
@@ -42,7 +43,7 @@
   - [ ] Change password
 - [ ] Input can be empty
 - [ ] Use **Enter** to accept dialog
-
+- [ ] Rethink scene logic: Off after e.g. bi-colour change?
 ### Nice to have features
 
 - [ ] Show site (Lightshows)

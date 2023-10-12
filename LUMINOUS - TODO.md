@@ -1,5 +1,4 @@
 ### Known Issues
-
 - MotorMix
   - Black-Out button
   - Display bugs with page wheel
@@ -9,8 +8,8 @@
 - Random server crashes
 - No connection on autostart
 - Possibly slower after long operation
-### Necessary changes
 
+### Necessary changes
 - [ ] Code cleanup / comments
 - [ ] Testing phase
 - [ ] Settings
@@ -44,8 +43,9 @@
 - [ ] Input can be empty
 - [ ] Use **Enter** to accept dialog
 - [ ] Rethink scene logic: Off after e.g. bi-colour change?
-### Nice to have features
+- [ ] Add support for Wifi-Lights and devices with an On/Off channel
 
+### Nice to have features
 - [ ] Show site (Lightshows)
 - [ ] Scenes different colors
 - [ ] Change scene fade in/out curve

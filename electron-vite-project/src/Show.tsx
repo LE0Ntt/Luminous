@@ -21,7 +21,7 @@ import MyTimeline from "./components/Timeline";
 import { useFaderContext } from "./components/FaderContext";
 
 function Show() {
-  const { connected, emit, on } = useConnectionContext();
+  const { emit, on } = useConnectionContext();
   const { isDragging, setIsDragging } = useFaderContext();
 
   return (

@@ -13,20 +13,23 @@
  * @file App.tsx
  */
 import { useRef, useEffect, useState } from "react";
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom'
-import './index.css'
-import Studio from './Studio'
-import Header from './components/Header'
-import Show from './Show'
-import Control from './Control'
-import Scenes from './Scenes'
-import { TranslationProvider } from "./components/TranslationContext";
-import translations from "./translations.json";
+import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import './index.css';
+import Studio from './Studio';
+import Header from './components/Header';
+import Show from './Show';
+import Control from './Control';
+import Scenes from './Scenes';
+import { TranslationProvider } from './components/TranslationContext';
+import translations from './translations.json';
 import Titlebar from './components/Titlebar';
+import NoConnection from './components/NoConnection';
+import { useConnectionContext } from './components/ConnectionContext';
 
 function App() {
   const mainContentRef = useRef<HTMLDivElement>(null);
   const [contentScale, setContentScale] = useState(1);
+  const { connected } = useConnectionContext();
 
   // To scale the content when the window is resized
   const updateContentScale = () => {
@@ -63,13 +66,26 @@ function App() {
           <div className="mainContainer" ref={mainContentRef}>
             <div style={{ transform: `scale(${contentScale})` }}>
               <div className="mainContent" >
-                <Routes>
-                  <Route path="/" element={<Studio />} />
-                  <Route path="/Studio" element={<Studio />} />
-                  <Route path="/Control" element={<Control />} />
-                  <Route path="/Scenes" element={<Scenes />} />
-                  <Route path="/Show" element={<Show />} />
-                </Routes>
+                {!connected ? (
+                  <>
+                    <NoConnection />
+                    <Routes>
+                      <Route path="/" element={<Studio />} />
+                      <Route path="/Studio" element={<Studio />} />
+                      <Route path="/Control" element={<Control />} />
+                      <Route path="/Scenes" element={<Scenes />} />
+                      <Route path="/Show" element={<Show />} />
+                    </Routes>
+                  </>
+                ) : (
+                  <Routes>
+                    <Route path="/" element={<Studio />} />
+                    <Route path="/Studio" element={<Studio />} />
+                    <Route path="/Control" element={<Control />} />
+                    <Route path="/Scenes" element={<Scenes />} />
+                    <Route path="/Show" element={<Show />} />
+                  </Routes>
+                )}
               </div>
             </div>
           </div>

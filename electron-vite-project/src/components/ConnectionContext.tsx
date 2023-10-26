@@ -49,9 +49,19 @@ export function ConnectionProvider({ children, url }: ConnectionProviderProps) {
   useEffect(() => {
     const socketInstance = io(url + '/socket');
     setSocket(socketInstance);
+  
     socketInstance.on("connect", () => {
       setConnected(true);
     });
+  
+    socketInstance.on("disconnect", () => {
+      setConnected(false);
+    });
+  
+    socketInstance.on("reconnect", () => {
+      setConnected(true);
+    });
+  
     return () => {
       socketInstance.disconnect();
       setSocket(null);

@@ -67,7 +67,10 @@
     "ds_title": "Really delete scene?",
     "ds_note": "Note: This scene will also be deleted automatically when the system is restarted.",
     "ds_delete": "Delete",
-    "change_password": "Change Password"
+    "change_password": "Change Password",
+    "noConnection": "No connection to the server",
+    "retryConnection": "Trying to re-establish connection...",
+    "restartServer": "If no connection can be established, consider restarting the server."
   },
   "de": {
     "studio": "Studio",
@@ -137,6 +140,9 @@
     "ds_title": "Szene wirklich löschen?",
     "ds_note": "Hinweis: Diese Szene wird auch automatisch gelöscht, wenn das System neu gestartet wird.",
     "ds_delete": "Löschen",
-    "change_password": "Passwort ändern"
+    "change_password": "Passwort ändern",
+    "noConnection": "Keine Verbindung zum Server",
+    "retryConnection": "Verbindung wird wiederhergestellt...",
+    "restartServer": "Wenn keine Verbindung hergestellt werden kann, versuchen Sie den Server neu zu starten."
   }
 }

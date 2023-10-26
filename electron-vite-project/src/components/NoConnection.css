@@ -50,7 +50,7 @@
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: #FFF;
+    background: var(--primary);
     position: absolute;
     animation: animloader 2s linear infinite;
 }

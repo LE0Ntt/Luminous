@@ -25,8 +25,8 @@
   - [ ] Reboot MotorMix
   - [ ] Detect MotorMix (start after App)
 - [ ] Vite Export, use App within the browser
-- [ ] Connection screen
-- [ ] Reconnect to server
+- [x] Connection screen
+- [x] Reconnect to server
 - [ ] Guide / Implement Help
 - [ ] LightFX
   - [ ] Change to current state of the first light

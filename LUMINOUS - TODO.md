@@ -43,8 +43,8 @@
 - [ ] Input can be empty
 - [ ] Use **Enter** to accept dialog
 - [ ] Rethink scene logic: Off after e.g. bi-colour change?
-- [ ] Add support for Wifi-Lights and devices with an On/Off channel
-
+- [ ] Add support for Wifi-Lights and devices with an On/Off channel  
+  
 ### Nice to have features
 - [ ] Show site (Lightshows)
 - [ ] Scenes different colors

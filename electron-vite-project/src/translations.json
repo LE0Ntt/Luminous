@@ -69,7 +69,7 @@
     "ds_delete": "Delete",
     "change_password": "Change Password",
     "noConnection": "No connection to the server",
-    "retryConnection": "Trying to re-establish connection...",
+    "retryConnection": "Trying to establish connection...",
     "restartServer": "If no connection can be established, consider restarting the server."
   },
   "de": {
@@ -142,7 +142,7 @@
     "ds_delete": "Löschen",
     "change_password": "Passwort ändern",
     "noConnection": "Keine Verbindung zum Server",
-    "retryConnection": "Verbindung wird wiederhergestellt...",
+    "retryConnection": "Versuche Verbindung herzustellen...",
     "restartServer": "Wenn keine Verbindung hergestellt werden kann, versuchen Sie den Server neu zu starten."
   }
 }

@@ -51,7 +51,7 @@
 - [ ] Change scene fade in/out curve
 - [ ] Studio-Overview
   - [ ] Device highlight
-  - [ ] Move to the left
+  - [x] Move to the left
   - [ ] Add Traversenlights
 - [ ] Scenes
   - [ ] See what you save

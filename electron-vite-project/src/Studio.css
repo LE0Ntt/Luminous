@@ -14,16 +14,23 @@
  */
 @import url(./Color.css);
 
+.studioLayout {
+    gap: 20px;
+    display: flex;
+}
+
 .faders {
+    position: relative;
     width: 870px;
     height: 445px;
     left: 0;
-    top: 465px;
+    top: -425px;
     padding-left: 20px;
     padding-right: 20px;
 }
 
 .scenes {
+    position: relative;
     height: 445px;
     width: 974px;
     top: 0;
@@ -31,18 +38,20 @@
 }
 
 .overview {
+    position: relative;
     height: 910px;
     width: 846px;
-    left: 994px;
+    
     top: 0;
     border-radius: 10px;
 }
 
 .mainfader {
+    position: relative;
     height: 445px;
     width: 84px;
     left: 890px;
-    top: 465px;
+    top: 20px;
 }
 
 .sliders {

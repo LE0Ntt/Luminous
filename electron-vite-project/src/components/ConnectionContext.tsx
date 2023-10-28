@@ -25,6 +25,7 @@ interface ConnectionContextType {
   on: OnFunction;
   off: OffFunction;
   url: string;
+  /* changeUrl: (newUrl: string) => void; */
 }
 
 const ConnectionContext = createContext<ConnectionContextType | null>(null);
@@ -42,9 +43,32 @@ interface ConnectionProviderProps {
   url: string;
 }
 
-export function ConnectionProvider({ children, url }: ConnectionProviderProps) {
+export function ConnectionProvider({ children }: ConnectionProviderProps) {
   const [connected, setConnected] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
+
+  const [ip, setIp] = useState<string>('');
+  const [port, setPort] = useState<string>('');
+
+  useEffect(() => {
+    async function fetchIpAndPort() {
+      const [data] = await Promise.all([window.electronAPI.getIp()]);
+      const { ip: fetchedIp, port: fetchedPort } = data;
+      setIp(fetchedIp);
+      setPort(fetchedPort);
+      setUrl(`http://${fetchedIp}:${fetchedPort}`);
+    }
+    fetchIpAndPort();
+  }, []);
+
+  // change url to your server address
+  const [url, setUrl] = useState<string>(''); // Default value
+  
+  function changeUrl(newUrl: string) {
+    setUrl(newUrl);
+  }
+  
+
 
   useEffect(() => {
     const socketInstance = io(url + '/socket');
@@ -87,6 +111,7 @@ export function ConnectionProvider({ children, url }: ConnectionProviderProps) {
     on,
     off,
     url,
+    /* changeUrl ,*/
   };
 
   return (

@@ -12,7 +12,7 @@
  * 
  * @file Settings.tsx
  */
-import { useState, useContext, useCallback } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import "./Settings.css";
 import Button from "./Button";
 import "../index.css";
@@ -33,7 +33,7 @@ function Settings({ onClose }: SettingsProps) {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { t, language, setLanguage } = useContext(TranslationContext);
-  const { url } = useConnectionContext();
+  const { url, /* changeUrl */ } = useConnectionContext();
   const [isOlaWindowOpen, setIsOlaWindowOpen] = useState(false);
   const newUrl = url.toString().slice(0, -5) + ":9090";
 
@@ -64,16 +64,16 @@ function Settings({ onClose }: SettingsProps) {
         newPasswordConfirm: newPasswordConfirm,
       }),
     })
-    .then((response) => response.json())
-    .then((data) => {
-      setSuccessMessage(data.message);
-      setErrorMessage("");
-    })
-    .catch((error) => {
-      setErrorMessage(t("set_error_change"));
-      setSuccessMessage("");
-      console.error(error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        setSuccessMessage(data.message);
+        setErrorMessage("");
+      })
+      .catch((error) => {
+        setErrorMessage(t("set_error_change"));
+        setSuccessMessage("");
+        console.error(error);
+      }); 
   };
 
   const handleOpenOlaWindow = () => {
@@ -90,16 +90,42 @@ function Settings({ onClose }: SettingsProps) {
       handleClose();
     }
   }, []);
- 
+
   if (!isOpen) {
     return null; // Render nothing if the modal is closed
   }
 
+  const [selectedSetting, setSelectedSetting] = useState<string | null>('Setting1');
+
+  const [ip, setIP] = useState<string>("");
+  const [port, setPort] = useState<string>("5000");
+
+  const handleOctetChange = (index: number, value: string) => {
+    const octets = ip.split('.');
+    octets[index - 1] = value;
+    setIP(octets.join('.'));
+  };
+
+  useEffect(() => {
+    console.log("fetching ip");
+    console.log(ip);
+    const fullUrl = `${ip}:${port}`;
+/*     changeUrl(fullUrl); */
+  }, [ip]);
+  
+  const octets = ip.split('.');
+
+  const handlePortChange = (value: string) => {
+    setPort(value);
+  };
+
+
+
   return (
     <div>
       <div className="backgroundOverlay" onClick={handleClose} />
-      {isOlaWindowOpen ?
-       <AdminPassword onConfirm={handleAdminPasswordConfirm} onClose={handleCloseOlaWindow} />
+      {isOlaWindowOpen ? 
+      <AdminPassword onConfirm={handleAdminPasswordConfirm} onClose={handleCloseOlaWindow} />
       :
         <>
           <div className="SettingsContainer">
@@ -110,70 +136,149 @@ function Settings({ onClose }: SettingsProps) {
               <span>{t("set_title")}</span>
             </div>
             <div className="SettingsContent innerWindow">
-              <div className="SettingsOption">
-                <div className="LightSettingsSubTitle">
-                  <span>{t("set_admin")}</span>
-                </div>
-                {errorMessage && <div className="ErrorMessage">{errorMessage}</div>}
-                {successMessage && <div className="SuccessMessage">{successMessage}</div>}
-                <div className="SettingsTextBoxContainer">
-                  <div>
-                    <label>{t("set_current_pw")}</label> <br />
-                    <input
-                      className="SettingsTextBox"
-                      type="password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)} />
-                  </div>
-                  <div>
-                    <label>{t("set_new_pw")}</label> <br />
-                    <input
-                      className="SettingsTextBox"
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)} />
-                  </div>
-                  <div>
-                    <label>{t("set_conew_pw")}</label> <br />
-                    <input
-                      className="SettingsTextBox"
-                      type="password"
-                      value={newPasswordConfirm}
-                      onChange={(e) => setNewPasswordConfirm(e.target.value)} />
-                  </div>
-                  <br />
-                  <button
-                    className="SettingsSavePWButton controlButton"
-                    onClick={handleSavePassword}
-                  >
-                    {t("as_save")}
-                  </button>
-                </div>
+              <div className="settings">
+              <Button 
+                className={selectedSetting === 'Setting1' ? 'active' : ''} 
+                onClick={() => setSelectedSetting('Setting1')}
+              >
+                <span>{t("set_admin")}</span>
+              </Button>
+              <Button 
+                className={selectedSetting === 'Setting2' ? 'active' : ''} 
+                onClick={() => setSelectedSetting('Setting2')}
+              >
+                <span>{t("set_language")}</span>
+              </Button>
+              <Button
+                className={selectedSetting === 'Setting3' ? 'active' : ''}
+                onClick={() => setSelectedSetting('Setting3')}
+              >
+                OLA
+              </Button>
+              {/* Füge hier weitere Settings hinzu */}
               </div>
-              <div className="SettingsOption">
-                <hr />
-                <div className="LightSettingsSubTitle">
-                  <span>{t("set_language")}</span>
+              <div className="setting-content">
+                {selectedSetting === 'Setting1' ? (
+                <div className="SettingsOption">
+                    <div className="LightSettingsSubTitle">
+                      <span>{t("set_admin")}</span>
+                    </div>
+                    {errorMessage && <div className="ErrorMessage">{errorMessage}</div>}
+                    {successMessage && <div className="SuccessMessage">{successMessage}</div>}
+                  <div className="SettingContainer h-[130px]"> {/* Tailwind use */}
+                    <div className="Heading">
+                      <span>{t("change_password")}</span>
+                    </div>
+                    <div className="SettingsTextBoxContainer">
+                      <div>
+                        <label>{t("set_current_pw")}</label> <br />
+                        <input
+                          className="SettingsTextBox"
+                          type="password"
+                          value={currentPassword}
+                          onChange={(e) => setCurrentPassword(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label>{t("set_new_pw")}</label> <br />
+                        <input
+                          className="SettingsTextBox"
+                          type="password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label>{t("set_conew_pw")}</label> <br />
+                        <input
+                          className="SettingsTextBox"
+                          type="password"
+                          value={newPasswordConfirm}
+                          onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                        />
+                      </div>
+                      <br />
+                      <Button
+                        className="SettingsSavePWButton controlButton"
+                        onClick={handleSavePassword}
+                      >
+                        {t("as_save")}
+                      </Button>
+                    </div>
+                    {errorMessage && <div className="ErrorMessage">{errorMessage}</div>}
+                    {successMessage && (
+                      <div className="SuccessMessage">{successMessage}</div>
+                    )}
+                  </div>
+                  <div className="SettingContainer">
+                    <div className="Heading">
+                      <span>URL</span>
+                    </div>
+                    <div className="SettingsTextBoxContainer">
+                      <div className="text">
+                          Here you can change the URL of the server. <br />
+                      </div>
+                      <div>
+                        <label>{t("set_current_ip")}</label> <br />
+                        <input
+                          className="SettingsIPBox"
+                          maxLength={3}
+                          value={octets[0]}
+                          onChange={(e) => handleOctetChange(1, e.target.value)}
+                        />
+                        .
+                        <input
+                          className="SettingsIPBox"
+                          maxLength={3}
+                          value={octets[1]}
+                          onChange={(e) => handleOctetChange(2, e.target.value)}
+                        />
+                        .
+                        <input
+                          className="SettingsIPBox"
+                          maxLength={3}
+                          value={octets[2]}
+                          onChange={(e) => handleOctetChange(3, e.target.value)}
+                        />
+                        .
+                        <input
+                          className="SettingsIPBox"
+                          maxLength={3}
+                          value={octets[3]}
+                          onChange={(e) => handleOctetChange(4, e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="SettingsTextBoxContainer">
-                  <select
-                    className="SettingsLanguageSelection"
-                    value={language}
-                    onChange={handleLanguageChange}
-                  >
-                    <option value="en">{t("English 🇬🇧")}</option>
-                    <option value="de">{t("German 🇩🇪")}</option>
-                  </select>
-                </div>
-              </div>
-              <div className="SettingsOption">
-                <hr />
-                <div className="LightSettingsSubTitle">
-                  <span>OLA</span>
-                </div>
-                <button className="SettingsButton controlButton" onClick={handleOpenOlaWindow}>
-                  {t("set_ola")}
-                </button>
+                ) : selectedSetting === 'Setting2' ? (
+                  <div className="SettingsOption">
+                    <div className="LightSettingsSubTitle">
+                      <span>{t("set_language")}</span>
+                    </div>
+                    <div className="SettingsTextBoxContainer">
+                      <select
+                        className="SettingsLanguageSelection"
+                        value={language}
+                        onChange={handleLanguageChange}
+                      >
+                        <option value="en">{t("English 🇬🇧")}</option>
+                        <option value="de">{t("German 🇩🇪")}</option>
+                      </select>
+                    </div>
+                  </div>
+                ) : selectedSetting === 'Setting3' ? (
+                  <div className="SettingsOption">
+                      <div className="LightSettingsSubTitle">
+                        <span>OLA</span>
+                      </div>
+                      
+                      <button className="SettingsButton controlButton" onClick={handleOpenOlaWindow}>
+                      {t("set_ola")}
+                    </button>
+                    {/* {isOlaWindowOpen && <SettingsOla onClose={handleCloseOlaWindow} />} */}
+                  </div> 
+                ) : null}
               </div>
               {/* <div className="SettingsOption">
                 <hr />

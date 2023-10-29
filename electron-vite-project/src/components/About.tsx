@@ -32,14 +32,12 @@ function About({ onClose }: SettingsProps) {
     onClose();
   };
 
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
+  if (!isOpen) return null;
 
   const version: string = packageJson.version;
 
   return (
-    <div>
+    <>
       <div className="backgroundOverlay" onClick={handleClose} />
       <div className="LightSettingsContainer">
         <Button onClick={() => handleClose()} className="buttonClose">
@@ -51,13 +49,13 @@ function About({ onClose }: SettingsProps) {
         <div className="AboutContainer">
           <div className="AboutTextBoxContainer">
             <div className="logoBig"></div>
-            <small><i>Multi-client DMX light control app with MIDI support</i></small><br /><br />
+            <small><i>{t("catchphrase")}</i></small><br /><br />
             <span>Version {version}</span><br />
             <span>Leon Hölzel, Darwin Pietas, Marvin Plate, Andree Tomek</span>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

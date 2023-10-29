@@ -34,19 +34,31 @@ const Fader: React.FC<SliderProps> = ({
   className,
   color,
 }) => {
+  // Initialize context and state
   const { emit } = useConnectionContext();
   const { faderValues, setFaderValue } = useFaderContext();
   const [timerRunning, setTimerRunning] = useState<boolean | null>(null);
+
+  // Refs to keep track of fader values and if they need to be sent
   const cacheValueRef = useRef<number>(faderValues[sliderGroupId][id]);
   const sendValueRef = useRef<number>(faderValues[sliderGroupId][id]);
-  const faderClassName = height ? `fader faderMaster ${className}` : `fader ${className}`;
+
+  // Generate dynamic class names for the fader
+  const faderClassName = `fader ${height ? 'faderMaster' : ''} ${className}`;
+
+  // Calculating the display value (0 to 100%)
   const displayValue = Math.round((faderValues[sliderGroupId][id] / 255) * 100);
 
-  // Set fader height by the passed parameter
-  useEffect(() => {
-    if(height)
-      document.documentElement.style.setProperty("--sliderHeight", `${height}px`);
-  }, [height]);
+  // Emit fader value to the server
+  const emitValue = (value: number) => {
+    emit("fader_value", { deviceId: sliderGroupId, value: value, channelId: id });
+    sendValueRef.current = value;
+  }
+
+  // Set fader height by the passed parameter //v1.0.3pre, removed useEffect, because it was not needed
+  if(height) {
+    document.documentElement.style.setProperty("--sliderHeight", `${height}px`);
+  }
 
   // Always send the last value
   useEffect(() => {
@@ -62,19 +74,19 @@ const Fader: React.FC<SliderProps> = ({
     // Send only at certain time intervals 
     if(!timerRunning) {
       setTimerRunning(true);
-      emit("fader_value", { deviceId: sliderGroupId, value: newValue, channelId: id });
-      sendValueRef.current = newValue;
+      emitValue(newValue);
       setTimeout(() => {
         setTimerRunning(false);
       }, 20); // Timeout in ms
     }
   };
 
+  // Handle change on the percentage input (text box)
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 100);
     newValue = Math.round((newValue / 100) * 255);
     setFaderValue(sliderGroupId, id, newValue);
-    emit("fader_value", { deviceId: sliderGroupId, value: newValue, channelId: (id)});
+    emitValue(newValue);
   };
 
   return (

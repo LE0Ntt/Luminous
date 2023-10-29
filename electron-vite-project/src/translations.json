@@ -70,7 +70,8 @@
     "change_password": "Change Password",
     "noConnection": "No connection to the server",
     "retryConnection": "Trying to establish connection...",
-    "restartServer": "If no connection can be established, consider restarting the server."
+    "restartServer": "If no connection can be established, consider restarting the server.",
+    "catchphrase": "Multi-client DMX light control app with MIDI support"
   },
   "de": {
     "studio": "Studio",
@@ -143,6 +144,7 @@
     "change_password": "Passwort ändern",
     "noConnection": "Keine Verbindung zum Server",
     "retryConnection": "Versuche Verbindung herzustellen...",
-    "restartServer": "Wenn keine Verbindung hergestellt werden kann, versuchen Sie den Server neu zu starten."
+    "restartServer": "Wenn keine Verbindung hergestellt werden kann, versuchen Sie den Server neu zu starten.",
+    "catchphrase": "Multi-Client DMX Lichtsteuerungs-App mit MIDI Unterstützung"
   }
 }

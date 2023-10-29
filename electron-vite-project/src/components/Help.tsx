@@ -39,8 +39,7 @@ function Help({ onClose }: SettingsProps) {
 
   return (
     <div>
-      <div className="backgroundOverlay" onClick={handleClose} /> Overlay to
-      close the modal when clicked outside
+      <div className="backgroundOverlay" onClick={handleClose} />
       <div className="LightSettingsContainer">
         <Button onClick={() => handleClose()} className="buttonClose">
           <div className="removeIcon centerIcon"></div>

@@ -17,22 +17,25 @@
 .dropdown {
   position: absolute;
   top: 24px;
+
   border: 1px solid var(--onepStroke);
-  background-color: var(--fillUltraThick);
-  color: var(--primary);
-  text-align: left;
   border-radius: 0 5px 5px;
-  overflow: hidden;
   box-shadow: var(--shadowLight);
+
+  background-color: var(--fillUltraThick);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
+
+  color: var(--primary);
+  text-align: left;
+  overflow: hidden;
+  min-width: 140px;
 }
 
 .dropdown > p {
   margin: 0;
   padding: 0.375rem 0.88rem;
   border-bottom: 1px solid var(--onepStroke);
-  min-width: 140px;
 }
 
 .dropdown > p:hover {

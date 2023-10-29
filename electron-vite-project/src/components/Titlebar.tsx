@@ -12,7 +12,7 @@
  * 
  * @file Titlebar.tsx
  */
-import React, { useState, useContext, useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 import { TranslationContext } from './TranslationContext';
 import './Titlebar.css';
 import '../index.css';
@@ -22,14 +22,28 @@ import LightSettings from './LightSettings';
 import Help from './Help';
 import About from './About';
 
+enum Dialog {
+  None,
+  Settings,
+  LightSettings,
+  Help,
+  About,
+}
+
 function TitleBar() {
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const [lightSettingsOpen, setLightSettingsOpen] = useState(false);
-  const [helpOpen, setHelpOpen] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const { t } = useContext(TranslationContext);
   const dropDownRef = useRef<HTMLButtonElement | null>(null);
+  const [isMac, setIsMac] = useState(false);
+  const [currentDialog, setCurrentDialog] = useState(Dialog.None);
+
+  // Effect for platform detection
+  useEffect(() => {
+    (async () => {
+      const platform = await (window as any).electronAPI.getPlatform();
+      setIsMac(platform === 'darwin');
+    })();
+  }, []);
 
   const toggleFullScreen = async () => {
     (window as any).electronAPI.send('toggle-full-screen');
@@ -43,9 +57,7 @@ function TitleBar() {
     (window as any).electronAPI.send('minimize');
   };
 
-  const settings = () => {
-    return [t("dd_settings"), t("dd_lights"), t("dd_help"), t("dd_about"), t("dd_fullscreen")];
-  };
+  const settings = [t("dd_settings"), t("dd_lights"), t("dd_help"), t("dd_about"), t("dd_fullscreen")];
 
   // Closes the drop down if the user clicks outside of it
   const handleClickOutside = (event: MouseEvent) => {
@@ -58,82 +70,33 @@ function TitleBar() {
   useEffect(() => {
     if (showDropDown) {
       document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
     }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showDropDown]);
 
-  
   const toggleDropDown = () => {
     setShowDropDown(!showDropDown);
   };
 
   // The selected setting
-  const settingSelection = (setting: string): void => {
-    if(setting === settings()[0]) {
-      openSettings();
-    }
-    if(setting === settings()[1]) {
-      openLightSettings();
-    }
-    if(setting === settings()[2]) {
-      openHelp();
-    }
-    if(setting === settings()[3]) {
-      openAbout();
-    }
-    if(setting === settings()[4]) {
-      toggleFullScreen();
-    }
+  const settingActions = {
+    [settings[0]]: () => setCurrentDialog(Dialog.Settings),
+    [settings[1]]: () => setCurrentDialog(Dialog.LightSettings),
+    [settings[2]]: () => setCurrentDialog(Dialog.Help),
+    [settings[3]]: () => setCurrentDialog(Dialog.About),
+    [settings[4]]: toggleFullScreen
   };
 
-  const openSettings = () => {
-    setSettingsOpen(true);
+  const handleSettingSelection = (setting: string) => {
+    if (settingActions[setting]) settingActions[setting]();
   };
-
-  const closeSettings = () => {
-    setSettingsOpen(false);
-  };
-
-  const openLightSettings = () => {
-    setLightSettingsOpen(true);
-  };
-
-  const closeLightSettings = () => {
-    setLightSettingsOpen(false);
-  };
-
-  const openHelp = () => {
-    setHelpOpen(true);
-  };
-  const closeHelp = () => {
-    setHelpOpen(false);
-  };
-
-  const openAbout = () => { 
-    setAboutOpen(true);
-  };
-  const closeAbout = () => {
-    setAboutOpen(false);
-  };
-
-  // MacOS Titlebar Settings
-  const [isMac, setIsMac] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      const platform = await (window as any).electronAPI.getPlatform();
-      setIsMac(platform === 'darwin');
-    })();
-  }, []);
 
   return (
     <div className='titlebarComp'>
       <nav>
         <ul>
           <li>
-            <div className='logo'></div>
+            <div className={isMac ? 'hide' : 'logo'}></div>
           </li>
           <li>
             <button
@@ -144,10 +107,10 @@ function TitleBar() {
               <a href="#">⚙️</a>
             {showDropDown && (
               <DropDown
-                settings={settings()}
+                settings={settings}
                 showDropDown={false}
-                toggleDropDown={(): void => toggleDropDown()}
-                settingSelection={settingSelection}
+                toggleDropDown={() => setShowDropDown(!showDropDown)}
+                settingSelection={handleSettingSelection}
               />
             )}
           </button>
@@ -164,10 +127,10 @@ function TitleBar() {
           </div>
         </button>
       </div>
-      {settingsOpen && <Settings onClose={closeSettings} />}
-      {lightSettingsOpen && <LightSettings onClose={closeLightSettings} />}
-      {helpOpen && <Help onClose={closeHelp} />}
-      {aboutOpen && <About onClose={closeAbout} />}
+      {currentDialog === Dialog.Settings && <Settings onClose={() => setCurrentDialog(Dialog.None)} />}
+      {currentDialog === Dialog.LightSettings && <LightSettings onClose={() => setCurrentDialog(Dialog.None)} />}
+      {currentDialog === Dialog.Help && <Help onClose={() => setCurrentDialog(Dialog.None)} />}
+      {currentDialog === Dialog.About && <About onClose={() => setCurrentDialog(Dialog.None)} />}
     </div>
   );
 }

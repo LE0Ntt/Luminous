@@ -216,7 +216,7 @@ function Settings({ onClose }: SettingsProps) {
                     </div>
                     <div className="SettingsTextBoxContainer">
                       <div className="text">
-                          Here you can change the URL of the server. <br />
+                          {t("change_url_of_server")}<br />
                       </div>
                       <div>
                         <label>{t("set_current_ip")}</label> <br />

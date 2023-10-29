@@ -26,7 +26,7 @@ def safe_ola_call(operation_type, func_or_attr_name, *args, **kwargs):
     else:
         print("OLA not available, skipping call.")
 
-        
+
 connections = 0
 global socketio
 socketio = SocketIO(app, cors_allowed_origins="*", logger=False, engineio_logger=False)
@@ -75,9 +75,6 @@ def register_socketio_events(socketio):
         else:
             last_change = (index, channelId, value) """
 
-           
-
-
     def callback(index, value):
         faderSend(index, value, 0) # invokes the corresponding socket event
 
@@ -109,7 +106,7 @@ def register_socketio_events(socketio):
                     if value > 0:
                         master_channel["sliderValue"] = value
                         faderSend(device_id, value, master_channel["id"])
-                        
+
                     else:
                         master_channel["sliderValue"] = master_channel["backupValue"]
                         faderSend(device_id, device["attributes"]["channel"][0]["backupValue"], master_channel["id"])
@@ -127,7 +124,7 @@ def register_socketio_events(socketio):
     except OSError as e:
         print("Possibly the MIDI interface is not connected.", str(e))
         driver = None
-        
+
     # send every channel of each device to ola on startup
     for device in routes.devices:
         for channel in device["attributes"]["channel"]:
@@ -174,7 +171,7 @@ def register_socketio_events(socketio):
                 driver.pushFader(device_id, current_value)
                 driver.devices = routes.devices
             time.sleep(interval)           
-            
+
     # Update status (on/off) of a scene
     @socketio.on('scene_update', namespace='/socket')
     def update_scene(data):
@@ -367,14 +364,13 @@ def register_socketio_events(socketio):
                     channelId = int(channelData["channelId"])
                     fader_value = int(channelData["value"])
                     send_dmx_direct(universe, fader_value, channelId)
-                
+
             if connections > 1:
                 for channelData in deviceData["channels"]:
                     channelId = int(channelData["channelId"])
                     fader_value = int(channelData["value"])
                     faderSend(fader, fader_value, channelId)
-                    
-                
+
     @socketio.on('connect', namespace='/socket')
     def connect():
         global connections

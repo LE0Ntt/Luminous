@@ -12,26 +12,15 @@
  * 
  * @file Button.tsx
  */
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 import './Button.css';
 
-interface ButtonProps {
-  onClick?: () => void;
-  disabled?: boolean;
-  className?: string;
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 
-const Button = ({ onClick, disabled, className, children }: ButtonProps) => {
-  return (
-    <button
-      className={`buttonDesign ${className}`}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-    </button>
-  );
-};
+const Button: React.FC<ButtonProps> = ({ className, ...props }) => (
+  <button className={`buttonDesign ${className || ''}`} {...props} />
+);
 
 export default Button;

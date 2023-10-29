@@ -108,8 +108,6 @@ function TitleBar() {
             {showDropDown && (
               <DropDown
                 settings={settings}
-                showDropDown={false}
-                toggleDropDown={() => setShowDropDown(!showDropDown)}
                 settingSelection={handleSettingSelection}
               />
             )}

@@ -24,7 +24,6 @@
   - [ ] All channels of a device
   - [ ] Reboot MotorMix
   - [ ] Detect MotorMix (start after App)
-- [ ] Vite Export, use App within the browser
 - [x] Connection screen
 - [x] Reconnect to server
 - [ ] Guide / Implement Help
@@ -41,7 +40,7 @@
 - [ ] Admin
   - [ ] Change password
 - [ ] Input can be empty
-- [ ] Use **Enter** to accept dialog
+- [x] Use **Enter** to accept dialog
 - [ ] Rethink scene logic: Off after e.g. bi-colour change?
 - [ ] Add support for Wifi-Lights and devices with an On/Off channel  
   
@@ -49,6 +48,7 @@
 - [ ] Show site (Lightshows)
 - [ ] Scenes different colors
 - [ ] Change scene fade in/out curve
+- [ ] Vite Export, use App within the browser
 - [ ] Studio-Overview
   - [ ] Device highlight
   - [x] Move to the left

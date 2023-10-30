@@ -125,7 +125,7 @@ function Settings({ onClose }: SettingsProps) {
     <div>
       <div className="backgroundOverlay" onClick={handleClose} />
       {isOlaWindowOpen ? 
-      <AdminPassword onConfirm={handleAdminPasswordConfirm} onClose={handleCloseOlaWindow} />
+        <AdminPassword onConfirm={handleAdminPasswordConfirm} onClose={handleCloseOlaWindow} />
       :
         <>
           <div className="SettingsContainer">
@@ -269,11 +269,10 @@ function Settings({ onClose }: SettingsProps) {
                   </div>
                 ) : selectedSetting === 'Setting3' ? (
                   <div className="SettingsOption">
-                      <div className="LightSettingsSubTitle">
-                        <span>OLA</span>
-                      </div>
-                      
-                      <button className="SettingsButton controlButton" onClick={handleOpenOlaWindow}>
+                    <div className="LightSettingsSubTitle">
+                      <span>OLA</span>
+                    </div>
+                    <button className="SettingsButton controlButton" onClick={handleOpenOlaWindow}>
                       {t("set_ola")}
                     </button>
                     {/* {isOlaWindowOpen && <SettingsOla onClose={handleCloseOlaWindow} />} */}

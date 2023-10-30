@@ -12,7 +12,7 @@
  * 
  * @file AddScene.tsx
  */
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext, useEffect } from 'react';
 import './BigView.css';
 import Button from './Button';
 import '../index.css';
@@ -52,6 +52,7 @@ function AddScene({ onClose }: AddSceneProps) {
 
   const handleSave = () => {
     if(name !== '') {
+      console.log('Save scene');
       if (!isChecked) {
         const scene = {
           name: name,
@@ -84,6 +85,22 @@ function AddScene({ onClose }: AddSceneProps) {
     emit('scene_add', { scene });
     handleClose();
   };
+
+  // Confirm with ENTER
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSave();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [name, isChecked]);
 
   return (
     <div>

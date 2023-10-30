@@ -12,7 +12,7 @@
  * 
  * @file DeleteScene.tsx
  */
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import './BigView.css';
 import Button from './Button';
 import '../index.css';
@@ -40,6 +40,23 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
     document.body.dispatchEvent(new Event('deleteScene'))
     handleClose();
   };
+
+  // Confirm with ENTER
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleDelete();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
 
   return (
     <div>

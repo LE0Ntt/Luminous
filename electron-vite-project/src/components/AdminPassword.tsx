@@ -12,7 +12,7 @@
  * 
  * @file AdminPassword.tsx
  */
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './BigView.css';
 import Button from './Button';
 import '../index.css';
@@ -82,6 +82,21 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
     });
   };
 
+  // Confirm with ENTER
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        () => handleConfirm();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <div>
       <div className="backgroundOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
@@ -98,6 +113,9 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
             value={password} 
             onChange={handlePasswordChange}
             autoFocus
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleConfirm();
+            }}
           />
           <p className='hide'>a</p> {/* Hidden element for spacing */}
           <div className='AddSceneNote'>

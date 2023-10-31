@@ -49,6 +49,7 @@
 - [ ] Scenes different colors
 - [ ] Change scene fade in/out curve
 - [ ] Vite Export, use App within the browser
+- [ ] Rework close button
 - [ ] Studio-Overview
   - [ ] Device highlight
   - [x] Move to the left

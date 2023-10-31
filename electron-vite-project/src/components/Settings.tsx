@@ -119,8 +119,6 @@ function Settings({ onClose }: SettingsProps) {
     setPort(value);
   };
 
-
-
   return (
     <div>
       <div className="backgroundOverlay" onClick={handleClose} />
@@ -135,128 +133,124 @@ function Settings({ onClose }: SettingsProps) {
             <div className="SettingsTitle">
               <span>{t("set_title")}</span>
             </div>
-            <div className="SettingsContent innerWindow">
+            <div className="SettingsContent">
               <div className="settings">
-              <Button 
-                className={selectedSetting === 'Setting1' ? 'active' : ''} 
-                onClick={() => setSelectedSetting('Setting1')}
-              >
-                <span>{t("set_admin")}</span>
-              </Button>
-              <Button 
-                className={selectedSetting === 'Setting2' ? 'active' : ''} 
-                onClick={() => setSelectedSetting('Setting2')}
-              >
-                <span>{t("set_language")}</span>
-              </Button>
-              <Button
-                className={selectedSetting === 'Setting3' ? 'active' : ''}
-                onClick={() => setSelectedSetting('Setting3')}
-              >
-                OLA
-              </Button>
-              {/* Füge hier weitere Settings hinzu */}
+                <Button 
+                  className={selectedSetting === 'Setting1' ? 'active' : ''} 
+                  onClick={() => setSelectedSetting('Setting1')}
+                >
+                  <span>{t("set_admin")}</span>
+                </Button>
+                <Button 
+                  className={selectedSetting === 'Setting2' ? 'active' : ''} 
+                  onClick={() => setSelectedSetting('Setting2')}
+                >
+                  <span>{t("set_language")}</span>
+                </Button>
+                <Button
+                  className={selectedSetting === 'Setting3' ? 'active' : ''}
+                  onClick={() => setSelectedSetting('Setting3')}
+                >
+                  OLA
+                </Button>
+                {/* Füge hier weitere Settings hinzu */}
               </div>
-              <div className="setting-content">
+              <div className="setting-content innerWindow">
                 {selectedSetting === 'Setting1' ? (
-                <div className="SettingsOption">
+                  <div className="SettingsOption">
                     <div className="LightSettingsSubTitle">
                       <span>{t("set_admin")}</span>
                     </div>
-                    {errorMessage && <div className="ErrorMessage">{errorMessage}</div>}
-                    {successMessage && <div className="SuccessMessage">{successMessage}</div>}
-                  <div className="SettingContainer h-[130px]"> {/* Tailwind use */}
-                    <div className="Heading">
-                      <span>{t("change_password")}</span>
+                    <div className="SettingContainer h-[130px]"> {/* Tailwind use */}
+                      <div className="Heading">
+                        <span>{t("change_password")}</span>
+                      </div>
+                      <div className="SettingsTextBoxContainer">
+                        <div>
+                          <label>{t("set_current_pw")}</label> <br />
+                          <input
+                            className="SettingsTextBox"
+                            type="password"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <label>{t("set_new_pw")}</label> <br />
+                          <input
+                            className="SettingsTextBox"
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <label>{t("set_conew_pw")}</label> <br />
+                          <input
+                            className="SettingsTextBox"
+                            type="password"
+                            value={newPasswordConfirm}
+                            onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                          />
+                        </div>
+                        <br />
+                        <Button
+                          className="SettingsSavePWButton controlButton"
+                          onClick={handleSavePassword}
+                        >
+                          {t("as_save")}
+                        </Button>
+                      </div>
+                      {errorMessage && <div className="ErrorMessage">{errorMessage}</div>}
+                      {successMessage && <div className="SuccessMessage">{successMessage}</div>}
                     </div>
-                    <div className="SettingsTextBoxContainer">
-                      <div>
-                        <label>{t("set_current_pw")}</label> <br />
-                        <input
-                          className="SettingsTextBox"
-                          type="password"
-                          value={currentPassword}
-                          onChange={(e) => setCurrentPassword(e.target.value)}
-                        />
+                    <div className="SettingContainer">
+                      <div className="Heading">
+                        <span>URL</span>
                       </div>
-                      <div>
-                        <label>{t("set_new_pw")}</label> <br />
-                        <input
-                          className="SettingsTextBox"
-                          type="password"
-                          value={newPassword}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <label>{t("set_conew_pw")}</label> <br />
-                        <input
-                          className="SettingsTextBox"
-                          type="password"
-                          value={newPasswordConfirm}
-                          onChange={(e) => setNewPasswordConfirm(e.target.value)}
-                        />
-                      </div>
-                      <br />
-                      <Button
-                        className="SettingsSavePWButton controlButton"
-                        onClick={handleSavePassword}
-                      >
-                        {t("as_save")}
-                      </Button>
-                    </div>
-                    {errorMessage && <div className="ErrorMessage">{errorMessage}</div>}
-                    {successMessage && (
-                      <div className="SuccessMessage">{successMessage}</div>
-                    )}
-                  </div>
-                  <div className="SettingContainer">
-                    <div className="Heading">
-                      <span>URL</span>
-                    </div>
-                    <div className="SettingsTextBoxContainer">
-                      <div className="text">
-                          {t("change_url_of_server")}<br />
-                      </div>
-                      <div>
-                        <label>{t("set_current_ip")}</label> <br />
-                        <input
-                          className="SettingsIPBox"
-                          maxLength={3}
-                          value={octets[0]}
-                          onChange={(e) => handleOctetChange(1, e.target.value)}
-                        />
-                        .
-                        <input
-                          className="SettingsIPBox"
-                          maxLength={3}
-                          value={octets[1]}
-                          onChange={(e) => handleOctetChange(2, e.target.value)}
-                        />
-                        .
-                        <input
-                          className="SettingsIPBox"
-                          maxLength={3}
-                          value={octets[2]}
-                          onChange={(e) => handleOctetChange(3, e.target.value)}
-                        />
-                        .
-                        <input
-                          className="SettingsIPBox"
-                          maxLength={3}
-                          value={octets[3]}
-                          onChange={(e) => handleOctetChange(4, e.target.value)}
-                        />
+                      <div className="SettingsTextBoxContainer">
+                        <div className="text">
+                            {t("change_url_of_server")}<br />
+                        </div>
+                        <div>
+                          <label>{t("set_current_ip")}</label> <br />
+                          <input
+                            className="SettingsIPBox"
+                            maxLength={3}
+                            value={octets[0]}
+                            onChange={(e) => handleOctetChange(1, e.target.value)}
+                          />
+                          .
+                          <input
+                            className="SettingsIPBox"
+                            maxLength={3}
+                            value={octets[1]}
+                            onChange={(e) => handleOctetChange(2, e.target.value)}
+                          />
+                          .
+                          <input
+                            className="SettingsIPBox"
+                            maxLength={3}
+                            value={octets[2]}
+                            onChange={(e) => handleOctetChange(3, e.target.value)}
+                          />
+                          .
+                          <input
+                            className="SettingsIPBox"
+                            maxLength={3}
+                            value={octets[3]}
+                            onChange={(e) => handleOctetChange(4, e.target.value)}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
                 ) : selectedSetting === 'Setting2' ? (
                   <div className="SettingsOption">
                     <div className="LightSettingsSubTitle">
                       <span>{t("set_language")}</span>
                     </div>
-                    <div className="SettingsTextBoxContainer">
+                    <div className="SettingsTextBoxContainer SettingsLanguageContainer">
                       <select
                         className="SettingsLanguageSelection"
                         value={language}
@@ -275,17 +269,9 @@ function Settings({ onClose }: SettingsProps) {
                     <button className="SettingsButton controlButton" onClick={handleOpenOlaWindow}>
                       {t("set_ola")}
                     </button>
-                    {/* {isOlaWindowOpen && <SettingsOla onClose={handleCloseOlaWindow} />} */}
                   </div> 
                 ) : null}
               </div>
-              {/* <div className="SettingsOption">
-                <hr />
-                <div className="LightSettingsSubTitle">
-                  <span>{t("set_overview")}</span>
-                </div>
-              </div>
-              <div className="SettingsOption"></div> */}
             </div>
           </div>
         </>

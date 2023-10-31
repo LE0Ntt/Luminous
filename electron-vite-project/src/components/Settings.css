@@ -35,14 +35,17 @@
 
 .settings {
   width: 200px;
-  border-right: 1px solid var(--faderBorder);
+  /* border-right: 1px solid var(--faderBorder); */
   margin: 0;
-  padding: 10px 20px;
+  padding-right: 20px;
+  top: -10px;
+  position: relative;
 }
 
 .setting-content {
   flex: 1;
   padding-left: 20px;
+  position: relative;
 }
 
 .settings button {
@@ -105,6 +108,7 @@
   margin-bottom: 40px;
   overflow: auto;
   bottom: 0;
+  overflow: visible;
 }
 
 .SettingContainer {
@@ -128,7 +132,6 @@
   gap: 20px;
   flex-direction: row;
   overflow: auto;
-  top: 20px;
 }
 
 
@@ -137,7 +140,6 @@
   position: relative;
   width: stretch;
   padding: 15px 20px 20px 0px;
-  overflow: visible;
 }
 
 .SettingsLayer {
@@ -166,7 +168,6 @@
   bottom: 0px;
 }
 
-
 .SettingsLanguageSelection {
   background-color: var(--fillLight);
   border: var(--onepStrokeSwitched) 1px solid;
@@ -176,6 +177,10 @@
   position: relative;
   padding-left: 10px;
   outline: none;
+}
+
+.SettingsLanguageContainer {
+  top: 20px;
 }
 
 .AboutTextBoxContainer {

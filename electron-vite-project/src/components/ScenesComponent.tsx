@@ -127,7 +127,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
     setScenes((prevScenes) => {
       const fadeDuration = parseInt(sessionStorage.getItem('fadeDuration') || '0');
       // Update scenes with status false if layer is off
-      if (!layer) {
+      if (layer) {
         prevScenes.forEach((scene) => {
           if (scene.status) {
             emit("scene_update", { id: scene.id, status: false, fadeTime: fadeDuration });

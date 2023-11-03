@@ -54,6 +54,15 @@ nav ul li a {
     margin-right: 5px;
 }
 
+.hiddenlogo {
+    height: 11px;
+    width: 50px;
+    mask-position: center;
+    top: 7px;
+    position: relative;
+    margin-right: 5px;
+}
+
 .settingsButton:hover,
 .active {
     background: var(--colorButtonHover);

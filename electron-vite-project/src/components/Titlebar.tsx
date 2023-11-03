@@ -96,7 +96,7 @@ function TitleBar() {
       <nav>
         <ul>
           <li>
-            <div className={isMac ? 'hide' : 'logo'}></div>
+            <div className={isMac ? 'hiddenlogo' : 'logo'}></div>
           </li>
           <li>
             <button

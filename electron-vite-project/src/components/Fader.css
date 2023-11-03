@@ -158,36 +158,35 @@
     cursor: ns-resize;
 }
 
+.valueDisplay {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 37px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .inputNum {
-    width: 3rem;
     height: 2rem;
     text-align: right;
     background: transparent;
-    position: absolute;
-    right: 50%;
-    bottom: 37px;
+    position: relative;
     appearance: textfield;
-    -moz-appearance: textfield;
+    bottom: 1px;
 }
 
 .inputNumPercent {
     font-weight: 800;
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
+    position: relative;
 }
 
 .inputNum::-webkit-outer-spin-button,
 .inputNum::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-}
-
-.percentSymbol {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
 }
 
 .midPoint {

@@ -12,7 +12,7 @@
  * 
  * @file Fader.tsx
  */
-import React, { useState, ChangeEvent, useEffect, useRef } from "react";
+import { useState, ChangeEvent, useEffect, useRef } from "react";
 import "./Fader.css";
 import { useConnectionContext } from './ConnectionContext';
 import { useFaderContext } from './FaderContext';
@@ -46,8 +46,13 @@ const Fader: React.FC<SliderProps> = ({
   // Generate dynamic class names for the fader
   const faderClassName = `fader ${height ? 'faderMaster' : ''} ${className}`;
 
-  // Calculating the display value (0 to 100%)
+  // Calculating the display value (0 to 100%) and update input value
   const displayValue = Math.round((faderValues[sliderGroupId][id] / 255) * 100);
+  const [inputValue, setInputValue] = useState<any>(displayValue);
+
+  useEffect(() => {
+    setInputValue(displayValue);
+  }, [displayValue]);
 
   // Emit fader value to the server
   const emitValue = (value: number) => {
@@ -81,13 +86,35 @@ const Fader: React.FC<SliderProps> = ({
     }
   };
 
-  // Handle change on the percentage input (text box)
-  const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
-    let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 100);
-    newValue = Math.round((newValue / 100) * 255);
-    setFaderValue(sliderGroupId, id, newValue);
-    emitValue(newValue);
+  // Check if the input value is a number
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    if (value.length <= 5) {
+      setInputValue(value.replace(/[^0-9.,]+/g, ''));
+    }
   };
+  
+  // Check if the input is valid and set the fader value
+  const handleInputConfirm = () => {
+    let numericValue = parseFloat(inputValue);
+    if (!isNaN(numericValue)) {
+      numericValue = Math.max(0, Math.min(100, numericValue));
+      const scaledValue = Math.round((numericValue / 100) * 255);
+      setFaderValue(sliderGroupId, id, scaledValue);
+      emitValue(scaledValue);
+      setInputValue(Math.round(numericValue).toString());
+    } else {
+      setInputValue(displayValue); // Reset value if input is NaN
+    }
+  };
+  
+  // Confirm with ENTER
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleInputConfirm();
+      event.currentTarget.blur(); // Remove focus from the input
+    }
+  };  
 
   return (
     <div className={faderClassName}>
@@ -107,15 +134,20 @@ const Fader: React.FC<SliderProps> = ({
         />
       </div>
       <div>
-        <input
-          type="number"
-          value={displayValue}
-          onChange={handleInput}
-          className="inputNum"
-          min="0"
-          max="100"
-        />
-        <span className="inputNumPercent">%</span>
+        <div className="valueDisplay">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onBlur={handleInputConfirm}
+            onKeyDown={handleKeyDown}
+            className="inputNum"
+            min="0"
+            max="100"
+            style={{ width: `${Math.max(1, inputValue.toString().length)}ch` }}
+          />
+          <span className="inputNumPercent">%</span>
+        </div>
         <span title={name} className="faderName">{name}</span>
       </div>
     </div>

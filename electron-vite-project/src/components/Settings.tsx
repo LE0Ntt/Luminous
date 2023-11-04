@@ -20,6 +20,7 @@ import "./LightSettings.css";
 import { TranslationContext } from "./TranslationContext";
 import { useConnectionContext } from "./ConnectionContext";
 import AdminPassword from "./AdminPassword";
+import Toggle from "./Toggle";
 
 interface SettingsProps {
   onClose: () => void;
@@ -119,6 +120,16 @@ function Settings({ onClose }: SettingsProps) {
     setPort(value);
   };
 
+
+  const [reverseOrder, setReverseOrder] = useState(false);
+  const handleToggleChange = () => {
+    const currentSetting = localStorage.getItem('reverseOrder') === 'true';
+    const newSetting = !currentSetting;
+    localStorage.setItem('reverseOrder', String(newSetting));
+    window.dispatchEvent(new Event('storage-change')); // Broadcast an event
+  };
+  
+
   return (
     <div>
       <div className="backgroundOverlay" onClick={handleClose} />
@@ -152,6 +163,12 @@ function Settings({ onClose }: SettingsProps) {
                   onClick={() => setSelectedSetting('Setting3')}
                 >
                   OLA
+                </Button>
+                <Button
+                  className={selectedSetting === 'Setting4' ? 'active' : ''}
+                  onClick={() => setSelectedSetting('Setting4')}
+                >
+                  {t("appearance")}
                 </Button>
                 {/* Füge hier weitere Settings hinzu */}
               </div>
@@ -269,6 +286,16 @@ function Settings({ onClose }: SettingsProps) {
                     <button className="SettingsButton controlButton" onClick={handleOpenOlaWindow}>
                       {t("set_ola")}
                     </button>
+                  </div> 
+                ) : selectedSetting === 'Setting4' ? (
+                  <div className="SettingsOption">
+                    <div className="LightSettingsSubTitle">
+                      <span>{t("appearance")}</span>
+                    </div>
+                    <div>
+                      <label>{t("cl_righthand")}</label>
+                      <Toggle onClick={handleToggleChange} enabled={localStorage.getItem('reverseOrder') === 'true'}/>
+                    </div>
                   </div> 
                 ) : null}
               </div>

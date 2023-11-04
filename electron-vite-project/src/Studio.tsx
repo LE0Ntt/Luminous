@@ -130,15 +130,39 @@ const Studio = () => {
     setAddScene(false);
   };
 
-  const [reverseOrder, setReverseOrder] = useState(false);
-  const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
-    localStorage.setItem('reverseOrder', `${status}`);
-    setReverseOrder(!reverseOrder);
-  };
+  const [reverseOrder, setReverseOrder] = useState(localStorage.getItem('reverseOrder') === 'true');
+
+  useEffect(() => {
+    // This will update the layout whenever the reverseOrder state changes
+    const handleLayoutChange = () => {
+      localStorage.setItem('reverseOrder', String(reverseOrder));
+      // Your existing logic to update the layout, if any
+    };
+  
+    window.addEventListener('storage', handleLayoutChange); // Listen to storage changes
+  
+    // Remove event listener on cleanup
+    return () => {
+      window.removeEventListener('storage', handleLayoutChange);
+    };
+  }, [reverseOrder]);
+
+  useEffect(() => { // This will update the reverseOrder state whenever the localStorage changes; forces update v1.0.3pre sehr ineffizient
+    const handleStorageChange = () => {
+      // Force update
+      setReverseOrder(localStorage.getItem('reverseOrder') === 'true');
+    };
+  
+    window.addEventListener('storage-change', handleStorageChange);
+  
+    // Remove event listener on cleanup
+    return () => {
+      window.removeEventListener('storage-change', handleStorageChange);
+    };
+  }, []);
 
   return (
     <div className="studioLayout" style={{flexDirection: localStorage.getItem('reverseOrder') === 'true' ? 'row-reverse' : 'row'}}>
-      <div style={{position:'absolute',top:'-30px',left:'0'}}><Toggle onClick={handleToggleChange} enabled={localStorage.getItem('reverseOrder') === 'true'}/></div>
       <div className="scenesAndFaders">
         <div className='scenes window'>
           <ScenesComponent sideId={0} setAddScene={setAddScene} />

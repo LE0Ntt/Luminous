@@ -71,7 +71,10 @@
     "noConnection": "No connection to the server",
     "retryConnection": "Trying to establish connection...",
     "restartServer": "If no connection can be established, consider restarting the server.",
-    "catchphrase": "Multi-client DMX light control app with MIDI support"
+    "catchphrase": "Multi-client DMX light control app with MIDI support",
+    "appearance": "Appearance",
+    "set_theme": "Theme",
+    "cl_righthand": "Reversed Studio UI"
   },
   "de": {
     "studio": "Studio",
@@ -145,6 +148,9 @@
     "noConnection": "Keine Verbindung zum Server",
     "retryConnection": "Versuche Verbindung herzustellen...",
     "restartServer": "Wenn keine Verbindung hergestellt werden kann, versuchen Sie den Server neu zu starten.",
-    "catchphrase": "Multi-Client DMX Lichtsteuerungs-App mit MIDI Unterstützung"
+    "catchphrase": "Multi-Client DMX Lichtsteuerungs-App mit MIDI Unterstützung",
+    "appearance": "Erscheinungsbild",
+    "set_theme": "Thema",
+    "cl_righthand": "Umgedrehte Studio UI"
   }
 }

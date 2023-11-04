@@ -46,6 +46,8 @@ const Studio = () => {
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
   const [addScene, setAddScene] = useState(false);
   const [, forceRender] = useState(false); // Used to force a rerender
+  const [glowId, setGlowId] = useState<number | null>(null);
+  const refsArray = useRef<(HTMLDivElement | null)[]>([]);
 
   const studioRows = 6;
   const studioColumns = 4;
@@ -74,7 +76,7 @@ const Studio = () => {
 // Creates an array with the number of rows and columns to be displayed in the Studio Overview
   const grid = Array(studioRows).fill(undefined).map(() => Array(studioColumns).fill(undefined)); 
 
-  const solo = false;               // Solo button, will be adjustable later in LightFX (Control.tsx)
+  const solo = false;               // Solo button, will be adjustable later in LightFX (Control.tsx) # maybe this is not needed anymore and lagacy code
   const soloLights = [1, 2, 3];     // Takes over group ID of the lamps that are to be switched solo
 
   interface SliderConfig {
@@ -125,24 +127,15 @@ const Studio = () => {
     });
   }
 
-  // focus on fader
-
-  // At the top of your component
-  const [glowId, setGlowId] = useState<number | null>(null);
-  const refsArray = useRef<(HTMLDivElement | null)[]>([]);
-
-  // Function to handle click and set the glow effect
+  // Focuses the fader when clicked in the overview
   const handleGlowAndFocus = (id: number) => {
-    // Set the glow effect for the clicked element
     setGlowId(id);
-    // Set the timeout to remove the glow effect after some time
-    setTimeout(() => setGlowId(null), 500); // Adjust time as needed for the blink effect
-    // Focus the corresponding element
+    setTimeout(() => setGlowId(null), 500);
     refsArray.current[id]?.focus();
   };
 
   useEffect(() => {
-    // Clean up refs and timeouts
+    // Clean up refs and timeouts # this is ro prevent memory leaks
     return () => {
       refsArray.current = [];
       // if you have any timeouts, clear them here
@@ -190,7 +183,7 @@ const Studio = () => {
                         /* boxShadow: glowId === slider.id ? '0 0 5px 2px rgba(255, 255, 255, 0.2)' : '',
                         backgroundColor: glowId === slider.id ? 'rgba(255, 255, 255, 0.2)' : '', */
                         transform: glowId === slider.id ? 'scale(1.03) translateY(-5px)' : '',
-                        transition: ' transform 0.3s ease-in-out', /* box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out, */
+                        transition: 'transform 0.3s ease-in-out', /* box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out, */
                         outline: 'none'
                       }}
                     >
@@ -290,15 +283,13 @@ const Studio = () => {
                           <>
                             <img src={schein} alt="schein" className={'schein'} style={{opacity: 
                               (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[slider.id][0]/255) * (faderValues[0][0]/255)}} />
-                            <div onClick={() => handleGlowAndFocus(slider.id)} style={{ cursor: 'pointer' }}>
-                              <img src={lampImage} alt="Lamp" className='studio_overview_greenScreen_lamp'/>
-                              <div className='studio_overview_infopanel'>
-                                <div className='studio_overview_infopanel_text'>#{slider.id}</div>
-                                <div className='studio_overview_infopanel_brightness'>
-                                  {((solo && !soloLights.includes(slider.id)) ? 0 : 
-                                  ((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
-                                  (((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
-                                </div>
+                            <img src={lampImage} alt="Lamp" className='studio_overview_greenScreen_lamp'/>
+                            <div className='studio_overview_infopanel' onClick={() => handleGlowAndFocus(slider.id)} style={{ cursor: 'pointer' }}>
+                              <div className='studio_overview_infopanel_text'>#{slider.id}</div>
+                              <div className='studio_overview_infopanel_brightness'>
+                                {((solo && !soloLights.includes(slider.id)) ? 0 : 
+                                ((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
+                                (((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
                               </div>
                             </div>
                           </>
@@ -317,15 +308,13 @@ const Studio = () => {
                           <>
                             <img src={schein} alt="schein" className={'schein'} style={{opacity: 
                               (solo && !soloLights.includes(slider.id)) ? 0 : (faderValues[slider.id][0]/255) * (faderValues[0][0]/255)}} />
-                            <div onClick={() => handleGlowAndFocus(slider.id)} style={{ cursor: 'pointer' }}>
-                              <img src={lampImage} alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
-                              <div className='studio_overview_infopanel'>
-                                <div className='studio_overview_infopanel_text'>#{slider.id}</div>
-                                <div className='studio_overview_infopanel_brightness'>
-                                  {((solo && !soloLights.includes(slider.id)) ? 0 : 
-                                  ((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
-                                  (((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
-                                </div>
+                            <img src={lampImage} alt="Lamp" className='studio_overview_greenScreen_lamp lamp_mirrored'/>
+                            <div className='studio_overview_infopanel' onClick={() => handleGlowAndFocus(slider.id)} style={{ cursor: 'pointer' }}>
+                              <div className='studio_overview_infopanel_text'>#{slider.id}</div>
+                              <div className='studio_overview_infopanel_brightness'>
+                                {((solo && !soloLights.includes(slider.id)) ? 0 : 
+                                ((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0)=== "0" ? t("Off") : 
+                                (((faderValues[slider.id][0] * 10 / 255) * (faderValues[0][0] * 10 / 255))).toFixed(0) + "%"}
                               </div>
                             </div>                        
                           </>

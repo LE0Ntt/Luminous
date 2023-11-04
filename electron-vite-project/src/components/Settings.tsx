@@ -120,15 +120,11 @@ function Settings({ onClose }: SettingsProps) {
     setPort(value);
   };
 
-
-  const [reverseOrder, setReverseOrder] = useState(false);
   const handleToggleChange = () => {
-    const currentSetting = localStorage.getItem('reverseOrder') === 'true';
-    const newSetting = !currentSetting;
+    const newSetting = localStorage.getItem('reverseOrder') !== 'true';
     localStorage.setItem('reverseOrder', String(newSetting));
-    window.dispatchEvent(new Event('storage-change')); // Broadcast an event
+    window.dispatchEvent(new CustomEvent<boolean>('reverseOrder', { detail: newSetting }));
   };
-  
 
   return (
     <div>

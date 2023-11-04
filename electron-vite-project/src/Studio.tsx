@@ -16,7 +16,7 @@ import './index.css';
 import './Studio.css';
 import Button from './components/Button';
 import Fader from './components/Fader';
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useConnectionContext } from "./components/ConnectionContext";
 import { TranslationContext } from './components/TranslationContext';
 import { useNavigate } from 'react-router-dom';
@@ -24,11 +24,10 @@ import ScenesComponent from './components/ScenesComponent';
 import BigView from './components/BigView';
 import { useFaderContext } from './components/FaderContext';
 import AddScene from './components/AddScene';
-import lampImage from './assets/lamp.png'
-import schein from './assets/schein3.png'
-import schein2 from './assets/schein2.png'
-import fillLight from './assets/fillLight.png'
-import Toggle from './components/Toggle';
+import lampImage from './assets/lamp.png';
+import schein from './assets/schein3.png';
+import schein2 from './assets/schein2.png';
+import fillLight from './assets/fillLight.png';
 
 const Studio = () => {
   const navigate = useNavigate();
@@ -44,14 +43,9 @@ const Studio = () => {
   };
 
   const [bigView, setBigView] = useState(false);
-
-  const openBigView = () => {
-    setBigView(true);
-  };
-
-  const closeBigView = () => {
-    setBigView(false);
-  };
+  const [sliders, setSliders] = useState<SliderConfig[]>([]);
+  const [addScene, setAddScene] = useState(false);
+  const [, forceRender] = useState(false); // Used to force a rerender
 
   const studioRows = 6;
   const studioColumns = 4;
@@ -88,8 +82,6 @@ const Studio = () => {
     name: string;
   };
 
-  const [sliders, setSliders] = useState<SliderConfig[]>([]);
-
   useEffect(() => {
     const fetchSliders = async () => {
       try {
@@ -103,6 +95,15 @@ const Studio = () => {
     };
 
     fetchSliders();
+
+    // Listen for changes to the display order
+    const handleStorageChange = (event: CustomEvent<boolean>) => {
+      if (event.type === 'reverseOrder') {
+        forceRender(prev => !prev);
+      }
+    };
+    window.addEventListener('reverseOrder', handleStorageChange as EventListener);
+    return () => window.removeEventListener('reverseOrder', handleStorageChange as EventListener);
   }, []);
 
   // Loads the fader values from the database
@@ -123,43 +124,6 @@ const Studio = () => {
       }
     });
   }
-
-  const [addScene, setAddScene] = useState(false);
-
-  const closeAddScene = () => {
-    setAddScene(false);
-  };
-
-  const [reverseOrder, setReverseOrder] = useState(localStorage.getItem('reverseOrder') === 'true');
-
-  useEffect(() => {
-    // This will update the layout whenever the reverseOrder state changes
-    const handleLayoutChange = () => {
-      localStorage.setItem('reverseOrder', String(reverseOrder));
-      // Your existing logic to update the layout, if any
-    };
-  
-    window.addEventListener('storage', handleLayoutChange); // Listen to storage changes
-  
-    // Remove event listener on cleanup
-    return () => {
-      window.removeEventListener('storage', handleLayoutChange);
-    };
-  }, [reverseOrder]);
-
-  useEffect(() => { // This will update the reverseOrder state whenever the localStorage changes; forces update v1.0.3pre sehr ineffizient
-    const handleStorageChange = () => {
-      // Force update
-      setReverseOrder(localStorage.getItem('reverseOrder') === 'true');
-    };
-  
-    window.addEventListener('storage-change', handleStorageChange);
-  
-    // Remove event listener on cleanup
-    return () => {
-      window.removeEventListener('storage-change', handleStorageChange);
-    };
-  }, []);
 
   return (
     <div className="studioLayout" style={{flexDirection: localStorage.getItem('reverseOrder') === 'true' ? 'row-reverse' : 'row'}}>
@@ -201,7 +165,7 @@ const Studio = () => {
                   ))}
                 </div>
                 <Button
-                  onClick={() => openBigView()}
+                  onClick={() => setBigView(true)}
                   className="buttonBigView"
                 >
                   <svg className='centerIcon' xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 28.5T440-760H200v560h560v-240q0-17 11.5-28.5T800-480q17 0 28.5 11.5T840-440v240q0 33-23.5 56.5T760-120H200Zm160-240q-11-11-11-28t11-28l344-344H600q-17 0-28.5-11.5T560-800q0-17 11.5-28.5T600-840h200q17 0 28.5 11.5T840-800v200q0 17-11.5 28.5T800-560q-17 0-28.5-11.5T760-600v-104L415-359q-11 11-27 11t-28-12Z"/></svg>
@@ -368,8 +332,8 @@ const Studio = () => {
           </div>
         </div>
       </div>
-      {bigView && <BigView onClose={closeBigView} />}
-      {addScene && <AddScene onClose={closeAddScene} />}
+      {bigView && <BigView onClose={() => setBigView(false)} />}
+      {addScene && <AddScene onClose={() => setAddScene(false)} />}
     </div>
   )
 };

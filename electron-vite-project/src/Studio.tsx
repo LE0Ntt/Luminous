@@ -154,7 +154,6 @@ const Studio = () => {
   return (
     <div className="studioLayout" style={{flexDirection: localStorage.getItem('reverseOrder') === 'true' ? 'row-reverse' : 'row'}}>
       <div className="scenesAndFaders">
-      <button onClick={() => handleGlowAndFocus(13)}>Test Glow Effect</button>
         <div className='scenes window'>
           <ScenesComponent sideId={0} setAddScene={setAddScene} />
         </div>

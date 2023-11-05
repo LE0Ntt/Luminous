@@ -111,7 +111,6 @@ const Fader: React.FC<SliderProps> = ({
   // Confirm with ENTER
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      handleInputConfirm();
       event.currentTarget.blur(); // Remove focus from the input
     }
   };  
@@ -142,8 +141,6 @@ const Fader: React.FC<SliderProps> = ({
             onBlur={handleInputConfirm}
             onKeyDown={handleKeyDown}
             className="inputNum"
-            min="0"
-            max="100"
             style={{ width: `${Math.max(1, inputValue.toString().length)}ch` }}
           />
           <span className="inputNumPercent">%</span>
@@ -152,6 +149,6 @@ const Fader: React.FC<SliderProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default Fader;

@@ -51,20 +51,18 @@ function Settings({ onClose }: SettingsProps) {
     if (newPassword !== newPasswordConfirm) {
       setErrorMessage(t("set_error_match"));
       setSuccessMessage("");
-      return;
-    }
-
-    fetch(url + "/changePassword", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        currentPassword: currentPassword,
-        newPassword: newPassword,
-        newPasswordConfirm: newPasswordConfirm,
-      }),
-    })
+    } else {
+      fetch(url + "/changePassword", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currentPassword: currentPassword,
+          newPassword: newPassword,
+          newPasswordConfirm: newPasswordConfirm,
+        }),
+      })
       .then((response) => response.json())
       .then((data) => {
         setSuccessMessage(data.message);
@@ -75,14 +73,35 @@ function Settings({ onClose }: SettingsProps) {
         setSuccessMessage("");
         console.error(error);
       }); 
+    }
+    
+    setCurrentPassword('');
+    setNewPassword('');
+    setNewPasswordConfirm('');
   };
 
-  const handleOpenOlaWindow = () => {
-    setIsOlaWindowOpen(true);
+  // Confirm with ENTER
+  const handleEnterConfirm = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSavePassword();
+      event.currentTarget.blur(); // Remove focus from the input
+    }
   };
 
-  const handleCloseOlaWindow = () => {
-    setIsOlaWindowOpen(false);
+  // Next input on ENTER
+  const handleEnterNext = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      const form = event.currentTarget.form;
+      if (form) {
+        const inputs = Array.from(form.elements) as HTMLInputElement[];
+        const index = inputs.indexOf(event.currentTarget);
+        const nextInput = inputs[index + 1];
+        if (nextInput) {
+          nextInput.focus();
+          event.preventDefault();
+        }
+      }
+    }
   };
 
   const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
@@ -130,7 +149,7 @@ function Settings({ onClose }: SettingsProps) {
     <div>
       <div className="backgroundOverlay" onClick={handleClose} />
       {isOlaWindowOpen ? 
-        <AdminPassword onConfirm={handleAdminPasswordConfirm} onClose={handleCloseOlaWindow} />
+        <AdminPassword onConfirm={handleAdminPasswordConfirm} onClose={() => setIsOlaWindowOpen(false)} />
       :
         <>
           <div className="SettingsContainer">
@@ -178,7 +197,7 @@ function Settings({ onClose }: SettingsProps) {
                       <div className="Heading">
                         <span>{t("change_password")}</span>
                       </div>
-                      <div className="SettingsTextBoxContainer">
+                      <form className="SettingsTextBoxContainer">
                         <div>
                           <label>{t("set_current_pw")}</label> <br />
                           <input
@@ -186,6 +205,7 @@ function Settings({ onClose }: SettingsProps) {
                             type="password"
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
+                            onKeyDown={handleEnterNext}
                           />
                         </div>
                         <div>
@@ -195,6 +215,7 @@ function Settings({ onClose }: SettingsProps) {
                             type="password"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
+                            onKeyDown={handleEnterNext}
                           />
                         </div>
                         <div>
@@ -204,6 +225,7 @@ function Settings({ onClose }: SettingsProps) {
                             type="password"
                             value={newPasswordConfirm}
                             onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                            onKeyDown={handleEnterConfirm}
                           />
                         </div>
                         <br />
@@ -213,7 +235,7 @@ function Settings({ onClose }: SettingsProps) {
                         >
                           {t("as_save")}
                         </Button>
-                      </div>
+                      </form>
                       {errorMessage && <div className="ErrorMessage">{errorMessage}</div>}
                       {successMessage && <div className="SuccessMessage">{successMessage}</div>}
                     </div>
@@ -279,7 +301,7 @@ function Settings({ onClose }: SettingsProps) {
                     <div className="LightSettingsSubTitle">
                       <span>OLA</span>
                     </div>
-                    <button className="SettingsButton controlButton" onClick={handleOpenOlaWindow}>
+                    <button className="SettingsButton controlButton" onClick={() => setIsOlaWindowOpen(true)}>
                       {t("set_ola")}
                     </button>
                   </div> 

@@ -96,7 +96,7 @@ const Fader: React.FC<SliderProps> = ({
   
   // Check if the input is valid and set the fader value
   const handleInputConfirm = () => {
-    let numericValue = parseFloat(inputValue);
+    let numericValue = parseFloat(inputValue.replace(',', '.'));
     if (!isNaN(numericValue)) {
       numericValue = Math.max(0, Math.min(100, numericValue));
       const scaledValue = Math.round((numericValue / 100) * 255);

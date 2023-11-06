@@ -179,6 +179,7 @@ function LightSettings({ onClose }: SettingsProps) {
     setInputUniverse(device.universe);
     setInputType(device.device_type);
     setInputNumber(device.id.toString());
+    setChannelArray([]);
   };
 
   const handleDeselectDevice = (device: DeviceConfig) => {
@@ -208,23 +209,26 @@ function LightSettings({ onClose }: SettingsProps) {
     setInputNumber(newDevice?.id.toString() || '1');
   };
 
-  // Set the initial channel array
+  // Set the initial channel array and update it
   const createInitialChannelArray = () => {
     const initialChannels = Array.from({ length: parseInt(inputDMXrange) }, (_, index) => {
-      //startChannel = 1 if inputDMXstart is empty
       const startChannel = inputDMXstart === '' ? 1 + index : parseInt(inputDMXstart) + index;
+      const channel = selectedDevice?.attributes?.channel?.[index];
+      const defaultChannelType = LampTypeChannels[inputType]?.[index] || 'misc';
+      
       return {
         id: index,
-        channel_type: LampTypeChannels[inputType]?.[index] || 'misc',
-        dmx_channel: startChannel.toString()
+        channel_type: channelArray[index]?.channel_type || channel?.channel_type || defaultChannelType,
+        dmx_channel:  channelArray[index]?.dmx_channel || channel?.dmx_channel || startChannel.toString()
       };
     });
+    
     setChannelArray(initialChannels);
   };
   
   useEffect(() => {
     createInitialChannelArray();
-  }, [inputDMXrange, inputDMXstart, inputType]);
+  }, [inputDMXrange, inputDMXstart, inputType, inputNumber]);
 
   const handleChannelChange = (index: number, type: any, channel: string) => {
     // Only allow 3 digit numbers for the channel input

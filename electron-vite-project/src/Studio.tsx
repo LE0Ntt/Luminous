@@ -187,7 +187,7 @@ const Studio = () => {
                         outline: 'none'
                       }}
                     >
-                      <h2 className='faderText'>{slider.id}</h2>
+                      <h2 style={{textShadow: glowId === slider.id ? '0 0 30px #fff' : ''}} className='faderText'>{slider.id}</h2>
                       <Fader
                         key={slider.id}
                         id={0}

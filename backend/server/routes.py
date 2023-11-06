@@ -76,7 +76,7 @@ devices = get_devices()
 
 
 # load scenes from database
-def get_scenes():
+def load_scenes():
     scenes_list = []
 
     with app.app_context():
@@ -93,7 +93,7 @@ def get_scenes():
     return scenes_list
 
 
-scenes = get_scenes()
+scenes = load_scenes()
 
 
 @app.route("/")

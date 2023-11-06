@@ -257,48 +257,44 @@ def register_socketio_events(socketio):
             for device in routes.scenes[scene]["channel"]:
                 for channel in device["attributes"]["channel"]:
                     device1 = next(
-                        (
-                            device1
-                            for device1 in routes.devices
-                            if device1["id"] == device["id"]
-                        ),
+                        (d for d in routes.devices if d["id"] == device["id"]),
                         None,
                     )
-                    deviceChannel = device1["attributes"]["channel"][channel["id"]]
+                    if device1 is not None:
+                        deviceChannel = device1["attributes"]["channel"][channel["id"]]
 
-                    start_value = deviceChannel["sliderValue"]
-                    if status:  # on
-                        end_value = channel["sliderValue"]
-                    else:  # off
-                        end_value = deviceChannel["backupValue"]
+                        start_value = deviceChannel["sliderValue"]
+                        if status:  # on
+                            end_value = channel["sliderValue"]
+                        else:  # off
+                            end_value = deviceChannel["backupValue"]
 
-                    # If a fade thread for this device and channel already exists, stop it
-                    if (device["id"], channel["id"]) in fade_threads:
-                        fade_threads[(device["id"], channel["id"])]["stop"] = True
-                        # Optional: Warten, bis der alte Thread beendet ist
-                        thread = fade_threads.get(
-                            (device["id"], channel["id"]), {}
-                        ).get("thread")
-                        if thread and thread.is_alive():
-                            thread.join()
+                        # If a fade thread for this device and channel already exists, stop it
+                        if (device["id"], channel["id"]) in fade_threads:
+                            fade_threads[(device["id"], channel["id"])]["stop"] = True
+                            thread = fade_threads.get(
+                                (device["id"], channel["id"]), {}
+                            ).get("thread")
+                            if thread and thread.is_alive():
+                                thread.join()
 
-                    t = threading.Thread(
-                        target=fade_device,
-                        args=(
-                            device,
-                            channel,
-                            start_value,
-                            end_value,
-                            steps,
-                            interval,
-                            deviceChannel,
-                        ),
-                    )
-                    fade_threads[(device["id"], channel["id"])] = {
-                        "thread": t,
-                        "stop": False,
-                    }
-                    t.start()
+                        t = threading.Thread(
+                            target=fade_device,
+                            args=(
+                                device,
+                                channel,
+                                start_value,
+                                end_value,
+                                steps,
+                                interval,
+                                deviceChannel,
+                            ),
+                        )
+                        fade_threads[(device["id"], channel["id"])] = {
+                            "thread": t,
+                            "stop": False,
+                        }
+                        t.start()
 
             # Send update to all clients
             global connections
@@ -385,6 +381,11 @@ def register_socketio_events(socketio):
             except KeyError:
                 print("No channel key for scene")
             # Add scene to the database
+            filtered_devices = [
+                device
+                for device in routes.devices[1:]  # Skip master fader
+                if device["attributes"]["channel"][0]["sliderValue"] > 0
+            ]
             new_scene = Scene(
                 name=data["name"],
                 number=scene,
@@ -417,11 +418,12 @@ def register_socketio_events(socketio):
                     break
             device["attributes"]["channel"] = channels
             routes.devices[fader] = device
-        else:  # Non device DMX channel
-            if fader == 692:
-                universe = 1
-            elif fader == 693:
-                universe = 2
+        universe = None
+        if fader == 692:
+            universe = 1
+        elif fader == 693:
+            universe = 2
+        if universe is not None:
             send_dmx_direct(universe, fader_value, channelId)
 
         if connections > 1:
@@ -456,14 +458,16 @@ def register_socketio_events(socketio):
                     routes.devices[fader] = device
 
             else:  # Non device DMX channel
+                universe = None
                 if fader == 692:
                     universe = 1
                 elif fader == 693:
                     universe = 2
-                for channelData in deviceData["channels"]:
-                    channelId = int(channelData["channelId"])
-                    fader_value = int(channelData["value"])
-                    send_dmx_direct(universe, fader_value, channelId)
+                if universe is not None:
+                    for channelData in deviceData["channels"]:
+                        channelId = int(channelData["channelId"])
+                        fader_value = int(channelData["value"])
+                        send_dmx_direct(universe, fader_value, channelId)
 
             if connections > 1:
                 for channelData in deviceData["channels"]:

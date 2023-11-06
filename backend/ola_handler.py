@@ -16,7 +16,7 @@ import sys
 import array
 import time
 import threading
-from ola.ClientWrapper import ClientWrapper
+from ola.ClientWrapper import ClientWrapper  # type: ignore
 import server.routes
 
 

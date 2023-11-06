@@ -1,15 +1,15 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file Toggle.tsx
  */
 import React, { useEffect, useState } from 'react';
@@ -37,8 +37,12 @@ const Toggle: React.FC<ToggleProps> = ({ onClick = () => {}, enabled = false, cl
 
   return (
     <label className={`toggle ${className || ''}`}>
-        <input type="checkbox" checked={checked} onChange={handleChange} />
-        <span className="defaultToggle round"></span>
+      <input
+        type='checkbox'
+        checked={checked}
+        onChange={handleChange}
+      />
+      <span className='defaultToggle round'></span>
     </label>
   );
 };

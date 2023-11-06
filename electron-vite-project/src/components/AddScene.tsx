@@ -1,15 +1,15 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file AddScene.tsx
  */
 import React, { useState, useCallback, useContext, useEffect } from 'react';
@@ -32,7 +32,7 @@ function AddScene({ onClose }: AddSceneProps) {
   const [isChecked, setIsChecked] = useState(false);
   const [showAdminPassword, setShowAdminPassword] = useState(false);
   const { emit } = useConnectionContext();
-  
+
   const handleClose = () => {
     setIsOpen(false);
     onClose();
@@ -42,7 +42,7 @@ function AddScene({ onClose }: AddSceneProps) {
     return null; // Render nothing if the modal is closed
   }
 
-  const handleNameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+  const handleNameChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setName(event.target.value);
   };
 
@@ -51,12 +51,12 @@ function AddScene({ onClose }: AddSceneProps) {
   };
 
   const handleSave = () => {
-    if(name !== '') {
+    if (name !== '') {
       console.log('Save scene');
       if (!isChecked) {
         const scene = {
           name: name,
-          saved: false
+          saved: false,
         };
         addScene(emit, scene);
       } else {
@@ -67,21 +67,24 @@ function AddScene({ onClose }: AddSceneProps) {
       const textBox = document.getElementsByClassName('AddSceneTextBox')[0] as HTMLInputElement;
       textBox.focus();
       textBox.style.outline = '2px solid red';
-      textBox.style.outlineOffset =  "-1px";
+      textBox.style.outlineOffset = '-1px';
     }
   };
 
-  const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
-    if (isConfirmed) {
-      const scene = {
-        name: name,
-        saved: true
-      };
-      addScene(emit, scene);
-    }
-  }, [name]);
-  
-  const addScene = (emit: any, scene: { name: string; saved: boolean; }) => {
+  const handleAdminPasswordConfirm = useCallback(
+    (isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
+      if (isConfirmed) {
+        const scene = {
+          name: name,
+          saved: true,
+        };
+        addScene(emit, scene);
+      }
+    },
+    [name]
+  );
+
+  const addScene = (emit: any, scene: { name: string; saved: boolean }) => {
     emit('scene_add', { scene });
     handleClose();
   };
@@ -89,53 +92,74 @@ function AddScene({ onClose }: AddSceneProps) {
   // Confirm with ENTER
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
+      if (e.key === 'Enter') {
         e.preventDefault();
         handleSave();
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [name, isChecked]);
 
   return (
     <div>
-      <div className="backgroundOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
+      <div
+        className='backgroundOverlay'
+        onClick={handleClose}
+      />{' '}
+      {/* Overlay to close the modal when clicked outside */}
       {showAdminPassword ? (
-        <AdminPassword onConfirm={handleAdminPasswordConfirm} onClose={() => setShowAdminPassword(false)} />
+        <AdminPassword
+          onConfirm={handleAdminPasswordConfirm}
+          onClose={() => setShowAdminPassword(false)}
+        />
       ) : (
-        <div className="AddSceneContainer window">
-          <Button onClick={handleClose} className="buttonClose">
-            <div className="removeIcon centerIcon"></div>
+        <div className='AddSceneContainer window'>
+          <Button
+            onClick={handleClose}
+            className='buttonClose'
+          >
+            <div className='removeIcon centerIcon'></div>
           </Button>
-          <div className="AddSceneContent">
-            <span className="AddSceneTitle">{t('as_title')}</span>
+          <div className='AddSceneContent'>
+            <span className='AddSceneTitle'>{t('as_title')}</span>
             <input
-              className="LightSettingsTextBox AddSceneTextBox"
-              type="text"
-              placeholder="Name"
+              className='LightSettingsTextBox AddSceneTextBox'
+              type='text'
+              placeholder='Name'
               value={name}
               onChange={handleNameChange}
               autoFocus // Activate autofocus
             />
-            <div className="AddSceneChecker">
-              <input type="checkbox" id="checkboxId" checked={isChecked} onChange={handleCheckboxChange} />
-              <label htmlFor="checkboxId">{t('as_checkbox')}</label>
+            <div className='AddSceneChecker'>
+              <input
+                type='checkbox'
+                id='checkboxId'
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+              />
+              <label htmlFor='checkboxId'>{t('as_checkbox')}</label>
             </div>
-            <div className="AddSceneNote">
+            <div className='AddSceneNote'>
               <span>❕ {t('as_note')}</span>
             </div>
           </div>
-          <div className="AddSceneFooter">
-            <div className="controlButtons AddSceneButtons">
-              <Button onClick={handleSave} className="controlButton">
+          <div className='AddSceneFooter'>
+            <div className='controlButtons AddSceneButtons'>
+              <Button
+                onClick={handleSave}
+                className='controlButton'
+              >
                 {t('as_save')}
               </Button>
-              <Button onClick={handleClose} className="controlButton">
+              <Button
+                onClick={handleClose}
+                className='controlButton'
+              >
                 {t('as_cancel')}
               </Button>
             </div>

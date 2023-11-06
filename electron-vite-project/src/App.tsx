@@ -1,18 +1,18 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file App.tsx
  */
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
 import Studio from './Studio';
@@ -56,34 +56,70 @@ function App() {
   }, []);
 
   return (
-    <div className="App relative background">
-      <TranslationProvider translations={translations} defaultLanguage="de">
+    <div className='App relative background'>
+      <TranslationProvider
+        translations={translations}
+        defaultLanguage='de'
+      >
         <Router>
-          <header style={{ height: "90px" }}>
+          <header style={{ height: '90px' }}>
             <Titlebar />
             <Header />
           </header>
-          <div className="mainContainer" ref={mainContentRef}>
+          <div
+            className='mainContainer'
+            ref={mainContentRef}
+          >
             <div style={{ transform: `scale(${contentScale})` }}>
-              <div className="mainContent" >
+              <div className='mainContent'>
                 {!connected ? (
                   <>
                     <NoConnection />
                     <Routes>
-                      <Route path="/" element={<Studio />} />
-                      <Route path="/Studio" element={<Studio />} />
-                      <Route path="/Control" element={<Control />} />
-                      <Route path="/Scenes" element={<Scenes />} />
-                      <Route path="/Show" element={<Show />} />
+                      <Route
+                        path='/'
+                        element={<Studio />}
+                      />
+                      <Route
+                        path='/Studio'
+                        element={<Studio />}
+                      />
+                      <Route
+                        path='/Control'
+                        element={<Control />}
+                      />
+                      <Route
+                        path='/Scenes'
+                        element={<Scenes />}
+                      />
+                      <Route
+                        path='/Show'
+                        element={<Show />}
+                      />
                     </Routes>
                   </>
                 ) : (
                   <Routes>
-                    <Route path="/" element={<Studio />} />
-                    <Route path="/Studio" element={<Studio />} />
-                    <Route path="/Control" element={<Control />} />
-                    <Route path="/Scenes" element={<Scenes />} />
-                    <Route path="/Show" element={<Show />} />
+                    <Route
+                      path='/'
+                      element={<Studio />}
+                    />
+                    <Route
+                      path='/Studio'
+                      element={<Studio />}
+                    />
+                    <Route
+                      path='/Control'
+                      element={<Control />}
+                    />
+                    <Route
+                      path='/Scenes'
+                      element={<Scenes />}
+                    />
+                    <Route
+                      path='/Show'
+                      element={<Show />}
+                    />
                   </Routes>
                 )}
               </div>

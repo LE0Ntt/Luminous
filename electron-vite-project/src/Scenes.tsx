@@ -1,19 +1,19 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file Scenes.tsx
  */
-import { useContext, useState } from 'react'
-import { TranslationContext } from "./components/TranslationContext";
+import { useContext, useState } from 'react';
+import { TranslationContext } from './components/TranslationContext';
 import './Scenes.css';
 import Fader from './components/Fader';
 import ScenesComponent from './components/ScenesComponent';
@@ -36,13 +36,13 @@ function Scenes() {
   const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
     localStorage.setItem('layer', `${status}`);
   };
-  
+
   // Confirm with ENTER
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.currentTarget.blur(); // Remove focus from the input
     }
-  };  
+  };
 
   // Check if the input value is a number
   const handleFadeDuration = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +51,7 @@ function Scenes() {
       setFadeDuration(value.replace(/[^0-9.,]+/g, ''));
     }
   };
-  
+
   // Only allow numbers between 0 and 60
   const handleFadeConfirm = () => {
     let numericValue = parseFloat(fadeDuration.replace(',', '.'));
@@ -67,30 +67,39 @@ function Scenes() {
   return (
     <div>
       <div className='window scenesMain'>
-          <ScenesComponent sideId={1} setAddScene={setAddScene} setDeleteScene={setDeleteScene} setDeleteSceneAdmin={setDeleteSceneAdmin} setSaveSceneAdmin={setSaveSceneAdmin} />
+        <ScenesComponent
+          sideId={1}
+          setAddScene={setAddScene}
+          setDeleteScene={setDeleteScene}
+          setDeleteSceneAdmin={setDeleteSceneAdmin}
+          setSaveSceneAdmin={setSaveSceneAdmin}
+        />
       </div>
       <div className='window scenesMaster mainfader'>
         <div className='scenesMasterAlign'>
           <Fader
-              height={610}
-              sliderGroupId={0}
-              id={0}
-              name='Master'
-            />  
+            height={610}
+            sliderGroupId={0}
+            id={0}
+            name='Master'
+          />
         </div>
       </div>
       <div className='window scenesLayer'>
         <div className='scenesLayerAlign'>
-          <Toggle onClick={handleToggleChange} enabled={localStorage.getItem('layer') === 'true'} />
-          {t("layer")}
+          <Toggle
+            onClick={handleToggleChange}
+            enabled={localStorage.getItem('layer') === 'true'}
+          />
+          {t('layer')}
         </div>
       </div>
       <div className='window scenesLayer scenesFade'>
         <div className='scenesLayerAlign'>
           <span>FADE</span>
-          <input 
+          <input
             className='scenesFadeInput'
-            type="text"
+            type='text'
             value={fadeDuration}
             onChange={handleFadeDuration}
             onKeyDown={handleKeyDown}
@@ -100,7 +109,12 @@ function Scenes() {
       </div>
       {addScene && <AddScene onClose={() => setAddScene(false)} />}
       {deleteScene && <DeleteScene onClose={() => setDeleteScene(false)} />}
-      {deleteSceneAdmin && <AdminPassword onClose={() => setDeleteSceneAdmin(false)} isDelete />}
+      {deleteSceneAdmin && (
+        <AdminPassword
+          onClose={() => setDeleteSceneAdmin(false)}
+          isDelete
+        />
+      )}
       {saveSceneAdmin && <AdminPassword onClose={() => setSaveSceneAdmin(false)} />}
     </div>
   );

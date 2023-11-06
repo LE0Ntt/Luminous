@@ -1,23 +1,23 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file Titlebar.tsx
  */
-import React, { useEffect, useRef, useState, useContext } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import { TranslationContext } from './TranslationContext';
 import './Titlebar.css';
 import '../index.css';
 import Settings from './Settings';
-import DropDown from "./DropDown";
+import DropDown from './DropDown';
 import LightSettings from './LightSettings';
 import Help from './Help';
 import About from './About';
@@ -57,7 +57,7 @@ function TitleBar() {
     (window as any).electronAPI.send('minimize');
   };
 
-  const settings = [t("dd_settings"), t("dd_lights"), t("dd_help"), t("dd_about"), t("dd_fullscreen")];
+  const settings = [t('dd_settings'), t('dd_lights'), t('dd_help'), t('dd_about'), t('dd_fullscreen')];
 
   // Closes the drop down if the user clicks outside of it
   const handleClickOutside = (event: MouseEvent) => {
@@ -69,8 +69,8 @@ function TitleBar() {
   // Listens for clicks outside of the dropdown window
   useEffect(() => {
     if (showDropDown) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [showDropDown]);
 
@@ -84,7 +84,7 @@ function TitleBar() {
     [settings[1]]: () => setCurrentDialog(Dialog.LightSettings),
     [settings[2]]: () => setCurrentDialog(Dialog.Help),
     [settings[3]]: () => setCurrentDialog(Dialog.About),
-    [settings[4]]: toggleFullScreen
+    [settings[4]]: toggleFullScreen,
   };
 
   const handleSettingSelection = (setting: string) => {
@@ -100,28 +100,34 @@ function TitleBar() {
           </li>
           <li>
             <button
-              className={showDropDown ? "active settingsButton" : "settingsButton" }
+              className={showDropDown ? 'active settingsButton' : 'settingsButton'}
               onClick={(): void => toggleDropDown()}
               ref={dropDownRef}
             >
-              <a href="#">⚙️</a>
-            {showDropDown && (
-              <DropDown
-                settings={settings}
-                settingSelection={handleSettingSelection}
-              />
-            )}
-          </button>
+              <a href='#'>⚙️</a>
+              {showDropDown && (
+                <DropDown
+                  settings={settings}
+                  settingSelection={handleSettingSelection}
+                />
+              )}
+            </button>
           </li>
         </ul>
       </nav>
       <div className='buttonContainer'>
-        <button className={isMac ? 'hide' : 'titlebar-button minimize'} onClick={handleMinimize}>
-          <div className="min"></div>
+        <button
+          className={isMac ? 'hide' : 'titlebar-button minimize'}
+          onClick={handleMinimize}
+        >
+          <div className='min'></div>
         </button>
-        <button className={isMac ? 'hide' : 'titlebar-button close'} onClick={handleClose}>
-          <div className="x">
-            <div className="x xi"></div>
+        <button
+          className={isMac ? 'hide' : 'titlebar-button close'}
+          onClick={handleClose}
+        >
+          <div className='x'>
+            <div className='x xi'></div>
           </div>
         </button>
       </div>

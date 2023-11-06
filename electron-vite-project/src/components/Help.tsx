@@ -1,23 +1,25 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file Help.tsx
  */
-import { useState, useContext } from "react";
-import "./Settings.css";
-import Button from "./Button";
-import "../index.css";
-import { TranslationContext } from "./TranslationContext";
-import { useConnectionContext } from "./ConnectionContext";
+import { useState, useContext } from 'react';
+import './Settings.css';
+import Button from './Button';
+import '../index.css';
+import { TranslationContext } from './TranslationContext';
+import { useConnectionContext } from './ConnectionContext';
+import LightBeam from './LightBeam';
+import FocusExample from './FocusExample';
 
 interface SettingsProps {
   onClose: () => void;
@@ -39,19 +41,27 @@ function Help({ onClose }: SettingsProps) {
 
   return (
     <div>
-      <div className="backgroundOverlay" onClick={handleClose} />
-      <div className="LightSettingsContainer">
-        <Button onClick={() => handleClose()} className="buttonClose">
-          <div className="removeIcon centerIcon"></div>
+      <div
+        className='backgroundOverlay'
+        onClick={handleClose}
+      />
+      <div className='LightSettingsContainer'>
+        <Button
+          onClick={() => handleClose()}
+          className='buttonClose'
+        >
+          <div className='removeIcon centerIcon'></div>
         </Button>
-        <div className="SettingsTitle">
-          <span>{t("help")}</span>
+        <div className='SettingsTitle'>
+          <span>{t('help')}</span>
         </div>
-        <div className="SettingsContent innerWindow">
-          <div className="SettingsOption ">
-          <span>{t("help_text")}</span>
+        <div className='SettingsContent innerWindow'>
+          <div className='SettingsOption '>
+            <span>{t('help_text')}</span>
           </div>
         </div>
+        <LightBeam />
+        <FocusExample />
       </div>
     </div>
   );

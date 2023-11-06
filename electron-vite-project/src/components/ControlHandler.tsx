@@ -1,25 +1,25 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file ControlHandler.tsx
  */
 function ControlHandler(selectedDevices: any, red: number, green: number, blue: number, kelvin: number, master: number, setFaderValue: Function, emit: Function) {
-  const values = {red, green, blue, kelvin, master};
+  const values = { red, green, blue, kelvin, master };
 
   // https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html
   function kelvinToRgb(temperature: any) {
     let temperatureNorm = temperature / 100;
     let red, green, blue;
-  
+
     // Calculate red
     if (temperatureNorm <= 66) {
       red = 255;
@@ -29,7 +29,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
       if (red < 0) red = 0;
       if (red > 255) red = 255;
     }
-  
+
     // Calculate green
     if (temperatureNorm <= 66) {
       green = temperatureNorm;
@@ -42,7 +42,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
       if (green < 0) green = 0;
       if (green > 255) green = 255;
     }
-  
+
     // Calculate blue
     if (temperatureNorm >= 66) {
       blue = 255;
@@ -56,10 +56,10 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
         if (blue > 255) blue = 255;
       }
     }
-  
+
     return [Math.round(red), Math.round(green), Math.round(blue)];
   }
-  
+
   function rgbToKelvin(r: number, g: number, b: number) {
     let minTemp = 1000;
     let maxTemp = 40000;
@@ -67,78 +67,92 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
     let temp;
 
     while (maxTemp - minTemp > eps) {
-        temp = (maxTemp + minTemp) / 2;
-        const rgbApprox = kelvinToRgb(temp);
+      temp = (maxTemp + minTemp) / 2;
+      const rgbApprox = kelvinToRgb(temp);
 
-        if ((rgbApprox[2] / rgbApprox[0]) >= (b / r)) {
-            maxTemp = temp;
-        } else {
-            minTemp = temp;
-        }
+      if (rgbApprox[2] / rgbApprox[0] >= b / r) {
+        maxTemp = temp;
+      } else {
+        minTemp = temp;
+      }
     }
     return Math.round(temp || 0);
   }
 
   let tempInKelvin = rgbToKelvin(red, green, blue);
-  kelvin = (tempInKelvin - 2220) / 8648 * 255;
+  kelvin = ((tempInKelvin - 2220) / 8648) * 255;
 
   interface ChannelData {
     channelId: number;
     value: number;
   }
-  
+
   interface DeviceData {
     deviceId: number;
     channels: ChannelData[];
   }
-  
+
   let dataToSend: DeviceData[] = [];
-  
+
   selectedDevices.forEach((device: any) => {
     let deviceData: DeviceData = {
       deviceId: device.id,
-      channels: []
+      channels: [],
     };
-  
+
     device.attributes.channel.forEach((channel: any) => {
       let value: number | undefined;
-  
-      switch(device.device_type) {
-        case "RGBDim":
-          switch(channel.id.toString()) {
-            case '0': value = values.master || 0; break;
-            case '1': value = values.red || 0; break;
-            case '2': value = values.green || 0; break;
-            case '3': value = values.blue || 0; break;
+
+      switch (device.device_type) {
+        case 'RGBDim':
+          switch (channel.id.toString()) {
+            case '0':
+              value = values.master || 0;
+              break;
+            case '1':
+              value = values.red || 0;
+              break;
+            case '2':
+              value = values.green || 0;
+              break;
+            case '3':
+              value = values.blue || 0;
+              break;
           }
           break;
-        case "BiColor":
-          switch(channel.id.toString()) {
-            case '0': value = values.master || 0; break;
-            case '1': value = kelvin || 0; break;
+        case 'BiColor':
+          switch (channel.id.toString()) {
+            case '0':
+              value = values.master || 0;
+              break;
+            case '1':
+              value = kelvin || 0;
+              break;
           }
           break;
-        case "Spot":
-        case "Fill":
-        case "Misc":
-          switch(channel.id.toString()) {
-            case '0': value = values.master || 0; break;
+        case 'Spot':
+        case 'Fill':
+        case 'Misc':
+          switch (channel.id.toString()) {
+            case '0':
+              value = values.master || 0;
+              break;
           }
           break;
         default:
-          console.log("Unbekannter Gerätetyp: ", device.deviceType);
+          console.log('Unbekannter Gerätetyp: ', device.deviceType);
           return;
       }
-  
+
       if (value !== undefined) {
         deviceData.channels.push({ channelId: channel.id, value });
       }
     });
-  
+
     dataToSend.push(deviceData);
   });
-  
-  emit("bulk_fader_values", dataToSend);
+
+  emit('bulk_fader_values', dataToSend);
 }
 
 export default ControlHandler;

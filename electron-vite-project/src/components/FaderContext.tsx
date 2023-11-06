@@ -1,19 +1,19 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file FaderContext.tsx
  */
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useConnectionContext } from "./ConnectionContext";
+import { useConnectionContext } from './ConnectionContext';
 
 interface FaderContextProps {
   faderValues: number[][];
@@ -31,17 +31,18 @@ const FaderContext = createContext<FaderContextProps | undefined>(undefined);
 export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
   const sliderGroupId = 694;
   const initialFaderValues = Array.from({ length: sliderGroupId }, (_, x) => {
-    if (x >= sliderGroupId - 2) { // Last 2 sliders are reserved for DMX
+    if (x >= sliderGroupId - 2) {
+      // Last 2 sliders are reserved for DMX
       return new Array(513).fill(0);
     } else {
       return new Array(6).fill(0);
     }
   });
-  initialFaderValues[0][1] = 255
-  initialFaderValues[0][2] = 128
-  initialFaderValues[0][3] = 255
-  initialFaderValues[0][4] = 255
-  initialFaderValues[0][5] = 255
+  initialFaderValues[0][1] = 255;
+  initialFaderValues[0][2] = 128;
+  initialFaderValues[0][3] = 255;
+  initialFaderValues[0][4] = 255;
+  initialFaderValues[0][5] = 255;
   const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
   const [isDragging, setIsDragging] = useState(false);
   const { on, off } = useConnectionContext();
@@ -54,21 +55,17 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const eventListener = (data: any) => {
-      if (!isDragging && data.deviceId !== undefined) { 
+      if (!isDragging && data.deviceId !== undefined) {
         setFaderValue(data.deviceId, data.channelId, data.value);
       }
     };
-  
-    on("variable_update", eventListener);
 
-    return () => off("variable_update", eventListener);
+    on('variable_update', eventListener);
+
+    return () => off('variable_update', eventListener);
   }, [on, off, setFaderValue, isDragging]);
 
-  return (
-    <FaderContext.Provider value={{ faderValues, setFaderValue, isDragging, setIsDragging }}>
-      {children}
-    </FaderContext.Provider>
-  );
+  return <FaderContext.Provider value={{ faderValues, setFaderValue, isDragging, setIsDragging }}>{children}</FaderContext.Provider>;
 };
 
 export const useFaderContext = () => {

@@ -1,19 +1,19 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file Fader.tsx
  */
-import { useState, ChangeEvent, useEffect, useRef } from "react";
-import "./Fader.css";
+import { useState, ChangeEvent, useEffect, useRef } from 'react';
+import './Fader.css';
 import { useConnectionContext } from './ConnectionContext';
 import { useFaderContext } from './FaderContext';
 
@@ -22,18 +22,11 @@ interface SliderProps {
   sliderGroupId: number;
   name?: string;
   height?: number;
-  className ?: string;
+  className?: string;
   color?: string;
 }
 
-const Fader: React.FC<SliderProps> = ({
-  id,
-  sliderGroupId,
-  name,
-  height,
-  className,
-  color,
-}) => {
+const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, className, color }) => {
   // Initialize context and state
   const { emit } = useConnectionContext();
   const { faderValues, setFaderValue } = useFaderContext();
@@ -56,19 +49,19 @@ const Fader: React.FC<SliderProps> = ({
 
   // Emit fader value to the server
   const emitValue = (value: number) => {
-    emit("fader_value", { deviceId: sliderGroupId, value: value, channelId: id });
+    emit('fader_value', { deviceId: sliderGroupId, value: value, channelId: id });
     sendValueRef.current = value;
-  }
+  };
 
   // Set fader height by the passed parameter //v1.0.3pre, removed useEffect, because it was not needed
-  if(height) {
-    document.documentElement.style.setProperty("--sliderHeight", `${height}px`);
+  if (height) {
+    document.documentElement.style.setProperty('--sliderHeight', `${height}px`);
   }
 
   // Always send the last value
   useEffect(() => {
-    if(!timerRunning && cacheValueRef.current != null && cacheValueRef.current != sendValueRef.current)
-      emit("fader_value", { deviceId: sliderGroupId, value: faderValues[sliderGroupId][id], channelId: id });
+    if (!timerRunning && cacheValueRef.current != null && cacheValueRef.current != sendValueRef.current)
+      emit('fader_value', { deviceId: sliderGroupId, value: faderValues[sliderGroupId][id], channelId: id });
   }, [timerRunning]);
 
   const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -76,8 +69,8 @@ const Fader: React.FC<SliderProps> = ({
     setFaderValue(sliderGroupId, id, newValue);
     cacheValueRef.current = newValue;
 
-    // Send only at certain time intervals 
-    if(!timerRunning) {
+    // Send only at certain time intervals
+    if (!timerRunning) {
       setTimerRunning(true);
       emitValue(newValue);
       setTimeout(() => {
@@ -93,7 +86,7 @@ const Fader: React.FC<SliderProps> = ({
       setInputValue(value.replace(/[^0-9.,]+/g, ''));
     }
   };
-  
+
   // Check if the input is valid and set the fader value
   const handleInputConfirm = () => {
     let numericValue = parseFloat(inputValue.replace(',', '.'));
@@ -107,48 +100,55 @@ const Fader: React.FC<SliderProps> = ({
       setInputValue(displayValue); // Reset value if input is NaN
     }
   };
-  
+
   // Confirm with ENTER
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.currentTarget.blur(); // Remove focus from the input
     }
-  };  
+  };
 
   return (
     <div className={faderClassName}>
-      <div className="midPoint"></div>
-      <div className="value-slider">
+      <div className='midPoint'></div>
+      <div className='value-slider'>
         <input
-          type="range"
-          min="0"
-          max="255"
-          step="1"
+          type='range'
+          min='0'
+          max='255'
+          step='1'
           value={faderValues[sliderGroupId][id]}
           onChange={handleSliderChange}
           style={{
-            background: color ? `linear-gradient(to right, ${color} 0%, ${color} ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)` : `linear-gradient(to right, var(--mainColor) 0%, var(--mainColor) ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
+            background: color
+              ? `linear-gradient(to right, ${color} 0%, ${color} ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`
+              : `linear-gradient(to right, var(--mainColor) 0%, var(--mainColor) ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
           }}
-          className="slider sliderTrackColor"
+          className='slider sliderTrackColor'
         />
       </div>
       <div>
-        <div className="valueDisplay">
+        <div className='valueDisplay'>
           <input
-            type="text"
+            type='text'
             value={inputValue}
             onChange={handleInputChange}
             onBlur={handleInputConfirm}
             onKeyDown={handleKeyDown}
-            className="inputNum"
+            className='inputNum'
             style={{ width: `${Math.max(1, inputValue.toString().length)}ch` }}
           />
-          <span className="inputNumPercent">%</span>
+          <span className='inputNumPercent'>%</span>
         </div>
-        <span title={name} className="faderName">{name}</span>
+        <span
+          title={name}
+          className='faderName'
+        >
+          {name}
+        </span>
       </div>
     </div>
   );
-}
+};
 
 export default Fader;

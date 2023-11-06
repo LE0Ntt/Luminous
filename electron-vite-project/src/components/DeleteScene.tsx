@@ -1,15 +1,15 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file DeleteScene.tsx
  */
 import React, { useState, useContext, useEffect } from 'react';
@@ -26,7 +26,7 @@ interface DeleteSceneProps {
 function DeleteScene({ onClose }: DeleteSceneProps) {
   const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
-  
+
   const handleClose = () => {
     setIsOpen(false);
     onClose();
@@ -37,46 +37,58 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
   }
 
   const handleDelete = () => {
-    document.body.dispatchEvent(new Event('deleteScene'))
+    document.body.dispatchEvent(new Event('deleteScene'));
     handleClose();
   };
 
   // Confirm with ENTER
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
+      if (e.key === 'Enter') {
         e.preventDefault();
         handleDelete();
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 
-
   return (
     <div>
-      <div className="backgroundOverlay" onClick={handleClose} /> {/* Overlay to close the modal when clicked outside */}
-      <div className="AddSceneContainer window">
-        <Button onClick={handleClose} className="buttonClose">
-          <div className="removeIcon centerIcon"></div>
+      <div
+        className='backgroundOverlay'
+        onClick={handleClose}
+      />{' '}
+      {/* Overlay to close the modal when clicked outside */}
+      <div className='AddSceneContainer window'>
+        <Button
+          onClick={handleClose}
+          className='buttonClose'
+        >
+          <div className='removeIcon centerIcon'></div>
         </Button>
-        <div className="AddSceneContent">
-          <span className="AddSceneTitle">{t('ds_title')}</span>
-          <div className="AddSceneNote">
+        <div className='AddSceneContent'>
+          <span className='AddSceneTitle'>{t('ds_title')}</span>
+          <div className='AddSceneNote'>
             <span>❕ {t('ds_note')}</span>
           </div>
         </div>
-        <div className="AddSceneFooter">
-          <div className="controlButtons AddSceneButtons">
-            <Button onClick={handleDelete} className="controlButton">
+        <div className='AddSceneFooter'>
+          <div className='controlButtons AddSceneButtons'>
+            <Button
+              onClick={handleDelete}
+              className='controlButton'
+            >
               {t('ds_delete')}
             </Button>
-            <Button onClick={handleClose} className="controlButton">
+            <Button
+              onClick={handleClose}
+              className='controlButton'
+            >
               {t('as_cancel')}
             </Button>
           </div>

@@ -257,11 +257,7 @@ def register_socketio_events(socketio):
             for device in routes.scenes[scene]["channel"]:
                 for channel in device["attributes"]["channel"]:
                     device1 = next(
-                        (
-                            device1
-                            for device1 in routes.devices
-                            if device1["id"] == device["id"]
-                        ),
+                        (d for d in routes.devices if d["id"] == device["id"]),
                         None,
                     )
                     if device1 is not None:
@@ -276,7 +272,6 @@ def register_socketio_events(socketio):
                         # If a fade thread for this device and channel already exists, stop it
                         if (device["id"], channel["id"]) in fade_threads:
                             fade_threads[(device["id"], channel["id"])]["stop"] = True
-                            # Optional: Warten, bis der alte Thread beendet ist
                             thread = fade_threads.get(
                                 (device["id"], channel["id"]), {}
                             ).get("thread")
@@ -356,7 +351,6 @@ def register_socketio_events(socketio):
     @socketio.on("scene_save", namespace="/socket")
     def save_scene(data):
         scene = int(data["id"])
-        filtered_devices = []  # Initialize filtered_devices to an empty list
 
         # update scenes on MotorMix
         if driver is not None:
@@ -373,20 +367,25 @@ def register_socketio_events(socketio):
             sceneToSave["id"] = lastSavedIndex
             routes.scenes.insert(lastSavedIndex, sceneToSave)
 
-            if "channel" in data:
-                filtered_devices = data["channel"]
-            else:
-                try:
+            try:
+                if "channel" in data:
+                    filtered_devices = data["channel"]
+                else:
                     filtered_devices = [
+                        # Skip master fader
                         device
-                        for device in routes.devices[1:]  # Skip master fader
+                        for device in routes.devices[1:]
                         if device["attributes"]["channel"][0]["sliderValue"] > 0
                     ]
                     data["name"] = routes.scenes[scene]["name"]
-                except KeyError:
-                    print("No channel key for scene")
-
+            except KeyError:
+                print("No channel key for scene")
             # Add scene to the database
+            filtered_devices = [
+                device
+                for device in routes.devices[1:]  # Skip master fader
+                if device["attributes"]["channel"][0]["sliderValue"] > 0
+            ]
             new_scene = Scene(
                 name=data["name"],
                 number=scene,
@@ -395,7 +394,6 @@ def register_socketio_events(socketio):
             )
             db.session.add(new_scene)
             db.session.commit()
-
         socketio.emit("scene_reload", namespace="/socket")
 
     # Fader value update
@@ -420,14 +418,13 @@ def register_socketio_events(socketio):
                     break
             device["attributes"]["channel"] = channels
             routes.devices[fader] = device
-        else:  # Non device DMX channel
-            universe = None
-            if fader == 692:
-                universe = 1
-            elif fader == 693:
-                universe = 2
-            if universe is not None:
-                send_dmx_direct(universe, fader_value, channelId)
+        universe = None
+        if fader == 692:
+            universe = 1
+        elif fader == 693:
+            universe = 2
+        if universe is not None:
+            send_dmx_direct(universe, fader_value, channelId)
 
         if connections > 1:
             faderSend(fader, fader_value, channelId)

@@ -264,41 +264,42 @@ def register_socketio_events(socketio):
                         ),
                         None,
                     )
-                    deviceChannel = device1["attributes"]["channel"][channel["id"]]
+                    if device1 is not None:
+                        deviceChannel = device1["attributes"]["channel"][channel["id"]]
 
-                    start_value = deviceChannel["sliderValue"]
-                    if status:  # on
-                        end_value = channel["sliderValue"]
-                    else:  # off
-                        end_value = deviceChannel["backupValue"]
+                        start_value = deviceChannel["sliderValue"]
+                        if status:  # on
+                            end_value = channel["sliderValue"]
+                        else:  # off
+                            end_value = deviceChannel["backupValue"]
 
-                    # If a fade thread for this device and channel already exists, stop it
-                    if (device["id"], channel["id"]) in fade_threads:
-                        fade_threads[(device["id"], channel["id"])]["stop"] = True
-                        # Optional: Warten, bis der alte Thread beendet ist
-                        thread = fade_threads.get(
-                            (device["id"], channel["id"]), {}
-                        ).get("thread")
-                        if thread and thread.is_alive():
-                            thread.join()
+                        # If a fade thread for this device and channel already exists, stop it
+                        if (device["id"], channel["id"]) in fade_threads:
+                            fade_threads[(device["id"], channel["id"])]["stop"] = True
+                            # Optional: Warten, bis der alte Thread beendet ist
+                            thread = fade_threads.get(
+                                (device["id"], channel["id"]), {}
+                            ).get("thread")
+                            if thread and thread.is_alive():
+                                thread.join()
 
-                    t = threading.Thread(
-                        target=fade_device,
-                        args=(
-                            device,
-                            channel,
-                            start_value,
-                            end_value,
-                            steps,
-                            interval,
-                            deviceChannel,
-                        ),
-                    )
-                    fade_threads[(device["id"], channel["id"])] = {
-                        "thread": t,
-                        "stop": False,
-                    }
-                    t.start()
+                        t = threading.Thread(
+                            target=fade_device,
+                            args=(
+                                device,
+                                channel,
+                                start_value,
+                                end_value,
+                                steps,
+                                interval,
+                                deviceChannel,
+                            ),
+                        )
+                        fade_threads[(device["id"], channel["id"])] = {
+                            "thread": t,
+                            "stop": False,
+                        }
+                        t.start()
 
             # Send update to all clients
             global connections
@@ -355,6 +356,7 @@ def register_socketio_events(socketio):
     @socketio.on("scene_save", namespace="/socket")
     def save_scene(data):
         scene = int(data["id"])
+        filtered_devices = []  # Initialize filtered_devices to an empty list
 
         # update scenes on MotorMix
         if driver is not None:
@@ -371,19 +373,19 @@ def register_socketio_events(socketio):
             sceneToSave["id"] = lastSavedIndex
             routes.scenes.insert(lastSavedIndex, sceneToSave)
 
-            try:
-                if "channel" in data:
-                    filtered_devices = data["channel"]
-                else:
+            if "channel" in data:
+                filtered_devices = data["channel"]
+            else:
+                try:
                     filtered_devices = [
-                        # Skip master fader
                         device
-                        for device in routes.devices[1:]
+                        for device in routes.devices[1:]  # Skip master fader
                         if device["attributes"]["channel"][0]["sliderValue"] > 0
                     ]
                     data["name"] = routes.scenes[scene]["name"]
-            except KeyError:
-                print("No channel key for scene")
+                except KeyError:
+                    print("No channel key for scene")
+
             # Add scene to the database
             new_scene = Scene(
                 name=data["name"],
@@ -393,6 +395,7 @@ def register_socketio_events(socketio):
             )
             db.session.add(new_scene)
             db.session.commit()
+
         socketio.emit("scene_reload", namespace="/socket")
 
     # Fader value update
@@ -418,11 +421,13 @@ def register_socketio_events(socketio):
             device["attributes"]["channel"] = channels
             routes.devices[fader] = device
         else:  # Non device DMX channel
+            universe = None
             if fader == 692:
                 universe = 1
             elif fader == 693:
                 universe = 2
-            send_dmx_direct(universe, fader_value, channelId)
+            if universe is not None:
+                send_dmx_direct(universe, fader_value, channelId)
 
         if connections > 1:
             faderSend(fader, fader_value, channelId)
@@ -456,14 +461,16 @@ def register_socketio_events(socketio):
                     routes.devices[fader] = device
 
             else:  # Non device DMX channel
+                universe = None
                 if fader == 692:
                     universe = 1
                 elif fader == 693:
                     universe = 2
-                for channelData in deviceData["channels"]:
-                    channelId = int(channelData["channelId"])
-                    fader_value = int(channelData["value"])
-                    send_dmx_direct(universe, fader_value, channelId)
+                if universe is not None:
+                    for channelData in deviceData["channels"]:
+                        channelId = int(channelData["channelId"])
+                        fader_value = int(channelData["value"])
+                        send_dmx_direct(universe, fader_value, channelId)
 
             if connections > 1:
                 for channelData in deviceData["channels"]:

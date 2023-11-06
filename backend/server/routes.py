@@ -1,12 +1,21 @@
-from flask import render_template, redirect, flash, url_for, request, abort
-from flask_login import login_user, logout_user, current_user
-from werkzeug.utils import secure_filename
-from flask import Flask, render_template
-from flask_socketio import SocketIO
+"""
+ * Luminous - A Web-Based Lighting Control System
+ *
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ *
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ *
+ * @file routes.py
+"""
+from flask import request, jsonify
 import json
-from flask import jsonify
 from server import app, db
-from server.models import Device, Admin, Scene, Settings
+from server.models import Device, Admin, Scene
 
 
 # initial values for channels
@@ -26,34 +35,30 @@ def set_channel_values(channels, universe):
         else:
             channel["sliderValue"] = 0
             channel["backupValue"] = 0
-    return channels    
+    return channels
 
-ignored_channels = {1: [], 2: []}     
+
+ignored_channels = {1: [], 2: []}
 
 
 # load devices from database
-@app.route('/devices')
+@app.route("/devices")
 def get_devices():
     device_list = []
 
     master = {
         "id": 0,
         "name": "Master",
-        "attributes": {
-            "channel": [
-                {
-                    "id": "0",
-                    "sliderValue": 255
-                }
-            ]
-        }
+        "attributes": {"channel": [{"id": "0", "sliderValue": 255}]},
     }
     device_list.append(master)
 
     with app.app_context():
         devices = Device.query.all()
         for device in devices:
-            channels = set_channel_values(device.attributes.get("channel", []), universe=device.universe)
+            channels = set_channel_values(
+                device.attributes.get("channel", []), universe=device.universe
+            )
             device = {
                 "id": device.id,
                 "name": device.name,
@@ -61,17 +66,15 @@ def get_devices():
                 "number": device.number,
                 "universe": device.universe,
                 "mute": False,
-                "attributes": {
-                    "channel": channels
-                }
+                "attributes": {"channel": channels},
             }
             device_list.append(device)
     return device_list
 
 
 devices = get_devices()
-            
-            
+
+
 # load scenes from database
 def get_scenes():
     scenes_list = []
@@ -84,7 +87,7 @@ def get_scenes():
                 "statusOn": False,
                 "name": scene.name,
                 "channel": scene.channel,
-                "saved": True
+                "saved": True,
             }
             scenes_list.append(scene)
     return scenes_list
@@ -93,123 +96,131 @@ def get_scenes():
 scenes = get_scenes()
 
 
-@app.route('/')
+@app.route("/")
 def mein_endpunkt():
     return jsonify({"message": "Endpoint reached"})
 
 
-@app.route('/fader')
+@app.route("/fader")
 def get_faders():
     global devices
     return jsonify(json.dumps(devices))
 
 
-@app.route('/scenes')
+@app.route("/scenes")
 def get_scenes():
     global scenes
     return jsonify(json.dumps(scenes))
 
 
-@app.route('/addlight', methods=['POST'])
+@app.route("/addlight", methods=["POST"])
 def add_light():
     data = request.get_json()
     # Check if device number is already in use
-    if Device.query.filter_by(number=data['number']).first():
-        return {'message': 'number_in_use'}
-    device = Device(id=int(data['number']), name=data['name'], number=data['number'], device_type=data['device_type'],
-                    universe=data['universe'], attributes=data['attributes'])
+    if Device.query.filter_by(number=data["number"]).first():
+        return {"message": "number_in_use"}
+    device = Device(
+        id=int(data["number"]),
+        name=data["name"],
+        number=data["number"],
+        device_type=data["device_type"],
+        universe=data["universe"],
+        attributes=data["attributes"],
+    )
     print(device)
     db.session.add(device)
     db.session.commit()
 
-    channels = set_channel_values(device.attributes.get("channel", []), universe=device.universe)
+    channels = set_channel_values(
+        device.attributes.get("channel", []), universe=device.universe
+    )
     device_dict = {
         "id": int(device.number),
         "name": device.name,
         "number": device.number,
         "device_type": device.device_type,
         "universe": device.universe,
-        "attributes": {
-            "channel": channels
-        }
+        "attributes": {"channel": channels},
     }
     # Add device to devices list to the right position based on the id
     global devices
-    if devices and device_dict['id'] > devices[-1]['id']:
+    if devices and device_dict["id"] > devices[-1]["id"]:
         devices.append(device_dict)
     else:
         for i in range(len(devices)):
-            if devices[i]['id'] > device_dict['id']:
+            if devices[i]["id"] > device_dict["id"]:
                 devices.insert(i, device_dict)
                 break
-    
-    return {'message': 'success'}
+
+    return {"message": "success"}
 
 
-@app.route('/updatelight', methods=['POST'])
+@app.route("/updatelight", methods=["POST"])
 def update_light():
     data = request.get_json()
-    deviceId = int(data['id'])      # Old device number/id
-    newNumber = int(data['number']) # New device number/id
+    deviceId = int(data["id"])  # Old device number/id
+    newNumber = int(data["number"])  # New device number/id
 
     # Check if device exists
     device = Device.query.filter_by(number=deviceId).first()
     if not device:
-        return {'message': 'device_not_found'}
+        return {"message": "device_not_found"}
 
     # Update device in the database
     device.id = newNumber
-    device.name = data['name']
+    device.name = data["name"]
     device.number = newNumber
-    device.device_type = data['device_type']
-    device.universe = data['universe']
-    device.attributes = data['attributes']
+    device.device_type = data["device_type"]
+    device.universe = data["universe"]
+    device.attributes = data["attributes"]
     db.session.commit()
 
-    channels = set_channel_values(device.attributes.get("channel", []), universe=device.universe)
+    channels = set_channel_values(
+        device.attributes.get("channel", []), universe=device.universe
+    )
     device_dict = {
         "id": int(device.number),
         "name": device.name,
         "number": device.number,
         "device_type": device.device_type,
         "universe": device.universe,
-        "attributes": {
-            "channel": channels
-        }
+        "attributes": {"channel": channels},
     }
     print(device_dict)
     global devices
     for i in range(len(devices)):
-        if deviceId != newNumber: # If device number changed, remove old device and add new one
-            if devices[i]['id'] == deviceId:
+        if (
+            deviceId != newNumber
+        ):  # If device number changed, remove old device and add new one
+            if devices[i]["id"] == deviceId:
                 devices.pop(i)
                 break
-        elif devices[i]['id'] == newNumber:
+        elif devices[i]["id"] == newNumber:
             devices[i] = device_dict
             break
-    for i in range(len(devices)):    
+    for i in range(len(devices)):
         if deviceId != newNumber:
-            if devices[i]['id'] > newNumber:
+            if devices[i]["id"] > newNumber:
                 devices.insert(i, device_dict)
                 break
-            
-    return {'message': 'success'}
+
+    return {"message": "success"}
 
 
-@app.route('/removelight', methods=['POST'])
+@app.route("/removelight", methods=["POST"])
 def remove_light():
     data = request.get_json()
-    deviceId = int(data['id'])
+    deviceId = int(data["id"])
     device = Device.query.get(deviceId)
     db.session.delete(device)
     db.session.commit()
     global devices
     updated_devices = []
     for device in devices:
-        if device['id'] != deviceId:
+        if device["id"] != deviceId:
             updated_devices.append(device)
     devices = updated_devices
-    return {'message': 'Form submitted successfully'}
+    return {"message": "Form submitted successfully"}
 
 
 @app.route("/changePassword", methods=["POST"])
@@ -242,12 +253,12 @@ def change_password():
             return jsonify({"message": "New passwords do not match"})
 
 
-@app.route('/checkpassword', methods=['POST'])
+@app.route("/checkpassword", methods=["POST"])
 def check_password():
     data = request.get_json()
-    password = data['password']
+    password = data["password"]
     admin = Admin.query.first()
     if admin and admin.check_password(password):
-        return {'match': 'true'}
+        return {"match": "true"}
     else:
-        return {'match': 'false'}
+        return {"match": "false"}

@@ -15,69 +15,69 @@
 @import url(./Color.css);
 
 .scenesLayer {
-    height: 73px;
-    width: 124px;
-    left: 1716px;
-    top: 0x;
-    border-radius: 10px;
-    color: var(--primary);
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 20px;
-    position: relative;
+  height: 73px;
+  width: 124px;
+  left: 1716px;
+  top: 0x;
+  border-radius: 10px;
+  color: var(--primary);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 20px;
+  position: relative;
 }
 
 .scenesFade {
-    top: 20px;
+  top: 20px;
 }
 
 .scenesFadeInput {
-    background-color: var(--fillLight);
-    border: var(--onepStrokeSwitched) 1px solid;
-    border-radius: 5px;
-    width: 50px;
-    height: 35px;
-    position: relative;
-    padding-left: 10px;
-    outline: none;
-    margin-bottom: 10px;
-    margin-left: 10px;
-    margin-top: -7px
+  background-color: var(--fillLight);
+  border: var(--onepStrokeSwitched) 1px solid;
+  border-radius: 5px;
+  width: 50px;
+  height: 35px;
+  position: relative;
+  padding-left: 10px;
+  outline: none;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-top: -7px;
 }
 
 .scenesLayerAlign {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    justify-content: center;
-    height: 20px;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+  height: 20px;
 }
 
 .scenesMain {
-    height: 910px;
-    width: 1696px;
-    left: 0;
-    top: 0;
-    border-radius: 10px;
+  height: 910px;
+  width: 1696px;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
 }
 
 .scenesMainAlign {
-    margin-top: 20px;
-    margin-left: 20px;
-    height: 870px;
-    width: 1656px;
+  margin-top: 20px;
+  margin-left: 20px;
+  height: 870px;
+  width: 1656px;
 }
 
 .scenesMaster {
-    height: 724px;
-    width: 124px;
-    left: 1716px;
-    top: 186px;
-    position: absolute;
+  height: 724px;
+  width: 124px;
+  left: 1716px;
+  top: 186px;
+  position: absolute;
 }
 
 .scenesMasterAlign {
-    position: relative;
-    left: 20px;
+  position: relative;
+  left: 20px;
 }

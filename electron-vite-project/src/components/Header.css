@@ -15,122 +15,122 @@
 @import url(../Color.css);
 
 .root {
-    position: relative;
-    width: 1920px;
-    height: 90px;
-    align-items: flex-start;
+  position: relative;
+  width: 1920px;
+  height: 90px;
+  align-items: flex-start;
 }
 
 .header {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background: var(--fillThick);
-    border-bottom: 1px solid var(--onepStroke);
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
-    backdrop-filter: blur(15px);
-    height: 90px;
-    display: flex;
-    color: var(--primary);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--fillThick);
+  border-bottom: 1px solid var(--onepStroke);
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(15px);
+  height: 90px;
+  display: flex;
+  color: var(--primary);
 }
 
 .settings {
-    margin-left: 0.5rem;
-    margin-top: 0.25rem;
-    height: 100%;
+  margin-left: 0.5rem;
+  margin-top: 0.25rem;
+  height: 100%;
 }
 
 .containerHeader {
-    width: 5rem;
-    height: 100%;
-    flex: 1 1 auto;
+  width: 5rem;
+  height: 100%;
+  flex: 1 1 auto;
 }
 
 .unorderedList {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    gap: 40px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 40px;
 }
 
 @media (min-width: 768px) {
-    .unorderedList {
-        display: flex;
-    }
+  .unorderedList {
+    display: flex;
+  }
 }
 
 .headerButton {
-    position: relative;
-    /* margin: 20px; */
-    width: 178px;
-    height: 39px;
-    display: flex;
-    justify-content: center;
-    border-radius: 50px;
-    background-color: var(--tertiarySwitched);
-    box-shadow: inset 0px 3px 10px 0px rgba(0, 0, 0, 0.102);
-    pointer-events: auto;
-    font-size: 24px;
-    font-weight: 500;
+  position: relative;
+  /* margin: 20px; */
+  width: 178px;
+  height: 39px;
+  display: flex;
+  justify-content: center;
+  border-radius: 50px;
+  background-color: var(--tertiarySwitched);
+  box-shadow: inset 0px 3px 10px 0px rgba(0, 0, 0, 0.102);
+  pointer-events: auto;
+  font-size: 24px;
+  font-weight: 500;
 }
 
 .headerButton:hover {
-    background: var(--colorButtonHover);
+  background: var(--colorButtonHover);
 }
 
 .is-active .headerButton {
-    background-color: var(--mainColor);
-    cursor: default;
+  background-color: var(--mainColor);
+  cursor: default;
 }
 
 .divTheme {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 .buttonTheme {
-    width: 39px;
-    height: 39px;
-    border-radius: 50%;
-    background-color: var(--tertiarySwitched);
-    border: none;
-    position: absolute;
-    right: 40px;
-    box-shadow: inset 0px 3px 10px rgba(0, 0, 0, 0.1);
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+  background-color: var(--tertiarySwitched);
+  border: none;
+  position: absolute;
+  right: 40px;
+  box-shadow: inset 0px 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .headerIcon {
-    position: relative;
-    fill: var(--primary);
-    align-self: start;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-right: 7px;
+  position: relative;
+  fill: var(--primary);
+  align-self: start;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 7px;
 }
 
 .rotateHeaderIcon {
-    position: relative;
-    fill: var(--primary);
-    align-self: start;
-    top: 50%;
-    transform: rotate(90deg) translateX(-50%);
-    margin-right: 7px;
+  position: relative;
+  fill: var(--primary);
+  align-self: start;
+  top: 50%;
+  transform: rotate(90deg) translateX(-50%);
+  margin-right: 7px;
 }
 
 .is-active {
-    color: var(--primaryDark);
-    background: var(--mainColor);
+  color: var(--primaryDark);
+  background: var(--mainColor);
 }
 
 .is-active .headerIcon {
-    fill: var(--primaryDark);
+  fill: var(--primaryDark);
 }
 
 .is-active .rotateHeaderIcon {
-    fill: var(--primaryDark);
+  fill: var(--primaryDark);
 }

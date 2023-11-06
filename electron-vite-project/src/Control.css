@@ -15,169 +15,169 @@
 @import url(./Color.css);
 
 .devices {
-    width: 384px;
-    left: 0;
-    bottom: 0;
-    border-radius: 10px;
-    z-index: 3;
-    padding: 20px 0 20px 20px;
+  width: 384px;
+  left: 0;
+  bottom: 0;
+  border-radius: 10px;
+  z-index: 3;
+  padding: 20px 0 20px 20px;
 }
 
 .devicesAnimation {
-    transition: height 200ms ease-out, border-color 200ms ease-out, background 200ms ease-out;
+  transition: height 200ms ease-out, border-color 200ms ease-out, background 200ms ease-out;
 }
 
 .devicesSmall {
-    border-top-right-radius: 5px !important;
+  border-top-right-radius: 5px !important;
 }
 
 .controlMain {
-    top: -7px;
-    left: -10px;
-    position: absolute;
+  top: -7px;
+  left: -10px;
+  position: absolute;
 }
 
 .mainAnimation > g > g > * {
-    transition: all 200ms ease-out;
+  transition: all 200ms ease-out;
 }
 
 .selectedDevices {
-    width: 383px;
-    border-radius: 10px;
-    z-index: 2;
-    position: absolute;
-    padding: 20px 0 20px 20px;
-    overflow: hidden;
+  width: 383px;
+  border-radius: 10px;
+  z-index: 2;
+  position: absolute;
+  padding: 20px 0 20px 20px;
+  overflow: hidden;
 }
 
 .noSelectWindow {
-    width: 1436px;
-    height: 910px;
-    left: 404px;
-    bottom: 0;
-    border-radius: 10px;
-    padding: 20px;
-    box-sizing: border-box;
-    position: absolute;
+  width: 1436px;
+  height: 910px;
+  left: 404px;
+  bottom: 0;
+  border-radius: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+  position: absolute;
 }
 
 .noDevice {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    height: calc(100% + 2px);
-    width: 100%;
-    border-radius: 5px;
-    color: var(--primary);
-    text-align: center;
-    font-size: 25px;
-    font-weight: 500;
-    backdrop-filter: blur(5px);
-    z-index: 9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: calc(100% + 2px);
+  width: 100%;
+  border-radius: 5px;
+  color: var(--primary);
+  text-align: center;
+  font-size: 25px;
+  font-weight: 500;
+  backdrop-filter: blur(5px);
+  z-index: 9;
 }
 
 .innerContainer {
-    width: 1436px;
-    height: 910px;
-    left: 404px;
-    bottom: 0;
-    border-radius: 10px;
-    z-index: 3;
-    padding: 20px;
-    border: 1px solid rgba(0, 0, 0, 0);
-    position: absolute;
+  width: 1436px;
+  height: 910px;
+  left: 404px;
+  bottom: 0;
+  border-radius: 10px;
+  z-index: 3;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0);
+  position: absolute;
 }
 
 .lightFader {
-    height: 495px;
-    width: 82px;
+  height: 495px;
+  width: 82px;
 }
 
 .controlBiColor {
-    height: 385px;
-    width: 553px;
-    top: 130px;
-    left: 122px;
+  height: 385px;
+  width: 553px;
+  top: 130px;
+  left: 122px;
 }
 
 .controlKelvinPicker {
-    position: absolute;
-    top: 177px;
-    left: 60px;
+  position: absolute;
+  top: 177px;
+  left: 60px;
 }
 
 .controlRGB {
-    height: 495px;
-    width: 719px;
-    right: 20px;
+  height: 495px;
+  width: 719px;
+  right: 20px;
 }
 
 .controlColorPicker {
-    position: absolute;
-    top: 100px;
-    right: 20px;
+  position: absolute;
+  top: 100px;
+  right: 20px;
 }
 
 .controlRGBFader {
-    position: absolute;
-    display: flex;
-    top: 100px;
-    left: 20px;
+  position: absolute;
+  display: flex;
+  top: 100px;
+  left: 20px;
 }
 
 .noBorder {
-    border: none;
+  border: none;
 }
 
 .controlEffects {
-    height: 355px;
-    width: 1394px;
-    top: 535px;
+  height: 355px;
+  width: 1394px;
+  top: 535px;
 }
 
 .controlTitle {
-    position: absolute;
-    left: 20px;
-    font-size: 50px;
-    color: var(--tertiary);
+  position: absolute;
+  left: 20px;
+  font-size: 50px;
+  color: var(--tertiary);
 }
 
 .noSupport {
-    text-align: center;
-    color: var(--secondary);
-    font-size: 20px;
+  text-align: center;
+  color: var(--secondary);
+  font-size: 20px;
 }
 
 .centered-wrapper {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .controlButtons {
-    height: 90px;
-    width: 553px;
-    left: 122px;
-    display: flex;
-    gap: 20px;
-    padding: 20px;
+  height: 90px;
+  width: 553px;
+  left: 122px;
+  display: flex;
+  gap: 20px;
+  padding: 20px;
 }
 
 .controlButton {
-    width: 100%;
-    height: 100%;
-    border-radius: 5px;
-    background-color: var(--colorButton);
-    color: var(--primary);
-    box-shadow: var(--shadowButton);
-    border: solid 1px var(--faderBorder);
-    font-weight: 600;
-    font-size: 20px;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  background-color: var(--colorButton);
+  color: var(--primary);
+  box-shadow: var(--shadowButton);
+  border: solid 1px var(--faderBorder);
+  font-weight: 600;
+  font-size: 20px;
 }
 
 .controlButton.isSolo {
-    background-color: var(--mainColor);
-    color: var(--primaryDark);
+  background-color: var(--mainColor);
+  color: var(--primaryDark);
 }

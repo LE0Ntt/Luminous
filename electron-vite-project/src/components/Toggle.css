@@ -16,63 +16,63 @@
 
 /* The switch - the box around the slider */
 .toggle {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-    margin-right: 5px;
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  margin-right: 5px;
 }
 
 /* Hide default HTML checkbox */
 .toggle input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
 /* The slider */
 .defaultToggle {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border: solid 1px var(--primary);
-    background-color: var(--primarySwitched);
-    box-shadow: inset 0px 3px 7px 0px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border: solid 1px var(--primary);
+  background-color: var(--primarySwitched);
+  box-shadow: inset 0px 3px 7px 0px rgba(0, 0, 0, 0.15);
 }
 
 .defaultToggle:before {
-    position: absolute;
-    content: "";
-    height: 12px;
-    width: 12px;
-    left: 3px;
-    bottom: 3px;
-    background-color: var(--primary);
-    -webkit-transition: .4s;
-    transition: .4s;
+  position: absolute;
+  content: '';
+  height: 12px;
+  width: 12px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--primary);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .defaultToggle {
-    background-color: var(--mainColor);
+  background-color: var(--mainColor);
 }
 
 input:checked + .defaultToggle:before {
-    background-color: var(--primaryDark);
-    -webkit-transform: translateX(21px);
-    -ms-transform: translateX(21px);
-    transform: translateX(21px);
+  background-color: var(--primaryDark);
+  -webkit-transform: translateX(21px);
+  -ms-transform: translateX(21px);
+  transform: translateX(21px);
 }
 
 /* Rounded sliders */
 .defaultToggle.round {
-    border-radius: 12px;
+  border-radius: 12px;
 }
 
 .defaultToggle.round:before {
-    border-radius: 50%;
+  border-radius: 50%;
 }

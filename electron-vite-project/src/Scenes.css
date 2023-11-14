@@ -14,7 +14,7 @@
  */
 @import url(./Color.css);
 
-.scenesLayer {
+.scenesSolo {
   height: 73px;
   width: 124px;
   left: 1716px;
@@ -45,7 +45,7 @@
   margin-top: -7px;
 }
 
-.scenesLayerAlign {
+.scenesSoloAlign {
   position: relative;
   top: 50%;
   transform: translateY(-50%);

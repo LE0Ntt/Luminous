@@ -40,6 +40,7 @@ function LightSettings({ onClose }: SettingsProps) {
   const [inputType, setInputType] = useState('');
   const [inputNumber, setInputNumber] = useState('');
   const [channelArray, setChannelArray] = useState<Array<{ id: number; dmx_channel: string; channel_type: string }>>([]);
+  const [channelChangeArray, setChannelChangeArray] = useState<Array<{ id: number; dmx_channel: string; channel_type: string }>>([]);
   const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [istDelete, setIsDelete] = useState(false); // False = update/create device, true = delete device
 
@@ -180,12 +181,16 @@ function LightSettings({ onClose }: SettingsProps) {
     setInputType(device.device_type);
     setInputNumber(device.id.toString());
     setChannelArray([]);
+    setChannelChangeArray([]);
   };
 
   const handleDeselectDevice = (device: DeviceConfig) => {
     setSelectedDevice(undefined);
     !isNewDevice && setUnselectedDevices([...unselectedDevices, device]);
     setIsNewDevice(false);
+    setChannelChangeArray([]);
+    setChannelArray([]);
+    setInputDMXstart('0');
   };
 
   const handleCreateDevice = () => {
@@ -218,8 +223,8 @@ function LightSettings({ onClose }: SettingsProps) {
 
       return {
         id: index,
-        channel_type: channelArray[index]?.channel_type || channel?.channel_type || defaultChannelType,
-        dmx_channel: channelArray[index]?.dmx_channel || channel?.dmx_channel || startChannel.toString(),
+        channel_type: channelChangeArray[index]?.channel_type || channel?.channel_type || defaultChannelType,
+        dmx_channel: channelChangeArray[index]?.dmx_channel || channel?.dmx_channel || startChannel.toString(),
       };
     });
 
@@ -240,6 +245,11 @@ function LightSettings({ onClose }: SettingsProps) {
     const updatedChannelArray = [...channelArray];
     updatedChannelArray[index] = { id: index, channel_type: type, dmx_channel: channel };
     setChannelArray(updatedChannelArray);
+    setChannelChangeArray((prevChannelChangeArray) => {
+      const newChannelChangeArray = [...prevChannelChangeArray];
+      newChannelChangeArray[index] = { id: index, channel_type: type, dmx_channel: channel };
+      return newChannelChangeArray;
+    });
   };
 
   // Only allow numbers between 1 and 512 for the channel
@@ -255,6 +265,11 @@ function LightSettings({ onClose }: SettingsProps) {
     const updatedChannelArray = [...channelArray];
     updatedChannelArray[index] = { id: index, channel_type: type, dmx_channel: channel };
     setChannelArray(updatedChannelArray);
+    setChannelChangeArray((prevChannelChangeArray) => {
+      const newChannelChangeArray = [...prevChannelChangeArray];
+      newChannelChangeArray[index] = { id: index, channel_type: type, dmx_channel: channel };
+      return newChannelChangeArray;
+    });
   };
 
   const handleUpdateDevice = () => {
@@ -271,6 +286,10 @@ function LightSettings({ onClose }: SettingsProps) {
       textBox.style.outlineOffset = '-1px';
     } else {
       setSelectedDevice(undefined);
+      setIsNewDevice(false);
+      setChannelChangeArray([]);
+      setChannelArray([]);
+      setInputDMXstart('0');
       fetchDevices();
     }
   };
@@ -341,6 +360,10 @@ function LightSettings({ onClose }: SettingsProps) {
       .then((response) => response.json())
       .then(() => {
         setSelectedDevice(undefined);
+        setIsNewDevice(false);
+        setChannelChangeArray([]);
+        setChannelArray([]);
+        setInputDMXstart('0');
         fetchDevices();
       })
       .catch((error) => console.error('Error:', error));
@@ -357,7 +380,7 @@ function LightSettings({ onClose }: SettingsProps) {
         }
       }
     },
-    [istDelete, inputName, inputNumber, inputType, inputUniverse, channelArray, selectedDevice]
+    [istDelete, inputName, inputNumber, inputType, inputUniverse, channelArray, channelChangeArray, selectedDevice]
   );
 
   return (

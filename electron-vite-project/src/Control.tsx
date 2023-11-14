@@ -17,7 +17,6 @@ import { TranslationContext } from './components/TranslationContext';
 import { useConnectionContext } from './components/ConnectionContext';
 import { useLocation } from 'react-router-dom';
 import './Control.css';
-import './Color.css';
 import Fader from './components/Fader';
 import DeviceList from './components/DeviceList';
 import Button from './components/Button';
@@ -27,8 +26,8 @@ import AddScene from './components/AddScene';
 import AdminPassword from './components/AdminPassword';
 import ControlHandler from './components/ControlHandler';
 
+// LightFX
 function Control() {
-  // LightFX
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);

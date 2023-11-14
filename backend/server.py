@@ -20,7 +20,7 @@ import sys
 
 # --------------LED-----------------#
 try:
-    import RPi.GPIO as GPIO
+    import RPi.GPIO as GPIO  # type: ignore
 
     LED_PIN = 24
     GPIO.setmode(GPIO.BCM)

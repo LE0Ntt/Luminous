@@ -34,7 +34,7 @@ function Scenes() {
   });
 
   const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
-    localStorage.setItem('layer', `${status}`);
+    localStorage.setItem('sceneSolo', `${status}`);
   };
 
   // Confirm with ENTER
@@ -85,17 +85,17 @@ function Scenes() {
           />
         </div>
       </div>
-      <div className='window scenesLayer'>
-        <div className='scenesLayerAlign'>
+      <div className='window scenesSolo'>
+        <div className='scenesSoloAlign'>
           <Toggle
             onClick={handleToggleChange}
-            enabled={localStorage.getItem('layer') === 'true'}
+            enabled={localStorage.getItem('sceneSolo') === 'true'}
           />
-          {t('layer')}
+          <span>SOLO</span>
         </div>
       </div>
-      <div className='window scenesLayer scenesFade'>
-        <div className='scenesLayerAlign'>
+      <div className='window scenesSolo scenesFade'>
+        <div className='scenesSoloAlign'>
           <span>FADE</span>
           <input
             className='scenesFadeInput'

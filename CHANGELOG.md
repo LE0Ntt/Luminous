@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] - pre-release
+
+### Added
+
+- No Connection Screen
+- Added Setting to switch between left- and right-handed Studio-Overview
+
+### Changed
+
+- Settings Overhaul
+- Localisation change
+- Scenes: Changed LAYER to SOLO
+
+### Fixed
+
+- various fixes
+
 ## [1.0.2] - 2023-09-28
 
 ### Added

@@ -22,21 +22,21 @@ All notable changes to this project will be documented in this file.
   - Server files
     - Prevented error warnings
     - Added credit header
-- Added possibility to confirm dialogs and input fields with ENTER
+- Added ability to confirm dialogs and input fields with ENTER
 - Input fields can now be empty
-  - Now only has an effect if confirmed (ENTER or click outside the field)
-  - Will reset to a default value if confirmed input is invalid
+  - Input now only takes effect if confirmed (ENTER or click outside the field)
+  - Resets to default value if confirmed input is invalid
   - Fader input accepts decimal values, but displays only integers
     - Value with "%" is now always centred
 - Changed loading screen for Electron app that only appears on slow PCs 🙃
 
-### Fixed
+### Fixes
 
 - Fixed buttons in header being too big
 - LightSettings
   - Fixed LightSettings background fading in again on admin password
   - Fixed a case where the channels were not displayed
-  - Changing the range wont reset channels already edited anymore
+  - Changing the range won't reset channels already edited anymore
 - Fixed titlebar for macOS
 
 ## [1.0.2] - 2023-09-28
@@ -53,7 +53,7 @@ All notable changes to this project will be documented in this file.
   - Group selected device values for SocketIO to prevent too many packets
 - Removed unused files Connection.tsx, SettingsOla.tsx and SettingsOla.css
 
-### Fixed
+### Fixes
 
 - Fixed touch input on faders
 - Fixed LightSettings adding new device if deselected
@@ -67,12 +67,10 @@ All notable changes to this project will be documented in this file.
 - Updated icons
 - Launch application in fullscreen
 
-### Fixed
+### Fixes
 
 - Various important bug fixes
 
 ## [1.0.0] - 2023-07-07
 
-### Added
-
-- Initial release
+### Initial release

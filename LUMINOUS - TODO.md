@@ -80,7 +80,8 @@
 - [x] Connection screen
 - [x] Reconnect to server
 - [ ] Guide / Implement Help
-  - [ ] [[Quick Start Guide]]
+  - [x] Quick Start Guide
+  - [ ] Finetune Quick Start Guide
 - [ ] LightFX
   - [ ] Change to current state of the first light
   - [ ] Effects
@@ -90,8 +91,7 @@
   - [ ] Shutdown button
   - [ ] Turn off all devices during shutdown
   - [ ] Config file for server.py (change ip and so on)
-- [ ] Everything off scene
-  - [ ] how to implement
+- [ ] Everything off scene - How to implement?
 - [ ] Admin
   - [ ] Change password
 - [x] Input can be empty
@@ -107,7 +107,7 @@
 - [ ] Vite Export, use App within the browser
 - [ ] Rework close button
 - [ ] Studio-Overview
-  - [ ] Device highlight
+  - [x] Device highlight
   - [x] Move to the left
   - [ ] Add Traversenlights
 - [ ] Scenes

@@ -12,8 +12,6 @@
  *
  * @file socket_events.py
 """
-import glob
-import stat
 from flask_socketio import SocketIO
 from server import app, routes, db
 from server.motorMix_driver import Driver

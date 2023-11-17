@@ -9,6 +9,7 @@
 - Random server crashes
 - No connection on autostart _[should be fixed in prebuild v1.0.3]_
 - Possibly slower after long operation
+- Studio-Overview just uses ID, not universe
 
 ### Necessary changes
 
@@ -76,7 +77,6 @@
   - [ ] All channels of a device
   - [ ] Reboot MotorMix
   - [ ] Detect MotorMix (start after App)
-- [ ] Vite Export, use App within the browser
 - [x] Connection screen
 - [x] Reconnect to server
 - [ ] Guide / Implement Help

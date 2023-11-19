@@ -45,6 +45,10 @@ function Help({ onClose }: SettingsProps) {
   const faqs = [
     { key: 'faq1', question: 'Wie mache ich X?', answer: 'So machst du X.' },
     { key: 'faq2', question: 'Wo finde ich Y?', answer: 'Y findest du hier.' },
+    { key: 'faq3', question: 'Wie mache ich X?', answer: 'So machst du X.' },
+    { key: 'faq4', question: 'Wo finde ich Y?', answer: 'Y findest du hier.' },
+    { key: 'faq5', question: 'Wie mache ich X?', answer: 'So machst du X.' },
+    { key: 'faq6', question: 'Wo finde ich Y?', answer: 'Y findest du hier.' },
   ];
 
   return (
@@ -72,14 +76,16 @@ function Help({ onClose }: SettingsProps) {
                   className='faq-item'
                 >
                   <div
-                    className='faq-question'
+                    className='faqQuestion'
                     onClick={() => toggleFaq(faq.key)}
                   >
                     <span className={`arrow ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>➜</span>
                     {faq.question}
                   </div>
-                  <div className={`faq-answer { ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>{faq.answer}</div>
-                  <hr />
+                  <div className={`faqAnswer { ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>
+                    <div className='faqAnswerInner'>{faq.answer}</div>
+                  </div>
+                  <hr className={`hr { ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`} />
                 </div>
               ))}
               <span className='ask'>{t('help_text')}</span>

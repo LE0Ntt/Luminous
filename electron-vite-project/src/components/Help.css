@@ -17,10 +17,14 @@
 .faqContainer {
   overflow-y: scroll;
   overflow-x: hidden;
-  padding: 20px;
+  margin-top: 5px;
+  padding: 0px 10px 0px 10px;
+  position: relative;
+  right: -10px;
+  height: calc(100% - 5px);
 }
 
-.faq-question {
+.faqQuestion {
   cursor: pointer;
   font-weight: 700;
   height: 50px;
@@ -28,28 +32,39 @@
   align-items: center;
 }
 
-.faq-question .arrow {
+.faqQuestion .arrow {
   transition: transform 0.3s ease;
   display: inline-block;
-  margin-left: 10px;
+  margin-left: 20px;
   margin-right: 20px;
 }
 
-.faq-question .arrow.open {
+.faqQuestion .arrow.open {
   transform: rotate(90deg);
 }
 
-.faq-answer {
-  transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  margin-left: 45px;
-  margin-top: 0px;
+.faqAnswer {
+  transition: grid-template-rows 0.3s ease;
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-left: 58px;
 }
 
-.faq-item .faq-answer.open {
-  max-height: 1000px;
-  opacity: 1;
-  margin-top: 10px;
+.faqAnswerInner {
+  overflow: hidden;
+}
+
+.faqAnswer.open {
+  grid-template-rows: 1fr;
+  margin-bottom: 10px;
+}
+
+.ask {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

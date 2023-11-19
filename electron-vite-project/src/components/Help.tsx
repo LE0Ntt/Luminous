@@ -12,14 +12,10 @@
  *
  * @file Help.tsx
  */
-import { useState, useContext } from 'react';
-import './Settings.css';
+import { useState, useContext, useEffect } from 'react';
+import './Help.css';
 import Button from './Button';
-import '../index.css';
 import { TranslationContext } from './TranslationContext';
-import { useConnectionContext } from './ConnectionContext';
-import LightBeam from './LightBeam';
-import FocusExample from './FocusExample';
 
 interface SettingsProps {
   onClose: () => void;
@@ -28,7 +24,7 @@ interface SettingsProps {
 function Help({ onClose }: SettingsProps) {
   const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
-  const { url } = useConnectionContext();
+  const [openFaqs, setOpenFaqs] = useState({});
 
   const handleClose = () => {
     setIsOpen(false);
@@ -39,15 +35,27 @@ function Help({ onClose }: SettingsProps) {
     return null; // Render nothing if the modal is closed
   }
 
+  const toggleFaq = (faqKey: string) => {
+    setOpenFaqs((prevOpenFaqs: { [key: string]: boolean }) => ({
+      ...prevOpenFaqs,
+      [faqKey]: !prevOpenFaqs[faqKey],
+    }));
+  };
+
+  const faqs = [
+    { key: 'faq1', question: 'Wie mache ich X?', answer: 'So machst du X.' },
+    { key: 'faq2', question: 'Wo finde ich Y?', answer: 'Y findest du hier.' },
+  ];
+
   return (
-    <div>
+    <>
       <div
         className='backgroundOverlay'
         onClick={handleClose}
       />
       <div className='LightSettingsContainer'>
         <Button
-          onClick={() => handleClose()}
+          onClick={handleClose}
           className='buttonClose'
         >
           <div className='removeIcon centerIcon'></div>
@@ -56,14 +64,30 @@ function Help({ onClose }: SettingsProps) {
           <span>{t('help')}</span>
         </div>
         <div className='SettingsContent innerWindow'>
-          <div className='SettingsOption '>
-            <span>{t('help_text')}</span>
+          <div className='SettingsOption'>
+            <div className='faqContainer'>
+              {faqs.map((faq) => (
+                <div
+                  key={faq.key}
+                  className='faq-item'
+                >
+                  <div
+                    className='faq-question'
+                    onClick={() => toggleFaq(faq.key)}
+                  >
+                    <span className={`arrow ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>➜</span>
+                    {faq.question}
+                  </div>
+                  <div className={`faq-answer { ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>{faq.answer}</div>
+                  <hr />
+                </div>
+              ))}
+              <span className='ask'>{t('help_text')}</span>
+            </div>
           </div>
         </div>
-        <LightBeam />
-        <FocusExample />
       </div>
-    </div>
+    </>
   );
 }
 

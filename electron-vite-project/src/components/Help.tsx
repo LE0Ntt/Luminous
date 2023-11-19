@@ -12,7 +12,7 @@
  *
  * @file Help.tsx
  */
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, Fragment } from 'react';
 import './Help.css';
 import Button from './Button';
 import { TranslationContext } from './TranslationContext';
@@ -35,6 +35,7 @@ function Help({ onClose }: SettingsProps) {
     return null; // Render nothing if the modal is closed
   }
 
+  // Toggle the open state of a FAQ
   const toggleFaq = (faqKey: string) => {
     setOpenFaqs((prevOpenFaqs: { [key: string]: boolean }) => ({
       ...prevOpenFaqs,
@@ -42,13 +43,25 @@ function Help({ onClose }: SettingsProps) {
     }));
   };
 
+  // Render the answers with line breaks
+  const renderAnswer = (answer: string) => {
+    return answer.split('\n').map((line, index) => (
+      <Fragment key={index}>
+        {line}
+        <br />
+      </Fragment>
+    ));
+  };
+
   const faqs = [
-    { key: 'faq1', question: 'Wie mache ich X?', answer: 'So machst du X.' },
-    { key: 'faq2', question: 'Wo finde ich Y?', answer: 'Y findest du hier.' },
-    { key: 'faq3', question: 'Wie mache ich X?', answer: 'So machst du X.' },
-    { key: 'faq4', question: 'Wo finde ich Y?', answer: 'Y findest du hier.' },
-    { key: 'faq5', question: 'Wie mache ich X?', answer: 'So machst du X.' },
-    { key: 'faq6', question: 'Wo finde ich Y?', answer: 'Y findest du hier.' },
+    { key: 'faq1', question: t('q1'), answer: t('a1') },
+    { key: 'faq2', question: t('q2'), answer: t('a2') },
+    { key: 'faq3', question: t('q3'), answer: t('a3') },
+    { key: 'faq4', question: t('q4'), answer: t('a4') },
+    { key: 'faq5', question: t('q5'), answer: t('a5') },
+    { key: 'faq6', question: t('q6'), answer: t('a6') },
+    { key: 'faq7', question: t('q7'), answer: t('a7') },
+    { key: 'faq8', question: t('q8'), answer: t('a8') },
   ];
 
   return (
@@ -71,10 +84,7 @@ function Help({ onClose }: SettingsProps) {
           <div className='SettingsOption'>
             <div className='faqContainer'>
               {faqs.map((faq) => (
-                <div
-                  key={faq.key}
-                  className='faq-item'
-                >
+                <div key={faq.key}>
                   <div
                     className='faqQuestion'
                     onClick={() => toggleFaq(faq.key)}
@@ -82,13 +92,25 @@ function Help({ onClose }: SettingsProps) {
                     <span className={`arrow ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>➜</span>
                     {faq.question}
                   </div>
-                  <div className={`faqAnswer { ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>
-                    <div className='faqAnswerInner'>{faq.answer}</div>
+                  <div className={`faqAnswer ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>
+                    <div className='faqAnswerInner'>{renderAnswer(faq.answer)}</div>
                   </div>
-                  <hr className={`hr { ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`} />
+                  <hr />
                 </div>
               ))}
-              <span className='ask'>{t('help_text')}</span>
+              <span className='ask'>
+                {t('help_text1')}&nbsp;
+                <a
+                  href='https://th-koeln.sciebo.de/s/FwaIna4jLv9NfWj'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  style={{ textDecoration: 'underline' }}
+                >
+                  {t('help_text2')}
+                </a>
+                &nbsp;
+                {t('help_text3')}
+              </span>
             </div>
           </div>
         </div>

@@ -29,6 +29,9 @@ All notable changes to this project will be documented in this file.
   - Fader input accepts decimal values, but only displays integers
     - Value with "%" is now always centred
 - Changed Electron app loading screen that only appears on slow PCs 🙃
+- Reworked Help page
+  - Added FAQ
+  - Linked Quick Guide
 
 ### Fixes
 

@@ -36,7 +36,7 @@
     - [ ] FaderContext.tsx
     - [ ] Header.css
     - [ ] Header.tsx
-    - [ ] Help.tsx
+    - [x] Help.tsx
     - [ ] LightSettings.css
     - [ ] LightSettings.tsx
     - [x] NewSettings.tsx
@@ -79,7 +79,7 @@
   - [ ] Detect MotorMix (start after App)
 - [x] Connection screen
 - [x] Reconnect to server
-- [ ] Guide / Implement Help
+- [x] Guide / Implement Help
   - [x] Quick Start Guide
   - [ ] Finetune Quick Start Guide
 - [ ] LightFX

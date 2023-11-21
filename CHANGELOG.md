@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixes
 
-Instand hotfix for production
+Instant hotfix for production
 
 - Fixed: electron-vite-project/package.json - correct version number
 - Fixed: electron-vite-project/electron/main/index.ts - setFullscreen to true

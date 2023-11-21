@@ -12,38 +12,24 @@
  *
  * @file Settings_Admin.tsx
  */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Settings.css';
+import { TranslationContext } from './TranslationContext';
 
 interface Setting2Props {
-  currentPassword: string;
-  setCurrentPassword: React.Dispatch<React.SetStateAction<string>>;
-  newPassword: string;
-  setNewPassword: React.Dispatch<React.SetStateAction<string>>;
-  newPasswordConfirm: string;
-  setNewPasswordConfirm: React.Dispatch<React.SetStateAction<string>>;
-  handleSavePassword: () => void;
-  t: (key: string) => string;
-  errorMessage: string;
-  successMessage: string;
+  url: string;
   setIsOlaWindowOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Setting2: React.FC<Setting2Props> = ({
-  currentPassword,
-  setCurrentPassword,
-  newPassword,
-  setNewPassword,
-  newPasswordConfirm,
-  setNewPasswordConfirm,
-  handleSavePassword,
-  t,
-  errorMessage,
-  successMessage,
-  setIsOlaWindowOpen,
-}) => {
+const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+  const [passwordMessage, setPasswordMessage] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [ip, setIP] = useState<string>('');
   const [port, setPort] = useState<string>('5000');
+  const { t } = useContext(TranslationContext);
 
   // Confirm with ENTER
   const handleEnterConfirm = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -68,6 +54,60 @@ const Setting2: React.FC<Setting2Props> = ({
       }
     }
   };
+
+  const handleSavePassword = () => {
+    if (newPassword !== newPasswordConfirm) {
+      setPasswordSuccess(false);
+      setPasswordMessage(t('set_error_match'));
+    } else {
+      fetch(url + '/changePassword', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword: currentPassword,
+          newPassword: newPassword,
+          newPasswordConfirm: newPasswordConfirm,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.message === 'changed_successfully') {
+            setPasswordSuccess(true);
+            setPasswordMessage(t('set_changed_successfully'));
+          } else if (data.message === 'currrent_wrong') {
+            setPasswordSuccess(false);
+            setPasswordMessage(t('set_currrent_wrong'));
+          } else if (data.message === 'no_match') {
+            setPasswordSuccess(false);
+            setPasswordMessage(t('set_error_match'));
+          } else {
+            setPasswordSuccess(true);
+            setPasswordMessage(data.message);
+          }
+        })
+        .catch((error) => {
+          setPasswordSuccess(false);
+          setPasswordMessage(t('set_error_change'));
+          console.error(error);
+        });
+    }
+
+    setCurrentPassword('');
+    setNewPassword('');
+    setNewPasswordConfirm('');
+  };
+
+  useEffect(() => {
+    if (passwordMessage) {
+      const timer = setTimeout(() => {
+        setPasswordMessage('');
+      }, 4000); // Reset message after 4 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [passwordMessage]);
 
   const handleOctetChange = (index: number, value: string) => {
     const octets = ip.split('.');
@@ -130,8 +170,7 @@ const Setting2: React.FC<Setting2Props> = ({
           >
             {t('as_save')}
           </button>
-          {errorMessage && <div className='PasswordMessage'>{errorMessage}</div>}
-          {successMessage && <div className='PasswordMessage'>{successMessage}</div>}
+          {passwordMessage && <div className={`PasswordMessage ${passwordSuccess ? 'successMessage' : 'errorMessage'}`}>{passwordMessage}</div>}
         </div>
       </div>
       <div className='SettingContainer'>

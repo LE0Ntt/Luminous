@@ -12,7 +12,7 @@
  *
  * @file Settings.tsx
  */
-import { useState, useContext, useEffect, useCallback } from 'react';
+import { useState, useContext, useCallback } from 'react';
 import './Settings.css';
 import Button from './Button';
 import '../index.css';
@@ -32,13 +32,8 @@ interface SettingsProps {
 
 function Settings({ onClose }: SettingsProps) {
   const [isOpen, setIsOpen] = useState(true);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const { t, language, setLanguage } = useContext(TranslationContext);
-  const { url /* changeUrl */ } = useConnectionContext();
+  const { t } = useContext(TranslationContext);
+  const { url } = useConnectionContext();
   const [isOlaWindowOpen, setIsOlaWindowOpen] = useState(false);
   const newUrl = url.toString().slice(0, -5) + ':9090';
   const [selectedSetting, setSelectedSetting] = useState<string | null>('Setting1');
@@ -46,43 +41,6 @@ function Settings({ onClose }: SettingsProps) {
   const handleClose = () => {
     setIsOpen(false);
     onClose();
-  };
-
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(e.target.value as 'en' | 'de');
-  };
-
-  const handleSavePassword = () => {
-    if (newPassword !== newPasswordConfirm) {
-      setErrorMessage(t('set_error_match'));
-      setSuccessMessage('');
-    } else {
-      fetch(url + '/changePassword', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          currentPassword: currentPassword,
-          newPassword: newPassword,
-          newPasswordConfirm: newPasswordConfirm,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setSuccessMessage(data.message);
-          setErrorMessage('');
-        })
-        .catch((error) => {
-          setErrorMessage(t('set_error_change'));
-          setSuccessMessage('');
-          console.error(error);
-        });
-    }
-
-    setCurrentPassword('');
-    setNewPassword('');
-    setNewPasswordConfirm('');
   };
 
   const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
@@ -142,23 +100,10 @@ function Settings({ onClose }: SettingsProps) {
               </div>
               <div className='SettingContent innerWindow'>
                 {selectedSetting === 'Setting1' ? (
-                  <Setting1
-                    t={t}
-                    language={language}
-                    handleLanguageChange={handleLanguageChange}
-                  />
+                  <Setting1 />
                 ) : selectedSetting === 'Setting2' ? (
                   <Setting2
-                    currentPassword={currentPassword}
-                    setCurrentPassword={setCurrentPassword}
-                    newPassword={newPassword}
-                    setNewPassword={setNewPassword}
-                    newPasswordConfirm={newPasswordConfirm}
-                    setNewPasswordConfirm={setNewPasswordConfirm}
-                    handleSavePassword={handleSavePassword}
-                    t={t}
-                    errorMessage={errorMessage}
-                    successMessage={successMessage}
+                    url={url}
                     setIsOlaWindowOpen={setIsOlaWindowOpen}
                   />
                 ) : selectedSetting === 'Setting3' ? (

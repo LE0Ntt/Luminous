@@ -70,8 +70,8 @@ const Studio = () => {
     { id: 9, row: 3, col: 3, fake: false },
     { id: 1, row: 4, col: 0, fake: false },
     { id: 1, row: 4, col: 1, fake: false },
-    { id: 15, row: 4, col: 2, fake: false },
-    { id: 17, row: 4, col: 3, fake: false },
+    { id: 15, row: 4, col: 2, fake: true },
+    { id: 17, row: 4, col: 3, fake: true },
   ];
   // Creates an array with the number of rows and columns to be displayed in the Studio Overview
   const grid = Array(studioRows)
@@ -455,7 +455,21 @@ const Studio = () => {
                     } else if (selectedSlider && selectedSlider.fake === true) {
                       return (
                         <div key={`${rowIndex}-${colIndex}`}>
-                          <div className='studio_overview_light'>{slider && <div>PROP</div>}</div>
+                          <div className='studio_overview_light'>
+                            {slider && (
+                              <div>
+                                <img
+                                  src={lampImage}
+                                  alt='Lamp'
+                                  className='studio_overview_greenScreen_lamp lamp_mirrored'
+                                />
+                                <div className='studio_overview_infopanel'>
+                                  <div className='studio_overview_infopanel_text'>#{slider.id}</div>
+                                  <div className='studio_overview_infopanel_brightness'>{t('Off')}</div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       );
                     }

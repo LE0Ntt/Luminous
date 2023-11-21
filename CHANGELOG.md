@@ -2,7 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1] - 2023-11-21
+## [1.1.1] - 2023-11-21
+
+---
+
+### Fixes
+
+Instand hotfix for production
+
+- Fixed: electron-vite-project/package.json - correct version number
+- Fixed: electron-vite-project/electron/main/index.ts - setFullscreen to true
+- Fixed: backend/server.py - added allow_unsafe_werkzeug=true
+
+## [1.1.0] - 2023-11-21
 
 ---
 

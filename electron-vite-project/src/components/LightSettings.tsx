@@ -70,10 +70,6 @@ function LightSettings({ onClose }: SettingsProps) {
     return null; // Render nothing if the modal is closed
   }
 
-  useEffect(() => {
-    fetchDevices();
-  }, []);
-
   const fetchDevices = async () => {
     try {
       const response = await fetch(url + '/fader');
@@ -87,12 +83,29 @@ function LightSettings({ onClose }: SettingsProps) {
     }
   };
 
-  // Confirm with ENTER
+  // Confirm input with ENTER
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.currentTarget.blur(); // Remove focus from the input
     }
   };
+
+  // Save with ENTER
+  useEffect(() => {
+    fetchDevices();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        handleUpdateDevice();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   const handleInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Limit the name to 20 characters

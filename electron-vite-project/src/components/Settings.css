@@ -192,10 +192,10 @@
   position: absolute;
   top: 150px;
   animation-name: fadeOut;
-  animation-duration: 1s; /* Dauer des Ausfadens */
-  animation-delay: 3s; /* Verzögerung vor Beginn der Animation */
-  animation-fill-mode: forwards; /* Behält den Endzustand der Animation bei */
-  animation-iteration-count: 1; /* Spielt die Animation nur einmal ab */
+  animation-duration: 1s;
+  animation-delay: 3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
 }
 
 @keyframes fadeOut {

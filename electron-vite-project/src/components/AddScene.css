@@ -15,69 +15,69 @@
 @import url(../Color.css);
 
 .AddSceneContainer {
-    height: 362px;
-    width: 886px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 30px;
-    backdrop-filter: var(--windowBackdrop);
-    -webkit-backdrop-filter: var(--windowBackdrop);
-    position: fixed;
-    z-index: 9999;
-    overflow: hidden;
+  height: 362px;
+  width: 886px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  backdrop-filter: var(--windowBackdrop);
+  -webkit-backdrop-filter: var(--windowBackdrop);
+  position: fixed;
+  z-index: 9999;
+  overflow: hidden;
 }
 
 .buttonClose {
-    z-index: 9999;
+  z-index: 9999;
 }
 
 .AddSceneTitle {
-    font-size: 24px;
-    font-weight: 400;
+  font-size: 24px;
+  font-weight: 400;
 }
 
 .AddSceneContent {
-    height: 200px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    color: var(--primary);
+  height: 200px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: var(--primary);
 }
 
 .AddSceneTextBox {
-    width: 397px !important;
+  width: 397px !important;
 }
 
 .AddSceneChecker input {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .AddSceneNote {
-    color: var(--secondary);
+  color: var(--secondary);
 }
 
 .AddSceneFooter {
-    top: 254px;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    background-color: var(--fillMedium);
-    left: 0;
+  top: 254px;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-color: var(--fillMedium);
+  left: 0;
 }
 
 .AddSceneButtons {
-    gap: 30px !important;
-    width: 100% !important;
-    padding: 30px !important;
+  gap: 30px !important;
+  width: 100% !important;
+  padding: 30px !important;
 }
 
 .AddSceneButtons button {
-    height: 46px;
+  height: 46px;
 }
 
 .AddSceneButtons button:first-child {
-    background-color: var(--mainColor);
-    color: var(--primaryDark);
+  background-color: var(--mainColor);
+  color: var(--primaryDark);
 }

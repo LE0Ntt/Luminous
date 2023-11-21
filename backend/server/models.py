@@ -1,4 +1,19 @@
+"""
+ * Luminous - A Web-Based Lighting Control System
+ *
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ *
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ *
+ * @file models.py
+"""
 from sqlalchemy import JSON
+
 # from flask_login import UserMixin
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -46,25 +61,26 @@ class Show(db.Model):
     solo = db.Column(db.Boolean, default=False)
 
     def get_date(self):
-        return self.date.strftime('%d.%m.%y %H:%M')
+        return self.date.strftime("%d.%m.%y %H:%M")
 
 
 class Settings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     studio_grid = db.Column(JSON, nullable=False)
-    language = db.Column(db.String(2), default='en')
+    language = db.Column(db.String(2), default="en")
 
     def switch_language(self):
-        self.language = 'de' if self.language == 'en' else 'en'
+        self.language = "de" if self.language == "en" else "en"
         db.session.commit()
 
-# Clear db
-#with app.app_context():
- #   db.drop_all()
-  #  db.create_all()
- 
 
-'''
+# Clear db
+# with app.app_context():
+#   db.drop_all()
+#  db.create_all()
+
+
+"""
 Die JSON-Spalte ermöglicht es, komplexe Datenstrukturen wie das JSON-Objekt, das du beschrieben hast, in der Datenbank zu speichern und abzurufen. Wenn du Daten in die Tabelle einfügen möchtest, kannst du dies auf folgende Weise tun:
 new_scene = Scene(name='my_scene', number=1, color='red', channel={
     "channel": [
@@ -86,10 +102,6 @@ db.session.add(entry)
 db.session.commit()
 
 print(entry.get_date())  # Ausgabe: 26.05.23 14:30
-
-
-
-
 
 
 Alter Code als Beipsiel:
@@ -131,4 +143,4 @@ class Plant(db.Model):
 
     def __repr__(self):
         return '<Plant {}>'.format(self.plant_name)
-'''
+"""

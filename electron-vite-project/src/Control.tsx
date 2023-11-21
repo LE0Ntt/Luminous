@@ -1,33 +1,33 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file Control.tsx
  */
-import { useContext, useEffect, useState } from "react";
-import { TranslationContext } from "./components/TranslationContext";
-import { useConnectionContext } from "./components/ConnectionContext";
+import { useContext, useEffect, useState } from 'react';
+import { TranslationContext } from './components/TranslationContext';
+import { useConnectionContext } from './components/ConnectionContext';
 import { useLocation } from 'react-router-dom';
 import './Control.css';
-import './Color.css';
 import Fader from './components/Fader';
 import DeviceList from './components/DeviceList';
-import Button from "./components/Button";
-import ColorPicker from "./components/ColorPicker";
-import { useFaderContext } from "./components/FaderContext";
+import Button from './components/Button';
+import ColorPicker from './components/ColorPicker';
+import { useFaderContext } from './components/FaderContext';
 import AddScene from './components/AddScene';
 import AdminPassword from './components/AdminPassword';
-import ControlHandler from "./components/ControlHandler";
+import ControlHandler from './components/ControlHandler';
 
-function Control() { // LightFX
+// LightFX
+function Control() {
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
@@ -48,11 +48,11 @@ function Control() { // LightFX
     attributes: any;
     device_type: string;
     universe: string;
-  };
+  }
 
   useEffect(() => {
     const fetchDevices = async () => {
-      try { 
+      try {
         const response = await fetch(url + '/fader');
         const data = await response.json();
         const parsedData = JSON.parse(data);
@@ -74,7 +74,7 @@ function Control() { // LightFX
 
     setSelectedDevices(savedSelectedDevices);
     setUnselectedDevices(savedUnselectedDevices);
-    setFirstLoad(true)
+    setFirstLoad(true);
 
     // Prevent transition animation before hight has loaded
     const timer = setTimeout(() => {
@@ -86,11 +86,11 @@ function Control() { // LightFX
 
   useEffect(() => {
     // Save selection in session storage
-    if(firstLoad && devices.length > 0) {
+    if (firstLoad && devices.length > 0) {
       sessionStorage.setItem('unselectedDevices', JSON.stringify(unselectedDevices));
       sessionStorage.setItem('selectedDevices', JSON.stringify(selectedDevices));
 
-      if(selectedDevices.length == 0) {
+      if (selectedDevices.length == 0) {
         setHeight(-3);
       } else {
         setHeight(Math.min(selectedDevices.length * 71 + 36, 462));
@@ -100,33 +100,33 @@ function Control() { // LightFX
       const isDifferent = devices.every((device) => {
         return unselectedDevices.includes(device) && selectedDevices.includes(device);
       });
-      
-      if(isDifferent || unselectedDevices.length + selectedDevices.length !== devices.length) {
-        setUnselectedDevices(devices); 
-        setSelectedDevices([])
-        console.log("devices changed")
+
+      if (isDifferent || unselectedDevices.length + selectedDevices.length !== devices.length) {
+        setUnselectedDevices(devices);
+        setSelectedDevices([]);
+        console.log('devices changed');
       }
     }
-    
+
     // Add a device if it was added from Studio
     const id = location.state && location.state.id; // Device ID from Studio
-    if(id && !animiation) {
+    if (id && !animiation) {
       const foundDevice = unselectedDevices.find((device) => device.id === id);
       if (foundDevice) {
         setSelectedDevices([...selectedDevices, foundDevice]);
-        setUnselectedDevices(unselectedDevices.filter(item => item.id !== foundDevice.id));
+        setUnselectedDevices(unselectedDevices.filter((item) => item.id !== foundDevice.id));
       }
     }
 
     // Deactivate solo if no device is selected
-    if(selectedDevices.length == 0 && isSolo) {
+    if (selectedDevices.length == 0 && isSolo) {
       toggleSolo();
     }
   }, [selectedDevices, unselectedDevices, devices]);
 
   const handleAddDevice = (device: DeviceConfig) => {
     setSelectedDevices([...selectedDevices, device]);
-    setUnselectedDevices(unselectedDevices.filter(item => item.id !== device.id));
+    setUnselectedDevices(unselectedDevices.filter((item) => item.id !== device.id));
   };
 
   const handleRemoveDevice = (device: DeviceConfig) => {
@@ -136,21 +136,20 @@ function Control() { // LightFX
 
   // Since the more complex shape of the main window here cannot be displayed with normal divs due to the translucency and the height-adjustable property, we had to use an SVG. Hence also the following paths.
   const [height, setHeight] = useState(-3);
-  const pathFill   = `M10 17A10 10 0 0120 7h1820a10 10 0 0110 10v890a10 10 0 01-10 10H424a10 10 0 01-10-10V${height}a10 10 0 00-10-10H20a10 10 0 01-10-10V17z`;
+  const pathFill = `M10 17A10 10 0 0120 7h1820a10 10 0 0110 10v890a10 10 0 01-10 10H424a10 10 0 01-10-10V${height}a10 10 0 00-10-10H20a10 10 0 01-10-10V17z`;
   const pathStroke = `M1849.5 17v890a9.5 9.5 0 01-9.5 9.5H424a9.5 9.5 0 01-9.5-9.5V${height}c0-5.8-4.7-10.5-10.5-10.5H20a9.5 9.5 0 01-9.5-9.5V17A9.5 9.5 0 0120 7.5h1820a9.5 9.5 0 019.5 9.5z`;
   var devicesHeight = 907 - height;
 
   const selected = selectedDevices[0] && devices.length > 0;
   var deviceWindow = 'devices window' + (selected ? ' devicesSmall' : ''); // 5px upper right corner if selected
-  deviceWindow = animiation ? (deviceWindow + ' devicesAnimation') : deviceWindow
+  deviceWindow = animiation ? deviceWindow + ' devicesAnimation' : deviceWindow;
   const mainAnimation = 'controlMain' + (animiation ? ' mainAnimation' : '');
-  const hide   = 'noSelectWindow window' + (selected ? ' hide' : '');
+  const hide = 'noSelectWindow window' + (selected ? ' hide' : '');
   const selectAnimation = 'selectedDevices' + (animiation ? ' devicesAnimation' : '');
-
 
   // Solo Button
   const toggleSolo = () => {
-    emit("controlSolo", { solo: !isSolo, devices: selectedDevices });
+    emit('controlSolo', { solo: !isSolo, devices: selectedDevices });
     sessionStorage.setItem('controlSolo', `${!isSolo}`);
     setIsSolo(!isSolo);
   };
@@ -177,136 +176,213 @@ function Control() { // LightFX
 
   return (
     <div>
-      { selected ? (
-      <div>
-        <div className={selectAnimation} style={{ height: height - 17 + 'px' }}>
-          <DeviceList devices={selectedDevices} isAddButton={false} onDeviceButtonClick={handleRemoveDevice} />
-        </div>
-
-        <div className="innerContainer">
-          <div className="lightFader innerWindow">
-            <Fader
-              height={397}
-              id={1}
-              sliderGroupId={0}
-              name={t("group")}
+      {selected ? (
+        <div>
+          <div
+            className={selectAnimation}
+            style={{ height: height - 17 + 'px' }}
+          >
+            <DeviceList
+              devices={selectedDevices}
+              isAddButton={false}
+              onDeviceButtonClick={handleRemoveDevice}
             />
           </div>
-          <div className="controlButtons innerWindow">
-            <Button 
-              onClick={() => setAddScene(true)} 
-              className="controlButton"
-            >
-              {t("saveAsScene")}
-            </Button>
-            <Button 
-              onClick={() => toggleSolo()}
-              className={`controlButton ${isSolo ? 'isSolo' : ''}`}
-            >
-              SOLO
-            </Button>
-          </div>
-          <div className="controlBiColor innerWindow">
-            <span className="controlTitle">Bi-Color</span>
-            <div className="controlKelvinPicker">
-              <ColorPicker 
-                pickerType="kelvin"
-                red={faderValues[0][3]}
-                green={faderValues[0][4]}
-                blue={faderValues[0][5]}
-                onColorChange={handleColorChange}
-              />
-            </div>
-          </div>
-          <div className="controlRGB innerWindow">
-            <span className="controlTitle">RGB</span>
-            <div className="controlRGBFader">
+
+          <div className='innerContainer'>
+            <div className='lightFader innerWindow'>
               <Fader
-                id={3}
+                height={397}
+                id={1}
                 sliderGroupId={0}
-                name="R"
-                color="#CA2C2C"
-              />
-              <Fader 
-                id={4} 
-                sliderGroupId={0} 
-                name="G" 
-                color="#59E066"
-              />
-              <Fader 
-                id={5} 
-                sliderGroupId={0} 
-                name="B" 
-                className="noBorder" 
+                name={t('group')}
               />
             </div>
-            <div className="controlColorPicker">
-              <ColorPicker
-                pickerType="wheel"
-                red={red}
-                green={green}
-                blue={blue}
-                onColorChange={handleColorChange}
-              />
+            <div className='controlButtons innerWindow'>
+              <Button
+                onClick={() => setAddScene(true)}
+                className='controlButton'
+              >
+                {t('saveAsScene')}
+              </Button>
+              <Button
+                onClick={() => toggleSolo()}
+                className={`controlButton ${isSolo ? 'isSolo' : ''}`}
+              >
+                SOLO
+              </Button>
+            </div>
+            <div className='controlBiColor innerWindow'>
+              <span className='controlTitle'>Bi-Color</span>
+              <div className='controlKelvinPicker'>
+                <ColorPicker
+                  pickerType='kelvin'
+                  red={faderValues[0][3]}
+                  green={faderValues[0][4]}
+                  blue={faderValues[0][5]}
+                  onColorChange={handleColorChange}
+                />
+              </div>
+            </div>
+            <div className='controlRGB innerWindow'>
+              <span className='controlTitle'>RGB</span>
+              <div className='controlRGBFader'>
+                <Fader
+                  id={3}
+                  sliderGroupId={0}
+                  name='R'
+                  color='#CA2C2C'
+                />
+                <Fader
+                  id={4}
+                  sliderGroupId={0}
+                  name='G'
+                  color='#59E066'
+                />
+                <Fader
+                  id={5}
+                  sliderGroupId={0}
+                  name='B'
+                  className='noBorder'
+                />
+              </div>
+              <div className='controlColorPicker'>
+                <ColorPicker
+                  pickerType='wheel'
+                  red={red}
+                  green={green}
+                  blue={blue}
+                  onColorChange={handleColorChange}
+                />
+              </div>
+            </div>
+            <div className='controlEffects innerWindow'>
+              <span className='controlTitle'>{t('effects')}</span>
+              <div className='centered-wrapper'>
+                <span className='noSupport'>{t('noSupport')}</span>
+              </div>
             </div>
           </div>
-          <div className="controlEffects innerWindow">
-            <span className="controlTitle">{t("effects")}</span>
-            <div className="centered-wrapper">
-              <span className="noSupport">{t("noSupport")}</span>
+
+          <svg
+            className={mainAnimation}
+            width='1860'
+            height='930'
+            viewBox='0 0 1860 930'
+            fill='none'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <g filter='url(#filter0_b_873_8277)'>
+              <g
+                filter='url(#filter1_d_873_8277)'
+                shapeRendering='geometricPrecision'
+              >
+                <path
+                  d={pathFill}
+                  fill='var(--fillMedium)'
+                />
+                <path
+                  d={pathStroke}
+                  stroke='var(--onepStroke)'
+                />
+              </g>
+            </g>
+            <defs>
+              <filter
+                id='filter0_b_873_8277'
+                x='-90'
+                y='-93'
+                width='2040'
+                height='1110'
+                filterUnits='userSpaceOnUse'
+                colorInterpolationFilters='sRGB'
+              >
+                <feFlood
+                  floodOpacity='0'
+                  result='BackgroundImageFix'
+                />
+                <feGaussianBlur
+                  in='BackgroundImageFix'
+                  stdDeviation='50'
+                />
+                <feComposite
+                  in2='SourceAlpha'
+                  operator='in'
+                  result='effect1_backgroundBlur_873_8277'
+                />
+                <feBlend
+                  in='SourceGraphic'
+                  in2='effect1_backgroundBlur_873_8277'
+                  result='shape'
+                />
+              </filter>
+              <filter
+                id='filter1_d_873_8277'
+                x='0'
+                y='0'
+                width='1860'
+                height='930'
+                filterUnits='userSpaceOnUse'
+                colorInterpolationFilters='sRGB'
+              >
+                <feFlood
+                  floodOpacity='0'
+                  result='BackgroundImageFix'
+                />
+                <feColorMatrix
+                  in='SourceAlpha'
+                  values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0'
+                  result='hardAlpha'
+                />
+                <feOffset dy='3' />
+                <feGaussianBlur stdDeviation='5' />
+                <feComposite
+                  in2='hardAlpha'
+                  operator='out'
+                />
+                <feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0' />
+                <feBlend
+                  in2='BackgroundImageFix'
+                  result='effect1_dropShadow_873_8277'
+                />
+                <feBlend
+                  in='SourceGraphic'
+                  in2='effect1_dropShadow_873_8277'
+                  result='shape'
+                />
+              </filter>
+            </defs>
+          </svg>
+        </div>
+      ) : (
+        <div>
+          <div className='noSelectWindow'>
+            <div className='lightFader innerWindow'></div>
+            <div className='controlButtons innerWindow'></div>
+            <div className='controlBiColor innerWindow'>
+              <span className='controlTitle'>Bi-Color</span>
+            </div>
+            <div className='controlRGB innerWindow'>
+              <span className='controlTitle'>RGB</span>
+            </div>
+            <div className='controlEffects innerWindow'>
+              <span className='controlTitle'>{t('effects')}</span>
+            </div>
+            <div className='noDevice'>
+              <p dangerouslySetInnerHTML={{ __html: t('noDevices') }}></p>
             </div>
           </div>
         </div>
-        
-        <svg className={mainAnimation} width="1860" height="930" viewBox="0 0 1860 930" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g filter="url(#filter0_b_873_8277)">
-            <g filter="url(#filter1_d_873_8277)" shapeRendering="geometricPrecision">
-              <path d={pathFill} fill="var(--fillMedium)"/>
-              <path d={pathStroke} stroke="var(--onepStroke)"/>
-            </g>
-          </g>
-          <defs>
-            <filter id="filter0_b_873_8277" x="-90" y="-93" width="2040" height="1110" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-              <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-              <feGaussianBlur in="BackgroundImageFix" stdDeviation="50"/>
-              <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_873_8277"/>
-              <feBlend in="SourceGraphic" in2="effect1_backgroundBlur_873_8277" result="shape"/>
-            </filter>
-            <filter id="filter1_d_873_8277" x="0" y="0" width="1860" height="930" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-              <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-              <feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-              <feOffset dy="3"/>
-              <feGaussianBlur stdDeviation="5"/>
-              <feComposite in2="hardAlpha" operator="out"/>
-              <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
-              <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_873_8277"/>
-              <feBlend in="SourceGraphic" in2="effect1_dropShadow_873_8277" result="shape"/>
-            </filter>
-          </defs>
-        </svg>
-      </div>
-      ) : (
-        <div>
-          <div className="noSelectWindow">
-            <div className="lightFader innerWindow"></div>
-            <div className="controlButtons innerWindow"></div>
-            <div className="controlBiColor innerWindow">
-              <span className="controlTitle">Bi-Color</span>
-            </div>
-            <div className="controlRGB innerWindow">
-              <span className="controlTitle">RGB</span>
-            </div>
-            <div className="controlEffects innerWindow">
-              <span className="controlTitle">{t("effects")}</span>
-            </div>
-            <div className="noDevice">
-              <p dangerouslySetInnerHTML={{ __html: t("noDevices") }}></p>
-            </div>
-          </div>
-      </div>
       )}
-      <div className={deviceWindow} style={{ height: devicesHeight + 'px' }}>
-        <DeviceList devices={unselectedDevices} isAddButton={true} onDeviceButtonClick={handleAddDevice} />
+      <div
+        className={deviceWindow}
+        style={{ height: devicesHeight + 'px' }}
+      >
+        <DeviceList
+          devices={unselectedDevices}
+          isAddButton={true}
+          onDeviceButtonClick={handleAddDevice}
+        />
       </div>
       <div className={hide}></div>
       {addScene && <AddScene onClose={() => setAddScene(false)} />}

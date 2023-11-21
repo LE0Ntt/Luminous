@@ -1,20 +1,20 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file DeviceList.tsx
  */
-import React from "react";
+import React from 'react';
 import './DeviceList.css';
-import Button from "./Button";
+import Button from './Button';
 
 type DeviceConfig = {
   id: number;
@@ -31,17 +31,13 @@ type DeviceListProps = {
   isAddButton: boolean;
 };
 
-const DeviceList: React.FC<DeviceListProps> = ({
-  devices,
-  onDeviceButtonClick,
-  isAddButton,
-}) => {
+const DeviceList: React.FC<DeviceListProps> = ({ devices, onDeviceButtonClick, isAddButton }) => {
   // No scrollbar for selected list until devices exceed max height
-  var deviceListClass = "deviceList";
-  if(isAddButton) {
-    deviceListClass = "deviceList overflow-scroll";
+  var deviceListClass = 'deviceList';
+  if (isAddButton) {
+    deviceListClass = 'deviceList overflow-scroll';
   } else {
-    deviceListClass = devices.length > 6 ? "deviceList overflow-scroll" : "deviceList overflow-hidden right-padding";
+    deviceListClass = devices.length > 6 ? 'deviceList overflow-scroll' : 'deviceList overflow-hidden right-padding';
   }
 
   // Get the class for the device type icon
@@ -61,7 +57,7 @@ const DeviceList: React.FC<DeviceListProps> = ({
         return '';
     }
   }
-  
+
   // Sort list by ID
   const sortedDevices = [...devices].sort((a, b) => a.id - b.id);
 
@@ -70,22 +66,30 @@ const DeviceList: React.FC<DeviceListProps> = ({
       <ul>
         {sortedDevices.map((device, index) => (
           <React.Fragment key={device.id}>
-            <li style={{ /* Make the first and last element smaller but still arrange the content correctly */
-            height: index === 0 || index === devices.length - 1 ? '50px' : '70px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: index === 0 && devices.length > 1 ? '10px' : '0',
-            marginTop: index === devices.length - 1 && devices.length > 1 ? '10px' : '0'
-            }}>
+            <li
+              style={{
+                /* Make the first and last element smaller but still arrange the content correctly */
+                height: index === 0 || index === devices.length - 1 ? '50px' : '70px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: index === 0 && devices.length > 1 ? '10px' : '0',
+                marginTop: index === devices.length - 1 && devices.length > 1 ? '10px' : '0',
+              }}
+            >
               <div className={`circle ${getClassByDeviceType(device.device_type)}`}></div>
-              <div className="nameNumberBox">
-                <span className="number">{device.id}</span>
-                <span title={device.name} className="name">{device.name}</span>
+              <div className='nameNumberBox'>
+                <span className='number'>{device.id}</span>
+                <span
+                  title={device.name}
+                  className='name'
+                >
+                  {device.name}
+                </span>
               </div>
               <Button
                 onClick={() => onDeviceButtonClick(device)}
-                className="addremoveButton"
+                className='addremoveButton'
               >
                 <div className={`centerIcon ${isAddButton ? 'addIcon' : 'removeIcon'}`}></div>
               </Button>

@@ -15,197 +15,196 @@
 @import url(./Color.css);
 
 .studioLayout {
-    gap: 20px;
-    display: flex;
+  gap: 20px;
+  display: flex;
 }
 
 .faders {
-    position: relative;
-    width: 870px;
-    height: 445px;
-    left: 0;
-    top: -425px;
-    padding-left: 20px;
-    padding-right: 20px;
+  position: relative;
+  width: 870px;
+  height: 445px;
+  left: 0;
+  top: -425px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .scenes {
-    position: relative;
-    height: 445px;
-    width: 974px;
-    top: 0;
-    overflow-x: auto;
+  position: relative;
+  height: 445px;
+  width: 974px;
+  top: 0;
+  overflow-x: auto;
 }
 
 .overview {
-    position: relative;
-    height: 910px;
-    min-width: 846px;
-    top: 0;
-    border-radius: 10px;
+  position: relative;
+  height: 910px;
+  min-width: 846px;
+  top: 0;
+  border-radius: 10px;
 }
 
 .mainfader {
-    position: relative;
-    height: 445px;
-    width: 84px;
-    left: 890px;
-    top: 20px;
+  position: relative;
+  height: 445px;
+  width: 84px;
+  left: 890px;
+  top: 20px;
 }
 
 .sliders {
-    min-width: 100%;
-    height: auto;
-    display: flex;
-    justify-content: flex-start;
-    overflow-x: scroll;
-    overflow-y: hidden;
+  min-width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: flex-start;
+  overflow-x: scroll;
+  overflow-y: hidden;
 }
 
 .studio_overview {
-    background-image: url('./assets/studio_overview.png');
-    height: 870px;
-    width: 806px;
-    position: relative;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 6px;
-    background-repeat: no-repeat;
-    background-size: cover;
+  background-image: url('./assets/studio_overview.png');
+  height: 870px;
+  width: 806px;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 6px;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .studio_overview_infopanel {
-    height: 39px;
-    width: 90px;
-    flex-shrink: 0;
-    margin-left: 5px;
-    border-radius: 5px;
-    border: 1px solid var(--onepStroke);
-    background-color: var(--fillThick);
-    --webkit-backdrop-filter: var(--windowBackdrop);
-    backdrop-filter: var(--windowBackdrop);
-    box-shadow: var(--shadowLight);
-    -webkit-box-shadow: var(--shadowLight);
-    position: absolute;
-    top: 60px;
-    z-index: 1;
+  height: 39px;
+  width: 90px;
+  flex-shrink: 0;
+  margin-left: 5px;
+  border-radius: 5px;
+  border: 1px solid var(--onepStroke);
+  background-color: var(--fillThick);
+  --webkit-backdrop-filter: var(--windowBackdrop);
+  backdrop-filter: var(--windowBackdrop);
+  box-shadow: var(--shadowLight);
+  -webkit-box-shadow: var(--shadowLight);
+  position: absolute;
+  top: 60px;
+  z-index: 1;
 }
 
 .studio_overview_infopanel_greenscreen {
-    top: 30px;
-    left: -90px;
+  top: 30px;
+  left: -90px;
 }
 
 .studio_overview_infopanel_testchart {
-    top: 30px;
-    left: -90px;
+  top: 30px;
+  left: -90px;
 }
 
 .studio_overview_infopanel_text {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--primary);
-    text-align: right;
-    letter-spacing: 0em;
-    margin-right: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  text-align: right;
+  letter-spacing: 0em;
+  margin-right: 6px;
 }
 
 .studio_overview_infopanel_brightness {
-    font-weight: 600;
-    font-size: 18px;
-    position: absolute;
-    color: var(--primary);
+  font-weight: 600;
+  font-size: 18px;
+  position: absolute;
+  color: var(--primary);
 
-    bottom: -4px;
-    right: 6px;
+  bottom: -4px;
+  right: 6px;
 }
 
 .studio_overview_light {
-    color: var(--primary);
-    position: relative;
-    display: inline-block;
+  color: var(--primary);
+  position: relative;
+  display: inline-block;
 }
 
 .schein {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    top: -52px;
-    opacity: 0;
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: -52px;
+  opacity: 0;
 }
 
 .studio_overview_greenScreen {
-    height: 100px;
-    width: calc(100% - 190px);
-    position: relative;
-    margin-left: 120px;
+  height: 100px;
+  width: calc(100% - 190px);
+  position: relative;
+  margin-left: 120px;
 }
 
 .studio_overview_greenScreen_lamp {
-    transform: scale(0.5);
-    position: relative;
-    z-index: 2;
+  transform: scale(0.5);
+  position: relative;
+  z-index: 2;
 }
 
 .lamp_mirrored {
-    transform: scale(0.5) rotateY(180deg);
+  transform: scale(0.5) rotateY(180deg);
 }
 
 .studio_overview_lights {
-    height: 675px;
-    width: calc(100% - 200px);
-    position: relative;
-    margin-left: 100px;
+  height: 675px;
+  width: calc(100% - 200px);
+  position: relative;
+  margin-left: 100px;
 }
 
 .studio_overview_testchart {
-    height: 83px;
-    width: 220px;
-    position: relative;
-    margin-left: 170px;
+  height: 83px;
+  width: 220px;
+  position: relative;
+  margin-left: 170px;
 }
 
 .studio_overview_testchart_lamp {
-    transform: scale(0.5) rotateX(180deg);
-    position: relative;
-    display: inline;
-    top: -25%;
+  transform: scale(0.5) rotateX(180deg);
+  position: relative;
+  display: inline;
+  top: -25%;
 }
 
-
 .buttonOpenControl {
-    width: 36px;
-    height: 36px;
-    border-radius: 5px;
-    position: relative;
-    left: 50%;
-    top: -2%;
-    transform: translate(calc(-50% - 10px), -50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 5px;
+  position: relative;
+  left: 50%;
+  top: -2%;
+  transform: translate(calc(-50% - 10px), -50%);
 }
 
 .buttonBigView {
-    width: 36px;
-    height: 36px;
-    border-radius: 5px;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    backdrop-filter: blur(10px);
+  width: 36px;
+  height: 36px;
+  border-radius: 5px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  backdrop-filter: blur(10px);
 }
 
 .faderText {
-    padding-top: 20px;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--primary);
-    text-align: center;
-    line-height: 22px;
-    letter-spacing: 0em;
-    margin-bottom: 0;
-    transform: translateX(-10px);
+  padding-top: 20px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
+  line-height: 22px;
+  letter-spacing: 0em;
+  margin-bottom: 0;
+  transform: translateX(-10px);
 }
 
 .slidersHeight {
-    height: 425px;
+  height: 425px;
 }

@@ -1,18 +1,18 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file TranslationContext.tsx
  */
-import React, { createContext, useState } from "react";
+import React, { createContext, useState } from 'react';
 
 interface TranslationProviderProps {
   translations: Record<string, Record<string, string>>;
@@ -28,15 +28,11 @@ interface TranslationContextType {
 
 export const TranslationContext = createContext<TranslationContextType>({
   t: (key: string) => key,
-  language: "",
+  language: '',
   setLanguage: () => {},
 });
 
-export const TranslationProvider: React.FC<TranslationProviderProps> = ({
-  translations,
-  defaultLanguage,
-  children,
-}) => {
+export const TranslationProvider: React.FC<TranslationProviderProps> = ({ translations, defaultLanguage, children }) => {
   const [language, setLanguage] = useState(defaultLanguage);
 
   const t = (key: string) => {
@@ -46,9 +42,5 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
     return key;
   };
 
-  return (
-    <TranslationContext.Provider value={{ t, language, setLanguage }}>
-      {children}
-    </TranslationContext.Provider>
-  );
+  return <TranslationContext.Provider value={{ t, language, setLanguage }}>{children}</TranslationContext.Provider>;
 };

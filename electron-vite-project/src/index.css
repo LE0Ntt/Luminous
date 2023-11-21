@@ -150,7 +150,7 @@
     height: 36px;
     border-radius: 50%;
     position: absolute;
-    right: 10px;
+    right: 20px;
     top: 10px;
   }
 
@@ -175,7 +175,7 @@
   ::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.08);
     border-radius: 10px;
-    border: solid .5px rgba(0, 0, 0, 0.25)
+    border: solid 0.5px rgba(0, 0, 0, 0.25);
   }
 
   /* Darker line on the scroll bar when scrolling */
@@ -192,7 +192,7 @@
   }
 
   .backgroundOverlay {
-    position: absolute;
+    position: relative;
     z-index: 9997;
     height: 10000vh;
     width: 10000vw;
@@ -202,19 +202,19 @@
     cursor: pointer;
     backdrop-filter: blur(2px);
     animation-name: fadeIn;
-    animation-duration: .2s;
+    animation-duration: 0.2s;
     animation-timing-function: ease;
   }
 
   @keyframes fadeIn {
-      0% {
-          backdrop-filter: blur(0px);
-          background-color: rgba(0, 0, 0, 0);
-      }
+    0% {
+      backdrop-filter: blur(0px);
+      background-color: rgba(0, 0, 0, 0);
+    }
 
-      100% {
-          backdrop-filter: blur(2px);
-          background-color: rgba(0, 0, 0, 0.25);
-      }
+    100% {
+      backdrop-filter: blur(2px);
+      background-color: rgba(0, 0, 0, 0.25);
+    }
   }
 }

@@ -1,3 +1,17 @@
+/**
+ * Luminous - A Web-Based Lighting Control System
+ * 
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ * 
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ * 
+ * @file NoConnection.css
+ */
 @import url(../Color.css);
 
 .noConnectionContent {
@@ -9,62 +23,68 @@
   padding-top: 120px;
 }
 
-.noConnection, .retryConnection, .loader, .iconNoConnection {
-    transition: opacity 1.2s ease;
-    position: absolute;
-    opacity: 0;
-    font-size: 26px;
+.noConnection,
+.retryConnection,
+.loader,
+.iconNoConnection {
+  transition: opacity 1.2s ease;
+  position: absolute;
+  opacity: 0;
+  font-size: 26px;
 }
-  
+
 .show {
-    opacity: 1;
+  opacity: 1;
 }
 
 .restartServer {
-    font-size: 16px;
-    color: var(--secondary);
+  font-size: 16px;
+  color: var(--secondary);
 }
 
 .iconNoConnection {
-    top: 320px;
-    height: 140px;
-    width: 140px;
-    mask: url(../assets/noConnection.svg);
-    mask-repeat: no-repeat;
-    background: var(--secondary);
-    mask-position: center;
-    mask-size: contain;
+  top: 320px;
+  height: 140px;
+  width: 140px;
+  mask: url(../assets/noConnection.svg);
+  mask-repeat: no-repeat;
+  background: var(--secondary);
+  mask-position: center;
+  mask-size: contain;
 }
 
 .loader {
-    top: -60px;
-    width: 64px;
-    height: 64px;
-    display: inline-block;
-    position: relative;
+  top: -60px;
+  width: 64px;
+  height: 64px;
+  display: inline-block;
+  position: relative;
 }
+
 .loader::after,
 .loader::before {
-    content: '';  
-    box-sizing: border-box;
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: var(--primary);
-    position: absolute;
-    animation: animloader 2s linear infinite;
+  content: '';
+  box-sizing: border-box;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--primary);
+  position: absolute;
+  animation: animloader 2s linear infinite;
 }
+
 .loader::after {
-    animation-delay: 1s;
+  animation-delay: 1s;
 }
+
 @keyframes animloader {
-    0% {
-      transform: scale(0);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 0;
-    }
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
 }
-     

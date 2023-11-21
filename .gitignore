@@ -1,3 +1,4 @@
 node_modules/
 electron-vite-project/src/main.tsx
 backend/server/database.db
+.vscode/

@@ -1,15 +1,15 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file Timeline.tsx
  */
 import React, { useState } from 'react';
@@ -91,11 +91,7 @@ const MyTimeline: React.FC = () => {
     setHoveredCell(null);
   };
 
-  const handleResize = (
-    event: React.MouseEvent<HTMLDivElement>,
-    boxIndex: number,
-    isRightDrag: boolean
-  ) => {
+  const handleResize = (event: React.MouseEvent<HTMLDivElement>, boxIndex: number, isRightDrag: boolean) => {
     setIsResizing(true);
 
     const startX = event.clientX;
@@ -109,11 +105,7 @@ const MyTimeline: React.FC = () => {
       const newWidth = isRightDrag ? startWidth + diffX : startWidth - diffX;
 
       if (newWidth >= 32 && newWidth % 32 === 0) {
-        setRedBoxes((prevBoxes) =>
-          prevBoxes.map((box) =>
-            box.index === boxIndex ? { ...box, left: newLeft, width: newWidth } : box
-          )
-        );
+        setRedBoxes((prevBoxes) => prevBoxes.map((box) => (box.index === boxIndex ? { ...box, left: newLeft, width: newWidth } : box)));
       }
     };
 
@@ -128,7 +120,7 @@ const MyTimeline: React.FC = () => {
   };
 
   return (
-    <table className="timeline-container">
+    <table className='timeline-container'>
       <tbody>
         {Array(4)
           .fill(null)
@@ -146,9 +138,7 @@ const MyTimeline: React.FC = () => {
 
                   return (
                     <td
-                      className={`grid-cell ${isCellSelected ? 'selected' : ''} ${
-                        isCellHovered ? 'drag-over' : ''
-                      }`}
+                      className={`grid-cell ${isCellSelected ? 'selected' : ''} ${isCellHovered ? 'drag-over' : ''}`}
                       onMouseEnter={() => setSelectedCell(cellIndex)}
                       onClick={() => handleCellClick(cellIndex)}
                       onDragOver={(event) => handleDragOver(event, cellIndex)}
@@ -166,18 +156,21 @@ const MyTimeline: React.FC = () => {
                           onDragStart={(event) => handleDragStart(event, cellIndex)}
                         >
                           <div
-                            className="red-box-handle-left"
+                            className='red-box-handle-left'
                             onMouseDown={(event) => handleResize(event, cellIndex, false)}
                           />
                           <div
-                            className="red-box-handle-right"
+                            className='red-box-handle-right'
                             onMouseDown={(event) => handleResize(event, cellIndex, true)}
                           />
-                          <div className="red-box-content">Scene X</div>
+                          <div className='red-box-content'>Scene X</div>
                         </div>
                       )}
                       {isCellHovered && draggedBox && (
-                        <div className="gray-box" style={{ width: `${draggedBox.width}px` }} />
+                        <div
+                          className='gray-box'
+                          style={{ width: `${draggedBox.width}px` }}
+                        />
                       )}
                     </td>
                   );

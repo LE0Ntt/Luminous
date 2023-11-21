@@ -1,15 +1,15 @@
 /**
  * Luminous - A Web-Based Lighting Control System
- * 
+ *
  * TH Köln - University of Applied Sciences, institute for media and imaging technology
  * Projekt Medienproduktionstechnik & Web-Engineering
- * 
+ *
  * Authors:
  * - Leon Hölzel
  * - Darwin Pietas
  * - Marvin Plate
  * - Andree Tomek
- * 
+ *
  * @file ColorPicker.tsx
  */
 import React, { useEffect, useRef, useState } from 'react';
@@ -23,25 +23,17 @@ interface ColorPickerProps {
   onColorChange: (newRed: number, newGreen: number, newBlue: number) => void;
 }
 
-const ColorPicker: React.FC<ColorPickerProps> = ({
-  pickerType,
-  red,
-  green,
-  blue,
-  onColorChange
-}) => {
+const ColorPicker: React.FC<ColorPickerProps> = ({ pickerType, red, green, blue, onColorChange }) => {
   const pickerRef = useRef(null);
   const [colorPicker, setColorPicker] = useState<any>(null);
 
-  useEffect(() => {    
+  useEffect(() => {
     if (iro && pickerRef.current && !colorPicker) {
       let layout;
 
       switch (pickerType) {
         case 'kelvin':
-          layout = [
-            { component: iro.ui.Slider, options: { sliderType: 'kelvin' } }
-          ];
+          layout = [{ component: iro.ui.Slider, options: { sliderType: 'kelvin' } }];
           break;
         case 'wheel':
         default:
@@ -51,10 +43,10 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
       const newColorPicker = iro.ColorPicker(pickerRef.current, {
         width: pickerType === 'kelvin' ? 431 : 320,
         color: `rgb(${red}, ${green}, ${blue})`,
-        layout
+        layout,
       });
 
-      newColorPicker.on('color:change', (color : any) => {
+      newColorPicker.on('color:change', (color: any) => {
         onColorChange(color.rgb.r, color.rgb.g, color.rgb.b);
       });
 

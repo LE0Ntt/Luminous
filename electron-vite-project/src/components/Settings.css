@@ -30,31 +30,39 @@
   -webkit-backdrop-filter: var(--windowBackdrop);
   backdrop-filter: var(--windowBackdrop);
   border: var(--onepStroke) 1px solid;
-  padding: 15px 20px 20px 20px;
+  padding: 20px;
 }
 
 .settings {
-  width: 150px;
-  border-right: 1px solid #ccc;
+  width: 200px;
+  margin: 0;
+  padding-right: 20px;
+  position: relative;
 }
 
-.setting-content {
+.SettingContent {
   flex: 1;
   padding-left: 20px;
+  position: relative;
+}
+
+.settingsButtonContent {
+  display: flex;
+  gap: 5px;
 }
 
 .settings button {
   color: var(--primary);
   padding: 10%;
-  margin: 5% 0;
+  margin-bottom: 20px;
   cursor: pointer;
-  width: 95%;
+  width: 100%;
   border-radius: 5px;
 }
 
 .settings button.active {
   background-color: var(--mainColor);
-  color: var(--colorButton);
+  color: var(--primaryDark);
 }
 
 .SettingsTitle {
@@ -69,51 +77,37 @@
 }
 
 .SettingsSubTitle {
-  top: 0px;
-  position: absolute;
-  width: stretch;
-  object-fit: contain;
-  display: flex;
   font-size: 20px;
+  margin-bottom: 10px;
 }
 
 .SettingsTextBox {
   background-color: var(--fillLight);
   border: var(--onepStrokeSwitched) 1px solid;
   border-radius: 5px;
-  width: 10vw;
+  width: 11vw;
   height: 35px;
   position: relative;
   padding-left: 10px;
   outline: none;
-  margin-bottom: 10px;
-}
-
-.innerWindow hr {
-  background-color: var(--faderBorder);
 }
 
 .SettingsContent {
   flex-grow: 1;
   position: relative;
   display: flex;
-  /* für New settings */
-  /* flex-direction: row; */
-  flex-direction: column;
+  flex-direction: row;
   height: stretch;
   top: 40px;
   margin-bottom: 40px;
   overflow: auto;
   bottom: 0;
+  overflow: visible;
 }
 
 .SettingContainer {
   margin-top: 20px;
-}
-
-.SettingsContainer .Heading {
-  font-size: 20px;
-  margin-bottom: 4px;
+  padding-bottom: 20px;
 }
 
 .SettingsIPBox {
@@ -122,7 +116,7 @@
 }
 
 .SettingsTextBoxContainer {
-  width: stretch;
+  width: 70%;
   display: flex;
   position: relative;
   gap: 20px;
@@ -130,13 +124,11 @@
   overflow: auto;
 }
 
-
 .SettingsOption {
   flex-grow: 10;
   position: relative;
   width: stretch;
-  padding: 15px 20px 20px 20px;
-
+  padding: 15px 20px 20px 0px;
 }
 
 .SettingsLayer {
@@ -152,30 +144,53 @@
 
 .SettingsButton {
   position: relative;
-  height: 60px;
-  width: 15vw;
-  top: 20px;
+  height: 48px;
+  width: 250px;
 }
-
-.SettingsSavePWButton {
-  position: absolute;
-  height: 60px;
-  width: 15vw;
-  right: 0px;
-  bottom: 0px;
-}
-
 
 .SettingsLanguageSelection {
   background-color: var(--fillLight);
   border: var(--onepStrokeSwitched) 1px solid;
   border-radius: 5px;
   height: 35px;
-  width: 10vw;
+  width: 11vw;
   position: relative;
   padding-left: 10px;
   outline: none;
-  margin-bottom: 10px;
+}
+
+.ChangePassword {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ChangePassword .SettingsButton {
+  top: -6px;
+}
+
+@media (max-width: 1725px) {
+  .SettingsTextBoxContainer {
+    width: stretch;
+  }
+
+  .SettingsTextBox {
+    width: 100%;
+    margin-bottom: 26px;
+  }
+
+  .ChangePassword {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .PasswordMessage {
+    top: 210px !important;
+  }
+}
+
+.PasswordMessage {
+  position: absolute;
+  top: 150px;
 }
 
 .AboutTextBoxContainer {

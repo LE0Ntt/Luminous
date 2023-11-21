@@ -15,78 +15,78 @@
 @import url(../Color.css);
 
 hr {
-    height: 1px;
-    background-color: var(--onepStroke);
-    border: none;
+  height: 1px;
+  background-color: var(--onepStroke);
+  border: none;
 }
 
 .deviceList {
-    height: 100%;
-    padding-right: 10px;
-    margin-right: 10px;
-    overflow-x: hidden;
+  height: 100%;
+  padding-right: 10px;
+  margin-right: 10px;
+  overflow-x: hidden;
 }
 
 .right-padding {
-    padding-right: 19px;
+  padding-right: 19px;
 }
 
 .circle {
-    min-width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: rgba(148, 148, 148, .2);
-    margin-right: 14px;
-    border: solid 1px var(--onepStroke);
-    background-size: cover;
-    background-position: center;
+  min-width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(148, 148, 148, 0.2);
+  margin-right: 14px;
+  border: solid 1px var(--onepStroke);
+  background-size: cover;
+  background-position: center;
 }
 
 .spotIcon {
-    background-image: url('../assets/spotIcon.png');
+  background-image: url('../assets/spotIcon.png');
 }
 
 .rgbIcon {
-    background-image: url('../assets/rgbIcon.png');
+  background-image: url('../assets/rgbIcon.png');
 }
 
 .biIcon {
-    background-image: url('../assets/biIcon.png');
+  background-image: url('../assets/biIcon.png');
 }
 
 .fillIcon {
-    background-image: url('../assets/fillIcon.png');
+  background-image: url('../assets/fillIcon.png');
 }
 
 .miscIcon {
-    background-image: url('../assets/miscIcon.png');
+  background-image: url('../assets/miscIcon.png');
 }
 
 .number {
-    font-size: 20px;
-    color: var(--primary);
-    font-weight: 500;
+  font-size: 20px;
+  color: var(--primary);
+  font-weight: 500;
 }
 
 .name {
-    font-size: 20px;
-    color: var(--primary);
-    margin-left: 20px;
-    white-space: nowrap;
+  font-size: 20px;
+  color: var(--primary);
+  margin-left: 20px;
+  white-space: nowrap;
 }
 
 .nameNumberBox {
-    width: 70%;
-    overflow: hidden;
-    flex-wrap: wrap;
-    text-overflow: ellipsis;
-    color: var(--primary);
+  width: 70%;
+  overflow: hidden;
+  flex-wrap: wrap;
+  text-overflow: ellipsis;
+  color: var(--primary);
 }
 
 .addremoveButton {
-    min-width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    margin-right: 10px;
-    margin-left: 10px;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-right: 10px;
+  margin-left: 10px;
 }

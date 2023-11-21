@@ -21,6 +21,7 @@ import DropDown from './DropDown';
 import LightSettings from './LightSettings';
 import Help from './Help';
 import About from './About';
+import IconSettings from '@/assets/Icon-Settings';
 
 enum Dialog {
   None,
@@ -104,7 +105,15 @@ function TitleBar() {
               onClick={(): void => toggleDropDown()}
               ref={dropDownRef}
             >
-              <a href='#'>⚙️</a>
+              <a
+                href='#'
+                className='absolute top-[3px]'
+              >
+                <IconSettings
+                  size='20px'
+                  color='var(--secondary)'
+                />
+              </a>
               {showDropDown && (
                 <DropDown
                   settings={settings}

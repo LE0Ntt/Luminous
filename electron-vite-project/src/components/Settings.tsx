@@ -20,7 +20,12 @@ import './LightSettings.css';
 import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
 import AdminPassword from './AdminPassword';
-import Toggle from './Toggle';
+import Toggle from './Toggle'; // maybe not in use anymore
+import Setting1 from './Settings_General';
+import Setting2 from './Settings_Admin';
+import IconSettings from '@/assets/Icon-Settings';
+import IconAdmin from '@/assets/Icon_Admin';
+import './Titlebar.css';
 
 interface SettingsProps {
   onClose: () => void;
@@ -117,28 +122,6 @@ function Settings({ onClose }: SettingsProps) {
 
   const [selectedSetting, setSelectedSetting] = useState<string | null>('Setting1');
 
-  const [ip, setIP] = useState<string>('');
-  const [port, setPort] = useState<string>('5000');
-
-  const handleOctetChange = (index: number, value: string) => {
-    const octets = ip.split('.');
-    octets[index - 1] = value;
-    setIP(octets.join('.'));
-  };
-
-  useEffect(() => {
-    console.log('fetching ip');
-    console.log(ip);
-    const fullUrl = `${ip}:${port}`;
-    /*     changeUrl(fullUrl); */
-  }, [ip]);
-
-  const octets = ip.split('.');
-
-  const handlePortChange = (value: string) => {
-    setPort(value);
-  };
-
   const handleToggleChange = () => {
     const newSetting = localStorage.getItem('reverseOrder') !== 'true';
     localStorage.setItem('reverseOrder', String(newSetting));
@@ -174,165 +157,47 @@ function Settings({ onClose }: SettingsProps) {
                   className={selectedSetting === 'Setting1' ? 'active' : ''}
                   onClick={() => setSelectedSetting('Setting1')}
                 >
-                  <span>{t('set_admin')}</span>
+                  <div className='settingsButtonContent'>
+                    <IconSettings color={selectedSetting === 'Setting1' ? 'var(--primarySwitched)' : 'var(--primary)'} />
+                    <span>{t('set_general')}</span>
+                  </div>
                 </Button>
                 <Button
                   className={selectedSetting === 'Setting2' ? 'active' : ''}
                   onClick={() => setSelectedSetting('Setting2')}
                 >
-                  <span>{t('set_language')}</span>
-                </Button>
-                <Button
-                  className={selectedSetting === 'Setting3' ? 'active' : ''}
-                  onClick={() => setSelectedSetting('Setting3')}
-                >
-                  OLA
-                </Button>
-                <Button
-                  className={selectedSetting === 'Setting4' ? 'active' : ''}
-                  onClick={() => setSelectedSetting('Setting4')}
-                >
-                  {t('appearance')}
+                  <div className='settingsButtonContent'>
+                    <IconAdmin color={selectedSetting === 'Setting2' ? 'var(--primarySwitched)' : 'var(--primary)'} />
+                    <span>{t('set_admin')}</span>
+                  </div>
                 </Button>
                 {/* Füge hier weitere Settings hinzu */}
               </div>
-              <div className='setting-content innerWindow'>
+              <div className='SettingContent innerWindow'>
                 {selectedSetting === 'Setting1' ? (
-                  <div className='SettingsOption'>
-                    <div className='LightSettingsSubTitle'>
-                      <span>{t('set_admin')}</span>
-                    </div>
-                    <div className='SettingContainer h-[130px]'>
-                      {' '}
-                      {/* Tailwind use */}
-                      <div className='Heading'>
-                        <span>{t('change_password')}</span>
-                      </div>
-                      <form className='SettingsTextBoxContainer'>
-                        <div>
-                          <label>{t('set_current_pw')}</label> <br />
-                          <input
-                            className='SettingsTextBox'
-                            type='password'
-                            value={currentPassword}
-                            onChange={(e) => setCurrentPassword(e.target.value)}
-                            onKeyDown={handleEnterNext}
-                          />
-                        </div>
-                        <div>
-                          <label>{t('set_new_pw')}</label> <br />
-                          <input
-                            className='SettingsTextBox'
-                            type='password'
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            onKeyDown={handleEnterNext}
-                          />
-                        </div>
-                        <div>
-                          <label>{t('set_conew_pw')}</label> <br />
-                          <input
-                            className='SettingsTextBox'
-                            type='password'
-                            value={newPasswordConfirm}
-                            onChange={(e) => setNewPasswordConfirm(e.target.value)}
-                            onKeyDown={handleEnterConfirm}
-                          />
-                        </div>
-                        <br />
-                        <Button
-                          className='SettingsSavePWButton controlButton'
-                          onClick={handleSavePassword}
-                        >
-                          {t('as_save')}
-                        </Button>
-                      </form>
-                      {errorMessage && <div className='ErrorMessage'>{errorMessage}</div>}
-                      {successMessage && <div className='SuccessMessage'>{successMessage}</div>}
-                    </div>
-                    <div className='SettingContainer'>
-                      <div className='Heading'>
-                        <span>URL</span>
-                      </div>
-                      <div className='SettingsTextBoxContainer'>
-                        <div className='text'>
-                          {t('change_url_of_server')}
-                          <br />
-                        </div>
-                        <div>
-                          <label>{t('set_current_ip')}</label> <br />
-                          <input
-                            className='SettingsIPBox'
-                            maxLength={3}
-                            value={octets[0]}
-                            onChange={(e) => handleOctetChange(1, e.target.value)}
-                          />
-                          .
-                          <input
-                            className='SettingsIPBox'
-                            maxLength={3}
-                            value={octets[1]}
-                            onChange={(e) => handleOctetChange(2, e.target.value)}
-                          />
-                          .
-                          <input
-                            className='SettingsIPBox'
-                            maxLength={3}
-                            value={octets[2]}
-                            onChange={(e) => handleOctetChange(3, e.target.value)}
-                          />
-                          .
-                          <input
-                            className='SettingsIPBox'
-                            maxLength={3}
-                            value={octets[3]}
-                            onChange={(e) => handleOctetChange(4, e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <Setting1
+                    t={t}
+                    language={language}
+                    handleLanguageChange={handleLanguageChange}
+                  />
                 ) : selectedSetting === 'Setting2' ? (
-                  <div className='SettingsOption'>
-                    <div className='LightSettingsSubTitle'>
-                      <span>{t('set_language')}</span>
-                    </div>
-                    <div className='SettingsTextBoxContainer SettingsLanguageContainer'>
-                      <select
-                        className='SettingsLanguageSelection'
-                        value={language}
-                        onChange={handleLanguageChange}
-                      >
-                        <option value='en'>{t('English 🇬🇧')}</option>
-                        <option value='de'>{t('German 🇩🇪')}</option>
-                      </select>
-                    </div>
-                  </div>
+                  <Setting2
+                    currentPassword={currentPassword}
+                    setCurrentPassword={setCurrentPassword}
+                    newPassword={newPassword}
+                    setNewPassword={setNewPassword}
+                    newPasswordConfirm={newPasswordConfirm}
+                    setNewPasswordConfirm={setNewPasswordConfirm}
+                    handleSavePassword={handleSavePassword}
+                    t={t}
+                    errorMessage={errorMessage}
+                    successMessage={successMessage}
+                    setIsOlaWindowOpen={setIsOlaWindowOpen}
+                  />
                 ) : selectedSetting === 'Setting3' ? (
-                  <div className='SettingsOption'>
-                    <div className='LightSettingsSubTitle'>
-                      <span>OLA</span>
-                    </div>
-                    <button
-                      className='SettingsButton controlButton'
-                      onClick={() => setIsOlaWindowOpen(true)}
-                    >
-                      {t('set_ola')}
-                    </button>
-                  </div>
+                  <div className='SettingsOption'>not used</div>
                 ) : selectedSetting === 'Setting4' ? (
-                  <div className='SettingsOption'>
-                    <div className='LightSettingsSubTitle'>
-                      <span>{t('appearance')}</span>
-                    </div>
-                    <div>
-                      <label>{t('cl_righthand')}</label>
-                      <Toggle
-                        onClick={handleToggleChange}
-                        enabled={localStorage.getItem('reverseOrder') === 'true'}
-                      />
-                    </div>
-                  </div>
+                  <div className='SettingsOption'>not used</div>
                 ) : null}
               </div>
             </div>

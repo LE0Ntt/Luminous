@@ -1,5 +1,18 @@
+/**
+ * Luminous - A Web-Based Lighting Control System
+ *
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ *
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ *
+ * @file Settings_Admin.tsx
+ */
 import React, { useEffect, useState } from 'react';
-import Button from './Button';
 import './Settings.css';
 
 interface Setting2Props {
@@ -32,6 +45,30 @@ const Setting2: React.FC<Setting2Props> = ({
   const [ip, setIP] = useState<string>('');
   const [port, setPort] = useState<string>('5000');
 
+  // Confirm with ENTER
+  const handleEnterConfirm = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSavePassword();
+      event.currentTarget.blur(); // Remove focus from the input
+    }
+  };
+
+  // Next input on ENTER
+  const handleEnterNext = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      const form = event.currentTarget.form;
+      if (form) {
+        const inputs = Array.from(form.elements) as HTMLInputElement[];
+        const index = inputs.indexOf(event.currentTarget);
+        const nextInput = inputs[index + 1];
+        if (nextInput) {
+          nextInput.focus();
+          event.preventDefault();
+        }
+      }
+    }
+  };
+
   const handleOctetChange = (index: number, value: string) => {
     const octets = ip.split('.');
     octets[index - 1] = value;
@@ -53,54 +90,52 @@ const Setting2: React.FC<Setting2Props> = ({
 
   return (
     <div className='SettingsOption'>
-      <div className='LightSettingsSubTitle'>
+      <div className='SettingsSubTitle'>
         <span>{t('set_admin')}</span>
       </div>
-      <div className='SettingContainer h-[130px]'>
-        <div className='Heading'>
+      <div className='SettingContainer'>
+        <div className='SettingsSubTitle'>
           <span>{t('change_password')}</span>
         </div>
-        <form className='SettingsTextBoxContainer'>
-          <div>
-            <label>{t('set_current_pw')}</label> <br />
+        <div className='ChangePassword'>
+          <form className='SettingsTextBoxContainer'>
             <input
               className='SettingsTextBox'
               type='password'
               value={currentPassword}
+              placeholder={t('set_current_pw')}
               onChange={(e) => setCurrentPassword(e.target.value)}
+              onKeyDown={handleEnterNext}
             />
-          </div>
-          <div>
-            <label>{t('set_new_pw')}</label> <br />
             <input
               className='SettingsTextBox'
               type='password'
               value={newPassword}
+              placeholder={t('set_new_pw')}
               onChange={(e) => setNewPassword(e.target.value)}
+              onKeyDown={handleEnterNext}
             />
-          </div>
-          <div>
-            <label>{t('set_conew_pw')}</label> <br />
             <input
               className='SettingsTextBox'
               type='password'
               value={newPasswordConfirm}
+              placeholder={t('set_conew_pw')}
               onChange={(e) => setNewPasswordConfirm(e.target.value)}
+              onKeyDown={handleEnterConfirm}
             />
-          </div>
-          <br />
-          <Button
-            className='SettingsSavePWButton controlButton'
+          </form>
+          <button
+            className='SettingsButton controlButton'
             onClick={handleSavePassword}
           >
             {t('as_save')}
-          </Button>
-        </form>
-        {errorMessage && <div className='ErrorMessage'>{errorMessage}</div>}
-        {successMessage && <div className='SuccessMessage'>{successMessage}</div>}
+          </button>
+          {errorMessage && <div className='PasswordMessage'>{errorMessage}</div>}
+          {successMessage && <div className='PasswordMessage'>{successMessage}</div>}
+        </div>
       </div>
-      <div className='SettingsOption'>
-        <div className='LightSettingsSubTitle'>
+      <div className='SettingContainer'>
+        <div className='SettingsSubTitle'>
           <span>OLA</span>
         </div>
         <button

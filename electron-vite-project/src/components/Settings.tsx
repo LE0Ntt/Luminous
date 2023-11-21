@@ -20,7 +20,6 @@ import './LightSettings.css';
 import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
 import AdminPassword from './AdminPassword';
-import Toggle from './Toggle'; // maybe not in use anymore
 import Setting1 from './Settings_General';
 import Setting2 from './Settings_Admin';
 import IconSettings from '@/assets/Icon-Settings';
@@ -42,6 +41,7 @@ function Settings({ onClose }: SettingsProps) {
   const { url /* changeUrl */ } = useConnectionContext();
   const [isOlaWindowOpen, setIsOlaWindowOpen] = useState(false);
   const newUrl = url.toString().slice(0, -5) + ':9090';
+  const [selectedSetting, setSelectedSetting] = useState<string | null>('Setting1');
 
   const handleClose = () => {
     setIsOpen(false);
@@ -85,30 +85,6 @@ function Settings({ onClose }: SettingsProps) {
     setNewPasswordConfirm('');
   };
 
-  // Confirm with ENTER
-  const handleEnterConfirm = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      handleSavePassword();
-      event.currentTarget.blur(); // Remove focus from the input
-    }
-  };
-
-  // Next input on ENTER
-  const handleEnterNext = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      const form = event.currentTarget.form;
-      if (form) {
-        const inputs = Array.from(form.elements) as HTMLInputElement[];
-        const index = inputs.indexOf(event.currentTarget);
-        const nextInput = inputs[index + 1];
-        if (nextInput) {
-          nextInput.focus();
-          event.preventDefault();
-        }
-      }
-    }
-  };
-
   const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
     if (isConfirmed) {
       window.electronAPI.openExternal(newUrl);
@@ -120,16 +96,8 @@ function Settings({ onClose }: SettingsProps) {
     return null; // Render nothing if the modal is closed
   }
 
-  const [selectedSetting, setSelectedSetting] = useState<string | null>('Setting1');
-
-  const handleToggleChange = () => {
-    const newSetting = localStorage.getItem('reverseOrder') !== 'true';
-    localStorage.setItem('reverseOrder', String(newSetting));
-    window.dispatchEvent(new CustomEvent<boolean>('reverseOrder', { detail: newSetting }));
-  };
-
   return (
-    <div>
+    <>
       <div
         className='backgroundOverlay'
         onClick={handleClose}
@@ -171,7 +139,6 @@ function Settings({ onClose }: SettingsProps) {
                     <span>{t('set_admin')}</span>
                   </div>
                 </Button>
-                {/* Füge hier weitere Settings hinzu */}
               </div>
               <div className='SettingContent innerWindow'>
                 {selectedSetting === 'Setting1' ? (
@@ -204,7 +171,7 @@ function Settings({ onClose }: SettingsProps) {
           </div>
         </>
       )}
-    </div>
+    </>
   );
 }
 

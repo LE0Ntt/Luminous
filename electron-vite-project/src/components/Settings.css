@@ -35,10 +35,8 @@
 
 .settings {
   width: 200px;
-  /* border-right: 1px solid var(--faderBorder); */
   margin: 0;
   padding-right: 20px;
-  /* top: -10px; */
   position: relative;
 }
 
@@ -56,7 +54,6 @@
 .settings button {
   color: var(--primary);
   padding: 10%;
-  /* margin: 10px 0; */
   margin-bottom: 20px;
   cursor: pointer;
   width: 100%;
@@ -80,28 +77,19 @@
 }
 
 .SettingsSubTitle {
-  top: 0px;
-  position: absolute;
-  width: stretch;
-  object-fit: contain;
-  display: flex;
   font-size: 20px;
+  margin-bottom: 10px;
 }
 
 .SettingsTextBox {
   background-color: var(--fillLight);
   border: var(--onepStrokeSwitched) 1px solid;
   border-radius: 5px;
-  width: 10vw;
+  width: 11vw;
   height: 35px;
   position: relative;
   padding-left: 10px;
   outline: none;
-  margin-bottom: 10px;
-}
-
-.innerWindow hr {
-  background-color: var(--faderBorder);
 }
 
 .SettingsContent {
@@ -119,11 +107,7 @@
 
 .SettingContainer {
   margin-top: 20px;
-}
-
-.SettingsContainer .Heading {
-  font-size: 20px;
-  margin-bottom: 4px;
+  padding-bottom: 20px;
 }
 
 .SettingsIPBox {
@@ -132,7 +116,7 @@
 }
 
 .SettingsTextBoxContainer {
-  width: stretch;
+  width: 70%;
   display: flex;
   position: relative;
   gap: 20px;
@@ -160,17 +144,8 @@
 
 .SettingsButton {
   position: relative;
-  height: 60px;
-  width: 15vw;
-  top: 20px;
-}
-
-.SettingsSavePWButton {
-  position: absolute;
-  height: 60px;
-  width: 15vw;
-  right: 0px;
-  bottom: 0px;
+  height: 48px;
+  width: 250px;
 }
 
 .SettingsLanguageSelection {
@@ -178,14 +153,44 @@
   border: var(--onepStrokeSwitched) 1px solid;
   border-radius: 5px;
   height: 35px;
-  width: 10vw;
+  width: 11vw;
   position: relative;
   padding-left: 10px;
   outline: none;
 }
 
-.SettingsLanguageContainer {
-  top: 20px;
+.ChangePassword {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ChangePassword .SettingsButton {
+  top: -6px;
+}
+
+@media (max-width: 1725px) {
+  .SettingsTextBoxContainer {
+    width: stretch;
+  }
+
+  .SettingsTextBox {
+    width: 100%;
+    margin-bottom: 26px;
+  }
+
+  .ChangePassword {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .PasswordMessage {
+    top: 210px !important;
+  }
+}
+
+.PasswordMessage {
+  position: absolute;
+  top: 150px;
 }
 
 .AboutTextBoxContainer {

@@ -1,4 +1,17 @@
-import React, { useEffect, useState } from 'react';
+/**
+ * Luminous - A Web-Based Lighting Control System
+ *
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ *
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ *
+ * @file Settings_General.tsx
+ */
 import './Settings.css';
 import Toggle from './Toggle';
 
@@ -16,36 +29,34 @@ const Setting1: React.FC<Setting1Props> = ({ t, language, handleLanguageChange }
   };
 
   return (
-    <div>
-      <div className='SettingsOption'>
-        <div className='Heading'>
-          <span>{t('set_general')}</span>
-        </div>
-        <div className='flex gap-2'>
-          <div className='LightSettingsSubTitle'>
-            <span className='relative top-5'>{t('set_language')}</span>
-          </div>
-          <div className='SettingsTextBoxContainer SettingsLanguageContainer'>
-            <select
-              className='SettingsLanguageSelection'
-              value={language}
-              onChange={handleLanguageChange}
-            >
-              <option value='en'>{t('English 🇬🇧')}</option>
-              <option value='de'>{t('German 🇩🇪')}</option>
-            </select>
-          </div>
-        </div>
+    <div className='SettingsOption'>
+      <div className='SettingsSubTitle'>
+        <span>{t('set_general')}</span>
       </div>
-      <div className='LightSettingsSubTitle'>
-        <span>{t('appearance')}</span>
+      <div className='SettingContainer'>
+        <div className='SettingsSubTitle'>
+          <span>{t('set_language')}</span>
+        </div>
+        <select
+          className='SettingsLanguageSelection'
+          value={language}
+          onChange={handleLanguageChange}
+        >
+          <option value='en'>{t('English 🇬🇧')}</option>
+          <option value='de'>{t('German 🇩🇪')}</option>
+        </select>
       </div>
-      <div>
-        <label>{t('cl_righthand')}</label>
-        <Toggle
-          onClick={handleToggleChange}
-          enabled={localStorage.getItem('reverseOrder') === 'true'}
-        />
+      <div className='SettingContainer'>
+        <div className='SettingsSubTitle'>
+          <span>{t('appearance')}</span>
+        </div>
+        <div className='flex items-center gap-4'>
+          <label>{t('cl_righthand')}</label>
+          <Toggle
+            onClick={handleToggleChange}
+            enabled={localStorage.getItem('reverseOrder') === 'true'}
+          />
+        </div>
       </div>
     </div>
   );

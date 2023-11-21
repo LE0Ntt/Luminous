@@ -402,7 +402,7 @@ function LightSettings({ onClose }: SettingsProps) {
           >
             <div className='removeIcon centerIcon'></div>
           </Button>
-          <div className='LightSettingsTitle'>
+          <div className='SettingsTitle'>
             <span>{t('ls_title')}</span>
           </div>
           <div className='LightSettingsListContainer'>
@@ -433,7 +433,7 @@ function LightSettings({ onClose }: SettingsProps) {
           </div>
           <div className={`innerWindow LightSettingsWindow ${selectedDevice ? '' : 'LightSettingsWindowInvisible'}`}>
             <div className='LightSettingsWindowUpper'>
-              <div className='LightSettingsSubTitle'>
+              <div className='SettingsSubTitle'>
                 <span>{t('ls_basicSettings')}</span>
               </div>
               <div className='LightSettingsTextBoxContainer'>
@@ -515,7 +515,7 @@ function LightSettings({ onClose }: SettingsProps) {
             <hr />
             <div className='LightSettingsWindowMid'>
               <div>
-                <div className='LightSettingsSubTitle1'>
+                <div className='LightSettingsSubTitle SettingsSubTitle'>
                   <span>{t('ls_dmxSettings')}</span>
                 </div>
                 <div className='LightSettingsDMXContainer'>

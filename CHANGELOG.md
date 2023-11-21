@@ -2,7 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.3] - Pre-release
+## [1.1] - 2023-11-21
+
+---
 
 ### Changes
 
@@ -46,6 +48,8 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.2] - 2023-09-28
 
+---
+
 ### Changes
 
 - Added fade in/out animation for scene transitions
@@ -67,6 +71,8 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.1] - 2023-08-08
 
+---
+
 ### Changes
 
 - Updated icons
@@ -77,5 +83,7 @@ All notable changes to this project will be documented in this file.
 - Various important bug fixes
 
 ## [1.0.0] - 2023-07-07
+
+---
 
 ### Initial release

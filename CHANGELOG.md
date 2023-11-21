@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 - Added ability to click on a device in the Studio-Overview to highlight the fader
 - Settings Overhaul
   - Added setting to switch between left- and right-handed Studio-Overview
+  - New layout with tabs
+  - Coherent spacing
 - Minor wording changes
 - Scenes: Changed LAYER to SOLO
   - Solo turns off every other fader except the selected scene

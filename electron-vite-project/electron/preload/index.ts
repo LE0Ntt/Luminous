@@ -1,32 +1,32 @@
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (condition.includes(document.readyState)) {
-      resolve(true)
+      resolve(true);
     } else {
       document.addEventListener('readystatechange', () => {
         if (condition.includes(document.readyState)) {
-          resolve(true)
+          resolve(true);
         }
-      })
+      });
     }
-  })
+  });
 }
 
 const safeDOM = {
   append(parent: HTMLElement, child: HTMLElement) {
-    if (!Array.from(parent.children).find(e => e === child)) {
-      return parent.appendChild(child)
+    if (!Array.from(parent.children).find((e) => e === child)) {
+      return parent.appendChild(child);
     }
   },
   remove(parent: HTMLElement, child: HTMLElement) {
-    if (Array.from(parent.children).find(e => e === child)) {
-      return parent.removeChild(child)
+    if (Array.from(parent.children).find((e) => e === child)) {
+      return parent.removeChild(child);
     }
   },
-}
+};
 
 function useLoading() {
-  const className = `loaders-css`
+  const className = `loaders-css`;
   const styleContent = `
     .${className} > div {
       width: 256px;
@@ -36,6 +36,7 @@ function useLoading() {
       display: flex;
       align-items: center;
       justify-content: center;
+      filter: invert(100%);
     }
     .${className} > div > div {
       margin-bottom: 80px;
@@ -53,7 +54,7 @@ function useLoading() {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: url('../src/assets/bgLight.png') no-repeat center/cover;
+      background-color: #212121;
       z-index: 9;
     }
     @keyframes spin {
@@ -61,43 +62,43 @@ function useLoading() {
         transform: rotate(360deg);
       }
     }
-  `
-  const oStyle = document.createElement('style')
-  const oDiv = document.createElement('div')
+  `;
+  const oStyle = document.createElement('style');
+  const oDiv = document.createElement('div');
 
-  oStyle.id = 'app-loading-style'
-  oStyle.innerHTML = styleContent
-  oDiv.className = 'app-loading-wrap'
-  oDiv.innerHTML = `<div class="${className}"><div><div></div></div></div>`
+  oStyle.id = 'app-loading-style';
+  oStyle.innerHTML = styleContent;
+  oDiv.className = 'app-loading-wrap';
+  oDiv.innerHTML = `<div class="${className}"><div><div></div></div></div>`;
 
   return {
     appendLoading() {
-      safeDOM.append(document.head, oStyle)
-      safeDOM.append(document.body, oDiv)
+      safeDOM.append(document.head, oStyle);
+      safeDOM.append(document.body, oDiv);
     },
     removeLoading() {
-      safeDOM.remove(document.head, oStyle)
-      safeDOM.remove(document.body, oDiv)
+      safeDOM.remove(document.head, oStyle);
+      safeDOM.remove(document.body, oDiv);
     },
-  }
+  };
 }
 
 // ----------------------------------------------------------------------
 
-const { appendLoading, removeLoading } = useLoading()
-domReady().then(appendLoading)
+const { appendLoading, removeLoading } = useLoading();
+domReady().then(appendLoading);
 
 window.onmessage = (ev) => {
-  ev.data.payload === 'removeLoading' && removeLoading()
-}
+  ev.data.payload === 'removeLoading' && removeLoading();
+};
 
 // ----------------------------------------------------------------------
 
-const { ipcRenderer, contextBridge } = require('electron')
+const { ipcRenderer, contextBridge } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
   getIp: async () => {
-    return await ipcRenderer.invoke('get-ip')
+    return await ipcRenderer.invoke('get-ip');
   },
   send: (channel, data) => {
     let validChannels = ['toggle-full-screen', 'minimize'];
@@ -119,4 +120,4 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 });
 
-setTimeout(removeLoading, 4999)
+setTimeout(removeLoading, 4999);

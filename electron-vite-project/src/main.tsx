@@ -19,7 +19,7 @@ import { ConnectionProvider } from './components/ConnectionContext';
 import { FaderProvider } from './components/FaderContext';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <ConnectionProvider url='http://127.0.0.1:5000'>
+  <ConnectionProvider>
     <FaderProvider>
       <App />
     </FaderProvider>

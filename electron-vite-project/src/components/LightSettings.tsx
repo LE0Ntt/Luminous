@@ -82,7 +82,7 @@ function LightSettings({ onClose }: SettingsProps) {
       console.log(error);
     }
   };
-
+  console.log(document.activeElement && document.activeElement.tagName);
   // Confirm input with ENTER
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -90,12 +90,14 @@ function LightSettings({ onClose }: SettingsProps) {
     }
   };
 
-  // Save with ENTER
+  // Save the device with ENTER if no input is focused
   useEffect(() => {
     fetchDevices();
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
+      const isInputActive = document.activeElement && document.activeElement.tagName === 'INPUT';
+
+      if (e.key === 'Enter' && !isInputActive) {
         handleUpdateDevice();
       }
     };
@@ -470,7 +472,7 @@ function LightSettings({ onClose }: SettingsProps) {
                     value={inputNumber}
                     onChange={handleInputNumber}
                     onBlur={handleNumberConfirm}
-                    onKeyDown={handleKeyDown}
+                    onKeyUp={handleKeyDown}
                   />
                 </div>
                 <div>
@@ -480,7 +482,7 @@ function LightSettings({ onClose }: SettingsProps) {
                     type='text'
                     value={inputName}
                     onChange={handleInputName}
-                    onKeyDown={handleKeyDown}
+                    onKeyUp={handleKeyDown}
                   />
                 </div>
                 <div>
@@ -509,7 +511,7 @@ function LightSettings({ onClose }: SettingsProps) {
                     value={inputDMXstart}
                     onChange={handleInputDMXstart}
                     onBlur={handleDMXstartConfirm}
-                    onKeyDown={handleKeyDown}
+                    onKeyUp={handleKeyDown}
                   />
                 </div>
                 <div>
@@ -520,7 +522,7 @@ function LightSettings({ onClose }: SettingsProps) {
                     value={inputDMXrange}
                     onChange={handleInputDMXrange}
                     onBlur={handleDMXrangeConfirm}
-                    onKeyDown={handleKeyDown}
+                    onKeyUp={handleKeyDown}
                   />
                 </div>
               </div>
@@ -543,7 +545,7 @@ function LightSettings({ onClose }: SettingsProps) {
                           value={channelArray[index]?.dmx_channel || ''}
                           onChange={(e) => handleChannelChange(index, channelArray[index]?.channel_type, e.target.value)}
                           className='LightSettingsChannelInput'
-                          onKeyDown={handleKeyDown}
+                          onKeyUp={handleKeyDown}
                           onBlur={(e) => handleChannelConfirm(index, channelArray[index]?.channel_type, e.target.value)}
                         />
                       </div>
@@ -556,7 +558,7 @@ function LightSettings({ onClose }: SettingsProps) {
                             value={channelArray[index]?.channel_type || ''}
                             onChange={(e) => handleChannelChange(index, e.target.value, channelArray[index]?.dmx_channel)}
                             className='LightSettingsChannelInput'
-                            onKeyDown={handleKeyDown}
+                            onKeyUp={handleKeyDown}
                           />
                         )}
                       </div>

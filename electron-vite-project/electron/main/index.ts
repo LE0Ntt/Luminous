@@ -62,7 +62,7 @@ async function createWindow() {
     frame: false,
   });
 
-  win.setFullScreen(true); // Startet das Fenster im Fullscreen
+  //win.setFullScreen(true); // Startet das Fenster im Fullscreen
 
   if (process.env.VITE_DEV_SERVER_URL) {
     // electron-vite-vue#298

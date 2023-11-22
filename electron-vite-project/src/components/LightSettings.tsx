@@ -109,6 +109,13 @@ function LightSettings({ onClose }: SettingsProps) {
     };
   }, []);
 
+  // Confirm with ENTER
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.currentTarget.blur(); // Remove focus from the input
+    }
+  };
+
   const handleInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Limit the name to 20 characters
     const inputValue = event.target.value.length > 20 ? event.target.value.slice(0, 20) : event.target.value;

@@ -19,7 +19,6 @@ import { TranslationContext } from './TranslationContext';
 
 const Setting1: React.FC = () => {
   const { t, language, setLanguage } = useContext(TranslationContext);
-
   const handleToggleChange = () => {
     const newSetting = localStorage.getItem('reverseOrder') !== 'true';
     localStorage.setItem('reverseOrder', String(newSetting));
@@ -29,7 +28,6 @@ const Setting1: React.FC = () => {
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.target.value as 'en' | 'de');
   };
-
   return (
     <div className='SettingsOption'>
       <div className='SettingsSubTitle'>

@@ -191,7 +191,28 @@
 .PasswordMessage {
   position: absolute;
   top: 150px;
+  animation-name: fadeOut;
+  animation-duration: 1s;
+  animation-delay: 3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
 }
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.successMessage {
+  color: var(--mainColor);
+}
+
+.errorMessage {
+  color: red;
 
 .AboutTextBoxContainer {
   position: relative;

@@ -230,27 +230,26 @@ def change_password():
     new_password = data.get("newPassword")
     new_password_confirm = data.get("newPasswordConfirm")
 
+    if new_password != new_password_confirm:
+        return jsonify({"message": "no_match"})
+
     admin = Admin.query.first()
 
-    if admin:
-        if admin.check_password(current_password):
-            if new_password == new_password_confirm:
-                # Passwort in der Datenbank aktualisieren
-                admin.set_password(new_password)
-                return jsonify({"message": "Password changed successfully"})
-            else:
-                return jsonify({"message": "New passwords do not match"})
-        else:
-            return jsonify({"message": "Current password is incorrect"})
+    # Create new Admin, if none exists
+    if not admin:
+        admin = Admin()
+        admin.set_password(new_password)
+        db.session.add(admin)
+        db.session.commit()
+        return jsonify({"message": "changed_successfully"})
+
+    # Change password, if current password is correct
+    if admin.check_password(current_password):
+        admin.set_password(new_password)
+        db.session.commit()
+        return jsonify({"message": "changed_successfully"})
     else:
-        if new_password == new_password_confirm:
-            new_admin = Admin()
-            new_admin.set_password(new_password)
-            db.session.add(new_admin)
-            db.session.commit()
-            return jsonify({"message": "Admin created successfully"})
-        else:
-            return jsonify({"message": "New passwords do not match"})
+        return jsonify({"message": "currrent_wrong"})
 
 
 @app.route("/checkpassword", methods=["POST"])

@@ -40,7 +40,6 @@ export function useConnectionContext(): ConnectionContextType {
 
 interface ConnectionProviderProps {
   children: React.ReactNode;
-  url: string;
 }
 
 export function ConnectionProvider({ children }: ConnectionProviderProps) {

@@ -12,22 +12,22 @@
  *
  * @file Settings_General.tsx
  */
+import { useContext } from 'react';
 import './Settings.css';
 import Toggle from './Toggle';
+import { TranslationContext } from './TranslationContext';
 
-interface Setting1Props {
-  t: (key: string) => string;
-  language: string;
-  handleLanguageChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-}
-
-const Setting1: React.FC<Setting1Props> = ({ t, language, handleLanguageChange }) => {
+const Setting1: React.FC = () => {
+  const { t, language, setLanguage } = useContext(TranslationContext);
   const handleToggleChange = () => {
     const newSetting = localStorage.getItem('reverseOrder') !== 'true';
     localStorage.setItem('reverseOrder', String(newSetting));
     window.dispatchEvent(new CustomEvent<boolean>('reverseOrder', { detail: newSetting }));
   };
 
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLanguage(e.target.value as 'en' | 'de');
+  };
   return (
     <div className='SettingsOption'>
       <div className='SettingsSubTitle'>

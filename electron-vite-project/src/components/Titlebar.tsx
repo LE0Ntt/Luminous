@@ -21,7 +21,7 @@ import DropDown from './DropDown';
 import LightSettings from './LightSettings';
 import Help from './Help';
 import About from './About';
-import IconSettings from '@/assets/Icon-Settings';
+import IconSettings from '@/assets/Icon_Settings';
 
 enum Dialog {
   None,

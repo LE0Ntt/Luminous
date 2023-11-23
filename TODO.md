@@ -1,15 +1,17 @@
 ### Known Issues
 
 - MotorMix
+  - Master fader not working, only from App to MotorMix
+  - Doesn't use correct values, when changing scenes
   - Black-Out button
   - Display bugs with page wheel
   - Missing light values
   - Displays only two pages until switched to Scenes and back
   - Faders sometimes jump randomly
 - Random server crashes
-- No connection on autostart _[should be fixed in prebuild v1.0.3]_
 - Possibly slower after long operation
 - Studio-Overview just uses ID, not universe
+- Doesn't show lights after editing them. Need to restart server // still needs more investigation
 
 ### Necessary changes
 
@@ -98,6 +100,10 @@
 - [x] Use **Enter** to accept dialog
 - [ ] Rethink scene logic: Off after e.g. bi-colour change?
 - [ ] Add support for Wifi-Lights and devices with an On/Off channel
+- [ ] Input for Faders with mousewheel or keyboard (arrow keys)
+- [ ] BigView
+  - [ ] Change visualisation of device groups
+  - [ ] Change visualisation of faders for different channels
 
 ### Nice to have features
 
@@ -126,3 +132,4 @@
   - [ ] Arri Sky panel
   - [ ] Astera Titan Tubes
 - [ ] Look into npm packages
+- [ ] DIN icons for studio overview

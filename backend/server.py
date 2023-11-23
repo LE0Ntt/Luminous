@@ -51,7 +51,7 @@ socket_events.register_socketio_events(socketio)
 
 
 def run_server():
-    socketio.run(app, host="0.0.0.0", port=5000, allow_unsafe_werkzeug=True)  # type: ignore     "allow_unsafe_werkzeug=True" für production
+    socketio.run(app, host="127.0.0.1", port=5000)  # type: ignore     "allow_unsafe_werkzeug=True" für production
 
 
 if __name__ == "__main__":

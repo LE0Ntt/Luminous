@@ -83,7 +83,7 @@
 - [x] Reconnect to server
 - [x] Guide / Implement Help
   - [x] Quick Start Guide
-  - [ ] Finetune Quick Start Guide
+  - [x] Finetune Quick Start Guide
 - [ ] LightFX
   - [ ] Change to current state of the first light
   - [ ] Effects

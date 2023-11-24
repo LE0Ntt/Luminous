@@ -190,6 +190,7 @@ function Control() {
           </div>
 
           <div className='innerContainer'>
+            {/* Masterfader/Groupfader */}
             <div className='lightFader innerWindow'>
               <Fader
                 height={397}
@@ -198,6 +199,7 @@ function Control() {
                 name={t('group')}
               />
             </div>
+            {/* Control Buttons */}
             <div className='controlButtons innerWindow'>
               <Button
                 onClick={() => setAddScene(true)}
@@ -212,6 +214,7 @@ function Control() {
                 SOLO
               </Button>
             </div>
+            {/* Bi-Color */}
             <div className='controlBiColor innerWindow'>
               <span className='controlTitle'>Bi-Color</span>
               <div className='controlKelvinPicker'>
@@ -224,6 +227,7 @@ function Control() {
                 />
               </div>
             </div>
+            {/* RGB */}
             <div className='controlRGB innerWindow'>
               <span className='controlTitle'>RGB</span>
               <div className='controlRGBFader'>
@@ -256,14 +260,17 @@ function Control() {
                 />
               </div>
             </div>
+            {/* Effects */}
             <div className='controlEffects innerWindow'>
               <span className='controlTitle'>{t('effects')}</span>
               <div className='centered-wrapper'>
                 <span className='noSupport'>{t('noSupport')}</span>
+                <div>Hier kommen alle Effekte rein</div>
               </div>
             </div>
           </div>
 
+          {/* Background */}
           <svg
             className={mainAnimation}
             width='1860'

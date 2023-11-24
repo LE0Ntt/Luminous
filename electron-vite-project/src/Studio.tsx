@@ -12,6 +12,7 @@
  *
  * @file Studio.tsx
  */
+import React from 'react';
 import './index.css';
 import './Studio.css';
 import Button from './components/Button';
@@ -77,9 +78,6 @@ const Studio = () => {
   const grid = Array(studioRows)
     .fill(undefined)
     .map(() => Array(studioColumns).fill(undefined));
-
-  const solo = false; // Solo button, will be adjustable later in LightFX (Control.tsx) # maybe this is not needed anymore and lagacy code
-  const soloLights = [1, 2, 3]; // Takes over group ID of the lamps that are to be switched solo
 
   interface SliderConfig {
     attributes: any;
@@ -177,56 +175,56 @@ const Studio = () => {
                   <div className='sliders'>
                     {sliders
                       .slice(1)
-                      .filter((slider) => slider.attributes === 'Flash')
+                      /* .filter((slider) => slider.attributes === 'Flash') */
                       .map((slider) => (
-                        <div
-                          key={slider.id}
-                          className='slidersHeight'
-                          ref={(el) => (refsArray.current[slider.id] = el)}
-                          tabIndex={-1} // Make div focusable
-                          onFocus={() => {
-                            // Scroll the element into view when it gains focus
-                            refsArray.current[slider.id]?.scrollIntoView({
-                              behavior: 'smooth',
-                              block: 'nearest',
-                              inline: 'nearest',
-                            });
-                          }}
-                          style={{
-                            /* boxShadow: glowId === slider.id ? '0 0 5px 2px rgba(255, 255, 255, 0.2)' : '',
-                          backgroundColor: glowId === slider.id ? 'rgba(255, 255, 255, 0.2)' : '', */
-                            transform: glowId === slider.id ? 'scale(1.03) translateY(-5px)' : '',
-                            transition: 'transform 0.3s ease-in-out' /* box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out, */,
-                            outline: 'none',
-                          }}
-                        >
-                          <h2
-                            style={{ textShadow: glowId === slider.id ? '0 0 30px #fff' : '' }}
-                            className='faderText'
-                          >
-                            {slider.id}
-                          </h2>
-                          <Fader
+                        <React.Fragment key={slider.id}>
+                          <div
                             key={slider.id}
-                            id={0}
-                            sliderGroupId={slider.id}
-                            name={slider.name}
-                          />
-                          <Button
-                            onClick={() => handleClick(slider.id)}
-                            className='buttonOpenControl'
+                            className='slidersHeight'
+                            ref={(el) => (refsArray.current[slider.id] = el)}
+                            tabIndex={-1} // Make div focusable
+                            onFocus={() => {
+                              // Scroll the element into view when it gains focus
+                              refsArray.current[slider.id]?.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'nearest',
+                                inline: 'nearest',
+                              });
+                            }}
+                            style={{
+                              transform: glowId === slider.id ? 'scale(1.03) translateY(-5px)' : '',
+                              transition: 'transform 0.3s ease-in-out' /* box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out, */,
+                              outline: 'none',
+                            }}
                           >
-                            <svg
-                              className='centerIcon'
-                              xmlns='http://www.w3.org/2000/svg'
-                              width='24'
-                              height='24'
-                              viewBox='0 0 24 24'
+                            <h2
+                              style={{ textShadow: glowId === slider.id ? '0 0 30px #fff' : '' }}
+                              className='faderText'
                             >
-                              <path d='m19,20c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v4Zm-12,0c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-8c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29c.19.19.29.43.29.71v8Zm14-8c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71c.19-.19.43-.29.71-.29h1V4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v7h1c.28,0,.52.1.71.29.19.19.29.43.29.71Zm-6,4c0,.28-.1.52-.29.71s-.43.29-.71.29h-1v3c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-3h-1c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h4c.28,0,.52.1.71.29s.29.43.29.71Zm-2-4c0,.28-.1.52-.29.71s-.43.29-.71.29-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71V4c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29.29.43.29.71v8Zm-4-4c0,.28-.1.52-.29.71s-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h1v-3c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v3h1c.28,0,.52.1.71.29s.29.43.29.71Z' />
-                            </svg>
-                          </Button>
-                        </div>
+                              {slider.id}
+                            </h2>
+                            <Fader
+                              key={slider.id}
+                              id={0}
+                              sliderGroupId={slider.id}
+                              name={slider.name}
+                            />
+                            <Button
+                              onClick={() => handleClick(slider.id)}
+                              className='buttonOpenControl'
+                            >
+                              <svg
+                                className='centerIcon'
+                                xmlns='http://www.w3.org/2000/svg'
+                                width='24'
+                                height='24'
+                                viewBox='0 0 24 24'
+                              >
+                                <path d='m19,20c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v4Zm-12,0c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-8c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29c.19.19.29.43.29.71v8Zm14-8c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71c.19-.19.43-.29.71-.29h1V4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v7h1c.28,0,.52.1.71.29.19.19.29.43.29.71Zm-6,4c0,.28-.1.52-.29.71s-.43.29-.71.29h-1v3c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-3h-1c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h4c.28,0,.52.1.71.29s.29.43.29.71Zm-2-4c0,.28-.1.52-.29.71s-.43.29-.71.29-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71V4c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29.29.43.29.71v8Zm-4-4c0,.28-.1.52-.29.71s-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h1v-3c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v3h1c.28,0,.52.1.71.29s.29.43.29.71Z' />
+                              </svg>
+                            </Button>
+                          </div>
+                        </React.Fragment>
                       ))}
                   </div>
                   <Button
@@ -270,7 +268,7 @@ const Studio = () => {
                   className={'schein'}
                   style={{
                     top: `-35px`,
-                    opacity: solo && !soloLights.includes(13) ? 0 : (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
+                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
                   }}
                 />
                 <img
@@ -287,7 +285,7 @@ const Studio = () => {
                   className={'schein'}
                   style={{
                     top: `-35px`,
-                    opacity: solo && !soloLights.includes(13) ? 0 : (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
+                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
                   }}
                 />
                 <img
@@ -304,7 +302,7 @@ const Studio = () => {
                   className={'schein'}
                   style={{
                     top: `-35px`,
-                    opacity: solo && !soloLights.includes(13) ? 0 : (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
+                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
                   }}
                 />
                 <img
@@ -321,7 +319,7 @@ const Studio = () => {
                   className={'schein'}
                   style={{
                     top: `-35px`,
-                    opacity: solo && !soloLights.includes(13) ? 0 : (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
+                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
                   }}
                 />
                 <img
@@ -338,7 +336,7 @@ const Studio = () => {
                   className={'schein'}
                   style={{
                     top: `-35px`,
-                    opacity: solo && !soloLights.includes(13) ? 0 : (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
+                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
                   }}
                 />
                 <img
@@ -355,7 +353,7 @@ const Studio = () => {
                   className={'schein'}
                   style={{
                     top: `-35px`,
-                    opacity: solo && !soloLights.includes(13) ? 0 : (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
+                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
                   }}
                 />
                 <img
@@ -395,7 +393,7 @@ const Studio = () => {
                                   alt='schein'
                                   className={'schein'}
                                   style={{
-                                    opacity: solo && !soloLights.includes(slider.id) ? 0 : (faderValues[slider.id][0] / 255) * (faderValues[0][0] / 255),
+                                    opacity: (faderValues[slider.id][0] / 255) * (faderValues[0][0] / 255),
                                   }}
                                 />
                                 <div
@@ -410,7 +408,7 @@ const Studio = () => {
                                   <div className='studio_overview_infopanel'>
                                     <div className='studio_overview_infopanel_text'>#{slider.id}</div>
                                     <div className='studio_overview_infopanel_brightness'>
-                                      {(solo && !soloLights.includes(slider.id) ? 0 : ((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                                      {(((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
                                         ? t('Off')
                                         : (((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
                                     </div>
@@ -432,7 +430,7 @@ const Studio = () => {
                                   alt='schein'
                                   className={'schein'}
                                   style={{
-                                    opacity: solo && !soloLights.includes(slider.id) ? 0 : (faderValues[slider.id][0] / 255) * (faderValues[0][0] / 255),
+                                    opacity: (faderValues[slider.id][0] / 255) * (faderValues[0][0] / 255),
                                   }}
                                 />
                                 <div
@@ -447,7 +445,7 @@ const Studio = () => {
                                   <div className='studio_overview_infopanel'>
                                     <div className='studio_overview_infopanel_text'>#{slider.id}</div>
                                     <div className='studio_overview_infopanel_brightness'>
-                                      {(solo && !soloLights.includes(slider.id) ? 0 : ((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                                      {(((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
                                         ? t('Off')
                                         : (((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
                                     </div>
@@ -517,7 +515,7 @@ const Studio = () => {
                   style={{
                     top: `5px`,
                     transform: `rotate(180deg)`,
-                    opacity: solo && !soloLights.includes(11) ? 0 : (faderValues[11][0] / 255) * (faderValues[0][0] / 255),
+                    opacity: (faderValues[11][0] / 255) * (faderValues[0][0] / 255),
                   }}
                 />
                 <img
@@ -535,7 +533,7 @@ const Studio = () => {
                   style={{
                     top: `5px`,
                     transform: `rotate(180deg)`,
-                    opacity: solo && !soloLights.includes(12) ? 0 : (faderValues[12][0] / 255) * (faderValues[0][0] / 255),
+                    opacity: (faderValues[12][0] / 255) * (faderValues[0][0] / 255),
                   }}
                 />
                 <img

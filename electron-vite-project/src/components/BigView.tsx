@@ -35,18 +35,7 @@ interface SliderConfig {
 }
 
 function BigView({ onClose }: BigViewProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
-
   const { url } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
   const [DMX, setDMX] = useState(false);
@@ -80,12 +69,12 @@ function BigView({ onClose }: BigViewProps) {
     <div>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
+        onClick={onClose}
       />{' '}
       {/* Overlay to close the modal when clicked outside */}
       <div className='BigViewContainer'>
         <Button
-          onClick={() => handleClose()}
+          onClick={onClose}
           className='buttonClose'
         >
           <div className='removeIcon centerIcon'></div>

@@ -29,17 +29,7 @@ interface AdminPasswordProps {
 function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
   const { url } = useConnectionContext();
   const { t } = useContext(TranslationContext);
-  const [isOpen, setIsOpen] = useState(true);
   const [password, setPassword] = useState('');
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
 
   const handlePasswordChange = (event: { target: { value: any } }) => {
     setPassword(event.target.value);
@@ -67,7 +57,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
               document.body.dispatchEvent(new Event('saveScene'));
             }
           }
-          handleClose();
+          onClose();
         } else {
           console.log('Password wrong');
           // If the password is wrong, the text box will be highlighted in red
@@ -101,12 +91,12 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
     <div>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
+        onClick={onClose}
       />{' '}
       {/* Overlay to close the modal when clicked outside */}
       <div className='AddSceneContainer window'>
         <Button
-          onClick={() => handleClose()}
+          onClick={onClose}
           className='buttonClose'
         >
           <div className='removeIcon centerIcon'></div>
@@ -138,7 +128,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
               {t('ap_confirm')}
             </Button>
             <Button
-              onClick={() => handleClose()}
+              onClick={onClose}
               className='controlButton'
             >
               {t('as_cancel')}

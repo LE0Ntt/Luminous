@@ -22,18 +22,8 @@ interface SettingsProps {
 }
 
 function Help({ onClose }: SettingsProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
   const [openFaqs, setOpenFaqs] = useState({});
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
 
   // Toggle the open state of a FAQ
   const toggleFaq = (faqKey: string) => {
@@ -68,11 +58,11 @@ function Help({ onClose }: SettingsProps) {
     <>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
+        onClick={onClose}
       />
       <div className='LightSettingsContainer'>
         <Button
-          onClick={handleClose}
+          onClick={onClose}
           className='buttonClose'
         >
           <div className='removeIcon centerIcon'></div>

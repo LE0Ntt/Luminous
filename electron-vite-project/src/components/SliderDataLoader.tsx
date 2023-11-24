@@ -24,8 +24,13 @@ const SliderDataLoader: React.FC<SliderDataLoaderProps> = ({ children }) => {
         const response = await fetch(url + '/fader');
         const data = await response.json();
         setSliders(JSON.parse(data));
-      } catch (error) {
-        setError(error);
+      } catch (e) {
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new Error('Ein unbekannter Fehler ist aufgetreten'));
+        }
+        console.log(error);
       }
     };
 

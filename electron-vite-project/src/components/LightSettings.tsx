@@ -26,7 +26,6 @@ interface SettingsProps {
 }
 
 function LightSettings({ onClose }: SettingsProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const [isNewDevice, setIsNewDevice] = useState(false);
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
@@ -59,15 +58,6 @@ function LightSettings({ onClose }: SettingsProps) {
     id: number;
     deviceValue: number;
     name: string;
-  }
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
   }
 
   const fetchDevices = async () => {
@@ -402,7 +392,7 @@ function LightSettings({ onClose }: SettingsProps) {
     <div className='LightSettingsOverParent'>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
+        onClick={onClose}
       />
       {showAdminPassword ? (
         <AdminPassword
@@ -412,7 +402,7 @@ function LightSettings({ onClose }: SettingsProps) {
       ) : (
         <div className={`LightSettingsContainer ${selectedDevice ? '' : 'ContainerGap'}`}>
           <Button
-            onClick={() => handleClose()}
+            onClick={onClose}
             className='buttonClose'
           >
             <div className='removeIcon centerIcon'></div>

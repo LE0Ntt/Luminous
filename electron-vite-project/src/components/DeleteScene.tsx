@@ -24,21 +24,11 @@ interface DeleteSceneProps {
 }
 
 function DeleteScene({ onClose }: DeleteSceneProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
 
   const handleDelete = () => {
     document.body.dispatchEvent(new Event('deleteScene'));
-    handleClose();
+    onClose();
   };
 
   // Confirm with ENTER
@@ -61,12 +51,12 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
     <div>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
+        onClick={onClose}
       />{' '}
       {/* Overlay to close the modal when clicked outside */}
       <div className='AddSceneContainer window'>
         <Button
-          onClick={handleClose}
+          onClick={onClose}
           className='buttonClose'
         >
           <div className='removeIcon centerIcon'></div>
@@ -86,7 +76,7 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
               {t('ds_delete')}
             </Button>
             <Button
-              onClick={handleClose}
+              onClick={onClose}
               className='controlButton'
             >
               {t('as_cancel')}

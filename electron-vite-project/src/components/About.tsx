@@ -23,28 +23,21 @@ interface SettingsProps {
   onClose: () => void;
 }
 
+const authors = 'Leon Hölzel, Darwin Pietas, Marvin Plate, Andree Tomek';
+
 function About({ onClose }: SettingsProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) return null;
-
   const version: string = packageJson.version;
 
   return (
     <>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
+        onClick={onClose}
       />
       <div className='LightSettingsContainer'>
         <Button
-          onClick={() => handleClose()}
+          onClick={onClose}
           className='buttonClose'
         >
           <div className='removeIcon centerIcon'></div>
@@ -60,9 +53,8 @@ function About({ onClose }: SettingsProps) {
             </small>
             <br />
             <br />
-            <span>Version {version}</span>
-            <br />
-            <span>Leon Hölzel, Darwin Pietas, Marvin Plate, Andree Tomek</span>
+            <p>Version {version}</p>
+            <p>{authors}</p>
           </div>
         </div>
       </div>

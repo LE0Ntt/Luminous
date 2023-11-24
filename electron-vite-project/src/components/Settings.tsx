@@ -31,34 +31,24 @@ interface SettingsProps {
 }
 
 function Settings({ onClose }: SettingsProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const [isOlaWindowOpen, setIsOlaWindowOpen] = useState(false);
   const newUrl = url.toString().slice(0, -5) + ':9090';
   const [selectedSetting, setSelectedSetting] = useState<string | null>('Setting1');
 
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
   const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
     if (isConfirmed) {
       window.electronAPI.openExternal(newUrl);
-      handleClose();
+      onClose();
     }
   }, []);
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
 
   return (
     <>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
+        onClick={onClose}
       />
       {isOlaWindowOpen ? (
         <AdminPassword
@@ -69,7 +59,7 @@ function Settings({ onClose }: SettingsProps) {
         <>
           <div className='SettingsContainer'>
             <Button
-              onClick={handleClose}
+              onClick={onClose}
               className='buttonClose'
             >
               <div className='removeIcon centerIcon'></div>

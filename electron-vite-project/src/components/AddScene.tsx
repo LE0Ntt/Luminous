@@ -26,21 +26,11 @@ interface AddSceneProps {
 }
 
 function AddScene({ onClose }: AddSceneProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
   const [name, setName] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [showAdminPassword, setShowAdminPassword] = useState(false);
   const { emit } = useConnectionContext();
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
 
   const handleNameChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setName(event.target.value);
@@ -86,7 +76,7 @@ function AddScene({ onClose }: AddSceneProps) {
 
   const addScene = (emit: any, scene: { name: string; saved: boolean }) => {
     emit('scene_add', { scene });
-    handleClose();
+    onClose();
   };
 
   // Confirm with ENTER
@@ -109,7 +99,7 @@ function AddScene({ onClose }: AddSceneProps) {
     <div>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
+        onClick={onClose}
       />{' '}
       {/* Overlay to close the modal when clicked outside */}
       {showAdminPassword ? (
@@ -120,7 +110,7 @@ function AddScene({ onClose }: AddSceneProps) {
       ) : (
         <div className='AddSceneContainer window'>
           <Button
-            onClick={handleClose}
+            onClick={onClose}
             className='buttonClose'
           >
             <div className='removeIcon centerIcon'></div>
@@ -157,7 +147,7 @@ function AddScene({ onClose }: AddSceneProps) {
                 {t('as_save')}
               </Button>
               <Button
-                onClick={handleClose}
+                onClick={onClose}
                 className='controlButton'
               >
                 {t('as_cancel')}

@@ -244,3 +244,16 @@
   position: relative;
   margin-right: 5px;
 }
+
+.logoReflection {
+  height: 200px;
+  width: 200px;
+  mask: url(../assets/iconReflection.png);
+  mask-repeat: no-repeat;
+  background: var(--secondary);
+  mask-position: center;
+  top: -72px;
+  right: 72px;
+  position: absolute;
+  transform: scale(0.31);
+}

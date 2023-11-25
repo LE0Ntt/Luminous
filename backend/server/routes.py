@@ -18,7 +18,7 @@ from server import app, db
 from server.models import Device, Admin, Scene
 
 
-# initial values for channels
+# Initial values for channels
 def set_channel_values(channels, universe):
     global ignored_channels
     universe = int(universe[1:])  # Stripping the 'U' and converting to int
@@ -41,7 +41,7 @@ def set_channel_values(channels, universe):
 ignored_channels = {1: [], 2: []}
 
 
-# load devices from database
+# Load devices from database
 @app.route("/devices")
 def get_devices():
     device_list = []
@@ -75,7 +75,7 @@ def get_devices():
 devices = get_devices()
 
 
-# load scenes from database
+# Load scenes from database
 def load_scenes():
     scenes_list = []
 
@@ -96,11 +96,6 @@ def load_scenes():
 scenes = load_scenes()
 
 
-@app.route("/")
-def mein_endpunkt():
-    return jsonify({"message": "Endpoint reached"})
-
-
 @app.route("/fader")
 def get_faders():
     global devices
@@ -113,6 +108,7 @@ def get_scenes():
     return jsonify(json.dumps(scenes))
 
 
+# Create a new light and save it to the database
 @app.route("/addlight", methods=["POST"])
 def add_light():
     data = request.get_json()
@@ -142,6 +138,7 @@ def add_light():
         "universe": device.universe,
         "attributes": {"channel": channels},
     }
+
     # Add device to devices list to the right position based on the id
     global devices
     if devices and device_dict["id"] > devices[-1]["id"]:
@@ -155,6 +152,7 @@ def add_light():
     return {"message": "success"}
 
 
+# Updata an existing light and save it to the database
 @app.route("/updatelight", methods=["POST"])
 def update_light():
     data = request.get_json()
@@ -164,7 +162,11 @@ def update_light():
     # Check if device exists
     device = Device.query.filter_by(number=deviceId).first()
     if not device:
-        return {"message": "device_not_found"}
+        return {"message": "device_not_found"}, 404
+
+    # Check if new device number is already in use
+    if deviceId != newNumber and Device.query.filter_by(number=newNumber).first():
+        return {"message": "number_in_use"}, 400
 
     # Update device in the database
     device.id = newNumber
@@ -187,26 +189,27 @@ def update_light():
         "attributes": {"channel": channels},
     }
     print(device_dict)
+
     global devices
-    for i in range(len(devices)):
-        if (
-            deviceId != newNumber
-        ):  # If device number changed, remove old device and add new one
-            if devices[i]["id"] == deviceId:
-                devices.pop(i)
-                break
-        elif devices[i]["id"] == newNumber:
-            devices[i] = device_dict
-            break
-    for i in range(len(devices)):
-        if deviceId != newNumber:
-            if devices[i]["id"] > newNumber:
-                devices.insert(i, device_dict)
+    if deviceId != newNumber:
+        # Remove old device
+        devices = [d for d in devices if d["id"] != deviceId]
+        # Insert new device at the correct position
+        insert_index = next(
+            (i for i, d in enumerate(devices) if d["id"] > newNumber), len(devices)
+        )
+        devices.insert(insert_index, device_dict)
+    else:
+        # Update existing device
+        for i, d in enumerate(devices):
+            if d["id"] == newNumber:
+                devices[i] = device_dict
                 break
 
     return {"message": "success"}
 
 
+# Delete a light from the database
 @app.route("/removelight", methods=["POST"])
 def remove_light():
     data = request.get_json()
@@ -223,6 +226,7 @@ def remove_light():
     return {"message": "Form submitted successfully"}
 
 
+# Change the admin password
 @app.route("/changePassword", methods=["POST"])
 def change_password():
     data = request.get_json()
@@ -252,6 +256,7 @@ def change_password():
         return jsonify({"message": "currrent_wrong"})
 
 
+# Check if the entered admin password is correct
 @app.route("/checkpassword", methods=["POST"])
 def check_password():
     data = request.get_json()

@@ -2,21 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.1] - 2023-11-21
-
 ---
+
+## [1.1.2] - Pre-Release
+
+### Changes
+
+- Settings
+  - Error or success message on change password: Added translation, color indication & fade out
+- LightSettings
+  - Save with ENTER if no input is focused
+- About
+  - Linked changelog
+  - Spiced up the logo with an interactive twist
+- Code cleanup
+  - Removed unnecessary code
+  - Removed Vite files for now
 
 ### Fixes
 
-Instant hotfix for production
-
-- Fixed: electron-vite-project/package.json - correct version number
-- Fixed: electron-vite-project/electron/main/index.ts - setFullscreen to true
-- Fixed: backend/server.py - added allow_unsafe_werkzeug=true
-
-## [1.1.0] - 2023-11-21
+- LightSettings updating device number
+  - Fixed device not showing up
+  - Fixed error if device number already exists
 
 ---
+
+## [1.1.1] - 2023-11-21
+
+### Fixes
+
+- Instant hotfix for production
+
+---
+
+## [1.1.0] - 2023-11-21
 
 ### Changes
 
@@ -58,9 +77,9 @@ Instant hotfix for production
   - Changing the range doesn't reset edited channels anymore
 - Fixed titlebar for MacOS
 
-## [1.0.2] - 2023-09-28
-
 ---
+
+## [1.0.2] - 2023-09-28
 
 ### Changes
 
@@ -81,9 +100,9 @@ Instant hotfix for production
 - Fixed settings rendering in background on OLA password
 - Various minor bug fixes
 
-## [1.0.1] - 2023-08-08
-
 ---
+
+## [1.0.1] - 2023-08-08
 
 ### Changes
 
@@ -94,8 +113,8 @@ Instant hotfix for production
 
 - Various important bug fixes
 
-## [1.0.0] - 2023-07-07
-
 ---
+
+## [1.0.0] - 2023-07-07
 
 ### Initial release

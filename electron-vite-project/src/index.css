@@ -165,13 +165,13 @@
     height: 9px;
   }
 
-  /* Background colour of the scroll bar */
+  /* Background color of the scroll bar */
   ::-webkit-scrollbar-track {
     background-color: rgba(0, 0, 0, 0.03);
     border-radius: 10px;
   }
 
-  /* Scroll bar handle colour */
+  /* Scroll bar handle color */
   ::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.08);
     border-radius: 10px;

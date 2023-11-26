@@ -24,6 +24,10 @@
   -webkit-app-region: drag;
 }
 
+.titlebarComp.active {
+  -webkit-app-region: no-drag !important;
+}
+
 nav {
   margin-left: 10px;
   position: absolute;
@@ -73,7 +77,7 @@ nav ul li a {
 }
 
 .settingsButton:hover,
-.active {
+.settingsButton.active {
   background: var(--colorButtonHover);
 }
 

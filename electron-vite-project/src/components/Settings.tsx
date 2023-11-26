@@ -12,7 +12,7 @@
  *
  * @file Settings.tsx
  */
-import { useState, useContext, useEffect, useCallback } from 'react';
+import { useState, useContext, useCallback } from 'react';
 import './Settings.css';
 import Button from './Button';
 import { TranslationContext } from './TranslationContext';

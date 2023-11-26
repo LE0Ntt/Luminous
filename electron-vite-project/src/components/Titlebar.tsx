@@ -94,7 +94,7 @@ function TitleBar() {
   };
 
   return (
-    <div className='titlebarComp'>
+    <div className={`titlebarComp ${showDropDown && 'active'}`}>
       <nav>
         <ul>
           <li>

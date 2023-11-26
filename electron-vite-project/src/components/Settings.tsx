@@ -18,8 +18,8 @@ import Button from './Button';
 import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
 import AdminPassword from './AdminPassword';
-import Setting1 from './Settings_General';
-import Setting2 from './Settings_Admin';
+import Setting1 from './SettingsGeneral';
+import Setting2 from './SettingsAdmin';
 import IconSettings from '@/assets/Icon_Settings';
 import IconAdmin from '@/assets/Icon_Admin';
 

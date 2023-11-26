@@ -63,13 +63,18 @@ nav ul li a {
   margin-right: 5px;
 }
 
+.settingsButton {
+  height: 23px;
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0 0 3px 3px;
+}
+
 .settingsButton:hover,
 .active {
   background: var(--colorButtonHover);
-}
-
-.active {
-  box-shadow: inset 0px 3px 10px 0px rgba(0, 0, 0, 0.1);
 }
 
 .buttonContainer {
@@ -89,6 +94,14 @@ nav ul li a {
   top: 0;
   padding-left: 8px;
   -webkit-app-region: none;
+}
+
+.minimize {
+  border-radius: 0 0 3px 3px;
+}
+
+.close {
+  border-radius: 0 0 0 3px;
 }
 
 .titlebar-button.minimize:hover {

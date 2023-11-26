@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+> All notable changes to this project will be documented in this file.
 
 ---
 
@@ -8,16 +8,21 @@ All notable changes to this project will be documented in this file.
 
 ### Changes
 
-- Settings
-  - Error or success message on change password: Added translation, color indication & fade out
+- Settings error/success message on password change
+  - Added translation, color indication & fade out
 - LightSettings
-  - Save with ENTER if no input is focused
+  - Save with _ENTER_ if no input is focused
 - About
   - Linked changelog
   - Spiced up the logo with an interactive twist
 - Code cleanup
   - Removed unnecessary code
   - Removed Vite files for now
+- Connection
+  - Reduced SocketIO `ping_timeout` to quickly detect Pi shutdowns
+  - Fetch faders, scenes and devices only if connected
+  - LightSettings only open if connected
+- Titlebar small visual touch-ups
 
 ### Fixes
 
@@ -60,9 +65,9 @@ All notable changes to this project will be documented in this file.
   - Server files
     - Prevented error warnings
     - Added credit header
-- Added ability to confirm dialogs and input fields with ENTER
+- Added ability to confirm dialogs and input fields with _ENTER_
 - Input fields can now be empty
-  - Input now only takes effect if confirmed (ENTER or click outside the field)
+  - Input now only takes effect if confirmed (_ENTER_ or click outside the field)
   - Reset to default value if confirmed input is invalid
   - Fader input accepts decimal values, but only displays integers
     - Value with "%" is now always centred

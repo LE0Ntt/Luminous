@@ -18,9 +18,9 @@
 - [ ] Code cleanup / comments
 - [ ] Testing phase
 - [ ] Settings
-  - [ ] Studio-Overview
   - [x] Rework Layout
   - [ ] Add various settings
+    - [ ] Studio-Overview
     - [ ] Change IP
     - [ ] No animations
 - [ ] MotorMix
@@ -36,7 +36,7 @@
   - [x] Finetune Quick Start Guide
 - [ ] LightFX
   - [ ] Change to current state of the first light
-  - [ ] Effects
+  - [ ] Effects as misc faders for now
   - [ ] Device list server updates
 - [ ] PI
   - [ ] Production server
@@ -44,12 +44,11 @@
   - [ ] Turn off all devices during shutdown
   - [ ] Config file for server.py (change ip and so on)
 - [ ] Everything off scene - How to implement?
-- [ ] Admin
-  - [ ] Change password
+- [x] Change admin password
 - [x] Input can be empty
-- [x] Use **Enter** to accept dialog
+- [x] Use _ENTER_ to accept dialog
 - [ ] Rethink scene logic: Off after e.g. bi-color change?
-- [ ] Add support for Wifi-Lights and devices with an On/Off channel
+- [ ] Add support for HMI lights and other devices with on/off channel
 - [ ] Input for faders with mousewheel or keyboard (arrow keys)
 - [ ] BigView: Change visualisation
   - [ ] Device groups

@@ -29,7 +29,7 @@ import ControlHandler from './components/ControlHandler';
 // LightFX
 function Control() {
   const { t } = useContext(TranslationContext);
-  const { url } = useConnectionContext();
+  const { url, connected } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
@@ -63,7 +63,7 @@ function Control() {
       }
     };
 
-    fetchDevices();
+    if (connected) fetchDevices();
 
     // Load saved solo state from session storage
     setIsSolo(sessionStorage.getItem('controlSolo') === 'true');

@@ -32,7 +32,7 @@ const Studio = () => {
   const navigate = useNavigate();
   // FaderValues from FaderContext
   const { faderValues, setFaderValue } = useFaderContext();
-  const { url } = useConnectionContext();
+  const { url, connected } = useConnectionContext();
   // Language
   const { t } = useContext(TranslationContext);
 
@@ -97,7 +97,9 @@ const Studio = () => {
       }
     };
 
-    fetchSliders();
+    if (connected) {
+      fetchSliders();
+    }
 
     // Listen for changes to the display order
     const handleStorageChange = (event: CustomEvent<boolean>) => {

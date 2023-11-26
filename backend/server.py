@@ -46,7 +46,7 @@ except ModuleNotFoundError:
 # -------------LED-END----------------#
 
 
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", ping_timeout=3, ping_interval=5)
 socket_events.register_socketio_events(socketio)
 
 

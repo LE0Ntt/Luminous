@@ -36,7 +36,7 @@ interface ScenesComponentProps {
 
 const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, setDeleteScene, setDeleteSceneAdmin, setSaveSceneAdmin }) => {
   const { t } = useContext(TranslationContext);
-  const { on, off, emit, url } = useConnectionContext();
+  const { on, off, emit, url, connected } = useConnectionContext();
   const [scenes, setScenes] = useState<SceneConfig[]>([]);
   const [height, setHeight] = useState(0);
   const [buttonText, setButtonText] = useState(t(''));
@@ -44,7 +44,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   useEffect(() => {
-    fetchScenes();
+    if (connected) fetchScenes();
 
     // Listen for the delete and save scene event
     const handleDeleteScene = () => {

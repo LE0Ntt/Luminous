@@ -12,9 +12,8 @@
  *
  * @file Header.tsx
  */
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import './Header.css';
-import '../index.css';
 import { Link, useLocation } from 'react-router-dom';
 import Button from './Button';
 import { TranslationContext } from './TranslationContext';

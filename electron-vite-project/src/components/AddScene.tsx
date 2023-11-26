@@ -13,9 +13,7 @@
  * @file AddScene.tsx
  */
 import React, { useState, useCallback, useContext, useEffect } from 'react';
-import './BigView.css';
 import Button from './Button';
-import '../index.css';
 import './AddScene.css';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';

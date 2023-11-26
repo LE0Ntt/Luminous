@@ -12,18 +12,16 @@
  *
  * @file Studio.tsx
  */
-import React from 'react';
-import './index.css';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import './Studio.css';
 import Button from './components/Button';
 import Fader from './components/Fader';
-import { useState, useEffect, useContext, useRef } from 'react';
 import { useConnectionContext } from './components/ConnectionContext';
 import { TranslationContext } from './components/TranslationContext';
 import { useNavigate } from 'react-router-dom';
+import { useFaderContext } from './components/FaderContext';
 import ScenesComponent from './components/ScenesComponent';
 import BigView from './components/BigView';
-import { useFaderContext } from './components/FaderContext';
 import AddScene from './components/AddScene';
 import lampImage from './assets/lamp.png';
 import schein from './assets/schein3.png';

@@ -15,7 +15,6 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
 import './LightSettings.css';
 import Button from './Button';
-import '../index.css';
 import { TranslationContext } from './TranslationContext';
 import DeviceList from './DeviceList';
 import { useConnectionContext } from './ConnectionContext';

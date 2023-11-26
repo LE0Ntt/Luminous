@@ -15,8 +15,6 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
 import './Settings.css';
 import Button from './Button';
-import '../index.css';
-import './LightSettings.css';
 import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
 import AdminPassword from './AdminPassword';
@@ -24,7 +22,6 @@ import Setting1 from './Settings_General';
 import Setting2 from './Settings_Admin';
 import IconSettings from '@/assets/Icon_Settings';
 import IconAdmin from '@/assets/Icon_Admin';
-import './Titlebar.css';
 
 interface SettingsProps {
   onClose: () => void;

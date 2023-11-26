@@ -13,10 +13,7 @@
  * @file AdminPassword.tsx
  */
 import { useContext, useEffect, useState } from 'react';
-import './BigView.css';
 import Button from './Button';
-import '../index.css';
-import './AddScene.css';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 

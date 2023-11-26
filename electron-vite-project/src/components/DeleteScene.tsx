@@ -12,10 +12,8 @@
  *
  * @file DeleteScene.tsx
  */
-import React, { useState, useContext, useEffect } from 'react';
-import './BigView.css';
+import { useContext, useEffect } from 'react';
 import Button from './Button';
-import '../index.css';
 import './AddScene.css';
 import { TranslationContext } from './TranslationContext';
 

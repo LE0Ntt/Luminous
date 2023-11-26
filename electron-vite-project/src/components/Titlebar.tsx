@@ -12,10 +12,10 @@
  *
  * @file Titlebar.tsx
  */
-import React, { useEffect, useRef, useState, useContext } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
 import { TranslationContext } from './TranslationContext';
+import { useConnectionContext } from './ConnectionContext';
 import './Titlebar.css';
-import '../index.css';
 import Settings from './Settings';
 import DropDown from './DropDown';
 import LightSettings from './LightSettings';
@@ -34,6 +34,7 @@ enum Dialog {
 function TitleBar() {
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const { t } = useContext(TranslationContext);
+  const { connected } = useConnectionContext();
   const dropDownRef = useRef<HTMLButtonElement | null>(null);
   const [isMac, setIsMac] = useState(false);
   const [currentDialog, setCurrentDialog] = useState(Dialog.None);
@@ -141,7 +142,7 @@ function TitleBar() {
         </button>
       </div>
       {currentDialog === Dialog.Settings && <Settings onClose={() => setCurrentDialog(Dialog.None)} />}
-      {currentDialog === Dialog.LightSettings && <LightSettings onClose={() => setCurrentDialog(Dialog.None)} />}
+      {currentDialog === Dialog.LightSettings && connected && <LightSettings onClose={() => setCurrentDialog(Dialog.None)} />}
       {currentDialog === Dialog.Help && <Help onClose={() => setCurrentDialog(Dialog.None)} />}
       {currentDialog === Dialog.About && <About onClose={() => setCurrentDialog(Dialog.None)} />}
     </div>

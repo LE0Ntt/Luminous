@@ -12,15 +12,13 @@
  *
  * @file BigView.tsx
  */
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './BigView.css';
 import Button from './Button';
-import '../index.css';
 import Toggle from './Toggle';
 import Fader from './Fader';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
-import React from 'react';
 
 interface BigViewProps {
   onClose: () => void;

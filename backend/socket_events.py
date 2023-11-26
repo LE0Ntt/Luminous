@@ -116,6 +116,7 @@ def register_socketio_events(socketio):
             if device["id"] == index:
                 index = i
                 routes.devices[index]["attributes"]["channel"][0]["sliderValue"] = value
+                routes.devices[index]["attributes"]["channel"][0]["backupValue"] = value
 
     def quickSceneCallback(scene, status):
         update_scene({"id": scene, "status": status})

@@ -24,6 +24,9 @@ All notable changes to this project will be documented in this file.
 - LightSettings updating device number
   - Fixed device not showing up
   - Fixed error if device number already exists
+- MotorMix
+  - Hopefully fixed master not updating
+  - Hopefully fixed not updating fader backup value
 
 ---
 

@@ -12,10 +12,9 @@
  *
  * @file About.tsx
  */
-import { useState, useContext } from 'react';
-import './Settings.css';
+import { useContext } from 'react';
+import './About.css';
 import Button from './Button';
-import '../index.css';
 import { TranslationContext } from './TranslationContext';
 import packageJson from '../../package.json';
 

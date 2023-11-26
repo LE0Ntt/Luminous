@@ -1,8 +1,8 @@
 ## Known Issues
 
 - MotorMix
-  - Master fader not working, only from App to MotorMix
-  - Doesn't use correct values, when changing scenes
+  - ~~Master fader not working, only from App to MotorMix~~ (hopefully fixed)
+  - ~~Doesn't use correct values, when changing scenes~~ (hopefully fixed)
   - Black-Out button
   - Display bugs with page wheel
   - Missing light values

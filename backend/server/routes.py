@@ -49,7 +49,9 @@ def get_devices():
     master = {
         "id": 0,
         "name": "Master",
-        "attributes": {"channel": [{"id": "0", "sliderValue": 255}]},
+        "attributes": {
+            "channel": [{"id": "0", "sliderValue": 255, "channel_type": "main"}]
+        },
     }
     device_list.append(master)
 

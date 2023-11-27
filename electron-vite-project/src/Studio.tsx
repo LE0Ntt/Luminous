@@ -27,6 +27,7 @@ import lampImage from './assets/lamp.png';
 import schein from './assets/schein3.png';
 import schein2 from './assets/schein2.png';
 import fillLight from './assets/fillLight.png';
+import LightBeam from './components/LightBeam';
 
 const Studio = () => {
   const navigate = useNavigate();
@@ -115,7 +116,7 @@ const Studio = () => {
   function loadFaderValues(sliders: any[]) {
     const array: any[][] = [];
     sliders.forEach((item) => {
-      const { id, sliderValue } = item;
+      const { id } = item;
       if (!array[id]) {
         array[id] = [];
       }
@@ -175,7 +176,7 @@ const Studio = () => {
                   <div className='sliders'>
                     {sliders
                       .slice(1)
-                      /* .filter((slider) => slider.attributes === 'Flash') */
+                      /* .filter((slider) => slider.universe === '') */
                       .map((slider) => (
                         <React.Fragment key={slider.id}>
                           <div
@@ -247,21 +248,21 @@ const Studio = () => {
           )}
         </div>
         <div className='overview window'>
-          <div className='studio_overview window'>
-            <div className='studio_overview_greenScreen'>
+          <div className='studioOverview window'>
+            <div className='studioOverviewGreenscreen'>
               <div
-                className='studio_overview_infopanel studio_overview_infopanel_greenscreen'
+                className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
                 onClick={() => handleGlowAndFocus(13)}
                 style={{ cursor: 'pointer' }}
               >
-                <div className='studio_overview_infopanel_text'>Greenscreen</div>
-                <div className='studio_overview_infopanel_brightness'>
+                <div className='studioOverviewInfopanelText'>Greenscreen</div>
+                <div className='studioOverviewInfopanelBrightness'>
                   {(((faderValues[13][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
                     ? t('Off')
                     : (((faderValues[13][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
                 </div>
               </div>
-              <div className='studio_overview_light'>
+              <div className='studioOverviewLight'>
                 <img
                   src={schein2}
                   alt='schein'
@@ -274,11 +275,11 @@ const Studio = () => {
                 <img
                   src={fillLight}
                   alt='Lamp'
-                  className='studio_overview_greenScreen_lamp'
+                  className='studioOverviewGreenscreenLamp'
                   style={{ top: `20px` }}
                 />
               </div>
-              <div className='studio_overview_light'>
+              <div className='studioOverviewLight'>
                 <img
                   src={schein2}
                   alt='schein'
@@ -291,11 +292,11 @@ const Studio = () => {
                 <img
                   src={fillLight}
                   alt='Lamp'
-                  className='studio_overview_greenScreen_lamp'
+                  className='studioOverviewGreenscreenLamp'
                   style={{ top: `20px` }}
                 />
               </div>
-              <div className='studio_overview_light'>
+              <div className='studioOverviewLight'>
                 <img
                   src={schein2}
                   alt='schein'
@@ -308,11 +309,11 @@ const Studio = () => {
                 <img
                   src={fillLight}
                   alt='Lamp'
-                  className='studio_overview_greenScreen_lamp'
+                  className='studioOverviewGreenscreenLamp'
                   style={{ top: `20px` }}
                 />
               </div>
-              <div className='studio_overview_light'>
+              <div className='studioOverviewLight'>
                 <img
                   src={schein2}
                   alt='schein'
@@ -325,11 +326,11 @@ const Studio = () => {
                 <img
                   src={fillLight}
                   alt='Lamp'
-                  className='studio_overview_greenScreen_lamp lamp_mirrored'
+                  className='studioOverviewGreenscreenLamp lampMirrored'
                   style={{ top: `20px` }}
                 />
               </div>
-              <div className='studio_overview_light'>
+              <div className='studioOverviewLight'>
                 <img
                   src={schein2}
                   alt='schein'
@@ -342,11 +343,11 @@ const Studio = () => {
                 <img
                   src={fillLight}
                   alt='Lamp'
-                  className='studio_overview_greenScreen_lamp lamp_mirrored'
+                  className='studioOverviewGreenscreenLamp lampMirrored'
                   style={{ top: `20px` }}
                 />
               </div>
-              <div className='studio_overview_light'>
+              <div className='studioOverviewLight'>
                 <img
                   src={schein2}
                   alt='schein'
@@ -359,12 +360,12 @@ const Studio = () => {
                 <img
                   src={fillLight}
                   alt='Lamp'
-                  className='studio_overview_greenScreen_lamp lamp_mirrored'
+                  className='studioOverviewGreenscreenLamp lampMirrored'
                   style={{ top: `20px` }}
                 />
               </div>
             </div>
-            <div className='studio_overview_lights'>
+            <div className='studioOverviewLights'>
               <div
                 style={{
                   display: 'grid',
@@ -385,7 +386,7 @@ const Studio = () => {
                     if (selectedSlider && colIndex < row.length / 2 && selectedSlider.fake === false) {
                       return (
                         <div key={`${rowIndex}-${colIndex}`}>
-                          <div className='studio_overview_light marginRight45'>
+                          <div className='studioOverviewLight marginRight45'>
                             {slider && (
                               <>
                                 <img
@@ -403,11 +404,11 @@ const Studio = () => {
                                   <img
                                     src={lampImage}
                                     alt='Lamp'
-                                    className='studio_overview_greenScreen_lamp'
+                                    className='studioOverviewGreenscreenLamp'
                                   />
-                                  <div className='studio_overview_infopanel'>
-                                    <div className='studio_overview_infopanel_text'>#{slider.id}</div>
-                                    <div className='studio_overview_infopanel_brightness'>
+                                  <div className='studioOverviewInfopanel'>
+                                    <div className='studioOverviewInfopanelText'>#{slider.id}</div>
+                                    <div className='studioOverviewInfopanelBrightness'>
                                       {(((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
                                         ? t('Off')
                                         : (((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
@@ -422,7 +423,7 @@ const Studio = () => {
                     } else if (selectedSlider && colIndex >= row.length / 2 && selectedSlider.fake === false) {
                       return (
                         <div key={`${rowIndex}-${colIndex}`}>
-                          <div className='studio_overview_light marginLeft45'>
+                          <div className='studioOverviewLight marginLeft45'>
                             {slider && (
                               <>
                                 <img
@@ -440,11 +441,11 @@ const Studio = () => {
                                   <img
                                     src={lampImage}
                                     alt='Lamp'
-                                    className='studio_overview_greenScreen_lamp lamp_mirrored'
+                                    className='studioOverviewGreenscreenLamp lampMirrored'
                                   />
-                                  <div className='studio_overview_infopanel'>
-                                    <div className='studio_overview_infopanel_text'>#{slider.id}</div>
-                                    <div className='studio_overview_infopanel_brightness'>
+                                  <div className='studioOverviewInfopanel'>
+                                    <div className='studioOverviewInfopanelText'>#{slider.id}</div>
+                                    <div className='studioOverviewInfopanelBrightness'>
                                       {(((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
                                         ? t('Off')
                                         : (((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
@@ -459,17 +460,17 @@ const Studio = () => {
                     } else if (selectedSlider && selectedSlider.fake === true) {
                       return (
                         <div key={`${rowIndex}-${colIndex}`}>
-                          <div className='studio_overview_light'>
+                          <div className='studioOverviewLight'>
                             {slider && (
                               <div>
                                 <img
                                   src={lampImage}
                                   alt='Lamp'
-                                  className='studio_overview_greenScreen_lamp lamp_mirrored'
+                                  className='studioOverviewGreenscreenLamp lampMirrored'
                                 />
-                                <div className='studio_overview_infopanel'>
-                                  <div className='studio_overview_infopanel_text'>#{slider.id}</div>
-                                  <div className='studio_overview_infopanel_brightness'>{t('Off')}</div>
+                                <div className='studioOverviewInfopanel'>
+                                  <div className='studioOverviewInfopanelText'>#{slider.id}</div>
+                                  <div className='studioOverviewInfopanelBrightness'>{t('Off')}</div>
                                 </div>
                               </div>
                             )}
@@ -482,32 +483,32 @@ const Studio = () => {
                 )}
               </div>
             </div>
-            <div className='studio_overview_testchart'>
+            <div className='studioOverviewTestchart'>
               <div
-                className='studio_overview_infopanel studio_overview_infopanel_greenscreen'
+                className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
                 onClick={() => handleGlowAndFocus(12)}
                 style={{ cursor: 'pointer' }}
               >
-                <div className='studio_overview_infopanel_text'>{t('testchart')}</div>
-                <div className='studio_overview_infopanel_brightness'>
+                <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
+                <div className='studioOverviewInfopanelBrightness'>
                   {(((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
                     ? t('Off')
                     : (((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
                 </div>
               </div>
               <div
-                className='studio_overview_infopanel studio_overview_infopanel_greenscreen'
+                className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
                 style={{ top: `-20px`, cursor: 'pointer' }}
                 onClick={() => handleGlowAndFocus(11)}
               >
-                <div className='studio_overview_infopanel_text'>{t('testchart')}</div>
-                <div className='studio_overview_infopanel_brightness'>
+                <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
+                <div className='studioOverviewInfopanelBrightness'>
                   {(((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
                     ? t('Off')
                     : (((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
                 </div>
               </div>
-              <div className='studio_overview_light'>
+              <div className='studioOverviewLight'>
                 <img
                   src={schein}
                   alt='schein'
@@ -521,11 +522,11 @@ const Studio = () => {
                 <img
                   src={lampImage}
                   alt='Lamp'
-                  className='studio_overview_testchart_lamp'
+                  className='studioOverviewTestchartLamp'
                   style={{ top: `-50px` }}
                 />
               </div>
-              <div className='studio_overview_light'>
+              <div className='studioOverviewLight'>
                 <img
                   src={schein}
                   alt='schein'
@@ -539,8 +540,66 @@ const Studio = () => {
                 <img
                   src={lampImage}
                   alt='Lamp'
-                  className='studio_overview_testchart_lamp'
+                  className='studioOverviewTestchartLamp'
                   style={{ top: `-50px` }}
+                />
+              </div>
+            </div>
+            <div className='studioOverviewTraversen'>
+              <div className='studioOverviewTraversenLamp top-[90px] left-[80px]'>
+                <div className='studioOverviewTraversenLight'></div>
+                <LightBeam
+                  red={faderValues[1][0]}
+                  green={faderValues[2][0]}
+                  blue={faderValues[3][0]}
+                />
+              </div>
+              <div className='studioOverviewTraversenLamp top-[400px] left-[80px]'>
+                <div className='studioOverviewTraversenLight'></div>
+                <LightBeam
+                  red={faderValues[1][0]}
+                  green={faderValues[2][0]}
+                  blue={faderValues[3][0]}
+                />
+              </div>
+              <div className='studioOverviewTraversenLamp top-[715px] left-[80px]'>
+                <div className='studioOverviewTraversenLight'></div>
+                <LightBeam
+                  red={faderValues[1][0]}
+                  green={faderValues[2][0]}
+                  blue={faderValues[3][0]}
+                />
+              </div>
+              <div className='studioOverviewTraversenLamp top-[90px] left-[725px]'>
+                <div className='studioOverviewTraversenLight'></div>
+                <LightBeam
+                  red={faderValues[1][0]}
+                  green={faderValues[2][0]}
+                  blue={faderValues[3][0]}
+                />
+              </div>
+              <div className='studioOverviewTraversenLamp top-[400px] left-[725px]'>
+                <div className='studioOverviewTraversenLight'></div>
+                <LightBeam
+                  red={faderValues[1][0]}
+                  green={faderValues[2][0]}
+                  blue={faderValues[3][0]}
+                />
+              </div>
+              <div className='studioOverviewTraversenLamp top-[565px] left-[725px]'>
+                <div className='studioOverviewTraversenLight'></div>
+                <LightBeam
+                  red={faderValues[1][0]}
+                  green={faderValues[2][0]}
+                  blue={faderValues[3][0]}
+                />
+              </div>
+              <div className='studioOverviewTraversenLamp top-[715px] left-[610px]'>
+                <div className='studioOverviewTraversenLight'></div>
+                <LightBeam
+                  red={faderValues[1][0]}
+                  green={faderValues[2][0]}
+                  blue={faderValues[3][0]}
                 />
               </div>
             </div>

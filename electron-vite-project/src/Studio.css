@@ -62,7 +62,7 @@
   overflow-y: hidden;
 }
 
-.studio_overview {
+.studioOverview {
   background-image: url('./assets/studio_overview.png');
   height: 870px;
   width: 806px;
@@ -75,7 +75,7 @@
   background-size: cover;
 }
 
-.studio_overview_infopanel {
+.studioOverviewInfopanel {
   height: 39px;
   width: 90px;
   flex-shrink: 0;
@@ -92,17 +92,17 @@
   z-index: 1;
 }
 
-.studio_overview_infopanel_greenscreen {
+.studioOverviewInfopanelGreenscreen {
   top: 30px;
   left: -90px;
 }
 
-.studio_overview_infopanel_testchart {
+.studioOverviewInfopanelTestchart {
   top: 30px;
   left: -90px;
 }
 
-.studio_overview_infopanel_text {
+.studioOverviewInfopanelText {
   font-size: 13px;
   font-weight: 600;
   color: var(--primary);
@@ -111,7 +111,7 @@
   margin-right: 6px;
 }
 
-.studio_overview_infopanel_brightness {
+.studioOverviewInfopanelBrightness {
   font-weight: 600;
   font-size: 18px;
   position: absolute;
@@ -121,7 +121,7 @@
   right: 6px;
 }
 
-.studio_overview_light {
+.studioOverviewLight {
   color: var(--primary);
   position: relative;
   display: inline-block;
@@ -135,42 +135,59 @@
   opacity: 0;
 }
 
-.studio_overview_greenScreen {
+.studioOverviewGreenscreen {
   height: 100px;
   width: calc(100% - 190px);
   position: relative;
   margin-left: 120px;
 }
 
-.studio_overview_greenScreen_lamp {
+.studioOverviewGreenscreenLamp {
   transform: scale(0.5);
   position: relative;
   z-index: 2;
 }
 
-.lamp_mirrored {
+.lampMirrored {
   transform: scale(0.5) rotateY(180deg);
 }
 
-.studio_overview_lights {
+.studioOverviewLights {
   height: 675px;
   width: calc(100% - 200px);
   position: relative;
   margin-left: 100px;
 }
 
-.studio_overview_testchart {
+.studioOverviewTestchart {
   height: 83px;
   width: 220px;
   position: relative;
   margin-left: 170px;
 }
 
-.studio_overview_testchart_lamp {
+.studioOverviewTestchartLamp {
   transform: scale(0.5) rotateX(180deg);
   position: relative;
   display: inline;
   top: -25%;
+}
+
+.studioOverviewTraversen {
+  position: relative;
+}
+
+.studioOverviewTraversenLamp {
+  position: fixed;
+}
+
+.studioOverviewTraversenLight {
+  background-color: white;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  position: fixed;
+  transform: translate(-50%, -50%);
 }
 
 .buttonOpenControl {

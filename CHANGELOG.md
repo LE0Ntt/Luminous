@@ -2,8 +2,6 @@
 
 > All notable changes to this project will be documented in this file.
 
----
-
 ## [1.1.2] - Pre-Release
 
 ### Changes
@@ -33,15 +31,11 @@
   - Hopefully fixed master not updating
   - Hopefully fixed not updating fader backup value
 
----
-
 ## [1.1.1] - 2023-11-21
 
 ### Fixes
 
 - Instant hotfix for production
-
----
 
 ## [1.1.0] - 2023-11-21
 
@@ -85,8 +79,6 @@
   - Changing the range doesn't reset edited channels anymore
 - Fixed titlebar for MacOS
 
----
-
 ## [1.0.2] - 2023-09-28
 
 ### Changes
@@ -108,8 +100,6 @@
 - Fixed settings rendering in background on OLA password
 - Various minor bug fixes
 
----
-
 ## [1.0.1] - 2023-08-08
 
 ### Changes
@@ -120,8 +110,6 @@
 ### Fixes
 
 - Various important bug fixes
-
----
 
 ## [1.0.0] - 2023-07-07
 

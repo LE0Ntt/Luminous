@@ -21,6 +21,7 @@
   - Fetch faders, scenes and devices only if connected
   - LightSettings only open if connected
 - Titlebar small visual touch-ups
+- Update fill light and bi-color light icons
 
 ### Fixes
 

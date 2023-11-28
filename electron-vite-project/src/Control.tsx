@@ -29,7 +29,7 @@ import ControlHandler from './components/ControlHandler';
 // LightFX
 function Control() {
   const { t } = useContext(TranslationContext);
-  const { url, connected } = useConnectionContext();
+  const { url, connected, emit } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
@@ -40,6 +40,7 @@ function Control() {
   const [addScene, setAddScene] = useState(false);
   const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
   const [isSolo, setIsSolo] = useState(false);
+  const [prevFaderValues, setPrevFaderValues] = useState<number[]>([]);
 
   interface DeviceConfig {
     id: number;
@@ -155,7 +156,6 @@ function Control() {
   };
 
   // Color Picker
-  const { emit } = useConnectionContext();
   const [red, setRed] = useState(faderValues[0][3]);
   const [green, setGreen] = useState(faderValues[0][4]);
   const [blue, setBlue] = useState(faderValues[0][5]);
@@ -170,9 +170,14 @@ function Control() {
     setFaderValue(0, 5, newBlue);
   };
 
+  // Give changed fader values to ControlHandler
   useEffect(() => {
-    ControlHandler(selectedDevices, faderValues[0][3], faderValues[0][4], faderValues[0][5], faderValues[0][2], faderValues[0][1], setFaderValue, emit);
-  }, [faderValues[0][1], faderValues[0][2], faderValues[0][3], faderValues[0][4], faderValues[0][5]]);
+    const changedFaders = faderValues[0].map((value, index) => {
+      return prevFaderValues && prevFaderValues.length > 0 && value !== prevFaderValues[index];
+    });
+    ControlHandler(selectedDevices, faderValues[0], changedFaders, emit);
+    setPrevFaderValues([...faderValues[0]]);
+  }, [faderValues]);
 
   return (
     <div>

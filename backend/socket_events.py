@@ -39,8 +39,6 @@ def safe_ola_call(operation_type, func_or_attr_name, *args, **kwargs):
             func(*args, **kwargs)
         elif operation_type == "attr":
             setattr(ola, func_or_attr_name, args[0])
-    else:
-        print("OLA not available, skipping call.")
 
 
 connections = 0
@@ -483,22 +481,32 @@ def register_socketio_events(socketio):
         fader_value = int(data.get("value", 0))
         fader = int(data["deviceId"])
         channelId = int(data["channelId"])
-        device = next(
-            (device for device in routes.devices if device["id"] == fader), None
-        )
+        device = next((d for d in routes.devices if d["id"] == fader), None)
+
         if device:
             channels = device["attributes"]["channel"]
-            for channel in channels:
-                if int(channel["id"]) == channelId:
-                    channel["sliderValue"] = fader_value
-                    channel["backupValue"] = fader_value
-                    send_dmx(fader, channelId, fader_value, device, channel)
-                    if driver is not None and channel["channel_type"] == "main":
-                        driver.pushFader(fader, fader_value)
-                        driver.devices = routes.devices
-                    break
-            device["attributes"]["channel"] = channels
-            routes.devices[fader] = device
+            channel = next((c for c in channels if int(c["id"]) == channelId), None)
+            if channel:
+                channel["sliderValue"] = channel["backupValue"] = fader_value
+                send_dmx(fader, channelId, fader_value, device, channel)
+                if driver is not None and channel["channel_type"] == "main":
+                    driver.pushFader(fader, fader_value)
+                    driver.devices = routes.devices
+
+            if device.get("device_type", "") == "HMI":
+                if (
+                    channelId == 0
+                    and fader_value > 0
+                    and channels[1]["sliderValue"] == 0
+                ):
+                    handle_fader_value(
+                        {"deviceId": fader, "channelId": 1, "value": 255, "send": True}
+                    )
+                elif channelId == 1 and fader_value == 0:
+                    handle_fader_value(
+                        {"deviceId": fader, "channelId": 0, "value": 0, "send": True}
+                    )
+
         universe = None
         if fader == 692:
             universe = 1
@@ -507,7 +515,7 @@ def register_socketio_events(socketio):
         if universe is not None:
             send_dmx_direct(universe, fader_value, channelId)
 
-        if connections > 1:
+        if connections > 1 or data.get("send", False):
             faderSend(fader, fader_value, channelId)
 
     @socketio.on("bulk_fader_values", namespace="/socket")
@@ -515,46 +523,18 @@ def register_socketio_events(socketio):
         for deviceData in data:
             fader = int(deviceData["deviceId"])
 
-            device = next(
-                (device for device in routes.devices if device["id"] == fader), None
-            )
+            for channelData in deviceData["channels"]:
+                channelId = int(channelData["channelId"])
+                fader_value = int(channelData["value"])
 
-            if device:
-                channels = device["attributes"]["channel"]
-                for channelData in deviceData["channels"]:
-                    channelId = int(channelData["channelId"])
-                    fader_value = int(channelData["value"])
-
-                    for channel in channels:
-                        if int(channel["id"]) == channelId:
-                            channel["sliderValue"] = fader_value
-                            channel["backupValue"] = fader_value
-                            send_dmx(fader, channelId, fader_value, device, channel)
-                            if driver is not None and channel["channel_type"] == "main":
-                                driver.pushFader(fader, fader_value)
-                                driver.devices = routes.devices
-                            break
-
-                    device["attributes"]["channel"] = channels
-                    routes.devices[fader] = device
-
-            else:  # Non device DMX channel
-                universe = None
-                if fader == 692:
-                    universe = 1
-                elif fader == 693:
-                    universe = 2
-                if universe is not None:
-                    for channelData in deviceData["channels"]:
-                        channelId = int(channelData["channelId"])
-                        fader_value = int(channelData["value"])
-                        send_dmx_direct(universe, fader_value, channelId)
-
-            if connections > 1:
-                for channelData in deviceData["channels"]:
-                    channelId = int(channelData["channelId"])
-                    fader_value = int(channelData["value"])
-                    faderSend(fader, fader_value, channelId)
+                # Call handle_fader_value for each channel of each device
+                handle_fader_value(
+                    {
+                        "deviceId": fader,
+                        "channelId": channelId,
+                        "value": fader_value,
+                    }
+                )
 
     @socketio.on("connect", namespace="/socket")
     def connect():

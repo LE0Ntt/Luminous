@@ -51,6 +51,8 @@ const DeviceList: React.FC<DeviceListProps> = ({ devices, onDeviceButtonClick, i
         return 'spotIcon';
       case 'Fill':
         return 'fillIcon';
+      case 'HMI':
+        return 'spotIcon';
       case 'Misc':
         return 'miscIcon';
       default:

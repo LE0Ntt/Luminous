@@ -47,6 +47,7 @@ function LightSettings({ onClose }: SettingsProps) {
     BiColor: ['main', 'bi'],
     Spot: ['main'],
     Fill: ['main'],
+    HMI: ['main', 'power'],
     Misc: ['main'],
   };
 

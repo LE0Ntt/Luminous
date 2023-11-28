@@ -12,7 +12,9 @@
  *
  * @file ControlHandler.tsx
  */
-function ControlHandler(selectedDevices: any, red: number, green: number, blue: number, kelvin: number, master: number, setFaderValue: Function, emit: Function) {
+function ControlHandler(selectedDevices: any, faderValues: number[], changedFaders: boolean[], emit: Function) {
+  const [masterMaster, master, kelvin, red, green, blue] = faderValues;
+  const [masterMasterChanged, masterChanged, kelvinChanged, redChanged, greenChanged, blueChanged] = changedFaders;
   const values = { red, green, blue, kelvin, master };
 
   // https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html
@@ -80,7 +82,7 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
   }
 
   let tempInKelvin = rgbToKelvin(red, green, blue);
-  kelvin = ((tempInKelvin - 2220) / 8648) * 255;
+  values.kelvin = ((tempInKelvin - 2220) / 8648) * 255;
 
   interface ChannelData {
     channelId: number;
@@ -102,49 +104,32 @@ function ControlHandler(selectedDevices: any, red: number, green: number, blue: 
 
     device.attributes.channel.forEach((channel: any) => {
       let value: number | undefined;
+      let valueChanged = false;
 
-      switch (device.device_type) {
-        case 'RGBDim':
-          switch (channel.id.toString()) {
-            case '0':
-              value = values.master || 0;
-              break;
-            case '1':
-              value = values.red || 0;
-              break;
-            case '2':
-              value = values.green || 0;
-              break;
-            case '3':
-              value = values.blue || 0;
-              break;
-          }
-          break;
-        case 'BiColor':
-          switch (channel.id.toString()) {
-            case '0':
-              value = values.master || 0;
-              break;
-            case '1':
-              value = kelvin || 0;
-              break;
-          }
-          break;
-        case 'Spot':
-        case 'Fill':
-        case 'Misc':
-          switch (channel.id.toString()) {
-            case '0':
-              value = values.master || 0;
-              break;
-          }
-          break;
-        default:
-          console.log('Unbekannter Gerätetyp: ', device.deviceType);
-          return;
+      const channelValueMap = {
+        RGBDim: {
+          '0': { value: values.master, changed: masterChanged },
+          '1': { value: values.red, changed: redChanged },
+          '2': { value: values.green, changed: greenChanged },
+          '3': { value: values.blue, changed: blueChanged },
+        },
+        BiColor: {
+          '0': { value: values.master, changed: masterChanged },
+          '1': { value: kelvin, changed: kelvinChanged },
+        },
+        Spot: { '0': { value: values.master, changed: masterChanged } },
+        Fill: { '0': { value: values.master, changed: masterChanged } },
+        HMI: { '0': { value: values.master, changed: masterChanged } },
+        Misc: { '0': { value: values.master, changed: masterChanged } },
+      };
+
+      const channelSettings = (channelValueMap as any)[device.device_type]?.[channel.id.toString()];
+      if (channelSettings) {
+        value = channelSettings.value || 0;
+        valueChanged = channelSettings.changed;
       }
 
-      if (value !== undefined) {
+      if (value !== undefined && valueChanged) {
         deviceData.channels.push({ channelId: channel.id, value });
       }
     });

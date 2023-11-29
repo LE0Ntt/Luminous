@@ -6,6 +6,9 @@
 
 ### Changes
 
+- Support for HMI lights that automatically switch on when the aperture is opened
+- LightFX
+  - Only process changed channels
 - Settings error/success message on password change
   - Added translation, color indication & fade out
 - LightSettings
@@ -22,6 +25,7 @@
   - LightSettings only open if connected
 - Titlebar small visual touch-ups
 - Update fill light and bi-color light icons
+- Set dark mode as default to prevent bright flash on startup
 
 ### Fixes
 

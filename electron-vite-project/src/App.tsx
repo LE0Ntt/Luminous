@@ -31,6 +31,9 @@ function App() {
   const [contentScale, setContentScale] = useState(1);
   const { connected } = useConnectionContext();
 
+  // Start with dark mode
+  document.body.classList.toggle('dark', true);
+
   // To scale the content when the window is resized
   const updateContentScale = () => {
     if (mainContentRef.current) {

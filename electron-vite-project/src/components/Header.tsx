@@ -21,13 +21,15 @@ import { TranslationContext } from './TranslationContext';
 function Header() {
   let location = useLocation();
   const { t } = useContext(TranslationContext);
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
+  // Load mode from local storage
   useEffect(() => {
     const storedIsDark = localStorage.getItem('isDark');
     setIsDark(storedIsDark === 'true');
   }, []);
 
+  // Set dark/light mode
   useEffect(() => {
     document.body.classList.toggle('dark', isDark);
     localStorage.setItem('isDark', `${isDark}`);

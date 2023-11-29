@@ -48,7 +48,7 @@
 - [x] Input can be empty
 - [x] Use _ENTER_ to accept dialog
 - [ ] Rethink scene logic: Off after e.g. bi-color change?
-- [ ] Add support for HMI lights and other devices with on/off channel
+- [x] Add support for HMI lights and other devices with on/off channel
 - [ ] Input for faders with mousewheel or keyboard (arrow keys)
 - [ ] BigView: Change visualisation
   - [ ] Device groups

@@ -25,6 +25,7 @@ import { useFaderContext } from './components/FaderContext';
 import AddScene from './components/AddScene';
 import AdminPassword from './components/AdminPassword';
 import ControlHandler from './components/ControlHandler';
+import iro from '@jaames/iro';
 
 // LightFX
 function Control() {
@@ -77,7 +78,7 @@ function Control() {
     setUnselectedDevices(savedUnselectedDevices);
     setFirstLoad(true);
 
-    // Prevent transition animation before hight has loaded
+    // Prevent transition animation before height has loaded
     const timer = setTimeout(() => {
       setAnimiation(true);
     }, 500);
@@ -159,7 +160,7 @@ function Control() {
   const [red, setRed] = useState(faderValues[0][3]);
   const [green, setGreen] = useState(faderValues[0][4]);
   const [blue, setBlue] = useState(faderValues[0][5]);
-  const [kelvin, setKelvin] = useState(0);
+  const [kelvin, setKelvin] = useState(faderValues[0][2]);
 
   const handleColorChange = (newRed: number, newGreen: number, newBlue: number) => {
     setRed(newRed);
@@ -168,15 +169,18 @@ function Control() {
     setFaderValue(0, 3, newRed);
     setFaderValue(0, 4, newGreen);
     setFaderValue(0, 5, newBlue);
+    let tempInKelvin = iro.Color.rgbToKelvin({ r: newRed, g: newGreen, b: newBlue });
+    setFaderValue(0, 2, Math.min(255, Math.max(0, Math.round(((tempInKelvin - 2200) / 8800) * 255))));
   };
 
   // Give changed fader values to ControlHandler
   useEffect(() => {
-    const changedFaders = faderValues[0].map((value, index) => {
+    const controlValues = faderValues[0].slice(1);
+    const changedFaders = controlValues.map((value, index) => {
       return prevFaderValues && prevFaderValues.length > 0 && value !== prevFaderValues[index];
     });
-    ControlHandler(selectedDevices, faderValues[0], changedFaders, emit);
-    setPrevFaderValues([...faderValues[0]]);
+    ControlHandler(selectedDevices, controlValues, changedFaders, emit);
+    setPrevFaderValues(controlValues);
   }, [faderValues]);
 
   return (
@@ -193,7 +197,6 @@ function Control() {
               onDeviceButtonClick={handleRemoveDevice}
             />
           </div>
-
           <div className='innerContainer'>
             {/* Masterfader/Groupfader */}
             <div className='lightFader innerWindow'>
@@ -274,7 +277,6 @@ function Control() {
               </div>
             </div>
           </div>
-
           {/* Background */}
           <svg
             className={mainAnimation}

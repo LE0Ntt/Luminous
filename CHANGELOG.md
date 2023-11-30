@@ -26,6 +26,7 @@
 - Titlebar small visual touch-ups
 - Update fill light and bi-color light icons
 - Set dark mode as default to prevent bright flash on startup
+- Updated scene placeholder dashed border to be more symmetrical
 
 ### Fixes
 

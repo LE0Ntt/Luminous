@@ -27,7 +27,7 @@ interface SettingsProps {
 function LightSettings({ onClose }: SettingsProps) {
   const [isNewDevice, setIsNewDevice] = useState(false);
   const { t } = useContext(TranslationContext);
-  const { url } = useConnectionContext();
+  const { url, emit, on } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceConfig>();
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
@@ -282,52 +282,6 @@ function LightSettings({ onClose }: SettingsProps) {
     setShowAdminPassword(true);
   };
 
-  const handleResponse = (data: { message: string }, textBoxClass: string) => {
-    console.log(data.message === 'success' ? 'Device successfully updated' : `${data.message.replace('_', ' ')}!`);
-    if (data.message !== 'success') {
-      const textBox = document.getElementsByClassName(textBoxClass)[0] as HTMLInputElement;
-      textBox.focus();
-      textBox.style.outline = '2px solid red';
-      textBox.style.outlineOffset = '-1px';
-    } else {
-      setSelectedDevice(undefined);
-      setIsNewDevice(false);
-      setChannelChangeArray([]);
-      setChannelArray([]);
-      setInputDMXstart('0');
-      fetchDevices();
-    }
-  };
-
-  const sendDeviceData = (
-    path: string,
-    body:
-      | {
-          name: string;
-          number: string;
-          device_type: string;
-          universe: string;
-          attributes: { channel: { id: number; dmx_channel: string; channel_type: string }[] };
-        }
-      | {
-          id: number | undefined;
-          name: string;
-          number: string;
-          device_type: string;
-          universe: string;
-          attributes: { channel: { id: number; dmx_channel: string; channel_type: string }[] };
-        }
-  ) => {
-    fetch(`${url}/${path}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => handleResponse(data, 'deviceNumber'))
-      .catch((error) => console.error('Error:', error));
-  };
-
   const updateDevice = () => {
     const commonBody = {
       name: inputName,
@@ -339,7 +293,24 @@ function LightSettings({ onClose }: SettingsProps) {
       },
     };
     const body = isNewDevice ? commonBody : { ...commonBody, id: selectedDevice?.id };
-    sendDeviceData(isNewDevice ? 'addlight' : 'updatelight', body);
+    //sendDeviceData(isNewDevice ? 'addlight' : 'updatelight', body);
+    emit(isNewDevice ? 'light_add' : 'light_update', body);
+    on('light_response', (data) => {
+      console.log(data.message === 'success' ? 'Device successfully updated' : `${data.message.replace('_', ' ')}!`);
+      if (data.message !== 'success') {
+        const textBox = document.getElementsByClassName('deviceNumber')[0] as HTMLInputElement;
+        textBox.focus();
+        textBox.style.outline = '2px solid red';
+        textBox.style.outlineOffset = '-1px';
+      } else {
+        setSelectedDevice(undefined);
+        setIsNewDevice(false);
+        setChannelChangeArray([]);
+        setChannelArray([]);
+        setInputDMXstart('0');
+        fetchDevices();
+      }
+    });
   };
 
   const handleRemoveDevice = () => {
@@ -353,25 +324,17 @@ function LightSettings({ onClose }: SettingsProps) {
 
   const removeDevice = () => {
     // send remove device request
-    fetch(url + '/removelight', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: selectedDevice?.id,
-      }),
-    })
-      .then((response) => response.json())
-      .then(() => {
+    emit('light_delete', { id: selectedDevice?.id });
+    on('light_deleted', (data) => {
+      if (data.id === selectedDevice?.id) {
         setSelectedDevice(undefined);
         setIsNewDevice(false);
         setChannelChangeArray([]);
         setChannelArray([]);
         setInputDMXstart('0');
         fetchDevices();
-      })
-      .catch((error) => console.error('Error:', error));
+      }
+    });
   };
 
   // Callback function for the admin password component

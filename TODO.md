@@ -3,7 +3,7 @@
 - MotorMix
   - ~~Master fader not working, only from App to MotorMix~~ (hopefully fixed)
   - ~~Doesn't use correct values, when changing scenes~~ (hopefully fixed)
-  - Black-Out button
+  - Black-out button
   - Display bugs with page wheel
   - Missing light values
   - Displays only two pages until switched to Scenes and back
@@ -11,6 +11,8 @@
 - Random server crashes
 - Possibly slower after long operation
 - Studio-Overview just uses ID, not universe
+- Wrong devices displayed after changing number in LightSettings
+- Error if DMX channel exists multiple times
 - ~~Doesn't show lights after editing them. Need to restart server~~
 
 ## Necessary Changes
@@ -38,6 +40,7 @@
   - [ ] Change to current state of the first light
   - [ ] Effects as misc faders for now
   - [ ] Device list server updates
+  - [ ] New bi-color slider with higher resolution and value display/input
 - [ ] PI
   - [ ] Production server
   - [ ] Shutdown button
@@ -49,8 +52,9 @@
 - [x] Use _ENTER_ to accept dialog
 - [ ] Rethink scene logic: Off after e.g. bi-color change?
 - [x] Add support for HMI lights and other devices with on/off channel
+- [ ] Turn off all devices when closing app
 - [ ] Input for faders with mousewheel or keyboard (arrow keys)
-- [ ] BigView: Change visualisation
+- [ ] BigView: Improve visualisation
   - [ ] Device groups
   - [ ] Faders for different channels
 
@@ -64,11 +68,14 @@
 - [ ] Studio-Overview
   - [x] Device highlight
   - [x] Move to the left
-  - [ ] Add traverse lights
+  - [ ] Add rgb traverse lights
+  - [ ] Add fill light icon
+  - [ ] Rearrange devices
 - [ ] Scenes
   - [ ] See what you save
   - [ ] Edit scenes
   - [ ] Save master fader?
+  - [ ] Choose what to save
 - [ ] Mute / Solo
   - [ ] Implement
   - [ ] Gray out faders
@@ -137,4 +144,7 @@
   - [ ] Show.tsx
   - [ ] Studio.css
   - [ ] Studio.tsx
-  - [ ] Assets (compress, check necessity)
+  - [ ] Assets
+    - [ ] Compress
+    - [ ] Check necessity
+    - [ ] Rename to a more consistent naming scheme

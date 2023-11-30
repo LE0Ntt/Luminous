@@ -12,13 +12,14 @@
  *
  * @file socket_events.py
 """
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 from server import app, routes, db
 from server.motorMix_driver import Driver
-from server.models import Scene
+from server.models import Scene, Device, ignored_channels
 import json
 import time
 import threading
+import bisect
 
 scenes_solo_state = False
 
@@ -47,7 +48,7 @@ socketio = SocketIO(app, cors_allowed_origins="*", logger=False, engineio_logger
 
 
 def set_ignored_channels():
-    safe_ola_call("attr", "ignore_channels", routes.ignored_channels)  # ola
+    safe_ola_call("attr", "ignore_channels", ignored_channels)  # ola
 
 
 last_send_time = 0
@@ -81,7 +82,7 @@ def register_socketio_events(socketio):
         global last_send_time
         global last_change
         current_time = time.time() * 1000
-        socketio.emit(
+        emit(
             "variable_update",
             {"deviceId": index, "value": value, "channelId": channelId},
             namespace="/socket",
@@ -264,7 +265,7 @@ def register_socketio_events(socketio):
             for other_scene in routes.scenes:
                 if other_scene["id"] != scene:
                     other_scene["status"] = False
-                    socketio.emit(
+                    emit(
                         "scene_update",
                         {"id": other_scene["id"], "status": False},
                         namespace="/socket",
@@ -378,7 +379,7 @@ def register_socketio_events(socketio):
 
             # Send update to all clients
             if connections > 0:
-                socketio.emit(
+                emit(
                     "scene_update", {"id": scene, "status": status}, namespace="/socket"
                 )
 
@@ -405,7 +406,7 @@ def register_socketio_events(socketio):
             for scene in scenes_to_update:
                 scene.id -= 1
             db.session.commit()
-        socketio.emit("scene_reload", namespace="/socket")
+        emit("scene_reload", namespace="/socket")
 
     # Add a scene and tell every client to update
     @socketio.on("scene_add", namespace="/socket")
@@ -422,7 +423,7 @@ def register_socketio_events(socketio):
         scene["channel"] = json.loads(json.dumps(filtered_devices))
         routes.scenes.append(scene)
         if not scene["saved"]:  # If scene is not saved, don't add to database
-            socketio.emit("scene_reload", namespace="/socket")
+            emit("scene_reload", namespace="/socket")
         else:
             save_scene(scene)
 
@@ -473,7 +474,82 @@ def register_socketio_events(socketio):
             )
             db.session.add(new_scene)
             db.session.commit()
-        socketio.emit("scene_reload", namespace="/socket")
+        emit("scene_reload", namespace="/socket")
+
+    # Delete a light from the database
+    @socketio.on("light_delete", namespace="/socket")
+    def delete_light(data):
+        deviceId = int(data["id"])
+        # Remove from the database
+        deleted_count = Device.query.filter_by(id=deviceId).delete()
+        db.session.commit()
+        # Remove from the devices list and send update to all clients
+        if deleted_count > 0:
+            routes.devices = [
+                device for device in routes.devices if device["id"] != deviceId
+            ]
+            emit("light_deleted", {"id": deviceId}, namespace="/socket")
+
+    # Create a new light and save it to the database
+    @socketio.on("light_add", namespace="/socket")
+    def add_light(data):
+        # Check if device number is already in use
+        if Device.query.filter_by(number=data["number"]).first():
+            emit("light_response", {"message": "number_in_use"}, namespace="/socket")
+            return
+
+        # New device object
+        device = Device(
+            id=int(data["number"]),
+            name=data["name"],
+            number=data["number"],
+            device_type=data["device_type"],
+            universe=data["universe"],
+            attributes=data["attributes"],
+        )
+
+        db.session.add(device)
+        db.session.commit()
+
+        # Add device to devices list to the right position based on the id
+        insert_index = bisect.bisect_left(
+            [device["id"] for device in routes.devices], int(data["number"])
+        )
+        routes.devices.insert(insert_index, device.to_dict())
+
+        emit("light_response", {"message": "success"}, namespace="/socket")
+
+    # Update an existing light and save it to the database
+    @socketio.on("light_update", namespace="/socket")
+    def update_light(data):
+        deviceId = int(data["id"])
+        newNumber = int(data["number"])
+
+        # Check if device exists
+        device = Device.query.filter_by(number=deviceId).first()
+        if not device:
+            emit("light_response", {"message": "device_not_found"}, namespace="/socket")
+            return
+
+        # Check if new device number is already in use
+        if deviceId != newNumber and Device.query.filter_by(number=newNumber).first():
+            emit("light_response", {"message": "number_in_use"}, namespace="/socket")
+            return
+
+        # Update device in the database
+        device.id = newNumber
+        device.name = data["name"]
+        device.number = newNumber
+        device.device_type = data["device_type"]
+        device.universe = data["universe"]
+        device.attributes = data["attributes"]
+        db.session.commit()
+
+        routes.devices = [d for d in routes.devices if d["id"] != deviceId]
+        insert_index = bisect.bisect_left([d["id"] for d in routes.devices], newNumber)
+        routes.devices.insert(insert_index, device.to_dict())
+
+        emit("light_response", {"message": "success"}, namespace="/socket")
 
     # Fader value update
     @socketio.on("fader_value", namespace="/socket")

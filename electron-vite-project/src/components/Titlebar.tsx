@@ -105,14 +105,13 @@ function TitleBar() {
               onClick={(): void => toggleDropDown()}
               ref={dropDownRef}
             >
-              <a href='#'>
-                <div className={`settingsButton ${showDropDown && 'active'}`}>
-                  <IconSettings
-                    size='20px'
-                    color='var(--secondary)'
-                  />
-                </div>
-              </a>
+              <div className={`settingsButton ${showDropDown && 'active'}`}>
+                <IconSettings
+                  size='20px'
+                  color='var(--secondary)'
+                />
+              </div>
+
               {showDropDown && (
                 <DropDown
                   settings={settings}

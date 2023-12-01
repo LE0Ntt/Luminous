@@ -15,6 +15,8 @@
   - Save with _ENTER_ if no input is focused
   - Switched to SocketIO for save, update, and delete instead of http
   - Updates reload sliders in Studio and devices in LightFX
+  - Default number for new devices is last device number + 1
+  - Changing device type does not reset DMX range if previously set
 - About
   - Linked changelog
   - Spiced up the logo with an interactive twist

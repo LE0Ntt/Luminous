@@ -38,12 +38,11 @@ nav ul li {
   float: left;
   list-style: none;
   position: relative;
+  height: 23px;
 }
 
-nav ul li a {
-  color: var(--primary);
-  display: block;
-  padding: 0 5px 0 5px;
+nav ul li button {
+  margin: 0 2px;
 }
 
 .logo {
@@ -69,16 +68,17 @@ nav ul li a {
 
 .settingsButton {
   height: 23px;
-  aspect-ratio: 1;
+  width: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 0 0 3px 3px;
+  -webkit-app-region: no-drag !important;
 }
 
 .settingsButton:hover,
 .settingsButton.active {
-  background: var(--colorButtonHover);
+  background-color: var(--colorButtonHover);
 }
 
 .buttonContainer {

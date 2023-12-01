@@ -91,7 +91,7 @@ function Help({ onClose }: SettingsProps) {
               <span className='ask'>
                 {t('help_text1')}&nbsp;
                 <a
-                  href='https://th-koeln.sciebo.de/s/FwaIna4jLv9NfWj'
+                  href='https://th-koeln.sciebo.de/s/0Pa9ePOPgiK72ua'
                   target='_blank'
                   rel='noopener noreferrer'
                   style={{ textDecoration: 'underline' }}

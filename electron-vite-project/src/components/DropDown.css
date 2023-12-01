@@ -17,7 +17,7 @@
 .dropdown {
   position: absolute;
   top: 23px;
-  left: 4px;
+  left: 2px;
   border: 1px solid var(--onepStroke);
   border-radius: 5px;
   box-shadow: var(--shadowLight);

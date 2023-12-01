@@ -108,6 +108,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
       return () => clearTimeout(timer);
     }
   }, [passwordMessage]);
+
   const handleOctetChange = (index: number, value: string) => {
     const octets = ip.split('.');
     octets[index - 1] = value;

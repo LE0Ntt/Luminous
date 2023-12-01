@@ -25,11 +25,12 @@ import { useFaderContext } from './components/FaderContext';
 import AddScene from './components/AddScene';
 import AdminPassword from './components/AdminPassword';
 import ControlHandler from './components/ControlHandler';
+import iro from '@jaames/iro';
 
 // LightFX
 function Control() {
   const { t } = useContext(TranslationContext);
-  const { url, connected, emit } = useConnectionContext();
+  const { url, connected, emit, on, off } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
@@ -52,19 +53,24 @@ function Control() {
   }
 
   useEffect(() => {
-    const fetchDevices = async () => {
+    const fetchDevices = async (reset: boolean) => {
       try {
         const response = await fetch(url + '/fader');
         const data = await response.json();
         const parsedData = JSON.parse(data);
         parsedData.shift(); // remove master
         setDevices(parsedData);
+
+        if (reset || savedUnselectedDevices.length == 0) {
+          setUnselectedDevices(parsedData);
+          setSelectedDevices([]);
+        }
       } catch (error) {
         console.log(error);
       }
     };
 
-    if (connected) fetchDevices();
+    if (connected) fetchDevices(false);
 
     // Load saved solo state from session storage
     setIsSolo(sessionStorage.getItem('controlSolo') === 'true');
@@ -77,12 +83,29 @@ function Control() {
     setUnselectedDevices(savedUnselectedDevices);
     setFirstLoad(true);
 
-    // Prevent transition animation before hight has loaded
+    // Prevent transition animation before height has loaded
     const timer = setTimeout(() => {
       setAnimiation(true);
     }, 500);
 
-    return () => clearTimeout(timer);
+    // If a device is updated, reload the devices
+    const lightRespone = (data: any) => {
+      if (data.message === 'success') {
+        fetchDevices(true); // reload devices
+      }
+    };
+    const lightDeleted = () => {
+      fetchDevices(true);
+    };
+
+    on('light_response', lightRespone);
+    on('light_deleted', lightDeleted);
+
+    return () => {
+      clearTimeout(timer);
+      off('light_response', lightRespone);
+      off('light_deleted', lightDeleted);
+    };
   }, []);
 
   useEffect(() => {
@@ -95,17 +118,6 @@ function Control() {
         setHeight(-3);
       } else {
         setHeight(Math.min(selectedDevices.length * 71 + 36, 462));
-      }
-
-      //Check if devices got changed on the server
-      const isDifferent = devices.every((device) => {
-        return unselectedDevices.includes(device) && selectedDevices.includes(device);
-      });
-
-      if (isDifferent || unselectedDevices.length + selectedDevices.length !== devices.length) {
-        setUnselectedDevices(devices);
-        setSelectedDevices([]);
-        console.log('devices changed');
       }
     }
 
@@ -159,7 +171,7 @@ function Control() {
   const [red, setRed] = useState(faderValues[0][3]);
   const [green, setGreen] = useState(faderValues[0][4]);
   const [blue, setBlue] = useState(faderValues[0][5]);
-  const [kelvin, setKelvin] = useState(0);
+  const [kelvin, setKelvin] = useState(faderValues[0][2]);
 
   const handleColorChange = (newRed: number, newGreen: number, newBlue: number) => {
     setRed(newRed);
@@ -168,15 +180,18 @@ function Control() {
     setFaderValue(0, 3, newRed);
     setFaderValue(0, 4, newGreen);
     setFaderValue(0, 5, newBlue);
+    let tempInKelvin = iro.Color.rgbToKelvin({ r: newRed, g: newGreen, b: newBlue });
+    setFaderValue(0, 2, Math.min(255, Math.max(0, Math.round(((tempInKelvin - 2200) / 8800) * 255))));
   };
 
   // Give changed fader values to ControlHandler
   useEffect(() => {
-    const changedFaders = faderValues[0].map((value, index) => {
+    const controlValues = faderValues[0].slice(1);
+    const changedFaders = controlValues.map((value, index) => {
       return prevFaderValues && prevFaderValues.length > 0 && value !== prevFaderValues[index];
     });
-    ControlHandler(selectedDevices, faderValues[0], changedFaders, emit);
-    setPrevFaderValues([...faderValues[0]]);
+    ControlHandler(selectedDevices, controlValues, changedFaders, emit);
+    setPrevFaderValues(controlValues);
   }, [faderValues]);
 
   // Misc fader support
@@ -235,7 +250,6 @@ function Control() {
               onDeviceButtonClick={handleRemoveDevice}
             />
           </div>
-
           <div className='innerContainer'>
             {/* Masterfader/Groupfader */}
             <div className='lightFader innerWindow'>
@@ -339,7 +353,6 @@ function Control() {
               </div>
             </div>
           </div>
-
           {/* Background */}
           <svg
             className={mainAnimation}

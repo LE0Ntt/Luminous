@@ -191,11 +191,7 @@
 .PasswordMessage {
   position: absolute;
   top: 150px;
-  animation-name: fadeOut;
-  animation-duration: 1s;
-  animation-delay: 3s;
-  animation-fill-mode: forwards;
-  animation-iteration-count: 1;
+  animation: fadeOut 1s 3s forwards;
 }
 
 @keyframes fadeOut {
@@ -213,4 +209,21 @@
 
 .errorMessage {
   color: red;
+}
+
+.error-outline {
+  outline-offset: -1px;
+  animation: fadeOutOutline 4s forwards;
+}
+
+@keyframes fadeOutOutline {
+  0% {
+    outline: 2px solid red;
+  }
+  50% {
+    outline: 2px solid red;
+  }
+  100% {
+    outline: 2px solid transparent;
+  }
 }

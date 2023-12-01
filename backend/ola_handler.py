@@ -14,10 +14,9 @@
 """
 import sys
 import array
-import time
 import threading
 from ola.ClientWrapper import ClientWrapper  # type: ignore
-import server.routes
+from server.models import ignored_channels
 
 
 class ola_handler:
@@ -25,9 +24,7 @@ class ola_handler:
         self.wrapper = ClientWrapper()
         self.client = self.wrapper.Client()
         self.master = 1
-        self.ignored_channels = (
-            server.routes.ignored_channels
-        )  # ignored channels for master
+        self.ignored_channels = ignored_channels  # ignored channels for master
         print(f"Ignored channels when checking: {self.ignored_channels}")
         self.dmx_data = {1: array.array("B", [0] * 512), 2: array.array("B", [0] * 512)}
         self.fader_data = {

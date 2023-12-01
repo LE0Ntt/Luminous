@@ -40,25 +40,15 @@ const DeviceList: React.FC<DeviceListProps> = ({ devices, onDeviceButtonClick, i
     deviceListClass = devices.length > 6 ? 'deviceList overflow-scroll' : 'deviceList overflow-hidden right-padding';
   }
 
-  // Get the class for the device type icon
-  function getClassByDeviceType(deviceType: string) {
-    switch (deviceType) {
-      case 'RGBDim':
-        return 'rgbIcon';
-      case 'BiColor':
-        return 'biIcon';
-      case 'Spot':
-        return 'spotIcon';
-      case 'Fill':
-        return 'fillIcon';
-      case 'HMI':
-        return 'spotIcon';
-      case 'Misc':
-        return 'miscIcon';
-      default:
-        return '';
-    }
-  }
+  // Class names for the device type icon
+  const deviceTypeClassMap: Record<string, string> = {
+    RGBDim: 'rgbIcon',
+    BiColor: 'biIcon',
+    Spot: 'spotIcon',
+    Fill: 'fillIcon',
+    HMI: 'spotIcon',
+    Misc: 'miscIcon',
+  };
 
   // Sort list by ID
   const sortedDevices = [...devices].sort((a, b) => a.id - b.id);
@@ -79,7 +69,7 @@ const DeviceList: React.FC<DeviceListProps> = ({ devices, onDeviceButtonClick, i
                 marginTop: index === devices.length - 1 && devices.length > 1 ? '10px' : '0',
               }}
             >
-              <div className={`circle ${getClassByDeviceType(device.device_type)}`}></div>
+              <div className={`circle ${deviceTypeClassMap[device.device_type] || ''}`}></div>
               <div className='nameNumberBox'>
                 <span className='number'>{device.id}</span>
                 <span

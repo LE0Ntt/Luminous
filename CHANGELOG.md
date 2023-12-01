@@ -13,6 +13,10 @@
   - Added translation, color indication & fade out
 - LightSettings
   - Save with _ENTER_ if no input is focused
+  - Switched to SocketIO for save, update, and delete instead of http
+  - Updates reload sliders in Studio and devices in LightFX
+  - Default number for new devices is last device number + 1
+  - Changing device type does not reset DMX range if previously set
 - About
   - Linked changelog
   - Spiced up the logo with an interactive twist
@@ -26,6 +30,8 @@
 - Titlebar small visual touch-ups
 - Update fill light and bi-color light icons
 - Set dark mode as default to prevent bright flash on startup
+- Updated scene placeholder dashed border to be more symmetrical
+- Fade out red error outline on faulty inputs
 
 ### Fixes
 

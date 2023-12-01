@@ -33,7 +33,7 @@ const Studio = () => {
   const navigate = useNavigate();
   // FaderValues from FaderContext
   const { faderValues, setFaderValue } = useFaderContext();
-  const { url, connected } = useConnectionContext();
+  const { url, connected, on, off } = useConnectionContext();
   // Language
   const { t } = useContext(TranslationContext);
 
@@ -108,8 +108,25 @@ const Studio = () => {
         forceRender((prev) => !prev);
       }
     };
+
+    // If a device is updated, reload the sliders
+    const lightRespone = (data: any) => {
+      if (data.message === 'success') {
+        fetchSliders();
+      }
+    };
+    const lightDeleted = () => {
+      fetchSliders();
+    };
+
     window.addEventListener('reverseOrder', handleStorageChange as EventListener);
-    return () => window.removeEventListener('reverseOrder', handleStorageChange as EventListener);
+    on('light_response', lightRespone);
+    on('light_deleted', lightDeleted);
+    return () => {
+      window.removeEventListener('reverseOrder', handleStorageChange as EventListener);
+      off('light_response', lightRespone);
+      off('light_deleted', lightDeleted);
+    };
   }, []);
 
   // Loads the fader values from the database

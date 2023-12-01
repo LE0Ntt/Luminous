@@ -27,13 +27,14 @@ interface SettingsProps {
 function LightSettings({ onClose }: SettingsProps) {
   const [isNewDevice, setIsNewDevice] = useState(false);
   const { t } = useContext(TranslationContext);
-  const { url } = useConnectionContext();
+  const { url, emit, on, off } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceConfig>();
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
   const [inputName, setInputName] = useState('');
   const [inputDMXstart, setInputDMXstart] = useState('');
   const [inputDMXrange, setInputDMXrange] = useState('');
+  const [rangeChanged, setRangeChanged] = useState(false);
   const [inputUniverse, setInputUniverse] = useState('');
   const [inputType, setInputType] = useState('');
   const [inputNumber, setInputNumber] = useState('');
@@ -80,10 +81,11 @@ function LightSettings({ onClose }: SettingsProps) {
     }
   };
 
-  // Save the device with ENTER if no input is focused
+  // Load on mount
   useEffect(() => {
     fetchDevices();
 
+    // Save the device with ENTER if no input is focused
     const handleKeyDown = (e: KeyboardEvent) => {
       const isInputActive = document.activeElement && document.activeElement.tagName === 'INPUT';
 
@@ -92,10 +94,34 @@ function LightSettings({ onClose }: SettingsProps) {
       }
     };
 
+    // If a device is updated, reload the devices
+    const lightRespone = (data: any) => {
+      console.log(data.message === 'success' ? 'Device successfully updated' : `${data.message.replace('_', ' ')}!`);
+      if (data.message !== 'success') {
+        const textBox = document.getElementsByClassName('deviceNumber')[0] as HTMLInputElement;
+        if (textBox) {
+          textBox.classList.add('error-outline');
+          textBox.focus();
+          setTimeout(() => {
+            textBox.classList.remove('error-outline');
+          }, 4000);
+        }
+      } else {
+        deselectDivice();
+      }
+    };
+    const lightDeleted = () => {
+      deselectDivice();
+    };
+
+    on('light_response', lightRespone);
+    on('light_deleted', lightDeleted);
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      off('light_response', lightRespone);
+      off('light_deleted', lightDeleted);
     };
   }, []);
 
@@ -155,6 +181,7 @@ function LightSettings({ onClose }: SettingsProps) {
     if (!isNaN(numericValue)) {
       numericValue = Math.max(1, Math.min(513 - parseInt(inputDMXstart), numericValue));
       setInputDMXrange(Math.round(numericValue).toString());
+      setRangeChanged(true);
     } else {
       setInputDMXrange(selectedDevice?.attributes?.channel?.length?.toString() || '4'); // Reset value if input is NaN
     }
@@ -170,7 +197,7 @@ function LightSettings({ onClose }: SettingsProps) {
 
     // Set the DMX range to the number of channels of the selected device type
     const valueChannels = LampTypeChannels[value];
-    if (valueChannels) {
+    if (valueChannels && !rangeChanged) {
       setInputDMXrange(valueChannels.length.toString());
     }
   };
@@ -190,19 +217,26 @@ function LightSettings({ onClose }: SettingsProps) {
   };
 
   const handleDeselectDevice = (device: DeviceConfig) => {
+    deselectDivice();
+  };
+
+  const deselectDivice = () => {
     setSelectedDevice(undefined);
-    !isNewDevice && setUnselectedDevices([...unselectedDevices, device]);
+    //!isNewDevice && setUnselectedDevices([...unselectedDevices, device]); // instead of fetching
     setIsNewDevice(false);
     setChannelChangeArray([]);
     setChannelArray([]);
     setInputDMXstart('0');
+    setRangeChanged(false);
+    fetchDevices();
   };
 
   const handleCreateDevice = () => {
     setIsNewDevice(true);
+    const lastDevice = devices.length > 0 ? devices[devices.length - 1] : null;
 
     const newDevice: DeviceConfig = {
-      id: devices.length + 1,
+      id: Math.min(lastDevice ? lastDevice.id + 1 : 1, 691), // Last device ID + 1
       deviceValue: 0,
       name: t('ls_newDevice'),
       attributes: undefined,
@@ -216,7 +250,7 @@ function LightSettings({ onClose }: SettingsProps) {
     setInputDMXrange('4');
     setInputUniverse('U1');
     setInputType('RGBDim');
-    setInputNumber(newDevice?.id.toString() || '1');
+    setInputNumber(newDevice.id.toString() || '1');
   };
 
   // Set the initial channel array and update it
@@ -282,66 +316,6 @@ function LightSettings({ onClose }: SettingsProps) {
     setShowAdminPassword(true);
   };
 
-  const handleResponse = (data: { message: string }, textBoxClass: string) => {
-    console.log(data.message === 'success' ? 'Device successfully updated' : `${data.message.replace('_', ' ')}!`);
-    if (data.message !== 'success') {
-      const textBox = document.getElementsByClassName(textBoxClass)[0] as HTMLInputElement;
-      textBox.focus();
-      textBox.style.outline = '2px solid red';
-      textBox.style.outlineOffset = '-1px';
-    } else {
-      setSelectedDevice(undefined);
-      setIsNewDevice(false);
-      setChannelChangeArray([]);
-      setChannelArray([]);
-      setInputDMXstart('0');
-      fetchDevices();
-    }
-  };
-
-  const sendDeviceData = (
-    path: string,
-    body:
-      | {
-          name: string;
-          number: string;
-          device_type: string;
-          universe: string;
-          attributes: { channel: { id: number; dmx_channel: string; channel_type: string }[] };
-        }
-      | {
-          id: number | undefined;
-          name: string;
-          number: string;
-          device_type: string;
-          universe: string;
-          attributes: { channel: { id: number; dmx_channel: string; channel_type: string }[] };
-        }
-  ) => {
-    fetch(`${url}/${path}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => handleResponse(data, 'deviceNumber'))
-      .catch((error) => console.error('Error:', error));
-  };
-
-  const updateDevice = () => {
-    const commonBody = {
-      name: inputName,
-      number: inputNumber,
-      device_type: inputType,
-      universe: inputUniverse,
-      attributes: {
-        channel: channelArray.map(({ id, dmx_channel, channel_type }) => ({ id, dmx_channel, channel_type })),
-      },
-    };
-    const body = isNewDevice ? commonBody : { ...commonBody, id: selectedDevice?.id };
-    sendDeviceData(isNewDevice ? 'addlight' : 'updatelight', body);
-  };
-
   const handleRemoveDevice = () => {
     if (isNewDevice) {
       setSelectedDevice(undefined);
@@ -351,37 +325,26 @@ function LightSettings({ onClose }: SettingsProps) {
     }
   };
 
-  const removeDevice = () => {
-    // send remove device request
-    fetch(url + '/removelight', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: selectedDevice?.id,
-      }),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        setSelectedDevice(undefined);
-        setIsNewDevice(false);
-        setChannelChangeArray([]);
-        setChannelArray([]);
-        setInputDMXstart('0');
-        fetchDevices();
-      })
-      .catch((error) => console.error('Error:', error));
-  };
-
   // Callback function for the admin password component
   const handleAdminPasswordConfirm = useCallback(
     (isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
       if (isConfirmed) {
         if (istDelete) {
-          removeDevice();
+          // send remove device request
+          emit('light_delete', { id: selectedDevice?.id });
         } else {
-          updateDevice();
+          const commonBody = {
+            name: inputName,
+            number: inputNumber,
+            device_type: inputType,
+            universe: inputUniverse,
+            attributes: {
+              channel: channelArray.map(({ id, dmx_channel, channel_type }) => ({ id, dmx_channel, channel_type })),
+            },
+          };
+          const body = isNewDevice ? commonBody : { ...commonBody, id: selectedDevice?.id };
+
+          emit(isNewDevice ? 'light_add' : 'light_update', body);
         }
       }
     },

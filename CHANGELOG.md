@@ -13,6 +13,8 @@
   - Added translation, color indication & fade out
 - LightSettings
   - Save with _ENTER_ if no input is focused
+  - Switched to SocketIO for save, update, and delete instead of http
+  - Updates reload sliders in Studio and devices in LightFX
 - About
   - Linked changelog
   - Spiced up the logo with an interactive twist

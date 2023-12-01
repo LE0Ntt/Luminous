@@ -39,7 +39,7 @@
 - [ ] LightFX
   - [ ] Change to current state of the first light
   - [ ] Effects as misc faders for now
-  - [ ] Device list server updates
+  - [x] Device list server updates
   - [ ] New bi-color slider with higher resolution and value display/input
 - [ ] PI
   - [ ] Production server

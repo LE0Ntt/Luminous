@@ -30,7 +30,7 @@ import iro from '@jaames/iro';
 // LightFX
 function Control() {
   const { t } = useContext(TranslationContext);
-  const { url, connected, emit } = useConnectionContext();
+  const { url, connected, emit, on, off } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
@@ -53,19 +53,23 @@ function Control() {
   }
 
   useEffect(() => {
-    const fetchDevices = async () => {
+    const fetchDevices = async (reset: boolean) => {
       try {
         const response = await fetch(url + '/fader');
         const data = await response.json();
         const parsedData = JSON.parse(data);
         parsedData.shift(); // remove master
         setDevices(parsedData);
+        if (reset) {
+          setUnselectedDevices(parsedData);
+          setSelectedDevices([]);
+        }
       } catch (error) {
         console.log(error);
       }
     };
 
-    if (connected) fetchDevices();
+    if (connected) fetchDevices(false);
 
     // Load saved solo state from session storage
     setIsSolo(sessionStorage.getItem('controlSolo') === 'true');
@@ -83,7 +87,24 @@ function Control() {
       setAnimiation(true);
     }, 500);
 
-    return () => clearTimeout(timer);
+    // If a device is updated, reload the devices
+    const lightRespone = (data: any) => {
+      if (data.message === 'success') {
+        fetchDevices(true); // reload devices
+      }
+    };
+    const lightDeleted = () => {
+      fetchDevices(true);
+    };
+
+    on('light_response', lightRespone);
+    on('light_deleted', lightDeleted);
+
+    return () => {
+      clearTimeout(timer);
+      off('light_response', lightRespone);
+      off('light_deleted', lightDeleted);
+    };
   }, []);
 
   useEffect(() => {
@@ -96,17 +117,6 @@ function Control() {
         setHeight(-3);
       } else {
         setHeight(Math.min(selectedDevices.length * 71 + 36, 462));
-      }
-
-      //Check if devices got changed on the server
-      const isDifferent = devices.every((device) => {
-        return unselectedDevices.includes(device) && selectedDevices.includes(device);
-      });
-
-      if (isDifferent || unselectedDevices.length + selectedDevices.length !== devices.length) {
-        setUnselectedDevices(devices);
-        setSelectedDevices([]);
-        console.log('devices changed');
       }
     }
 

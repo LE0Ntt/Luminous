@@ -27,7 +27,7 @@ interface SettingsProps {
 function LightSettings({ onClose }: SettingsProps) {
   const [isNewDevice, setIsNewDevice] = useState(false);
   const { t } = useContext(TranslationContext);
-  const { url, emit, on } = useConnectionContext();
+  const { url, emit, on, off } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceConfig>();
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
@@ -80,10 +80,11 @@ function LightSettings({ onClose }: SettingsProps) {
     }
   };
 
-  // Save the device with ENTER if no input is focused
+  // Load on mount
   useEffect(() => {
     fetchDevices();
 
+    // Save the device with ENTER if no input is focused
     const handleKeyDown = (e: KeyboardEvent) => {
       const isInputActive = document.activeElement && document.activeElement.tagName === 'INPUT';
 
@@ -92,10 +93,35 @@ function LightSettings({ onClose }: SettingsProps) {
       }
     };
 
+    // If a device is updated, reload the devices
+    const lightRespone = (data: any) => {
+      console.log(data.message === 'success' ? 'Device successfully updated' : `${data.message.replace('_', ' ')}!`);
+      if (data.message !== 'success') {
+        const textBox = document.getElementsByClassName('deviceNumber')[0] as HTMLInputElement;
+        textBox.focus();
+        textBox.style.outline = '2px solid red';
+        textBox.style.outlineOffset = '-1px';
+      } else {
+        lightDeleted(); // reset selected device
+      }
+    };
+    const lightDeleted = () => {
+      setSelectedDevice(undefined);
+      setIsNewDevice(false);
+      setChannelChangeArray([]);
+      setChannelArray([]);
+      setInputDMXstart('0');
+      fetchDevices();
+    };
+
+    on('light_response', lightRespone);
+    on('light_deleted', lightDeleted);
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      off('light_response', lightRespone);
+      off('light_deleted', lightDeleted);
     };
   }, []);
 
@@ -282,37 +308,6 @@ function LightSettings({ onClose }: SettingsProps) {
     setShowAdminPassword(true);
   };
 
-  const updateDevice = () => {
-    const commonBody = {
-      name: inputName,
-      number: inputNumber,
-      device_type: inputType,
-      universe: inputUniverse,
-      attributes: {
-        channel: channelArray.map(({ id, dmx_channel, channel_type }) => ({ id, dmx_channel, channel_type })),
-      },
-    };
-    const body = isNewDevice ? commonBody : { ...commonBody, id: selectedDevice?.id };
-    //sendDeviceData(isNewDevice ? 'addlight' : 'updatelight', body);
-    emit(isNewDevice ? 'light_add' : 'light_update', body);
-    on('light_response', (data) => {
-      console.log(data.message === 'success' ? 'Device successfully updated' : `${data.message.replace('_', ' ')}!`);
-      if (data.message !== 'success') {
-        const textBox = document.getElementsByClassName('deviceNumber')[0] as HTMLInputElement;
-        textBox.focus();
-        textBox.style.outline = '2px solid red';
-        textBox.style.outlineOffset = '-1px';
-      } else {
-        setSelectedDevice(undefined);
-        setIsNewDevice(false);
-        setChannelChangeArray([]);
-        setChannelArray([]);
-        setInputDMXstart('0');
-        fetchDevices();
-      }
-    });
-  };
-
   const handleRemoveDevice = () => {
     if (isNewDevice) {
       setSelectedDevice(undefined);
@@ -322,29 +317,26 @@ function LightSettings({ onClose }: SettingsProps) {
     }
   };
 
-  const removeDevice = () => {
-    // send remove device request
-    emit('light_delete', { id: selectedDevice?.id });
-    on('light_deleted', (data) => {
-      if (data.id === selectedDevice?.id) {
-        setSelectedDevice(undefined);
-        setIsNewDevice(false);
-        setChannelChangeArray([]);
-        setChannelArray([]);
-        setInputDMXstart('0');
-        fetchDevices();
-      }
-    });
-  };
-
   // Callback function for the admin password component
   const handleAdminPasswordConfirm = useCallback(
     (isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
       if (isConfirmed) {
         if (istDelete) {
-          removeDevice();
+          // send remove device request
+          emit('light_delete', { id: selectedDevice?.id });
         } else {
-          updateDevice();
+          const commonBody = {
+            name: inputName,
+            number: inputNumber,
+            device_type: inputType,
+            universe: inputUniverse,
+            attributes: {
+              channel: channelArray.map(({ id, dmx_channel, channel_type }) => ({ id, dmx_channel, channel_type })),
+            },
+          };
+          const body = isNewDevice ? commonBody : { ...commonBody, id: selectedDevice?.id };
+
+          emit(isNewDevice ? 'light_add' : 'light_update', body);
         }
       }
     },

@@ -98,9 +98,13 @@ function LightSettings({ onClose }: SettingsProps) {
       console.log(data.message === 'success' ? 'Device successfully updated' : `${data.message.replace('_', ' ')}!`);
       if (data.message !== 'success') {
         const textBox = document.getElementsByClassName('deviceNumber')[0] as HTMLInputElement;
-        textBox.focus();
-        textBox.style.outline = '2px solid red';
-        textBox.style.outlineOffset = '-1px';
+        if (textBox) {
+          textBox.classList.add('error-outline');
+          textBox.focus();
+          setTimeout(() => {
+            textBox.classList.remove('error-outline');
+          }, 4000);
+        }
       } else {
         lightDeleted(); // reset selected device
       }

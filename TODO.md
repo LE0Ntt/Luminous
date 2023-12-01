@@ -71,6 +71,7 @@
   - [ ] Add rgb traverse lights
   - [ ] Add fill light icon
   - [ ] Rearrange devices
+  - [ ] Move code to own component
 - [ ] Scenes
   - [ ] See what you save
   - [ ] Edit scenes

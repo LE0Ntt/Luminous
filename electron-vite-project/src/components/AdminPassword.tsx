@@ -59,9 +59,13 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
           console.log('Password wrong');
           // If the password is wrong, the text box will be highlighted in red
           const textBox = document.getElementsByClassName('AddSceneTextBox')[0] as HTMLInputElement;
-          textBox.focus();
-          textBox.style.outline = '2px solid red';
-          textBox.style.outlineOffset = '-1px';
+          if (textBox) {
+            textBox.classList.add('error-outline');
+            textBox.focus();
+            setTimeout(() => {
+              textBox.classList.remove('error-outline');
+            }, 4000);
+          }
         }
       })
       .catch((error) => {

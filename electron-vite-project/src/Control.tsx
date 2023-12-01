@@ -60,7 +60,8 @@ function Control() {
         const parsedData = JSON.parse(data);
         parsedData.shift(); // remove master
         setDevices(parsedData);
-        if (reset) {
+
+        if (reset || savedUnselectedDevices.length == 0) {
           setUnselectedDevices(parsedData);
           setSelectedDevices([]);
         }

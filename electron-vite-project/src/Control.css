@@ -156,6 +156,15 @@
   transform: translate(-50%, -50%);
 }
 
+.sliders {
+  min-width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: flex-start;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
 .controlButtons {
   height: 90px;
   width: 553px;

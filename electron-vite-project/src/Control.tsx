@@ -12,7 +12,7 @@
  *
  * @file Control.tsx
  */
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { TranslationContext } from './components/TranslationContext';
 import { useConnectionContext } from './components/ConnectionContext';
 import { useLocation } from 'react-router-dom';
@@ -179,6 +179,48 @@ function Control() {
     setPrevFaderValues([...faderValues[0]]);
   }, [faderValues]);
 
+  // Misc fader support
+  interface SliderConfig {
+    attributes: any;
+    universe: string;
+    id: number;
+    sliderValue: number;
+    name: string;
+  }
+
+  const [sliders, setSliders] = useState<SliderConfig[]>([]);
+
+  useEffect(() => {
+    const fetchSliders = async () => {
+      try {
+        const response = await fetch(url + '/fader');
+        const data = await response.json();
+        setSliders(JSON.parse(data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchSliders();
+  }, []);
+
+  const [effects, setEffects] = useState(true);
+
+  useEffect(() => {
+    // console.log(JSON.stringify(selectedDevices));
+    selectedDevices.forEach((device) => {
+      device.attributes.channel.forEach((channel: any) => {
+        if (!['main', 'r', 'g', 'b', 'bi'].includes(channel.channel_type)) {
+          setEffects(true);
+          //console.log(JSON.stringify(channel.channel_type));
+          //console.log(effects);
+        } else {
+          setEffects(false);
+          //console.log(effects);
+        }
+      });
+    });
+  }, [selectedDevices]);
+
   return (
     <div>
       {selected ? (
@@ -268,9 +310,32 @@ function Control() {
             {/* Effects */}
             <div className='controlEffects innerWindow'>
               <span className='controlTitle'>{t('effects')}</span>
-              <div className='centered-wrapper'>
-                <span className='noSupport'>{t('noSupport')}</span>
-                <div>Hier kommen alle Effekte rein</div>
+
+              <div className='centered-wrapper'>{effects ? null : <span className='noSupport'>{t('noSupport')}</span>}</div>
+              <div className='sliders'>
+                {sliders
+                  .slice(1)
+                  .filter((slider) => selectedDevices.some((channel) => channel.id === slider.id))
+                  .map((slider) => (
+                    <React.Fragment key={slider.id}>
+                      {slider.attributes.channel
+                        .filter(
+                          (channel: { id: number; channel_type: string }) =>
+                            channel.channel_type !== 'main' && channel.channel_type !== 'r' && channel.channel_type !== 'g' && channel.channel_type !== 'b' && channel.channel_type !== 'bi'
+                        )
+                        .map((channel: { id: number; channel_type: string }) => (
+                          <div key={slider.id + '-' + channel.id}>
+                            <h2 className='faderText'>{slider.id}</h2>
+                            <Fader
+                              key={slider.id + '-' + channel.id}
+                              id={channel.id}
+                              sliderGroupId={slider.id}
+                              name={channel.id !== 0 ? channel.channel_type : slider.name}
+                            />
+                          </div>
+                        ))}
+                    </React.Fragment>
+                  ))}
               </div>
             </div>
           </div>

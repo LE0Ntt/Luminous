@@ -64,7 +64,7 @@ function BigView({ onClose }: BigViewProps) {
   }, []);
 
   return (
-    <div>
+    <>
       <div
         className='backgroundOverlay'
         onClick={onClose}
@@ -243,7 +243,7 @@ function BigView({ onClose }: BigViewProps) {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

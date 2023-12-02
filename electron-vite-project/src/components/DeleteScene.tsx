@@ -46,7 +46,7 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
   }, []);
 
   return (
-    <div>
+    <>
       <div
         className='backgroundOverlay'
         onClick={onClose}
@@ -82,7 +82,7 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

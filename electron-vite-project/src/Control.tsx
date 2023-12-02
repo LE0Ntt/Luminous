@@ -237,9 +237,9 @@ function Control() {
   }, [selectedDevices]);
 
   return (
-    <div>
+    <>
       {selected ? (
-        <div>
+        <>
           <div
             className={selectAnimation}
             style={{ height: height - 17 + 'px' }}
@@ -443,9 +443,9 @@ function Control() {
               </filter>
             </defs>
           </svg>
-        </div>
+        </>
       ) : (
-        <div>
+        <>
           <div className='noSelectWindow'>
             <div className='lightFader innerWindow'></div>
             <div className='controlButtons innerWindow'></div>
@@ -462,7 +462,7 @@ function Control() {
               <p dangerouslySetInnerHTML={{ __html: t('noDevices') }}></p>
             </div>
           </div>
-        </div>
+        </>
       )}
       <div
         className={deviceWindow}
@@ -477,7 +477,7 @@ function Control() {
       <div className={hide}></div>
       {addScene && <AddScene onClose={() => setAddScene(false)} />}
       {saveSceneAdmin && <AdminPassword onClose={() => setSaveSceneAdmin(false)} />}
-    </div>
+    </>
   );
 }
 

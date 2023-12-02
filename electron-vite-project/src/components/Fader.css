@@ -12,7 +12,6 @@
  * 
  * @file Fader.css
  */
-@import url(../Color.css);
 
 :root {
   --sliderHeight: 260px;

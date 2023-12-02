@@ -406,7 +406,7 @@ function LightSettings({ onClose }: SettingsProps) {
               </div>
               <div className='LightSettingsTextBoxContainer'>
                 <div>
-                  <label>Universe:</label>
+                  <label>{t('ls_universe')}</label>
                   <br />
                   <select
                     className='LightSettingsTextBoxSmall'
@@ -457,7 +457,7 @@ function LightSettings({ onClose }: SettingsProps) {
                   </select>
                 </div>
                 <div>
-                  <label>DMX Start</label> <br />
+                  <label>{t('ls_start')}</label> <br />
                   <input
                     className='LightSettingsTextBoxSmall'
                     type='text'
@@ -468,7 +468,7 @@ function LightSettings({ onClose }: SettingsProps) {
                   />
                 </div>
                 <div>
-                  <label>DMX Range</label> <br />
+                  <label>{t('ls_range')}</label> <br />
                   <input
                     className='LightSettingsTextBoxSmall'
                     type='text'

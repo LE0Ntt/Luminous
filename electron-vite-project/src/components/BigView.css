@@ -12,7 +12,6 @@
  * 
  * @file BigView.css
  */
-@import url(../Color.css);
 
 .BigViewContainer {
   position: fixed;

@@ -1,7 +1,3 @@
-import React from 'react';
-import '../Color.css';
-import '../index.css';
-
 interface IconSettingsProps {
   color?: string; // Optional prop for color+
   size?: string; // Optional prop for size

@@ -89,7 +89,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
   }, []);
 
   return (
-    <div>
+    <>
       <div
         className='backgroundOverlay'
         onClick={onClose}
@@ -137,7 +137,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

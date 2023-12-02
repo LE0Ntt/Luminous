@@ -12,7 +12,6 @@
  * 
  * @file NoConnection.css
  */
-@import url(../Color.css);
 
 .noConnectionContent {
   display: flex;

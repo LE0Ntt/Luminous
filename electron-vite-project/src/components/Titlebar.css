@@ -12,7 +12,6 @@
  * 
  * @file Titlebar.css
  */
-@import url(../Color.css);
 
 .titlebarComp {
   position: fixed;
@@ -60,7 +59,6 @@ nav ul li button {
 .hiddenlogo {
   height: 11px;
   width: 50px;
-  mask-position: center;
   top: 7px;
   position: relative;
   margin-right: 5px;
@@ -68,7 +66,7 @@ nav ul li button {
 
 .settingsButton {
   height: 23px;
-  width: 30px;
+  width: 31px;
   display: flex;
   justify-content: center;
   align-items: center;

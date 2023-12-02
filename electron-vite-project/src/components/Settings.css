@@ -12,7 +12,6 @@
  * 
  * @file Settings.css
  */
-@import url(../Color.css);
 
 .SettingsContainer {
   position: fixed;

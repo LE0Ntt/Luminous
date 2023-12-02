@@ -127,26 +127,24 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
           className='slider sliderTrackColor'
         />
       </div>
-      <div>
-        <div className='valueDisplay'>
-          <input
-            type='text'
-            value={inputValue}
-            onChange={handleInputChange}
-            onBlur={handleInputConfirm}
-            onKeyDown={handleKeyDown}
-            className='inputNum'
-            style={{ width: `${Math.max(1, inputValue.toString().length)}ch` }}
-          />
-          <span className='inputNumPercent'>%</span>
-        </div>
-        <span
-          title={name}
-          className='faderName'
-        >
-          {name}
-        </span>
+      <div className='valueDisplay'>
+        <input
+          type='text'
+          value={inputValue}
+          onChange={handleInputChange}
+          onBlur={handleInputConfirm}
+          onKeyDown={handleKeyDown}
+          className='inputNum'
+          style={{ width: `${Math.max(1, inputValue.toString().length)}ch` }}
+        />
+        <span className='inputNumPercent'>%</span>
       </div>
+      <span
+        title={name}
+        className='faderName'
+      >
+        {name}
+      </span>
     </div>
   );
 };

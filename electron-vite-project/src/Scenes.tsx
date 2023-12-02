@@ -65,7 +65,7 @@ function Scenes() {
   };
 
   return (
-    <div>
+    <>
       <div className='window scenesMain'>
         <ScenesComponent
           sideId={1}
@@ -116,7 +116,7 @@ function Scenes() {
         />
       )}
       {saveSceneAdmin && <AdminPassword onClose={() => setSaveSceneAdmin(false)} />}
-    </div>
+    </>
   );
 }
 

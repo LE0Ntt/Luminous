@@ -188,7 +188,7 @@ const Studio = () => {
                   />
                 )}
               </div>
-              <div>
+              <>
                 <div className='faders window'>
                   <div className='sliders'>
                     {sliders
@@ -260,7 +260,7 @@ const Studio = () => {
                     </svg>
                   </Button>
                 </div>
-              </div>
+              </>
             </>
           )}
         </div>
@@ -479,7 +479,7 @@ const Studio = () => {
                         <div key={`${rowIndex}-${colIndex}`}>
                           <div className='studioOverviewLight'>
                             {slider && (
-                              <div>
+                              <>
                                 <img
                                   src={lampImage}
                                   alt='Lamp'
@@ -489,7 +489,7 @@ const Studio = () => {
                                   <div className='studioOverviewInfopanelText'>#{slider.id}</div>
                                   <div className='studioOverviewInfopanelBrightness'>{t('Off')}</div>
                                 </div>
-                              </div>
+                              </>
                             )}
                           </div>
                         </div>

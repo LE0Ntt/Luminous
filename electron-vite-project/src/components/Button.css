@@ -12,7 +12,6 @@
  * 
  * @file Button.css
  */
-@import url(../Color.css);
 
 .buttonDesign {
   background: var(--colorButton);

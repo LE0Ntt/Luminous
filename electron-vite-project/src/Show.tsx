@@ -14,7 +14,6 @@
  */
 import { useConnectionContext } from './components/ConnectionContext';
 import './Show.css';
-import './Color.css';
 import Fader from './components/Fader';
 import ScenesComponent from './components/ScenesComponent';
 import MyTimeline from './components/Timeline';
@@ -25,7 +24,7 @@ function Show() {
   const { isDragging, setIsDragging } = useFaderContext();
 
   return (
-    <div>
+    <>
       <div className='window showScenes'>
         <ScenesComponent sideId={2} />
       </div>
@@ -46,7 +45,7 @@ function Show() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -12,7 +12,6 @@
  * 
  * @file LightSettings.css
  */
-@import url(../Color.css);
 
 .LightSettingsContainer {
   position: fixed;

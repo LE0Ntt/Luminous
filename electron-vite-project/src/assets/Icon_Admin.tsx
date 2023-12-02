@@ -1,7 +1,3 @@
-import React from 'react';
-import '../Color.css';
-import '../index.css';
-
 interface IconAdminProps {
   color?: string; // Optional prop for color
   size?: number; // Optional prop for size in pixels

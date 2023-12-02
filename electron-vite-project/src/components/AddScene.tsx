@@ -98,7 +98,7 @@ function AddScene({ onClose }: AddSceneProps) {
   }, [name, isChecked]);
 
   return (
-    <div>
+    <>
       <div
         className='backgroundOverlay'
         onClick={onClose}
@@ -158,7 +158,7 @@ function AddScene({ onClose }: AddSceneProps) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

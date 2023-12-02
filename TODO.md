@@ -53,7 +53,7 @@
 - [ ] Rethink scene logic: Off after e.g. bi-color change?
 - [x] Add support for HMI lights and other devices with on/off channel
 - [ ] Turn off all devices when closing app
-- [ ] Input for faders with mousewheel or keyboard (arrow keys)
+- [x] Input for faders with mousewheel or keyboard (arrow keys)
 - [ ] BigView: Improve visualisation
   - [ ] Device groups
   - [ ] Faders for different channels

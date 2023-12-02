@@ -13,9 +13,7 @@
  * @file server.py
 """
 from server import app
-from flask_socketio import SocketIO
-import socket_events
-from socket_events import socketio
+from socket_events import register_socketio_events, socketio
 import sys
 
 # --------------LED-----------------#
@@ -46,8 +44,7 @@ except ModuleNotFoundError:
 # -------------LED-END----------------#
 
 
-socketio = SocketIO(app, cors_allowed_origins="*", ping_timeout=3, ping_interval=5)
-socket_events.register_socketio_events(socketio)
+register_socketio_events(socketio)
 
 
 def run_server():

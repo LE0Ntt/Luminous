@@ -31,6 +31,7 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
   const { emit } = useConnectionContext();
   const { faderValues, setFaderValue } = useFaderContext();
   const [timerRunning, setTimerRunning] = useState<boolean | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   // Refs to keep track of fader values and if they need to be sent
   const cacheValueRef = useRef<number>(faderValues[sliderGroupId][id]);
@@ -108,8 +109,46 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
     }
   };
 
+  // Scroll wheel and arrow keys support
+  useEffect(() => {
+    const updateFaderValue = (delta: number) => {
+      const currentValue = faderValues[sliderGroupId][id];
+      let newValue = Math.max(0, Math.min(currentValue + delta, 255));
+      setFaderValue(sliderGroupId, id, newValue);
+      emitValue(newValue);
+    };
+
+    const handleWheel = (event: { preventDefault: () => void; ctrlKey: any; deltaY: number }) => {
+      if (!isHovered) return;
+      event.preventDefault();
+      const step = event.ctrlKey ? 10 : 1; // If CTRL is pressed, increase/decrease by 10, otherwise by 1
+      updateFaderValue(-Math.sign(event.deltaY) * step);
+    };
+
+    const handleKeyDown = (event: { key: string; preventDefault: () => void; ctrlKey: any }) => {
+      if (!isHovered) return;
+      if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const step = event.ctrlKey ? 10 : 1;
+        updateFaderValue((event.key === 'ArrowUp' ? 1 : -1) * step);
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isHovered]);
+
   return (
-    <div className={faderClassName}>
+    <div
+      className={faderClassName}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className='midPoint'></div>
       <div className='value-slider'>
         <input

@@ -26,7 +26,7 @@ function Header() {
   // Load mode from local storage
   useEffect(() => {
     const storedIsDark = localStorage.getItem('isDark');
-    setIsDark(storedIsDark === 'true');
+    if (storedIsDark !== null) setIsDark(storedIsDark === 'true');
   }, []);
 
   // Set dark/light mode
@@ -115,7 +115,7 @@ function Header() {
       </div>
       <div className='divTheme'>
         <Button
-          onClick={toggleTheme}
+          onClick={() => setIsDark(!isDark)}
           className='buttonTheme'
         >
           {!isDark ? (

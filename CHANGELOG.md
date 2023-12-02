@@ -2,11 +2,12 @@
 
 > All notable changes to this project will be documented in this file.
 
-## [1.1.2] - Pre-Release
+## [1.2.0] - Pre-Release
 
 ### Changes
 
 - Support for HMI lights that automatically switch on when the aperture is opened
+- Faders can now be controlled with the mouse wheel and arrow keys
 - LightFX
   - Only process changed channels
 - Settings error/success message on password change
@@ -23,6 +24,7 @@
 - Code cleanup
   - Removed unnecessary code
   - Removed Vite files for now
+  - Further refinements
 - Connection
   - Reduced SocketIO `ping_timeout` to quickly detect Pi shutdowns
   - Fetch faders, scenes and devices only if connected

@@ -40,14 +40,13 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
 
   // Calculating the display value (0 to 100%) and update input value
   const scaledDisplayValue = (faderValues[sliderGroupId][id] / 255) * 100;
-  const displayValue = Math.round(scaledDisplayValue);
-  const [inputValue, setInputValue] = useState<any>(displayValue);
+  const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue));
 
   // Update input value when display value changes
   useEffect(() => {
     const finalDisplayValue = isFocused ? scaledDisplayValue.toFixed(1) : Math.round(scaledDisplayValue);
     setInputValue(finalDisplayValue);
-  }, [displayValue, scaledDisplayValue, isFocused]);
+  }, [scaledDisplayValue, isFocused]);
 
   // Emit fader value to the server
   const emitValue = (value: number) => {
@@ -95,7 +94,7 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
       const roundedDisplayValue = Math.round(numericValue);
       setInputValue(roundedDisplayValue);
     } else {
-      setInputValue(displayValue); // Reset value if input is NaN
+      setInputValue(Math.round(scaledDisplayValue)); // Reset value if input is NaN
     }
     setIsFocused(false);
   };
@@ -159,8 +158,8 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
           onChange={handleSliderChange}
           style={{
             background: color
-              ? `linear-gradient(to right, ${color} 0%, ${color} ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`
-              : `linear-gradient(to right, var(--mainColor) 0%, var(--mainColor) ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
+              ? `linear-gradient(to right, ${color} 0%, ${color} ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) 100%)`
+              : `linear-gradient(to right, var(--mainColor) 0%, var(--mainColor) ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
           }}
           className='slider'
         />

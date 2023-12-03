@@ -31,33 +31,30 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
   const { emit } = useConnectionContext();
   const { faderValues, setFaderValue } = useFaderContext();
   const [timerRunning, setTimerRunning] = useState<boolean | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false); // Hover over fader
+  const [isFocused, setIsFocused] = useState(false); // Focus on value input
 
   // Refs to keep track of fader values and if they need to be sent
   const cacheValueRef = useRef<number>(faderValues[sliderGroupId][id]);
   const sendValueRef = useRef<number>(faderValues[sliderGroupId][id]);
 
-  // Generate dynamic class names for the fader
-  const faderClassName = `fader ${height ? 'faderMaster' : ''} ${className}`;
-
   // Calculating the display value (0 to 100%) and update input value
-  const displayValue = Math.round((faderValues[sliderGroupId][id] / 255) * 100);
+  const scaledDisplayValue = (faderValues[sliderGroupId][id] / 255) * 100;
+  const displayValue = Math.round(scaledDisplayValue);
   const [inputValue, setInputValue] = useState<any>(displayValue);
 
+  // Update input value when display value changes
   useEffect(() => {
-    setInputValue(displayValue);
-  }, [displayValue]);
+    const finalDisplayValue = isFocused ? scaledDisplayValue.toFixed(1) : Math.round(scaledDisplayValue);
+    setInputValue(finalDisplayValue);
+    console.log(sliderGroupId, displayValue);
+  }, [displayValue, scaledDisplayValue, isFocused]);
 
   // Emit fader value to the server
   const emitValue = (value: number) => {
     emit('fader_value', { deviceId: sliderGroupId, value: value, channelId: id });
     sendValueRef.current = value;
   };
-
-  // Set fader height by the passed parameter //v1.0.3pre, removed useEffect, because it was not needed
-  if (height) {
-    document.documentElement.style.setProperty('--sliderHeight', `${height}px`);
-  }
 
   // Always send the last value
   useEffect(() => {
@@ -90,16 +87,18 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
 
   // Check if the input is valid and set the fader value
   const handleInputConfirm = () => {
-    let numericValue = parseFloat(inputValue.replace(',', '.'));
+    let numericValue = parseFloat(inputValue.toString().replace(',', '.'));
     if (!isNaN(numericValue)) {
       numericValue = Math.max(0, Math.min(100, numericValue));
       const scaledValue = Math.round((numericValue / 100) * 255);
       setFaderValue(sliderGroupId, id, scaledValue);
       emitValue(scaledValue);
-      setInputValue(Math.round(numericValue).toString());
+      const roundedDisplayValue = Math.round(numericValue);
+      setInputValue(roundedDisplayValue);
     } else {
       setInputValue(displayValue); // Reset value if input is NaN
     }
+    setIsFocused(false);
   };
 
   // Confirm with ENTER
@@ -141,13 +140,14 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isHovered]);
+  }, [isHovered, isFocused]);
 
   return (
     <div
-      className={faderClassName}
+      className={`fader ${height ? 'faderMaster' : ''} ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      style={{ '--sliderHeight': `${height}px` } as React.CSSProperties}
     >
       <div className='midPoint'></div>
       <div className='value-slider'>
@@ -163,7 +163,7 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
               ? `linear-gradient(to right, ${color} 0%, ${color} ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`
               : `linear-gradient(to right, var(--mainColor) 0%, var(--mainColor) ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
           }}
-          className='slider sliderTrackColor'
+          className='slider'
         />
       </div>
       <div className='valueDisplay'>
@@ -171,6 +171,7 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
           type='text'
           value={inputValue}
           onChange={handleInputChange}
+          onFocus={() => setIsFocused(true)}
           onBlur={handleInputConfirm}
           onKeyDown={handleKeyDown}
           className='inputNum'

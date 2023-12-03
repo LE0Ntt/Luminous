@@ -34,6 +34,7 @@
 - Set dark mode as default to prevent bright flash on startup
 - Updated scene placeholder dashed border to be more symmetrical
 - Fade out red error outline on faulty inputs
+- Fader now display one decimal place when value input is focused
 
 ### Fixes
 

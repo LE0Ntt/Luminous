@@ -47,7 +47,6 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
   useEffect(() => {
     const finalDisplayValue = isFocused ? scaledDisplayValue.toFixed(1) : Math.round(scaledDisplayValue);
     setInputValue(finalDisplayValue);
-    console.log(sliderGroupId, displayValue);
   }, [displayValue, scaledDisplayValue, isFocused]);
 
   // Emit fader value to the server

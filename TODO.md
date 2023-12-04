@@ -93,8 +93,20 @@
 
 ## Code Cleanup & Comments
 
-- [ ] Server
-- [ ] Client
+- [ ] Backend
+  - [ ] Server
+    - [ ] \_\_init\_\_.py
+    - [ ] models.py
+    - [ ] motorMix_driver.py
+    - [ ] routes.py
+  - [ ] ola_handler.py
+  - [ ] server.py
+  - [ ] socket_events.py
+- [ ] Frontend
+  - [ ] Assets
+    - [ ] Compress
+    - [ ] Check necessity
+    - [ ] Rename to a more consistent naming scheme
   - [ ] Components
     - [x] About.tsx
     - [ ] AddScene.css
@@ -145,7 +157,3 @@
   - [ ] Show.tsx
   - [ ] Studio.css
   - [ ] Studio.tsx
-  - [ ] Assets
-    - [ ] Compress
-    - [ ] Check necessity
-    - [ ] Rename to a more consistent naming scheme

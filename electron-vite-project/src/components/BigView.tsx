@@ -12,7 +12,7 @@
  *
  * @file BigView.tsx
  */
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './BigView.css';
 import Button from './Button';
 import Toggle from './Toggle';
@@ -87,18 +87,21 @@ function BigView({ onClose }: BigViewProps) {
           </div>
           <span className='text-left'>DMX Channel</span>
         </div>
-        {DMX ? (
-          <>
-            <div className='BigViewContent innerWindow'>
-              <div className='universeLabel window'>U1</div>
-              <div className='sliders'>
-                {Array.from({ length: 512 }).map((_, index) => {
-                  const mappedIndex = index + 1;
-                  const matchedSlider = sliders.find(
-                    (slider) => slider.universe === 'U1' && slider.attributes.channel.some((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex)
-                  );
-                  if (matchedSlider) {
-                    const matchedChannel = matchedSlider.attributes.channel.find((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex);
+        {['U1', 'U2'].map((universe) => (
+          <div
+            className='BigViewContent innerWindow'
+            key={universe}
+          >
+            <div className='universeLabel window'>{universe}</div>
+            <div className='sliders'>
+              {DMX
+                ? Array.from({ length: 512 }).map((_, index) => {
+                    const mappedIndex = index + 1;
+                    const matchedSlider = sliders.find(
+                      (slider) => slider.universe === universe && slider.attributes.channel.some((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex)
+                    );
+                    const matchedChannel = matchedSlider ? matchedSlider.attributes.channel.find((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex) : null;
+
                     return (
                       <div
                         key={index}
@@ -107,86 +110,19 @@ function BigView({ onClose }: BigViewProps) {
                         <h2 className='faderText'>{mappedIndex}</h2>
                         <Fader
                           key={index}
-                          id={matchedChannel.id}
-                          sliderGroupId={matchedSlider.id}
-                          name={matchedSlider.name + ' ' + matchedChannel.channel_type}
+                          id={matchedChannel ? matchedChannel.id : mappedIndex}
+                          sliderGroupId={matchedSlider ? matchedSlider.id : universe === 'U1' ? 692 : 693}
+                          name={matchedSlider ? matchedSlider.name + ' ' + matchedChannel.channel_type : 'Channel'}
+                          className={index === 511 ? 'noBorder' : ''}
                         />
                       </div>
                     );
-                  } else {
-                    return (
-                      <div
-                        key={index}
-                        className='sliderHeight'
-                      >
-                        <h2 className='faderText'>{mappedIndex}</h2>
-                        <Fader
-                          key={index}
-                          id={mappedIndex}
-                          sliderGroupId={692}
-                          name='Channel'
-                        />
-                      </div>
-                    );
-                  }
-                })}
-              </div>
-            </div>
-            <div className='BigViewContent innerWindow'>
-              <div className='universeLabel window'>U2</div>
-              <div className='sliders'>
-                {Array.from({ length: 512 }).map((_, index) => {
-                  const mappedIndex = index + 1;
-                  const matchedSlider = sliders.find(
-                    (slider) => slider.universe === 'U2' && slider.attributes.channel.some((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex)
-                  );
-                  if (matchedSlider) {
-                    const matchedChannel = matchedSlider.attributes.channel.find((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex);
-                    return (
-                      <div
-                        key={index}
-                        className='sliderHeight'
-                      >
-                        <h2 className='faderText'>{mappedIndex}</h2>
-                        <Fader
-                          key={index}
-                          id={matchedChannel.id}
-                          sliderGroupId={matchedSlider.id}
-                          name={matchedSlider.name + ' ' + matchedChannel.channel_type}
-                        />
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div
-                        key={index}
-                        className='sliderHeight'
-                      >
-                        <h2 className='faderText'>{mappedIndex}</h2>
-                        <Fader
-                          key={index}
-                          id={mappedIndex}
-                          sliderGroupId={693}
-                          name='Channel'
-                        />
-                      </div>
-                    );
-                  }
-                })}
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className='BigViewContent innerWindow'>
-              <div className='universeLabel window'>U1</div>
-              <div className='sliders'>
-                {sliders
-                  .slice(1)
-                  .filter((slider) => slider.universe === 'U1')
-                  .map((slider) => (
-                    <React.Fragment key={slider.id}>
-                      {slider.attributes.channel.map((channel: { id: number; channel_type: string }) => (
+                  })
+                : sliders
+                    .slice(1)
+                    .filter((slider) => slider.universe === universe)
+                    .map((slider, sliderIndex, filteredSliders) =>
+                      slider.attributes.channel.map((channel: { id: number; channel_type: string }, channelIndex: number) => (
                         <div
                           key={slider.id + '-' + channel.id}
                           className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}
@@ -197,41 +133,14 @@ function BigView({ onClose }: BigViewProps) {
                             id={channel.id}
                             sliderGroupId={slider.id}
                             name={channel.id !== 0 ? channel.channel_type : slider.name}
+                            className={sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 ? 'noBorder' : ''}
                           />
                         </div>
-                      ))}
-                    </React.Fragment>
-                  ))}
-              </div>
+                      ))
+                    )}
             </div>
-            <div className='BigViewContent innerWindow'>
-              <div className='universeLabel window'>U2</div>
-              <div className='sliders'>
-                {sliders
-                  .slice(1)
-                  .filter((slider) => slider.universe === 'U2')
-                  .map((slider) => (
-                    <React.Fragment key={slider.id}>
-                      {slider.attributes.channel.map((channel: { id: number; channel_type: string }) => (
-                        <div
-                          key={slider.id + '-' + channel.id}
-                          className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}
-                        >
-                          <h2 className='faderText'>{slider.id}</h2>
-                          <Fader
-                            key={slider.id + '-' + channel.id}
-                            id={channel.id}
-                            sliderGroupId={slider.id}
-                            name={channel.id !== 0 ? channel.channel_type : slider.name}
-                          />
-                        </div>
-                      ))}
-                    </React.Fragment>
-                  ))}
-              </div>
-            </div>
-          </>
-        )}
+          </div>
+        ))}
         <div className='mainfaderBigView innerWindow'>
           {sliders[0] && (
             <Fader

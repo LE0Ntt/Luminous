@@ -226,6 +226,7 @@ const Studio = () => {
                               id={0}
                               sliderGroupId={slider.id}
                               name={slider.name}
+                              className={sliders.indexOf(slider) === sliders.length - 1 ? 'noBorder' : ''} // No border if last in map
                             />
                             <Button
                               onClick={() => handleClick(slider.id)}

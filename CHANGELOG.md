@@ -7,7 +7,10 @@
 ### Changes
 
 - Support for HMI lights that automatically switch on when the aperture is opened
-- Faders can now be controlled with the mouse wheel and arrow keys
+- Faders
+  - Controllable with the mouse wheel and arrow keys
+  - Value input now displays one decimal place when focused
+  - Removed separator line from last element
 - LightFX
   - Only process changed channels
 - Settings error/success message on password change
@@ -30,11 +33,11 @@
   - Fetch faders, scenes and devices only if connected
   - LightSettings only open if connected
 - Titlebar small visual touch-ups
-- Update fill light and bi-color light icons
+- Reworked fill light and bi-color light icons
 - Set dark mode as default to prevent bright flash on startup
 - Updated scene placeholder dashed border to be more symmetrical
 - Fade out red error outline on faulty inputs
-- Fader now display one decimal place when value input is focused
+- Fader
 
 ### Fixes
 

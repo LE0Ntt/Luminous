@@ -34,6 +34,8 @@
   --colorButton: #ffffff;
   --colorButtonHover: #e9e9e9;
 
+  --closeButton: rgb(148, 148, 148);
+
   --onepStroke: #fff;
   --onepStrokeSwitched: #000000;
 
@@ -107,6 +109,8 @@
 
   --colorButton: rgba(72, 72, 72, 0.5);
   --colorButtonHover: rgba(100, 100, 100, 0.5);
+
+  --closeButton: rgb(145, 145, 145);
 
   --mainColor: #b9bcff;
 

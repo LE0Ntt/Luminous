@@ -85,15 +85,6 @@ function LightSettings({ onClose }: SettingsProps) {
   useEffect(() => {
     fetchDevices();
 
-    // Save the device with ENTER if no input is focused
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const isInputActive = document.activeElement && document.activeElement.tagName === 'INPUT';
-
-      if (e.key === 'Enter' && !isInputActive) {
-        handleUpdateDevice();
-      }
-    };
-
     // If a device is updated, reload the devices
     const lightRespone = (data: any) => {
       console.log(data.message === 'success' ? 'Device successfully updated' : `${data.message.replace('_', ' ')}!`);
@@ -116,14 +107,26 @@ function LightSettings({ onClose }: SettingsProps) {
 
     on('light_response', lightRespone);
     on('light_deleted', lightDeleted);
-    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
       off('light_response', lightRespone);
       off('light_deleted', lightDeleted);
     };
   }, []);
+
+  // Save the device with ENTER if no input is focused
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isInputActive = document.activeElement && document.activeElement.tagName === 'INPUT';
+
+      if (e.key === 'Enter' && !isInputActive && selectedDevice) {
+        handleUpdateDevice();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedDevice]);
 
   const handleInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Limit the name to 20 characters
@@ -364,12 +367,14 @@ function LightSettings({ onClose }: SettingsProps) {
         />
       ) : (
         <div className={`LightSettingsContainer ${selectedDevice ? '' : 'ContainerGap'}`}>
-          <Button
-            onClick={onClose}
+          <button
             className='buttonClose'
+            onClick={onClose}
           >
-            <div className='removeIcon centerIcon'></div>
-          </Button>
+            <div className='xClose'>
+              <div className='xClose xiClose'></div>
+            </div>
+          </button>
           <div className='SettingsTitle'>
             <span>{t('ls_title')}</span>
           </div>

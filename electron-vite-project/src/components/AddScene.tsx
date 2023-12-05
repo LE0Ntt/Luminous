@@ -102,7 +102,7 @@ function AddScene({ onClose }: AddSceneProps) {
       <div
         className='backgroundOverlay'
         onClick={onClose}
-      />{' '}
+      />
       {/* Overlay to close the modal when clicked outside */}
       {showAdminPassword ? (
         <AdminPassword
@@ -111,12 +111,14 @@ function AddScene({ onClose }: AddSceneProps) {
         />
       ) : (
         <div className='AddSceneContainer window'>
-          <Button
-            onClick={onClose}
+          <button
             className='buttonClose'
+            onClick={onClose}
           >
-            <div className='removeIcon centerIcon'></div>
-          </Button>
+            <div className='xClose'>
+              <div className='xClose xiClose'></div>
+            </div>
+          </button>
           <div className='AddSceneContent'>
             <span className='AddSceneTitle'>{t('as_title')}</span>
             <input

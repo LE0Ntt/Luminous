@@ -29,7 +29,7 @@
   - Removed Vite files for now
   - Further refinements
 - Connection
-  - Reduced SocketIO `ping_timeout` to quickly detect Pi shutdowns
+  - Reduced SocketIO `ping_timeout`
   - Fetch faders, scenes and devices only if connected
   - LightSettings only open if connected
 - Titlebar small visual touch-ups
@@ -37,7 +37,7 @@
 - Set dark mode as default to prevent bright flash on startup
 - Updated scene placeholder dashed border to be more symmetrical
 - Fade out red error outline on faulty inputs
-- Fader
+- Redesigned dialog close button to look more elegant
 
 ### Fixes
 
@@ -82,7 +82,7 @@
   - Reset to default value if confirmed input is invalid
   - Fader input accepts decimal values, but only displays integers
     - Value with "%" is now always centred
-- Changed Electron app loading screen that only appears on slow PCs 🙃
+- Changed Electron app loading screen that only appears on slow PCs
 - Reworked Help page
   - Added FAQ
   - Linked Quick Guide

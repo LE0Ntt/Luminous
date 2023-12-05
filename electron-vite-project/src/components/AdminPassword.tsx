@@ -93,15 +93,17 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
       <div
         className='backgroundOverlay'
         onClick={onClose}
-      />{' '}
+      />
       {/* Overlay to close the modal when clicked outside */}
       <div className='AddSceneContainer window'>
-        <Button
-          onClick={onClose}
+        <button
           className='buttonClose'
+          onClick={onClose}
         >
-          <div className='removeIcon centerIcon'></div>
-        </Button>
+          <div className='xClose'>
+            <div className='xClose xiClose'></div>
+          </div>
+        </button>
         <div className='AddSceneContent'>
           <span className='AddSceneTitle'>{t('ap_title')}</span>
           <input

@@ -36,10 +36,6 @@ function Header() {
     document.body.dispatchEvent(new Event('class-change'));
   }, [isDark]);
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-  };
-
   return (
     <div className='header'>
       <div className='containerHeader'>

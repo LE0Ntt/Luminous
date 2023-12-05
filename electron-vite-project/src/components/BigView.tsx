@@ -14,7 +14,6 @@
  */
 import { useContext, useEffect, useState } from 'react';
 import './BigView.css';
-import Button from './Button';
 import Toggle from './Toggle';
 import Fader from './Fader';
 import { useConnectionContext } from './ConnectionContext';
@@ -36,8 +35,9 @@ function BigView({ onClose }: BigViewProps) {
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
-  const [DMX, setDMX] = useState(false);
+  const [DMX, setDMX] = useState(() => localStorage.getItem('dmx') === 'true'); // DMX or Device channels
 
+  // Fetch slider data from the server on mount
   useEffect(() => {
     const fetchSliders = async () => {
       try {
@@ -58,27 +58,24 @@ function BigView({ onClose }: BigViewProps) {
     setDMX(status);
   };
 
-  // On first render, set the DMX value to localStorage
-  useEffect(() => {
-    setDMX(localStorage.getItem('dmx') === 'true');
-  }, []);
-
   return (
     <>
       <div
         className='backgroundOverlay'
         onClick={onClose}
-      />{' '}
+      />
       {/* Overlay to close the modal when clicked outside */}
       <div className='BigViewContainer'>
-        <Button
-          onClick={onClose}
+        <button
           className='buttonClose'
+          onClick={onClose}
         >
-          <div className='removeIcon centerIcon'></div>
-        </Button>
+          <div className='xClose'>
+            <div className='xClose xiClose'></div>
+          </div>
+        </button>
         <div className='BigViewLayer'>
-          <span className='text-right'>{t('bb_lights')}</span>{' '}
+          <span className='text-right'>{t('bb_lights')}</span>
           <div className='toggleUniverse'>
             <Toggle
               onClick={handleToggleChange}
@@ -101,7 +98,6 @@ function BigView({ onClose }: BigViewProps) {
                       (slider) => slider.universe === universe && slider.attributes.channel.some((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex)
                     );
                     const matchedChannel = matchedSlider ? matchedSlider.attributes.channel.find((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex) : null;
-
                     return (
                       <div
                         key={index}

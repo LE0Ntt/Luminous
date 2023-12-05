@@ -14,7 +14,6 @@
  */
 import { useState, useContext, Fragment } from 'react';
 import './Help.css';
-import Button from './Button';
 import { TranslationContext } from './TranslationContext';
 
 interface SettingsProps {
@@ -61,12 +60,14 @@ function Help({ onClose }: SettingsProps) {
         onClick={onClose}
       />
       <div className='LightSettingsContainer'>
-        <Button
-          onClick={onClose}
+        <button
           className='buttonClose'
+          onClick={onClose}
         >
-          <div className='removeIcon centerIcon'></div>
-        </Button>
+          <div className='xClose'>
+            <div className='xClose xiClose'></div>
+          </div>
+        </button>
         <div className='SettingsTitle'>
           <span>{t('help')}</span>
         </div>

@@ -146,12 +146,33 @@
   }
 
   .buttonClose {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+    width: 40px;
+    height: 40px;
     position: absolute;
-    right: 20px;
-    top: 10px;
+    right: 10px;
+    top: 8px;
+  }
+
+  /* .buttonClose:hover {
+    background-color: var(--colorButtonHover);
+  } */
+
+  .buttonClose:hover .xClose {
+    background-color: var(--primary);
+  }
+
+  .xClose {
+    position: relative;
+    height: 24px;
+    width: 3px;
+    background-color: var(--closeButton);
+    margin-left: 19px;
+    transform: rotate(45deg);
+  }
+
+  .xiClose {
+    margin-left: 0;
+    transform: rotate(90deg);
   }
 
   button:focus,
@@ -203,7 +224,7 @@
     backdrop-filter: blur(2px);
     animation-name: fadeIn;
     animation-duration: 0.2s;
-    animation-timing-function: ease;
+    animation-timing-function: ease-out;
   }
 
   @keyframes fadeIn {

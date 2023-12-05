@@ -64,7 +64,7 @@
 - [ ] Scenes different colors
 - [ ] Change scene fade in/out curve
 - [ ] Vite export, use app in browser
-- [ ] Rework close button
+- [x] Rework close button
 - [ ] Studio-Overview
   - [x] Device highlight
   - [x] Move to the left
@@ -112,8 +112,8 @@
     - [ ] AddScene.css
     - [ ] AddScene.tsx
     - [ ] AdminPassword.tsx
-    - [ ] BigView.css
-    - [ ] BigView.tsx
+    - [x] BigView.css
+    - [x] BigView.tsx
     - [ ] Button.css
     - [x] Button.tsx
     - [ ] ColorPicker.tsx

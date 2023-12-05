@@ -14,7 +14,6 @@
  */
 import { useContext } from 'react';
 import './About.css';
-import Button from './Button';
 import { TranslationContext } from './TranslationContext';
 import packageJson from '../../package.json';
 
@@ -55,12 +54,14 @@ function About({ onClose }: SettingsProps) {
         onClick={onClose}
       />
       <div className='LightSettingsContainer'>
-        <Button
-          onClick={onClose}
+        <button
           className='buttonClose'
+          onClick={onClose}
         >
-          <div className='removeIcon centerIcon'></div>
-        </Button>
+          <div className='xClose'>
+            <div className='xClose xiClose'></div>
+          </div>
+        </button>
         <div className='SettingsTitle'>
           <span>{t('dd_about')}</span>
         </div>

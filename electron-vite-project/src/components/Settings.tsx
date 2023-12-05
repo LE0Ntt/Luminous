@@ -55,12 +55,14 @@ function Settings({ onClose }: SettingsProps) {
       ) : (
         <>
           <div className='SettingsContainer'>
-            <Button
-              onClick={onClose}
+            <button
               className='buttonClose'
+              onClick={onClose}
             >
-              <div className='removeIcon centerIcon'></div>
-            </Button>
+              <div className='xClose'>
+                <div className='xClose xiClose'></div>
+              </div>
+            </button>
             <div className='SettingsTitle'>
               <span>{t('set_title')}</span>
             </div>

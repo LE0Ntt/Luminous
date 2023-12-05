@@ -27,10 +27,6 @@
   overflow: hidden;
 }
 
-.buttonClose {
-  z-index: 9999;
-}
-
 .AddSceneTitle {
   font-size: 24px;
   font-weight: 400;

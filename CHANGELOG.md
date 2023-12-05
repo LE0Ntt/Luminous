@@ -33,6 +33,7 @@
   - Fetch faders, scenes and devices only if connected
   - LightSettings only open if connected
 - Titlebar small visual touch-ups
+- Added dropdown menu animation
 - Reworked fill light and bi-color light icons
 - Set dark mode as default to prevent bright flash on startup
 - Updated scene placeholder dashed border to be more symmetrical

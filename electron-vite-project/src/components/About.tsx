@@ -79,7 +79,11 @@ function About({ onClose }: SettingsProps) {
               <a
                 href='https://github.com/LE0Ntt/Luminous/blob/main/CHANGELOG.md'
                 target='_blank'
-                style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}
+                style={{
+                  textDecoration: 'underline',
+                  textUnderlineOffset: '2px',
+                  textDecorationThickness: '1px',
+                }}
               >
                 {t('whats_new')}
               </a>

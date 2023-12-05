@@ -18,11 +18,12 @@ import './DropDown.css';
 type DropDownProps = {
   settings: string[];
   settingSelection: (selectedSetting: string) => void;
+  open: boolean;
 };
 
-const DropDown: React.FC<DropDownProps> = ({ settings, settingSelection }) => {
+const DropDown: React.FC<DropDownProps> = ({ settings, settingSelection, open }) => {
   return (
-    <div className='dropdown'>
+    <div className={`dropdown ${open ? '' : 'closed'}`}>
       {settings.map((selectedSetting, index) => (
         <p
           key={index}

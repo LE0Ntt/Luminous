@@ -38,6 +38,7 @@ function TitleBar() {
   const dropDownRef = useRef<HTMLButtonElement | null>(null);
   const [isMac, setIsMac] = useState(false);
   const [currentDialog, setCurrentDialog] = useState(Dialog.None);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   // Effect for platform detection
   useEffect(() => {
@@ -49,10 +50,6 @@ function TitleBar() {
 
   const toggleFullScreen = async () => {
     (window as any).electronAPI.send('toggle-full-screen');
-  };
-
-  const handleClose = () => {
-    window.close();
   };
 
   const handleMinimize = () => {
@@ -76,10 +73,6 @@ function TitleBar() {
     }
   }, [showDropDown]);
 
-  const toggleDropDown = () => {
-    setShowDropDown(!showDropDown);
-  };
-
   // The selected setting
   const settingActions = {
     [settings[0]]: () => setCurrentDialog(Dialog.Settings),
@@ -93,6 +86,19 @@ function TitleBar() {
     if (settingActions[setting]) settingActions[setting]();
   };
 
+  // Timeout for the dropdown animation
+  useEffect(() => {
+    let timeout: string | number | NodeJS.Timeout | undefined;
+    if (!showDropDown && isDropdownVisible) {
+      timeout = setTimeout(() => {
+        setIsDropdownVisible(false);
+      }, 200);
+    } else if (showDropDown && !isDropdownVisible) {
+      setIsDropdownVisible(true);
+    }
+    return () => clearTimeout(timeout);
+  }, [showDropDown, isDropdownVisible]);
+
   return (
     <div className={`titlebarComp ${showDropDown && 'active'}`}>
       <nav>
@@ -102,7 +108,7 @@ function TitleBar() {
           </li>
           <li>
             <button
-              onClick={(): void => toggleDropDown()}
+              onClick={() => setShowDropDown(!showDropDown)}
               ref={dropDownRef}
             >
               <div className={`settingsButton ${showDropDown && 'active'}`}>
@@ -111,11 +117,11 @@ function TitleBar() {
                   color='var(--secondary)'
                 />
               </div>
-
-              {showDropDown && (
+              {isDropdownVisible && (
                 <DropDown
                   settings={settings}
                   settingSelection={handleSettingSelection}
+                  open={showDropDown}
                 />
               )}
             </button>
@@ -131,7 +137,7 @@ function TitleBar() {
         </button>
         <button
           className={isMac ? 'hide' : 'titlebar-button close'}
-          onClick={handleClose}
+          onClick={() => window.close()}
         >
           <div className='x'>
             <div className='x xi'></div>

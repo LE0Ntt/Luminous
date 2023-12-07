@@ -34,10 +34,6 @@ class Config(object):
 app = Flask(__name__)
 app.config.from_object(Config)
 CORS(app, resources={r"/*": {"origins": "*"}})
-# socketio = SocketIO(app, cors_allowed_origins = "*")
-
-# socketio.on_namespace(test_connect)
-
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 

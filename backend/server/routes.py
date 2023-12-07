@@ -51,7 +51,7 @@ def get_devices():
     return device_list
 
 
-devices = get_devices()
+devices = get_devices()  # Global devices list
 
 
 # Load scenes from database
@@ -72,15 +72,17 @@ def load_scenes():
     return scenes_list
 
 
-scenes = load_scenes()
+scenes = load_scenes()  # Global scenes list
 
 
+# Access to devices list
 @app.route("/fader")
 def get_faders():
     global devices
     return jsonify(json.dumps(devices))
 
 
+# Access to scenes list
 @app.route("/scenes")
 def get_scenes():
     global scenes

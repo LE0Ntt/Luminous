@@ -96,12 +96,12 @@
 
 - [ ] Backend
   - [ ] Server
-    - [ ] \_\_init\_\_.py
-    - [ ] models.py
+    - [x] \_\_init\_\_.py
+    - [x] models.py
     - [ ] motorMix_driver.py
-    - [ ] routes.py
+    - [x] routes.py
   - [ ] ola_handler.py
-  - [ ] server.py
+  - [x] server.py
   - [ ] socket_events.py
 - [ ] Frontend
   - [ ] Assets

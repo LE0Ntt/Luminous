@@ -15,7 +15,6 @@
 from sqlalchemy import JSON
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-
 from server import db
 
 ignored_channels = {1: [], 2: []}  # Channels ignored by the OLA master
@@ -37,7 +36,7 @@ class Scene(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     number = db.Column(db.Integer)
-    color = db.Column(db.String(50))
+    color = db.Column(db.String(50))  # Not used yet
     channel = db.Column(JSON)
 
 
@@ -67,10 +66,7 @@ class Device(db.Model):
         global ignored_channels
         universe = int(universe[1:])  # Stripping the 'U' and converting to int
         for channel in channels:
-            if channel["channel_type"] in ["r", "g", "b", "bi"]:
-                print(
-                    f"Appending {channel['dmx_channel']} to ignored_channels[{universe}]"
-                )
+            if channel["channel_type"] != "master":
                 ignored_channels[universe].append(int(channel["dmx_channel"]))
             if channel["channel_type"] in ["r", "g", "b"]:
                 channel["sliderValue"] = 255
@@ -84,7 +80,7 @@ class Device(db.Model):
         return channels
 
 
-class Show(db.Model):
+class Show(db.Model):  # Not used yet
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     date = db.Column(db.DateTime, default=datetime.utcnow)
@@ -97,17 +93,15 @@ class Show(db.Model):
         return self.date.strftime("%d.%m.%y %H:%M")
 
 
-class Settings(db.Model):
+class Settings(db.Model):  # Not used yet
     id = db.Column(db.Integer, primary_key=True)
     studio_grid = db.Column(JSON, nullable=False)
-    language = db.Column(db.String(2), default="en")
-
-    def switch_language(self):
-        self.language = "de" if self.language == "en" else "en"
-        db.session.commit()
+    language = db.Column(
+        db.String(2), default="en"
+    )  # Not used as language is handled client-side
 
 
 ## Clear db
 # with app.app_context():
 #   db.drop_all()
-#  db.create_all()
+#   db.create_all()

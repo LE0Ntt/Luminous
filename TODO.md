@@ -13,6 +13,7 @@
 - Studio-Overview just uses ID, not universe
 - Wrong devices displayed after changing number in LightSettings
 - Error if DMX channel exists multiple times
+- Scenes do not fade in exact seconds and are subject to server performance
 - ~~Doesn't show lights after editing them. Need to restart server~~
 
 ## Necessary Changes
@@ -24,7 +25,6 @@
   - [ ] Add various settings
     - [ ] Studio-Overview
     - [ ] Change IP
-    - [ ] No animations
 - [ ] MotorMix
   - [ ] Mute
   - [ ] Solo
@@ -61,7 +61,7 @@
 ## Nice to Have Features
 
 - [ ] Show site (light shows)
-- [ ] Scenes different colors
+- [ ] No animations setting for slow PCs
 - [ ] Change scene fade in/out curve
 - [ ] Vite export, use app in browser
 - [x] Rework close button
@@ -77,6 +77,7 @@
   - [ ] Edit scenes
   - [ ] Save master fader?
   - [ ] Choose what to save
+  - [ ] Choose color
 - [ ] Mute / Solo
   - [ ] Implement
   - [ ] Gray out faders

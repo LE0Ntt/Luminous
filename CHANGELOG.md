@@ -11,6 +11,7 @@
   - Controllable with the mouse wheel and arrow keys
   - Value input now displays one decimal place when focused
   - Removed separator line from last element
+  - Render DMX channels in steps to reduce lag
 - LightFX
   - Only process changed channels
 - Settings error/success message on password change

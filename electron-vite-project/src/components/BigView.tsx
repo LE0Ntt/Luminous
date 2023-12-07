@@ -36,6 +36,7 @@ function BigView({ onClose }: BigViewProps) {
   const { url } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
   const [DMX, setDMX] = useState(() => localStorage.getItem('dmx') === 'true'); // DMX or Device channels
+  const [renderedFaders, setRenderedFaders] = useState(20); // Number of DMX faders to render
 
   // Fetch slider data from the server on mount
   useEffect(() => {
@@ -57,6 +58,30 @@ function BigView({ onClose }: BigViewProps) {
     localStorage.setItem('dmx', `${status}`);
     setDMX(status);
   };
+
+  // Render DMX faders in steps to prevent lag
+  useEffect(() => {
+    let intervalId: string | number | NodeJS.Timeout | undefined;
+
+    if (DMX) {
+      intervalId = setInterval(() => {
+        setRenderedFaders((current) => {
+          const nextCount = current + 164; // Step size
+          if (nextCount >= 512) {
+            clearInterval(intervalId);
+            return 512;
+          }
+          return nextCount;
+        });
+      }, 300);
+    } else {
+      setRenderedFaders(20);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [DMX]);
 
   return (
     <>
@@ -92,7 +117,7 @@ function BigView({ onClose }: BigViewProps) {
             <div className='universeLabel window'>{universe}</div>
             <div className='sliders'>
               {DMX
-                ? Array.from({ length: 512 }).map((_, index) => {
+                ? Array.from({ length: renderedFaders }).map((_, index) => {
                     const mappedIndex = index + 1;
                     const matchedSlider = sliders.find(
                       (slider) => slider.universe === universe && slider.attributes.channel.some((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex)

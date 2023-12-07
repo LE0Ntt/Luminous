@@ -151,11 +151,8 @@
     position: absolute;
     right: 10px;
     top: 8px;
+    z-index: 9;
   }
-
-  /* .buttonClose:hover {
-    background-color: var(--colorButtonHover);
-  } */
 
   .buttonClose:hover .xClose {
     background-color: var(--primary);

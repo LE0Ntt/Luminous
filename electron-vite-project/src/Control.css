@@ -160,6 +160,13 @@
   overflow-y: hidden;
 }
 
+.slidersEffects {
+  position: relative;
+  left: 200px;
+  width: 1189px;
+  min-width: 1189px;
+}
+
 .controlButtons {
   height: 90px;
   width: 553px;

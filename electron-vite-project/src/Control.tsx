@@ -221,19 +221,21 @@ function Control() {
   const [effects, setEffects] = useState(true);
 
   useEffect(() => {
-    // console.log(JSON.stringify(selectedDevices));
-    selectedDevices.forEach((device) => {
-      device.attributes.channel.forEach((channel: any) => {
+    let effectFound = false;
+
+    for (const device of selectedDevices) {
+      for (const channel of device.attributes.channel) {
         if (!['main', 'r', 'g', 'b', 'bi'].includes(channel.channel_type)) {
           setEffects(true);
-          //console.log(JSON.stringify(channel.channel_type));
-          //console.log(effects);
-        } else {
-          setEffects(false);
-          //console.log(effects);
+          effectFound = true;
+          break;
         }
-      });
-    });
+      }
+
+      if (effectFound) break;
+    }
+
+    if (!effectFound) setEffects(false);
   }, [selectedDevices]);
 
   return (
@@ -324,9 +326,8 @@ function Control() {
             {/* Effects */}
             <div className='controlEffects innerWindow'>
               <span className='controlTitle'>{t('effects')}</span>
-
               <div className='centered-wrapper'>{effects ? null : <span className='noSupport'>{t('noSupport')}</span>}</div>
-              <div className='sliders'>
+              <div className='sliders slidersEffects'>
                 {sliders
                   .slice(1)
                   .filter((slider) => selectedDevices.some((channel) => channel.id === slider.id))
@@ -350,6 +351,7 @@ function Control() {
                                   sliderGroupId={slider.id}
                                   name={channel.id !== 0 ? channel.channel_type : slider.name}
                                   className={isLastFader ? 'noBorder' : ''}
+                                  height={200}
                                 />
                               </div>
                             );

@@ -92,7 +92,7 @@ function TitleBar() {
     if (!showDropDown && isDropdownVisible) {
       timeout = setTimeout(() => {
         setIsDropdownVisible(false);
-      }, 200);
+      }, 150);
     } else if (showDropDown && !isDropdownVisible) {
       setIsDropdownVisible(true);
     }

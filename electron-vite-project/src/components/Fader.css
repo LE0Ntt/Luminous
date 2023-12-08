@@ -31,7 +31,6 @@
 
 .faderMaster {
   height: calc(var(--sliderHeight) + 100px) !important;
-  border: none !important;
   top: 5px;
 }
 

@@ -82,6 +82,7 @@ function Scenes() {
             sliderGroupId={0}
             id={0}
             name='Master'
+            className='noBorder'
           />
         </div>
       </div>

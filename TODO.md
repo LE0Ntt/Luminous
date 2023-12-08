@@ -90,6 +90,7 @@
   - [ ] Arri Sky panel
   - [ ] Astera Titan Tubes
 - [ ] Look into npm packages
+- [ ] Icons for dropdown menu
 - [ ] DIN icons for studio overview
 
 ## Code Cleanup & Comments

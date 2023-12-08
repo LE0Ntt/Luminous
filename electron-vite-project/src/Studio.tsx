@@ -185,6 +185,7 @@ const Studio = () => {
                     id={0}
                     sliderGroupId={0}
                     name='Master'
+                    className='noBorder'
                   />
                 )}
               </div>

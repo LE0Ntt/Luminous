@@ -225,7 +225,7 @@ function Control() {
 
     for (const device of selectedDevices) {
       for (const channel of device.attributes.channel) {
-        if (!['main', 'r', 'g', 'b', 'bi'].includes(channel.channel_type)) {
+        if (!['main', 'r', 'g', 'b', 'bi', 'power'].includes(channel.channel_type)) {
           setEffects(true);
           effectFound = true;
           break;
@@ -260,6 +260,7 @@ function Control() {
                 id={1}
                 sliderGroupId={0}
                 name={t('group')}
+                className='noBorder'
               />
             </div>
             {/* Control Buttons */}
@@ -338,7 +339,12 @@ function Control() {
                         {slider.attributes.channel
                           .filter(
                             (channel: { id: number; channel_type: string }) =>
-                              channel.channel_type !== 'main' && channel.channel_type !== 'r' && channel.channel_type !== 'g' && channel.channel_type !== 'b' && channel.channel_type !== 'bi'
+                              channel.channel_type !== 'main' &&
+                              channel.channel_type !== 'r' &&
+                              channel.channel_type !== 'g' &&
+                              channel.channel_type !== 'b' &&
+                              channel.channel_type !== 'bi' &&
+                              channel.channel_type !== 'power'
                           )
                           .map((channel: { id: number; channel_type: string }, channelIndex: number, filteredChannels: string | any[]) => {
                             const isLastFader = index === totalSliders - 1 && channelIndex === filteredChannels.length - 1;

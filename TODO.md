@@ -1,3 +1,16 @@
+## Version 1.2.0
+
+- [ ] Studio Overview,
+  - [ ] Icons anpassen,
+  - [ ] Testchart anpassen,
+  - [ ] Layout anpassen,
+  - [ ] Rendering anpassen,
+- [ ] Scenes dürfen HMI nicht ausmachen,
+- [ ] Textinput gleiche höhe wie buttons,
+- [ ] Settingsdesign anpassen,
+- [ ] Offensichtlicheres Faderhighlighting,
+- [ ] Effekte richtiges Design (Slider 10px bottom, höhere Fader),
+
 ## Known Issues
 
 - MotorMix

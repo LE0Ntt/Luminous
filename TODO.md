@@ -1,15 +1,20 @@
 ## Version 1.2.0
 
 - [ ] Studio Overview,
-  - [ ] Icons anpassen,
-  - [ ] Testchart anpassen,
-  - [ ] Layout anpassen,
-  - [ ] Rendering anpassen,
-- [ ] Scenes dürfen HMI nicht ausmachen,
-- [ ] Textinput gleiche höhe wie buttons,
-- [ ] Settingsdesign anpassen,
-- [ ] Offensichtlicheres Faderhighlighting,
-- [ ] Effekte richtiges Design (Slider 10px bottom, höhere Fader),
+  - [ ] Icons anpassen, Beide
+  - [ ] Testchart anpassen, Leon
+  - [ ] Layout anpassen, Leon
+  - [ ] Rendering anpassen, Darwin
+- [ ] Scenes dürfen HMI nicht ausmachen, Darwin
+- [ ] Settingsdesign anpassen, Leon
+  - [ ] Textinput gleiche höhe wie buttons, Darwin
+- [ ] Offensichtlicheres Faderhighlighting, Leon
+- [ ] Effekte richtiges Design (Slider 10px bottom, höhere Fader), Leon
+- [ ] Alle Lampen aus beim App-Schließen,
+  - [ ] Dialog, Leon
+  - [ ] Backend, Darwin
+- [ ] LightSettings buttons anpassen, Darwin
+- [ ] Icons für Dropdown, Leon
 
 ## Known Issues
 
@@ -51,8 +56,9 @@
   - [x] Finetune Quick Start Guide
 - [ ] LightFX
   - [ ] Change to current state of the first light
-  - [ ] Effects as misc faders for now
+  - [x] Effects as misc faders for now
   - [x] Device list server updates
+  - [ ] "Mute" button
   - [ ] New bi-color slider with higher resolution and value display/input
 - [ ] PI
   - [ ] Production server

@@ -15,7 +15,7 @@
 
 hr {
   height: 1px;
-  background-color: var(--onepStroke);
+  background-color: var(--faderBorder);
   border: none;
 }
 

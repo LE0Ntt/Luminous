@@ -43,6 +43,7 @@
   --faderThumb: rgba(246, 246, 246, 0.84);
   --faderThumbHover: rgba(246, 246, 246, 1);
   --faderBorder: rgba(0, 0, 0, 0.2);
+  --faderThumbBorder: rgba(0, 0, 0, 0.2);
 
   --primaryDark: rgb(255, 255, 255);
   --secondaryDark: rgba(255, 255, 255, 0.5);
@@ -105,7 +106,8 @@
   --midLine: #5c5c5c;
   --faderThumb: rgba(246, 246, 246, 0.5);
   --faderThumbHover: rgba(246, 246, 246, 0.6);
-  --faderBorder: rgba(255, 255, 255, 0.25);
+  --faderBorder: rgba(255, 255, 255, 0.075);
+  --faderThumbBorder: rgba(255, 255, 255, 0.25);
 
   --colorButton: rgba(72, 72, 72, 0.5);
   --colorButtonHover: rgba(100, 100, 100, 0.5);

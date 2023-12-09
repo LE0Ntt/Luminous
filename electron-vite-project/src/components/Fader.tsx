@@ -140,6 +140,12 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
     };
   }, [isHovered, isFocused]);
 
+  // Background color of the lower half of the fader
+  const backgroundColor = color || 'var(--mainColor)';
+  const gradientStyle = {
+    background: `linear-gradient(to right, ${backgroundColor} 0%, ${backgroundColor} ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
+  };
+
   return (
     <div
       className={`fader ${height ? 'faderMaster' : ''} ${className}`}
@@ -156,11 +162,7 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
           step='1'
           value={faderValues[sliderGroupId][id]}
           onChange={handleSliderChange}
-          style={{
-            background: color
-              ? `linear-gradient(to right, ${color} 0%, ${color} ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) 100%)`
-              : `linear-gradient(to right, var(--mainColor) 0%, var(--mainColor) ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
-          }}
+          style={gradientStyle}
           className='slider'
         />
       </div>

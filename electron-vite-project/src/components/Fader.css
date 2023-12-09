@@ -25,7 +25,7 @@
   top: -4%;
   position: relative;
   color: var(--primary);
-  border-right: 1px solid var(--color00000010);
+  border-right: 1px solid var(--faderBorder);
   transform: translateX(-10px);
 }
 
@@ -107,11 +107,11 @@
   margin-top: -15px;
   width: 44px;
   height: 44px;
-  border: 1px solid var(--faderBorder);
+  border: 1px solid var(--faderThumbBorder);
   border-radius: 50%;
   cursor: pointer;
   -webkit-appearance: none;
-  background: var(--faderThumb);
+  background: var(--faderThumbBorder);
   box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
@@ -121,10 +121,10 @@
   /* Specific styling for Firefox */
   width: 44px;
   height: 44px;
-  border: 1px solid var(--faderBorder);
+  border: 1px solid var(--faderThumbBorder);
   border-radius: 50%;
   cursor: pointer;
-  background: var(--faderThumb);
+  background: var(--faderThumbBorder);
   box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
   margin-top: -15px;
 }
@@ -133,10 +133,10 @@
   /* Specific styling for Microsoft Edge */
   width: 44px;
   height: 44px;
-  border: 1px solid var(--faderBorder);
+  border: 1px solid var(--faderThumbBorder);
   border-radius: 50%;
   cursor: pointer;
-  background: var(--faderThumb);
+  background: var(--faderThumbBorder);
   box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
   height: 20px;
   margin-top: -15px;

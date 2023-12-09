@@ -40,6 +40,7 @@
 - Updated scene placeholder dashed border to be more symmetrical
 - Fade out red error outline on faulty inputs
 - Redesigned dialog close button to look more elegant
+- Separator lines now use the same color
 
 ### Fixes
 

@@ -22,6 +22,11 @@ import LightSettings from './LightSettings';
 import Help from './Help';
 import About from './About';
 import IconSettings from '@/assets/Icon_Settings';
+import IconFullscreen from '@/assets/Icon_Fullscreen';
+import IconHelp from '@/assets/Icon_Help';
+import IconWindow from '@/assets/Icon_Window';
+import IconLight from '@/assets/Icon_Light';
+import IconAbout from '@/assets/Icon_About';
 
 enum Dialog {
   None,
@@ -39,6 +44,7 @@ function TitleBar() {
   const [isMac, setIsMac] = useState(false);
   const [currentDialog, setCurrentDialog] = useState(Dialog.None);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Effect for platform detection
   useEffect(() => {
@@ -50,13 +56,24 @@ function TitleBar() {
 
   const toggleFullScreen = async () => {
     (window as any).electronAPI.send('toggle-full-screen');
+    if (isFullscreen) {
+      setIsFullscreen(false);
+    } else {
+      setIsFullscreen(true);
+    }
   };
 
   const handleMinimize = () => {
     (window as any).electronAPI.send('minimize');
   };
 
-  const settings = [t('dd_settings'), t('dd_lights'), t('dd_help'), t('dd_about'), t('dd_fullscreen')];
+  const settings = [
+    { icon: IconSettings, text: t('dd_settings') },
+    { icon: IconLight, text: t('dd_lights') },
+    { icon: IconHelp, text: t('dd_help') },
+    { icon: IconAbout, text: t('dd_about') },
+    { icon: isFullscreen ? IconWindow : IconFullscreen, text: isFullscreen ? t('dd_window') : t('dd_fullscreen') },
+  ];
 
   // Closes the drop down if the user clicks outside of it
   const handleClickOutside = (event: MouseEvent) => {
@@ -75,15 +92,17 @@ function TitleBar() {
 
   // The selected setting
   const settingActions = {
-    [settings[0]]: () => setCurrentDialog(Dialog.Settings),
-    [settings[1]]: () => setCurrentDialog(Dialog.LightSettings),
-    [settings[2]]: () => setCurrentDialog(Dialog.Help),
-    [settings[3]]: () => setCurrentDialog(Dialog.About),
-    [settings[4]]: toggleFullScreen,
+    [settings[0].text]: () => setCurrentDialog(Dialog.Settings),
+    [settings[1].text]: () => setCurrentDialog(Dialog.LightSettings),
+    [settings[2].text]: () => setCurrentDialog(Dialog.Help),
+    [settings[3].text]: () => setCurrentDialog(Dialog.About),
+    [settings[4].text]: toggleFullScreen,
   };
 
-  const handleSettingSelection = (setting: string) => {
-    if (settingActions[setting]) settingActions[setting]();
+  const handleSettingSelection = (selectedSetting: { text: string; icon: React.ElementType }) => {
+    if (settingActions[selectedSetting.text]) {
+      settingActions[selectedSetting.text]();
+    }
   };
 
   // Timeout for the dropdown animation

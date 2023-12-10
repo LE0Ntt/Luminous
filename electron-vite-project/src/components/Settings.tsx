@@ -64,7 +64,8 @@ function Settings({ onClose }: SettingsProps) {
               </div>
             </button>
             <div className='SettingsTitle'>
-              <span>{t('set_title')}</span>
+              <IconSettings />
+              <span className='relative left-[10px] top-[-2px]'>{t('set_title')}</span>
             </div>
             <div className='SettingsContent'>
               <div className='settings'>

@@ -19,6 +19,7 @@ import { TranslationContext } from './TranslationContext';
 import DeviceList from './DeviceList';
 import { useConnectionContext } from './ConnectionContext';
 import AdminPassword from './AdminPassword';
+import IconLight from '@/assets/Icon_Light';
 
 interface SettingsProps {
   onClose: () => void;
@@ -384,7 +385,8 @@ function LightSettings({ onClose }: SettingsProps) {
             </div>
           </button>
           <div className='SettingsTitle'>
-            <span>{t('ls_title')}</span>
+            <IconLight />
+            <span className='relative left-[10px] top-[-2px]'>{t('ls_title')}</span>
           </div>
           <div className='LightSettingsListContainer'>
             <div className='LightSettingsSelected innerWindow'>

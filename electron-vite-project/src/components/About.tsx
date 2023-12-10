@@ -16,6 +16,7 @@ import { useContext } from 'react';
 import './About.css';
 import { TranslationContext } from './TranslationContext';
 import packageJson from '../../package.json';
+import IconAbout from '@/assets/Icon_About';
 
 interface SettingsProps {
   onClose: () => void;
@@ -63,7 +64,8 @@ function About({ onClose }: SettingsProps) {
           </div>
         </button>
         <div className='SettingsTitle'>
-          <span>{t('dd_about')}</span>
+          <IconAbout />
+          <span className='relative left-[10px] top-[-2px]'>{t('dd_about')}</span>
         </div>
         <div className='AboutContainer'>
           <div className='AboutTextBoxContainer'>

@@ -111,7 +111,7 @@
   border-radius: 50%;
   cursor: pointer;
   -webkit-appearance: none;
-  background: var(--faderThumbBorder);
+  background: var(--faderThumb);
   box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
@@ -124,7 +124,7 @@
   border: 1px solid var(--faderThumbBorder);
   border-radius: 50%;
   cursor: pointer;
-  background: var(--faderThumbBorder);
+  background: var(--faderThumb);
   box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
   margin-top: -15px;
 }
@@ -136,7 +136,7 @@
   border: 1px solid var(--faderThumbBorder);
   border-radius: 50%;
   cursor: pointer;
-  background: var(--faderThumbBorder);
+  background: var(--faderThumb);
   box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
   height: 20px;
   margin-top: -15px;

@@ -99,7 +99,7 @@ function Scenes() {
         <div className='scenesSoloAlign'>
           <span>FADE</span>
           <input
-            className='scenesFadeInput'
+            className='scenesFadeInput textBox'
             type='text'
             value={fadeDuration}
             onChange={handleFadeDuration}

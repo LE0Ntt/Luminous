@@ -15,6 +15,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './Settings.css';
 import { TranslationContext } from './TranslationContext';
+import Button from './Button';
 
 interface Setting2Props {
   url: string;
@@ -140,7 +141,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
         <div className='ChangePassword'>
           <form className='SettingsTextBoxContainer'>
             <input
-              className='SettingsTextBox'
+              className='SettingsTextBox textBox'
               type='password'
               value={currentPassword}
               placeholder={t('set_current_pw')}
@@ -148,7 +149,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
               onKeyDown={handleEnterNext}
             />
             <input
-              className='SettingsTextBox'
+              className='SettingsTextBox textBox'
               type='password'
               value={newPassword}
               placeholder={t('set_new_pw')}
@@ -156,7 +157,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
               onKeyDown={handleEnterNext}
             />
             <input
-              className='SettingsTextBox'
+              className='SettingsTextBox textBox'
               type='password'
               value={newPasswordConfirm}
               placeholder={t('set_conew_pw')}
@@ -164,12 +165,12 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
               onKeyDown={handleEnterConfirm}
             />
           </form>
-          <button
+          <Button
             className='SettingsButton controlButton'
             onClick={handleSavePassword}
           >
             {t('as_save')}
-          </button>
+          </Button>
           {passwordMessage && <div className={`PasswordMessage ${passwordSuccess ? 'successMessage' : 'errorMessage'}`}>{passwordMessage}</div>}
         </div>
       </div>
@@ -177,12 +178,12 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
         <div className='SettingsSubTitle'>
           <span>OLA</span>
         </div>
-        <button
+        <Button
           className='SettingsButton controlButton'
           onClick={() => setIsOlaWindowOpen(true)}
         >
           {t('set_ola')}
-        </button>
+        </Button>
       </div>
       {/* only for release not implemented */}
       {/* <div className='SettingContainer'>

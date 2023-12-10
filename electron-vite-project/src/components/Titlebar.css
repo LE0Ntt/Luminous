@@ -68,6 +68,7 @@ nav ul li button {
   height: 23px;
   width: 31px;
   display: flex;
+  padding-top: 2px;
   justify-content: center;
   align-items: center;
   border-radius: 0 0 3px 3px;

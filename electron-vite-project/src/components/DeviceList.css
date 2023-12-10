@@ -88,4 +88,5 @@ hr {
   border-radius: 50%;
   margin-right: 10px;
   margin-left: 10px;
+  border: 1px solid var(--onepStroke) !important;
 }

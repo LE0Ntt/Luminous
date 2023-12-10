@@ -38,7 +38,7 @@ const Setting1: React.FC = () => {
           <span>{t('set_language')}</span>
         </div>
         <select
-          className='SettingsLanguageSelection'
+          className='SettingsLanguageSelection textBox'
           value={language}
           onChange={handleLanguageChange}
         >

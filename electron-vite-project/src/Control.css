@@ -180,10 +180,6 @@
   width: 100%;
   height: 100%;
   border-radius: 5px;
-  background-color: var(--colorButton);
-  color: var(--primary);
-  box-shadow: var(--shadowButton);
-  border: solid 1px var(--faderBorder);
   font-weight: 600;
   font-size: 20px;
 }

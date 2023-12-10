@@ -122,7 +122,7 @@ function AddScene({ onClose }: AddSceneProps) {
           <div className='AddSceneContent'>
             <span className='AddSceneTitle'>{t('as_title')}</span>
             <input
-              className='LightSettingsTextBox AddSceneTextBox'
+              className='textBox AddSceneTextBox'
               type='text'
               placeholder='Name'
               value={name}

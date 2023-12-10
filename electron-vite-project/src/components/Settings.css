@@ -81,14 +81,7 @@
 }
 
 .SettingsTextBox {
-  background-color: var(--fillLight);
-  border: var(--onepStrokeSwitched) 1px solid;
-  border-radius: 5px;
-  width: 11vw;
-  height: 35px;
-  position: relative;
-  padding-left: 10px;
-  outline: none;
+  width: 11vw !important;
 }
 
 .SettingsContent {
@@ -148,23 +141,12 @@
 }
 
 .SettingsLanguageSelection {
-  background-color: var(--fillLight);
-  border: var(--onepStrokeSwitched) 1px solid;
-  border-radius: 5px;
-  height: 35px;
-  width: 11vw;
-  position: relative;
-  padding-left: 10px;
-  outline: none;
+  width: 11vw !important;
 }
 
 .ChangePassword {
   display: flex;
   justify-content: space-between;
-}
-
-.ChangePassword .SettingsButton {
-  top: -6px;
 }
 
 @media (max-width: 1725px) {
@@ -174,7 +156,7 @@
 
   .SettingsTextBox {
     width: 100%;
-    margin-bottom: 26px;
+    margin-bottom: 20px;
   }
 
   .ChangePassword {

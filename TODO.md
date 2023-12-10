@@ -7,13 +7,13 @@
   - [ ] Rendering anpassen, Darwin
 - [ ] Scenes dürfen HMI nicht ausmachen, Darwin
 - [ ] Settingsdesign anpassen, Leon
-  - [ ] Textinput gleiche höhe wie buttons, Darwin
+  - [x] Textinput gleiche höhe wie buttons, Darwin
 - [ ] Offensichtlicheres Faderhighlighting, Leon
 - [ ] Effekte richtiges Design (Slider 10px bottom, höhere Fader), Leon
 - [ ] Alle Lampen aus beim App-Schließen,
   - [ ] Dialog, Leon
   - [ ] Backend, Darwin
-- [ ] LightSettings buttons anpassen, Darwin
+- [x] LightSettings buttons anpassen, Darwin
 - [ ] Icons für Dropdown, Leon
 
 ## Known Issues
@@ -97,9 +97,7 @@
   - [ ] Save master fader?
   - [ ] Choose what to save
   - [ ] Choose color
-- [ ] Mute / Solo
-  - [ ] Implement
-  - [ ] Gray out faders
+- [ ] Mute / Solo gray out faders
 - [ ] LightFX
   - [ ] Save scene, only current group or everything
   - [ ] Bi-Color presets

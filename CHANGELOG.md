@@ -22,6 +22,9 @@
   - Updates reload sliders in Studio and devices in LightFX
   - Default number for new devices is last device number + 1
   - Changing device type does not reset DMX range if previously set
+  - Switched save and delete buttons
+  - Highlight save button
+  - Added space between inputs and labels
 - About
   - Linked changelog
   - Spiced up the logo with an interactive twist
@@ -40,7 +43,12 @@
 - Updated scene placeholder dashed border to be more symmetrical
 - Fade out red error outline on faulty inputs
 - Redesigned dialog close button to look more elegant
-- Separator lines now use the same color
+- Adjusted colors
+  - Separator lines now use the same color
+  - Button border and background color more visible
+  - Input border less visible
+  - Second layer background more transparent
+- Set input fields and buttons to same height
 
 ### Fixes
 

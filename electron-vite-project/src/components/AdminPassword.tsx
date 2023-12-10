@@ -107,7 +107,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
         <div className='AddSceneContent'>
           <span className='AddSceneTitle'>{t('ap_title')}</span>
           <input
-            className='LightSettingsTextBox AddSceneTextBox'
+            className='textBox AddSceneTextBox'
             type='password'
             placeholder={t('ap_password')}
             value={password}

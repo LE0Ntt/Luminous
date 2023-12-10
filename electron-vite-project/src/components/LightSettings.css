@@ -80,6 +80,8 @@
   transition: width 200ms ease-out, opacity 200ms ease-out;
   white-space: nowrap;
   opacity: 1;
+  border: none;
+  border-radius: 4px;
 }
 
 .transitionButton {
@@ -140,11 +142,16 @@
 }
 
 .LightSettingsWindowLower {
-  max-height: 60px;
-  min-height: 60px;
+  max-height: 48px;
+  min-height: 48px;
   position: relative;
   width: stretch;
   bottom: 0;
+}
+
+.LightSettingsWindowLower button:first-child {
+  background-color: var(--mainColor);
+  color: var(--primaryDark);
 }
 
 .LightSettingsDMXContainer {
@@ -209,35 +216,13 @@
   overflow-x: scroll;
 }
 
-.LightSettingsTextBox {
-  background-color: var(--fillLight);
-  border: var(--onepStrokeSwitched) 1px solid;
-  border-radius: 5px;
-  width: 180px;
-  height: 35px;
-  position: relative;
-  padding-left: 10px;
-  outline: none;
-}
-
 .LightSettingsTextBoxSmall {
-  background-color: var(--fillLight);
-  border: var(--onepStrokeSwitched) 1px solid;
-  border-radius: 5px;
-  width: 90px;
-  height: 35px;
-  position: relative;
-  padding-left: 10px;
-  outline: none;
-  margin-bottom: 10px;
+  width: 90px !important;
 }
 
-.LightSettingsTextBoxSmall::-webkit-outer-spin-button,
-.LightSettingsTextBoxSmall::-webkit-inner-spin-button,
-.LightSettingsChannelInput::-webkit-outer-spin-button,
-.LightSettingsChannelInput::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.LightSettingsTextBoxContainer label {
+  top: -5px;
+  position: relative;
 }
 
 .LightSettingsSubTitle {
@@ -248,17 +233,13 @@
 
 .LightSettingsSaveButton {
   position: absolute;
-  height: 60px;
+  height: 48px;
   width: 15vw;
-  right: 0px;
   bottom: 0px;
 }
 
 .LightSettingsDeleteButton {
-  position: absolute;
-  height: 60px;
-  width: 15vw;
-  bottom: 0px;
+  right: 0px;
 }
 
 .LightSettingsChannelInput {

@@ -414,7 +414,7 @@ function LightSettings({ onClose }: SettingsProps) {
                   <label>{t('ls_universe')}</label>
                   <br />
                   <select
-                    className='LightSettingsTextBoxSmall'
+                    className='LightSettingsTextBoxSmall textBox'
                     value={inputUniverse}
                     onChange={handleInputUniverse}
                   >
@@ -425,7 +425,7 @@ function LightSettings({ onClose }: SettingsProps) {
                 <div>
                   <label>{t('ls_deviceNumber')}</label> <br />
                   <input
-                    className='LightSettingsTextBoxSmall deviceNumber'
+                    className='LightSettingsTextBoxSmall deviceNumber textBox'
                     type='text'
                     value={inputNumber}
                     onChange={handleInputNumber}
@@ -436,7 +436,7 @@ function LightSettings({ onClose }: SettingsProps) {
                 <div>
                   <label>{t('ls_deviceName')}</label> <br />
                   <input
-                    className='LightSettingsTextBox'
+                    className='textBox'
                     type='text'
                     value={inputName}
                     onChange={handleInputName}
@@ -447,7 +447,7 @@ function LightSettings({ onClose }: SettingsProps) {
                   <label>{t('ls_deviceType')}</label>
                   <br />
                   <select
-                    className='LightSettingsTextBox'
+                    className='textBox'
                     value={inputType}
                     onChange={handleInputType}
                   >
@@ -464,7 +464,7 @@ function LightSettings({ onClose }: SettingsProps) {
                 <div>
                   <label>{t('ls_start')}</label> <br />
                   <input
-                    className='LightSettingsTextBoxSmall'
+                    className='LightSettingsTextBoxSmall textBox'
                     type='text'
                     value={inputDMXstart}
                     onChange={handleInputDMXstart}
@@ -475,7 +475,7 @@ function LightSettings({ onClose }: SettingsProps) {
                 <div>
                   <label>{t('ls_range')}</label> <br />
                   <input
-                    className='LightSettingsTextBoxSmall'
+                    className='LightSettingsTextBoxSmall textBox'
                     type='text'
                     value={inputDMXrange}
                     onChange={handleInputDMXrange}
@@ -527,16 +527,16 @@ function LightSettings({ onClose }: SettingsProps) {
             </div>
             <div className='LightSettingsWindowLower'>
               <Button
-                onClick={() => handleRemoveDevice()}
-                className='LightSettingsDeleteButton controlButton'
-              >
-                {t('ls_deleteDevice')}
-              </Button>
-              <Button
                 onClick={() => handleUpdateDevice()}
                 className='LightSettingsSaveButton controlButton'
               >
                 {t('ls_saveDevice')}
+              </Button>
+              <Button
+                onClick={() => handleRemoveDevice()}
+                className='LightSettingsDeleteButton  LightSettingsSaveButton controlButton'
+              >
+                {t('ls_deleteDevice')}
               </Button>
             </div>
           </div>

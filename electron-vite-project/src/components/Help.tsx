@@ -15,6 +15,7 @@
 import { useState, useContext, Fragment } from 'react';
 import './Help.css';
 import { TranslationContext } from './TranslationContext';
+import IconHelp from '@/assets/Icon_Help';
 
 interface SettingsProps {
   onClose: () => void;
@@ -69,7 +70,8 @@ function Help({ onClose }: SettingsProps) {
           </div>
         </button>
         <div className='SettingsTitle'>
-          <span>{t('help')}</span>
+          <IconHelp />
+          <span className='relative left-[10px] top-[-2px]'>{t('help')}</span>
         </div>
         <div className='SettingsContent innerWindow'>
           <div className='SettingsOption'>

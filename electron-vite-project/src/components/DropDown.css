@@ -28,7 +28,7 @@
   overflow: hidden;
   /* min-width: 145px;  For consistend width in animation */
   --ddHeight: 214px; /* Height of dowpdown */
-  --ddWidth: 150px; /* Width of dowpdown */
+  --ddWidth: 160px; /* Width of dowpdown */
   animation: openDropdown 150ms ease-out forwards;
 }
 
@@ -64,7 +64,7 @@
 
 .dropdown > p {
   margin: 0;
-  padding: 9px 15px;
+  padding: 9px 9px;
   border-bottom: 1px solid var(--onepStroke);
   white-space: nowrap;
 }

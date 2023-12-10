@@ -43,6 +43,7 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
   const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue));
 
   // Update input value when display value changes
+  // UseEffect necessary to display decimal values when changing values while focused
   useEffect(() => {
     const finalDisplayValue = isFocused ? scaledDisplayValue.toFixed(1) : Math.round(scaledDisplayValue);
     setInputValue(finalDisplayValue);
@@ -140,6 +141,15 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
     };
   }, [isHovered, isFocused]);
 
+  // On value input focus
+  const handleFocus = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsFocused(true);
+    // Delay to the next tick
+    setTimeout(() => {
+      event.target.select(); // Select the input text
+    }, 50);
+  };
+
   // Background color of the lower half of the fader
   const backgroundColor = color || 'var(--mainColor)';
   const gradientStyle = {
@@ -171,7 +181,7 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
           type='text'
           value={inputValue}
           onChange={handleInputChange}
-          onFocus={() => setIsFocused(true)}
+          onFocus={handleFocus}
           onBlur={handleInputConfirm}
           onKeyDown={handleKeyDown}
           className='inputNum'

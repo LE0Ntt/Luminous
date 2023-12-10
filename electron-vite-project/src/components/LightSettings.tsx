@@ -328,6 +328,14 @@ function LightSettings({ onClose }: SettingsProps) {
     }
   };
 
+  const handleFocus = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Delay to the next tick
+    setTimeout(() => {
+      event.target.focus();
+      event.target.select(); // Select the input text
+    }, 0);
+  };
+
   // Callback function for the admin password component
   const handleAdminPasswordConfirm = useCallback(
     (isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
@@ -431,6 +439,7 @@ function LightSettings({ onClose }: SettingsProps) {
                     onChange={handleInputNumber}
                     onBlur={handleNumberConfirm}
                     onKeyUp={handleKeyDown}
+                    onFocus={handleFocus}
                   />
                 </div>
                 <div>
@@ -441,6 +450,7 @@ function LightSettings({ onClose }: SettingsProps) {
                     value={inputName}
                     onChange={handleInputName}
                     onKeyUp={handleKeyDown}
+                    onFocus={handleFocus}
                   />
                 </div>
                 <div>
@@ -470,6 +480,7 @@ function LightSettings({ onClose }: SettingsProps) {
                     onChange={handleInputDMXstart}
                     onBlur={handleDMXstartConfirm}
                     onKeyUp={handleKeyDown}
+                    onFocus={handleFocus}
                   />
                 </div>
                 <div>
@@ -481,6 +492,7 @@ function LightSettings({ onClose }: SettingsProps) {
                     onChange={handleInputDMXrange}
                     onBlur={handleDMXrangeConfirm}
                     onKeyUp={handleKeyDown}
+                    onFocus={handleFocus}
                   />
                 </div>
               </div>
@@ -505,6 +517,7 @@ function LightSettings({ onClose }: SettingsProps) {
                           className='LightSettingsChannelInput'
                           onKeyUp={handleKeyDown}
                           onBlur={(e) => handleChannelConfirm(index, channelArray[index]?.channel_type, e.target.value)}
+                          onFocus={handleFocus}
                         />
                       </div>
                       <div className='LightSettingsDMXBoxRight'>
@@ -517,6 +530,7 @@ function LightSettings({ onClose }: SettingsProps) {
                             onChange={(e) => handleChannelChange(index, e.target.value, channelArray[index]?.dmx_channel)}
                             className='LightSettingsChannelInput'
                             onKeyUp={handleKeyDown}
+                            onFocus={handleFocus}
                           />
                         )}
                       </div>

@@ -13,6 +13,7 @@
   - Removed separator line from last element
   - Render DMX channels in steps to reduce lag
 - LightFX
+  - Any device channel that could not be controlled in the LightFX is now displayed as an effect fader
   - Only process changed channels
 - Settings error/success message on password change
   - Added translation, color indication & fade out
@@ -36,19 +37,23 @@
   - Reduced SocketIO `ping_timeout`
   - Fetch faders, scenes and devices only if connected
   - LightSettings only open if connected
+- Input fields
+  - Set inputs and buttons to same height
+  - Fade out red error outline on faulty inputs
+  - Added inset shadow
+  - Input value is now selected on focus
 - Titlebar small visual touch-ups
+- Appended 's' to scenes fade input value
 - Dropdown menu enlarged for easier touch selection and animation added
 - Reworked fill light and bi-color light icons
 - Set dark mode as default to prevent bright flash on startup
 - Updated scene placeholder dashed border to be more symmetrical
-- Fade out red error outline on faulty inputs
 - Redesigned dialog close button to look more elegant
 - Adjusted colors
   - Separator lines now use the same color
   - Button border and background color more visible
   - Input border less visible
   - Second layer background more transparent
-- Set input fields and buttons to same height
 
 ### Fixes
 

@@ -17,6 +17,10 @@
   - Enlarged effects area to fill half the screen
   - Any device channel that could not be controlled in the LightFX is now displayed as an effect fader
   - Only process changed channels
+- Studio-Overview
+  - Rearranged layout to reflect the studio
+  - Updated bi-color and spot light icons
+  -
 - Settings error/success message on password change
   - Added translation, color indication & fade out
 - LightSettings

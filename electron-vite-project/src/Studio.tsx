@@ -281,101 +281,33 @@ const Studio = () => {
                     : (((faderValues[13][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
                 </div>
               </div>
-              <div className='studioOverviewLight'>
-                <img
-                  src={schein2}
-                  alt='schein'
-                  className={'schein'}
-                  style={{
-                    top: `-35px`,
-                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
-                  }}
-                />
-                <img
-                  src={biColor}
-                  alt='Lamp'
-                  className='studioOverviewGreenscreenLamp studioOverviewLamp'
-                />
-              </div>
-              <div className='studioOverviewLight'>
-                <img
-                  src={schein2}
-                  alt='schein'
-                  className={'schein'}
-                  style={{
-                    top: `-35px`,
-                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
-                  }}
-                />
-                <img
-                  src={biColor}
-                  alt='Lamp'
-                  className='studioOverviewGreenscreenLamp studioOverviewLamp'
-                />
-              </div>
-              <div className='studioOverviewLight'>
-                <img
-                  src={schein2}
-                  alt='schein'
-                  className={'schein'}
-                  style={{
-                    top: `-35px`,
-                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
-                  }}
-                />
-                <img
-                  src={biColor}
-                  alt='Lamp'
-                  className='studioOverviewGreenscreenLamp studioOverviewLamp'
-                />
-              </div>
-              <div className='studioOverviewLight'>
-                <img
-                  src={schein2}
-                  alt='schein'
-                  className={'schein'}
-                  style={{
-                    top: `-35px`,
-                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
-                  }}
-                />
-                <img
-                  src={biColor}
-                  alt='Lamp'
-                  className='studioOverviewGreenscreenLamp studioOverviewLamp lampMirrored'
-                />
-              </div>
-              <div className='studioOverviewLight'>
-                <img
-                  src={schein2}
-                  alt='schein'
-                  className={'schein'}
-                  style={{
-                    top: `-35px`,
-                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
-                  }}
-                />
-                <img
-                  src={biColor}
-                  alt='Lamp'
-                  className='studioOverviewGreenscreenLamp studioOverviewLamp lampMirrored'
-                />
-              </div>
-              <div className='studioOverviewLight'>
-                <img
-                  src={schein2}
-                  alt='schein'
-                  className={'schein'}
-                  style={{
-                    top: `-35px`,
-                    opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
-                  }}
-                />
-                <img
-                  src={biColor}
-                  alt='Lamp'
-                  className='studioOverviewGreenscreenLamp studioOverviewLamp lampMirrored'
-                />
+              <div>
+                {[...Array(6)].map((_, index) => (
+                  <div
+                    className='studioOverviewLight'
+                    key={index}
+                  >
+                    <img
+                      src={schein2}
+                      alt='schein'
+                      className='schein'
+                      style={{
+                        top: `-35px`,
+                        opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
+                      }}
+                    />
+                    <div
+                      onClick={() => handleGlowAndFocus(13)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <img
+                        src={biColor}
+                        alt='Lamp'
+                        className={`studioOverviewGreenscreenLamp studioOverviewLamp ${index >= 3 ? 'lampMirrored' : ''}`}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
             <div className='studioOverviewLights'>
@@ -498,7 +430,6 @@ const Studio = () => {
             </div>
             <div className='studioOverviewTestchart'>
               <div>
-                {' '}
                 {/* 11 */}
                 <div className='studioOverviewLight'>
                   <img
@@ -533,7 +464,6 @@ const Studio = () => {
                 </div>
               </div>
               <div>
-                {' '}
                 {/* 12 */}
                 <div className='studioOverviewLight'>
                   <img
@@ -569,62 +499,27 @@ const Studio = () => {
               </div>
             </div>
             <div className='studioOverviewTraversen'>
-              <div className='studioOverviewTraversenLamp top-[90px] left-[80px]'>
-                <div className='studioOverviewTraversenLight'></div>
-                <LightBeam
-                  red={faderValues[1][0]}
-                  green={faderValues[2][0]}
-                  blue={faderValues[3][0]}
-                />
-              </div>
-              <div className='studioOverviewTraversenLamp top-[400px] left-[80px]'>
-                <div className='studioOverviewTraversenLight'></div>
-                <LightBeam
-                  red={faderValues[1][0]}
-                  green={faderValues[2][0]}
-                  blue={faderValues[3][0]}
-                />
-              </div>
-              <div className='studioOverviewTraversenLamp top-[715px] left-[80px]'>
-                <div className='studioOverviewTraversenLight'></div>
-                <LightBeam
-                  red={faderValues[1][0]}
-                  green={faderValues[2][0]}
-                  blue={faderValues[3][0]}
-                />
-              </div>
-              <div className='studioOverviewTraversenLamp top-[90px] left-[725px]'>
-                <div className='studioOverviewTraversenLight'></div>
-                <LightBeam
-                  red={faderValues[1][0]}
-                  green={faderValues[2][0]}
-                  blue={faderValues[3][0]}
-                />
-              </div>
-              <div className='studioOverviewTraversenLamp top-[400px] left-[725px]'>
-                <div className='studioOverviewTraversenLight'></div>
-                <LightBeam
-                  red={faderValues[1][0]}
-                  green={faderValues[2][0]}
-                  blue={faderValues[3][0]}
-                />
-              </div>
-              <div className='studioOverviewTraversenLamp top-[565px] left-[725px]'>
-                <div className='studioOverviewTraversenLight'></div>
-                <LightBeam
-                  red={faderValues[1][0]}
-                  green={faderValues[2][0]}
-                  blue={faderValues[3][0]}
-                />
-              </div>
-              <div className='studioOverviewTraversenLamp top-[715px] left-[610px]'>
-                <div className='studioOverviewTraversenLight'></div>
-                <LightBeam
-                  red={faderValues[1][0]}
-                  green={faderValues[2][0]}
-                  blue={faderValues[3][0]}
-                />
-              </div>
+              {[
+                { top: 90, left: 80 },
+                { top: 400, left: 80 },
+                { top: 715, left: 80 },
+                { top: 90, left: 725 },
+                { top: 400, left: 725 },
+                { top: 565, left: 725 },
+                { top: 715, left: 610 },
+              ].map((position, index) => (
+                <div
+                  key={index}
+                  className={`studioOverviewTraversenLamp top-[${position.top}px] left-[${position.left}px]`}
+                >
+                  <div className='studioOverviewTraversenLight'></div>
+                  <LightBeam
+                    red={faderValues[1][0]}
+                    green={faderValues[2][0]}
+                    blue={faderValues[3][0]}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -91,8 +91,9 @@
 }
 
 .studioOverviewInfopanelGreenscreen {
-  top: 30px;
-  left: -90px;
+  transform: translate(-50%, -50%);
+  left: 48%;
+  top: 30%;
 }
 
 .studioOverviewInfopanelTestchart {
@@ -137,6 +138,7 @@
   width: calc(100% - 190px);
   position: relative;
   margin-left: 120px;
+  top: 60px;
 }
 
 .studioOverviewGreenscreenLamp {
@@ -150,24 +152,27 @@
 }
 
 .studioOverviewLights {
-  height: 675px;
+  height: 565px;
   width: calc(100% - 200px);
   position: relative;
   margin-left: 100px;
+  top: 60px;
 }
 
 .studioOverviewTestchart {
   height: 83px;
   width: 220px;
   position: relative;
-  margin-left: 170px;
+  margin-left: 150px;
+  display: flex;
 }
 
 .studioOverviewTestchartLamp {
   transform: scale(0.5) rotateX(180deg);
   position: relative;
   display: inline;
-  top: -25%;
+  top: 60px;
+  z-index: 2;
 }
 
 .studioOverviewTraversen {

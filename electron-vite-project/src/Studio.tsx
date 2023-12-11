@@ -70,8 +70,7 @@ const Studio = () => {
     { id: 9, row: 3, col: 3, fake: false },
     { id: 1, row: 4, col: 0, fake: false },
     { id: 1, row: 4, col: 1, fake: false },
-    { id: 15, row: 4, col: 2, fake: true },
-    { id: 17, row: 4, col: 3, fake: true },
+    { id: 10, row: 4, col: 3, fake: false },
   ];
   // Creates an array with the number of rows and columns to be displayed in the Studio Overview
   const grid = Array(studioRows)
@@ -503,65 +502,73 @@ const Studio = () => {
               </div>
             </div>
             <div className='studioOverviewTestchart'>
-              <div
-                className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
-                onClick={() => handleGlowAndFocus(12)}
-                style={{ cursor: 'pointer' }}
-              >
-                <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
-                <div className='studioOverviewInfopanelBrightness'>
-                  {(((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
-                    ? t('Off')
-                    : (((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+              <div>
+                {' '}
+                {/* 11 */}
+                <div className='studioOverviewLight'>
+                  <img
+                    src={schein}
+                    alt='schein'
+                    className={'schein'}
+                    style={{
+                      opacity: (faderValues[11][0] / 255) * (faderValues[0][0] / 255),
+                      transform: 'rotate(180deg)',
+                      top: '109px',
+                    }}
+                  />
+                  <div
+                    onClick={() => handleGlowAndFocus(11)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <img
+                      src={lampImage}
+                      alt='Lamp'
+                      className='studioOverviewTestchartLamp'
+                    />
+                    <div className='studioOverviewInfopanel'>
+                      <div className='studioOverviewInfopanelText'>{t('testchart')} #11</div>
+                      <div className='studioOverviewInfopanelBrightness'>
+                        {(((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                          ? t('Off')
+                          : (((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div
-                className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
-                style={{ top: `-20px`, cursor: 'pointer' }}
-                onClick={() => handleGlowAndFocus(11)}
-              >
-                <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
-                <div className='studioOverviewInfopanelBrightness'>
-                  {(((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
-                    ? t('Off')
-                    : (((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+              <div>
+                {' '}
+                {/* 12 */}
+                <div className='studioOverviewLight'>
+                  <img
+                    src={schein}
+                    alt='schein'
+                    className={'schein'}
+                    style={{
+                      opacity: (faderValues[12][0] / 255) * (faderValues[0][0] / 255),
+                      transform: 'rotate(180deg)',
+                      top: '109px',
+                    }}
+                  />
+                  <div
+                    onClick={() => handleGlowAndFocus(12)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <img
+                      src={lampImage}
+                      alt='Lamp'
+                      className='studioOverviewTestchartLamp'
+                    />
+                    <div className='studioOverviewInfopanel'>
+                      <div className='studioOverviewInfopanelText'>{t('testchart')} #12</div>
+                      <div className='studioOverviewInfopanelBrightness'>
+                        {(((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                          ? t('Off')
+                          : (((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className='studioOverviewLight'>
-                <img
-                  src={schein}
-                  alt='schein'
-                  className={'schein'}
-                  style={{
-                    top: `5px`,
-                    transform: `rotate(180deg)`,
-                    opacity: (faderValues[11][0] / 255) * (faderValues[0][0] / 255),
-                  }}
-                />
-                <img
-                  src={lampImage}
-                  alt='Lamp'
-                  className='studioOverviewTestchartLamp'
-                  style={{ top: `-50px` }}
-                />
-              </div>
-              <div className='studioOverviewLight'>
-                <img
-                  src={schein}
-                  alt='schein'
-                  className={'schein'}
-                  style={{
-                    top: `5px`,
-                    transform: `rotate(180deg)`,
-                    opacity: (faderValues[12][0] / 255) * (faderValues[0][0] / 255),
-                  }}
-                />
-                <img
-                  src={lampImage}
-                  alt='Lamp'
-                  className='studioOverviewTestchartLamp'
-                  style={{ top: `-50px` }}
-                />
               </div>
             </div>
             <div className='studioOverviewTraversen'>

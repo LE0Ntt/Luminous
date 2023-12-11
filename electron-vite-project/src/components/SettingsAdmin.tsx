@@ -19,6 +19,7 @@ import Button from './Button';
 import IconAdmin from '@/assets/Icon_Admin';
 import IconSettings from '@/assets/Icon_Settings';
 import IconServer from '@/assets/IconServer';
+import IconKey from '@/assets/IconKey';
 
 interface Setting2Props {
   url: string;
@@ -139,7 +140,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
       </div>
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
-          <IconSettings
+          <IconKey
             color={'var(--primary)'}
             size='20px'
           />

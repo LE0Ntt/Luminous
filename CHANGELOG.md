@@ -12,7 +12,7 @@
   - Value input now displays one decimal place when focused
   - Removed separator line from last element
   - Render DMX channels in steps to reduce lag
-  - Prevented the fader track from showing through the fader thumb in the extended fader view
+  - Prevented the track from showing through the thumb in the extended fader view
 - LightFX
   - Enlarged effects area to fill half the screen
   - Any device channel that could not be controlled in the LightFX is now displayed as an effect fader

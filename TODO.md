@@ -57,6 +57,7 @@
 - [ ] LightFX
   - [ ] Change to current state of the first light
   - [x] Effects as misc faders for now
+    - [ ] Group faders
   - [x] Device list server updates
   - [ ] "Mute" button
   - [ ] New bi-color slider with higher resolution and value display/input

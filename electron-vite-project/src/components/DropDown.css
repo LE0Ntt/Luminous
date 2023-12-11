@@ -26,9 +26,9 @@
   color: var(--primary);
   text-align: left;
   overflow: hidden;
-  /* min-width: 145px;  For consistend width in animation */
   --ddHeight: 214px; /* Height of dowpdown */
-  --ddWidth: 160px; /* Width of dowpdown */
+  --ddWidth: 170px; /* Width of dowpdown */
+  /* min-width: var(--ddWidth); /* For consistend width in animation */
   animation: openDropdown 150ms ease-out forwards;
 }
 
@@ -64,9 +64,12 @@
 
 .dropdown > p {
   margin: 0;
-  padding: 9px 9px;
+  padding: 9px;
   border-bottom: 1px solid var(--onepStroke);
   white-space: nowrap;
+  display: flex;
+  gap: 9px;
+  width: var(--ddWidth);
 }
 
 .dropdown > p:hover {

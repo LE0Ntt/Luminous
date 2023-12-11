@@ -12,7 +12,6 @@
  *
  * @file DropDown.tsx
  */
-import React, { ReactElement } from 'react';
 import './DropDown.css';
 
 type DropDownProps = {
@@ -28,10 +27,9 @@ const DropDown: React.FC<DropDownProps> = ({ settings, settingSelection, open })
         <p
           key={index}
           onClick={() => settingSelection(setting)}
-          className='flex'
         >
           <setting.icon />
-          <span className='left-1 relative'>{setting.text}</span>
+          <span>{setting.text}</span>
         </p>
       ))}
     </div>

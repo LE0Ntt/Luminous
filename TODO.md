@@ -9,12 +9,12 @@
 - [ ] Settingsdesign anpassen, Leon
   - [x] Textinput gleiche höhe wie buttons, Darwin
 - [ ] Offensichtlicheres Faderhighlighting, Leon
-- [ ] Effekte richtiges Design (Slider 10px bottom, höhere Fader), Leon
+- [x] Effekte richtiges Design (Slider 10px bottom, höhere Fader), Leon
 - [ ] Alle Lampen aus beim App-Schließen,
   - [ ] Dialog, Leon
   - [ ] Backend, Darwin
 - [x] LightSettings buttons anpassen, Darwin
-- [ ] Icons für Dropdown, Leon
+- [x] Icons für Dropdown, Leon
 
 ## Known Issues
 

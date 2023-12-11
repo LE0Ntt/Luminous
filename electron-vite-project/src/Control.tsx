@@ -256,7 +256,7 @@ function Control() {
             {/* Masterfader/Groupfader */}
             <div className='lightFader innerWindow'>
               <Fader
-                height={397}
+                height={327}
                 id={1}
                 sliderGroupId={0}
                 name={t('group')}
@@ -300,12 +300,14 @@ function Control() {
                   sliderGroupId={0}
                   name='R'
                   color='#CA2C2C'
+                  className='noBorder'
                 />
                 <Fader
                   id={4}
                   sliderGroupId={0}
                   name='G'
                   color='#59E066'
+                  className='noBorder'
                 />
                 <Fader
                   id={5}
@@ -352,7 +354,6 @@ function Control() {
                                   sliderGroupId={slider.id}
                                   name={channel.id !== 0 ? channel.channel_type : slider.name}
                                   className={isLastFader ? 'noBorder' : ''}
-                                  height={200}
                                 />
                               </div>
                             );

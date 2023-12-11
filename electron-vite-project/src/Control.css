@@ -89,12 +89,12 @@
 }
 
 .lightFader {
-  height: 495px;
+  height: 425px;
   width: 82px;
 }
 
 .controlBiColor {
-  height: 385px;
+  height: 315px;
   width: 553px;
   top: 130px;
   left: 122px;
@@ -102,33 +102,33 @@
 
 .controlKelvinPicker {
   position: absolute;
-  top: 177px;
+  top: 50%;
   left: 60px;
 }
 
 .controlRGB {
-  height: 495px;
+  height: 425px;
   width: 719px;
   right: 20px;
 }
 
 .controlColorPicker {
   position: absolute;
-  top: 100px;
+  bottom: 20px;
   right: 20px;
 }
 
 .controlRGBFader {
   position: absolute;
   display: flex;
-  top: 100px;
+  bottom: 5px;
   left: 20px;
 }
 
 .controlEffects {
-  height: 355px;
+  height: 425px;
   width: 1394px;
-  top: 535px;
+  bottom: 20px;
 }
 
 .controlTitle {
@@ -163,8 +163,8 @@
 .slidersEffects {
   position: relative;
   left: 200px;
-  width: 1189px;
-  min-width: 1189px;
+  width: 1169px;
+  min-width: 1169px;
 }
 
 .controlButtons {

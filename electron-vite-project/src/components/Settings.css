@@ -18,8 +18,8 @@
   display: flex;
   z-index: 9999;
   gap: 20px;
-  height: 70vh;
-  width: 70vw;
+  height: 80vh;
+  width: 80vw;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -52,7 +52,7 @@
 
 .settings button {
   color: var(--primary);
-  padding: 10%;
+  padding: 0 10px;
   margin-bottom: 20px;
   cursor: pointer;
   width: 100%;
@@ -73,11 +73,17 @@
   align-items: center;
   display: flex;
   font-size: 24px;
+  margin-bottom: 10px;
+  gap: 10px;
 }
 
 .SettingsSubTitle {
+  display: flex;
+  gap: 10px;
   font-size: 20px;
   margin-bottom: 10px;
+  position: relative;
+  top: 15px;
 }
 
 .SettingsTextBox {
@@ -98,8 +104,12 @@
 }
 
 .SettingContainer {
-  margin-top: 20px;
-  padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  position: relative;
+  top: 40px;
+  width: 100%;
 }
 
 .SettingsIPBox {
@@ -149,7 +159,7 @@
   justify-content: space-between;
 }
 
-@media (max-width: 1725px) {
+@media (max-width: 1800px) {
   .SettingsTextBoxContainer {
     width: stretch;
   }
@@ -161,7 +171,7 @@
 
   .ChangePassword {
     flex-direction: column;
-    align-items: start;
+    align-items: end;
   }
 
   .PasswordMessage {

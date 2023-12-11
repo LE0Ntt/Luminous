@@ -16,6 +16,9 @@ import { useContext } from 'react';
 import './Settings.css';
 import Toggle from './Toggle';
 import { TranslationContext } from './TranslationContext';
+import IconLanguage from '@/assets/IconLanguage';
+import IconSettings from '@/assets/Icon_Settings';
+import IconFlip from '@/assets/IconFlip';
 
 const Setting1: React.FC = () => {
   const { t, language, setLanguage } = useContext(TranslationContext);
@@ -30,12 +33,16 @@ const Setting1: React.FC = () => {
   };
   return (
     <div className='SettingsOption'>
-      <div className='SettingsSubTitle'>
+      <div className='SettingsTitle'>
         <span>{t('set_general')}</span>
       </div>
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
-          <span>{t('set_language')}</span>
+          <IconLanguage
+            color={'var(--primary)'}
+            size='20px'
+          />
+          <span className='relative top-[-6px]'>{t('set_language')}</span>
         </div>
         <select
           className='SettingsLanguageSelection textBox'
@@ -48,10 +55,13 @@ const Setting1: React.FC = () => {
       </div>
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
-          <span>{t('appearance')}</span>
+          <IconFlip
+            color={'var(--primary)'}
+            size='20px'
+          />
+          <span className='relative top-[-6px]'>{t('cl_righthand')}</span>
         </div>
         <div className='flex items-center gap-4'>
-          <label>{t('cl_righthand')}</label>
           <Toggle
             onClick={handleToggleChange}
             enabled={localStorage.getItem('reverseOrder') === 'true'}

@@ -16,6 +16,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import './Settings.css';
 import { TranslationContext } from './TranslationContext';
 import Button from './Button';
+import IconAdmin from '@/assets/Icon_Admin';
+import IconSettings from '@/assets/Icon_Settings';
+import IconServer from '@/assets/IconServer';
 
 interface Setting2Props {
   url: string;
@@ -131,12 +134,16 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
 
   return (
     <div className='SettingsOption'>
-      <div className='SettingsSubTitle'>
+      <div className='SettingsTitle'>
         <span>{t('set_admin')}</span>
       </div>
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
-          <span>{t('change_password')}</span>
+          <IconSettings
+            color={'var(--primary)'}
+            size='20px'
+          />
+          <span className='relative top-[-6px]'>{t('change_password')}</span>
         </div>
         <div className='ChangePassword'>
           <form className='SettingsTextBoxContainer'>
@@ -176,7 +183,11 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
       </div>
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
-          <span>OLA</span>
+          <IconServer
+            color={'var(--primary)'}
+            size='20px'
+          />
+          <span className='relative top-[-6px]'>OLA</span>
         </div>
         <Button
           className='SettingsButton controlButton'

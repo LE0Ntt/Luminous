@@ -18,7 +18,7 @@
   position: relative;
   display: inline-block;
   width: 40px;
-  height: 20px;
+  height: 25px;
   margin-right: 5px;
 }
 
@@ -38,19 +38,19 @@
   right: 0;
   bottom: 0;
   transition: 0.4s;
-  border: solid 1px var(--primary);
-  background-color: var(--primarySwitched);
+  border: solid 1px var(--faderThumb);
+  background-color: var(--tertiary);
   box-shadow: inset 0px 3px 7px 0px rgba(0, 0, 0, 0.15);
 }
 
 .defaultToggle:before {
   position: absolute;
   content: '';
-  height: 12px;
-  width: 12px;
+  height: 17px;
+  width: 17px;
   left: 3px;
   bottom: 3px;
-  background-color: var(--primary);
+  background-color: var(--faderThumb);
   transition: 0.4s;
 }
 
@@ -59,8 +59,7 @@ input:checked + .defaultToggle {
 }
 
 input:checked + .defaultToggle:before {
-  background-color: var(--primaryDark);
-  transform: translateX(21px);
+  transform: translateX(15px);
 }
 
 /* Rounded sliders */

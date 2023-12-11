@@ -106,7 +106,7 @@ function Scenes() {
             onClick={handleToggleChange}
             enabled={localStorage.getItem('sceneSolo') === 'true'}
           />
-          <span>SOLO</span>
+          <span className='relative top-[2px]'>SOLO</span>
         </div>
       </div>
       <div className='window scenesSolo scenesFade'>

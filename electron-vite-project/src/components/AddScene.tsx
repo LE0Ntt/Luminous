@@ -18,6 +18,7 @@ import './AddScene.css';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 import AdminPassword from './AdminPassword';
+import IconNote from '@/assets/IconNote';
 
 interface AddSceneProps {
   onClose: () => void;
@@ -138,8 +139,12 @@ function AddScene({ onClose }: AddSceneProps) {
               />
               <label htmlFor='checkboxId'>{t('as_checkbox')}</label>
             </div>
-            <div className='AddSceneNote'>
-              <span>❕ {t('as_note')}</span>
+            <div className='AddSceneNote flex'>
+              <IconNote
+                color={'var(--secondary)'}
+                size='20px'
+              />
+              <span className='relative top-[-3px] left-1'>{t('as_note')}</span>
             </div>
           </div>
           <div className='AddSceneFooter'>

@@ -202,7 +202,7 @@
 
 .buttonOpenControl {
   width: 36px;
-  height: 36px;
+  height: 36px !important;
   border-radius: 5px;
   position: relative;
   left: 50%;

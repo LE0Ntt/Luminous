@@ -510,7 +510,8 @@ const Studio = () => {
               ].map((position, index) => (
                 <div
                   key={index}
-                  className={`studioOverviewTraversenLamp top-[${position.top}px] left-[${position.left}px]`}
+                  className='studioOverviewTraversenLamp'
+                  style={{ top: `${position.top}px`, left: `${position.left}px` }}
                 >
                   <div className='studioOverviewTraversenLight'></div>
                   <LightBeam

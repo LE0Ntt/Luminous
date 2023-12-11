@@ -93,12 +93,12 @@
 .studioOverviewInfopanelGreenscreen {
   transform: translate(-50%, -50%);
   left: 48%;
-  top: 30%;
+  top: 95%;
 }
 
 .studioOverviewInfopanelTestchart {
-  top: 30px;
-  left: -90px;
+  position: relative;
+  top: -75px;
 }
 
 .studioOverviewInfopanelText {
@@ -123,6 +123,8 @@
   color: var(--primary);
   position: relative;
   display: inline-block;
+  width: 100px;
+  height: 100px;
 }
 
 .schein {
@@ -142,13 +144,18 @@
 }
 
 .studioOverviewGreenscreenLamp {
-  transform: scale(0.5);
+  top: 40px !important;
+}
+
+.studioOverviewLamp {
   position: relative;
   z-index: 2;
+  left: 25px;
+  top: 25px;
 }
 
 .lampMirrored {
-  transform: scale(0.5) rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 .studioOverviewLights {
@@ -160,18 +167,19 @@
 }
 
 .studioOverviewTestchart {
-  height: 83px;
-  width: 220px;
+  height: 30px;
+  width: 200px;
   position: relative;
   margin-left: 150px;
   display: flex;
+  top: 85px;
 }
 
 .studioOverviewTestchartLamp {
-  transform: scale(0.5) rotateX(180deg);
+  transform: rotateX(180deg);
   position: relative;
   display: inline;
-  top: 60px;
+  left: 15px;
   z-index: 2;
 }
 

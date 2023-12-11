@@ -23,10 +23,11 @@ import { useFaderContext } from './components/FaderContext';
 import ScenesComponent from './components/ScenesComponent';
 import BigView from './components/BigView';
 import AddScene from './components/AddScene';
-import lampImage from './assets/lamp.png';
 import schein from './assets/schein3.png';
 import schein2 from './assets/schein2.png';
-import fillLight from './assets/fillLight.png';
+import spot from './assets/SpotTop.png';
+import fillLight from './assets/FillTop.png';
+import biColor from './assets/BiColorTop.png';
 import LightBeam from './components/LightBeam';
 
 const Studio = () => {
@@ -291,10 +292,9 @@ const Studio = () => {
                   }}
                 />
                 <img
-                  src={fillLight}
+                  src={biColor}
                   alt='Lamp'
-                  className='studioOverviewGreenscreenLamp'
-                  style={{ top: `20px` }}
+                  className='studioOverviewGreenscreenLamp studioOverviewLamp'
                 />
               </div>
               <div className='studioOverviewLight'>
@@ -308,10 +308,9 @@ const Studio = () => {
                   }}
                 />
                 <img
-                  src={fillLight}
+                  src={biColor}
                   alt='Lamp'
-                  className='studioOverviewGreenscreenLamp'
-                  style={{ top: `20px` }}
+                  className='studioOverviewGreenscreenLamp studioOverviewLamp'
                 />
               </div>
               <div className='studioOverviewLight'>
@@ -325,10 +324,9 @@ const Studio = () => {
                   }}
                 />
                 <img
-                  src={fillLight}
+                  src={biColor}
                   alt='Lamp'
-                  className='studioOverviewGreenscreenLamp'
-                  style={{ top: `20px` }}
+                  className='studioOverviewGreenscreenLamp studioOverviewLamp'
                 />
               </div>
               <div className='studioOverviewLight'>
@@ -342,10 +340,9 @@ const Studio = () => {
                   }}
                 />
                 <img
-                  src={fillLight}
+                  src={biColor}
                   alt='Lamp'
-                  className='studioOverviewGreenscreenLamp lampMirrored'
-                  style={{ top: `20px` }}
+                  className='studioOverviewGreenscreenLamp studioOverviewLamp lampMirrored'
                 />
               </div>
               <div className='studioOverviewLight'>
@@ -359,10 +356,9 @@ const Studio = () => {
                   }}
                 />
                 <img
-                  src={fillLight}
+                  src={biColor}
                   alt='Lamp'
-                  className='studioOverviewGreenscreenLamp lampMirrored'
-                  style={{ top: `20px` }}
+                  className='studioOverviewGreenscreenLamp studioOverviewLamp lampMirrored'
                 />
               </div>
               <div className='studioOverviewLight'>
@@ -376,10 +372,9 @@ const Studio = () => {
                   }}
                 />
                 <img
-                  src={fillLight}
+                  src={biColor}
                   alt='Lamp'
-                  className='studioOverviewGreenscreenLamp lampMirrored'
-                  style={{ top: `20px` }}
+                  className='studioOverviewGreenscreenLamp studioOverviewLamp lampMirrored'
                 />
               </div>
             </div>
@@ -420,9 +415,9 @@ const Studio = () => {
                                   style={{ cursor: 'pointer' }}
                                 >
                                   <img
-                                    src={lampImage}
+                                    src={spot}
                                     alt='Lamp'
-                                    className='studioOverviewGreenscreenLamp'
+                                    className='studioOverviewLamp'
                                   />
                                   <div className='studioOverviewInfopanel'>
                                     <div className='studioOverviewInfopanelText'>#{slider.id}</div>
@@ -457,9 +452,9 @@ const Studio = () => {
                                   style={{ cursor: 'pointer' }}
                                 >
                                   <img
-                                    src={lampImage}
+                                    src={spot}
                                     alt='Lamp'
-                                    className='studioOverviewGreenscreenLamp lampMirrored'
+                                    className='studioOverviewLamp lampMirrored'
                                   />
                                   <div className='studioOverviewInfopanel'>
                                     <div className='studioOverviewInfopanelText'>#{slider.id}</div>
@@ -482,9 +477,9 @@ const Studio = () => {
                             {slider && (
                               <>
                                 <img
-                                  src={lampImage}
+                                  src={spot}
                                   alt='Lamp'
-                                  className='studioOverviewGreenscreenLamp lampMirrored'
+                                  className='studioOverviewLamp lampMirrored'
                                 />
                                 <div className='studioOverviewInfopanel'>
                                   <div className='studioOverviewInfopanelText'>#{slider.id}</div>
@@ -513,7 +508,8 @@ const Studio = () => {
                     style={{
                       opacity: (faderValues[11][0] / 255) * (faderValues[0][0] / 255),
                       transform: 'rotate(180deg)',
-                      top: '109px',
+                      top: '25px',
+                      left: '-10px',
                     }}
                   />
                   <div
@@ -521,11 +517,11 @@ const Studio = () => {
                     style={{ cursor: 'pointer' }}
                   >
                     <img
-                      src={lampImage}
+                      src={spot}
                       alt='Lamp'
                       className='studioOverviewTestchartLamp'
                     />
-                    <div className='studioOverviewInfopanel'>
+                    <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
                       <div className='studioOverviewInfopanelText'>{t('testchart')} #11</div>
                       <div className='studioOverviewInfopanelBrightness'>
                         {(((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
@@ -547,7 +543,8 @@ const Studio = () => {
                     style={{
                       opacity: (faderValues[12][0] / 255) * (faderValues[0][0] / 255),
                       transform: 'rotate(180deg)',
-                      top: '109px',
+                      top: '25px',
+                      left: '-10px',
                     }}
                   />
                   <div
@@ -555,11 +552,11 @@ const Studio = () => {
                     style={{ cursor: 'pointer' }}
                   >
                     <img
-                      src={lampImage}
+                      src={spot}
                       alt='Lamp'
                       className='studioOverviewTestchartLamp'
                     />
-                    <div className='studioOverviewInfopanel'>
+                    <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
                       <div className='studioOverviewInfopanelText'>{t('testchart')} #12</div>
                       <div className='studioOverviewInfopanelBrightness'>
                         {(((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'

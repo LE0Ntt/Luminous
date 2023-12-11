@@ -37,7 +37,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  -webkit-transition: 0.4s;
   transition: 0.4s;
   border: solid 1px var(--primary);
   background-color: var(--primarySwitched);
@@ -52,7 +51,6 @@
   left: 3px;
   bottom: 3px;
   background-color: var(--primary);
-  -webkit-transition: 0.4s;
   transition: 0.4s;
 }
 
@@ -62,8 +60,6 @@ input:checked + .defaultToggle {
 
 input:checked + .defaultToggle:before {
   background-color: var(--primaryDark);
-  -webkit-transform: translateX(21px);
-  -ms-transform: translateX(21px);
   transform: translateX(21px);
 }
 

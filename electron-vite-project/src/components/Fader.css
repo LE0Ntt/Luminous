@@ -54,29 +54,25 @@
 
 .slider {
   appearance: none;
-  -webkit-appearance: none;
   width: 260px;
   height: 13px;
   border-radius: 50px;
   background: #d3d3d3;
   outline: none;
-  -webkit-transition: 0.2s;
   transition: opacity 0.2s;
   position: absolute;
   transform-origin: bottom left;
   transform: rotateZ(270deg) translate3d(0, 0, 0);
-  -webkit-transform: rotateZ(270deg) translate3d(0, 0, 0);
 }
 
 /* Slider Track - all Browsers */
 .slider::-webkit-slider-runnable-track {
   /* Specific styling for WebKit/Blink */
-  -webkit-appearance: none;
+  appearance: none;
   width: 260px;
   height: 13px;
   cursor: pointer;
   box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.1);
-  -webkit-box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.1);
   border-radius: 50px;
 }
 
@@ -110,7 +106,7 @@
   border: 1px solid var(--faderThumbBorder);
   border-radius: 50%;
   cursor: pointer;
-  -webkit-appearance: none;
+  appearance: none;
   background: var(--faderThumb);
   box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(50px);
@@ -187,7 +183,7 @@
 
 .inputNum::-webkit-outer-spin-button,
 .inputNum::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 

@@ -82,10 +82,9 @@
   border-radius: 5px;
   border: 1px solid var(--onepStroke);
   background-color: var(--fillThick);
-  --webkit-backdrop-filter: var(--windowBackdrop);
+  -webkit-backdrop-filter: var(--windowBackdrop);
   backdrop-filter: var(--windowBackdrop);
   box-shadow: var(--shadowLight);
-  -webkit-box-shadow: var(--shadowLight);
   position: absolute;
   top: 60px;
   z-index: 1;
@@ -106,7 +105,7 @@
   font-weight: 600;
   color: var(--primary);
   text-align: right;
-  letter-spacing: 0em;
+  letter-spacing: 0;
   margin-right: 6px;
 }
 
@@ -115,7 +114,6 @@
   font-size: 18px;
   position: absolute;
   color: var(--primary);
-
   bottom: -4px;
   right: 6px;
 }
@@ -216,7 +214,7 @@
   color: var(--primary);
   text-align: center;
   line-height: 22px;
-  letter-spacing: 0em;
+  letter-spacing: 0;
   margin-bottom: 0;
   transform: translateX(-10px);
 }

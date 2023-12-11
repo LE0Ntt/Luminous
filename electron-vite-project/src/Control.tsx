@@ -327,7 +327,7 @@ function Control() {
             {/* Effects */}
             <div className='controlEffects innerWindow'>
               <span className='controlTitle'>{t('effects')}</span>
-              <div className='centered-wrapper'>{effects ? null : <span className='noSupport'>{t('noSupport')}</span>}</div>
+              <div className='centeredWrapper'>{effects ? null : <span className='noSupport'>{t('noSupport')}</span>}</div>
               <div className='sliders slidersEffects'>
                 {sliders
                   .slice(1)

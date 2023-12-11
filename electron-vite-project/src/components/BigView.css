@@ -23,10 +23,14 @@
   border-radius: 10px;
   background-color: var(--fillMedium);
   color: var(--primary);
-  -webkit-backdrop-filter: var(--windowBackdrop);
-  backdrop-filter: var(--windowBackdrop);
   border: var(--onepStroke) 1px solid;
   padding: 15px 20px 0;
+}
+
+.BigViewBackdrop {
+  background: none;
+  border: none;
+  backdrop-filter: var(--windowBackdrop);
 }
 
 .BigViewContent {

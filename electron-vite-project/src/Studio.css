@@ -62,16 +62,18 @@
 }
 
 .studioOverview {
-  background-image: url('./assets/studio_overview.png');
-  height: 870px;
-  width: 806px;
+  background-image: url('./assets/StudioOverview.png');
+  height: 868px;
+  width: 804px;
   position: relative;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 6px;
+  border-radius: 5px;
   background-repeat: no-repeat;
   background-size: cover;
+  border: none;
+  outline: 1px solid var(--onepStroke);
 }
 
 .studioOverviewInfopanel {

@@ -22,6 +22,8 @@
   - Updated bi-color and spot light icons
 - Settings
   - Error/success message on password change
+  - Background image refined
+- Settings error/success message on password change
   - Added translation, color indication & fade out
   - Changed layout
   - Added icons for each setting

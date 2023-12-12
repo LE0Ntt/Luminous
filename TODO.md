@@ -4,7 +4,7 @@
   - [ ] Icons anpassen, Beide
   - [ ] Testchart anpassen, Leon
   - [ ] Layout anpassen, Leon
-  - [ ] Rendering anpassen, Darwin
+  - [x] Rendering anpassen, Darwin
 - [ ] Scenes dürfen HMI nicht ausmachen, Darwin
 - [ ] Settingsdesign anpassen, Leon
   - [x] Textinput gleiche höhe wie buttons, Darwin
@@ -110,6 +110,7 @@
 - [ ] Look into npm packages
 - [ ] Icons for dropdown menu
 - [ ] DIN icons for studio overview
+- [ ] Studio-Overview display bi-color changes
 
 ## Code Cleanup & Comments
 

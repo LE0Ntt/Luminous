@@ -20,7 +20,7 @@
 - Studio-Overview
   - Rearranged layout to reflect the studio
   - Updated bi-color and spot light icons
-  -
+  - Background image refined
 - Settings error/success message on password change
   - Added translation, color indication & fade out
 - LightSettings

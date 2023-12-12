@@ -20,9 +20,11 @@
 - Studio-Overview
   - Rearranged layout to reflect the studio
   - Updated bi-color and spot light icons
-  -
-- Settings error/success message on password change
+- Settings
+  - Error/success message on password change
   - Added translation, color indication & fade out
+  - Changed layout
+  - Added icons for each setting
 - LightSettings
   - Save with _ENTER_ if no input is focused
   - Switched to SocketIO for save, update, and delete instead of http

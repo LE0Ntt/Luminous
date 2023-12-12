@@ -500,20 +500,18 @@ const Studio = () => {
             </div>
             <div className='studioOverviewTraversen'>
               {[
-                { top: 90, left: 80 },
-                { top: 400, left: 80 },
-                { top: 715, left: 80 },
-                { top: 90, left: 725 },
-                { top: 400, left: 725 },
-                { top: 565, left: 725 },
-                { top: 715, left: 610 },
+                { top: 82, left: 74 },
+                { top: 401, left: 74 },
+                { top: 720, left: 74 },
+                { top: 82, left: 731 },
+                { top: 401, left: 731 },
+                { top: 566, left: 731 },
+                { top: 720, left: 614 },
               ].map((position, index) => (
                 <div
                   key={index}
-                  className='studioOverviewTraversenLamp'
-                  style={{ top: `${position.top}px`, left: `${position.left}px` }}
+                  style={{ top: `${position.top}px`, left: `${position.left}px`, position: 'fixed' }}
                 >
-                  <div className='studioOverviewTraversenLight'></div>
                   <LightBeam
                     red={faderValues[1][0]}
                     green={faderValues[2][0]}

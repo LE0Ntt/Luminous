@@ -189,17 +189,14 @@
   position: relative;
 }
 
-.studioOverviewTraversenLamp {
-  position: fixed;
-}
-
 .studioOverviewTraversenLight {
   background-color: white;
   height: 10px;
   width: 10px;
   border-radius: 50%;
-  position: fixed;
   transform: translate(-50%, -50%);
+  filter: blur(0.7px);
+  position: absolute;
 }
 
 .buttonOpenControl {

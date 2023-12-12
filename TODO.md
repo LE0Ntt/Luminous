@@ -59,6 +59,7 @@
   - [x] Effects as misc faders for now
     - [ ] Group faders with same name
   - [x] Device list server updates
+  - [ ] Emit changes with buffer like other faders
   - [ ] "Mute" button
   - [ ] New bi-color slider with higher resolution and value display/input
 - [ ] PI

@@ -32,9 +32,8 @@
   - Updates reload sliders in Studio and devices in LightFX
   - Default number for new devices is last device number + 1
   - Changing device type does not reset DMX range if previously set
-  - Switched save and delete buttons
-  - Highlight save button
-  - Added space between inputs and labels
+  - Switched save and delete buttons and highlight save button
+  - Spacing changes
 - About
   - Linked changelog
   - Spiced up the logo with an interactive twist

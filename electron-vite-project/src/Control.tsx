@@ -328,40 +328,47 @@ function Control() {
             </div>
             {/* Effects */}
             <div className='controlEffects innerWindow'>
-              <span className='controlTitle'>{t('effects')}</span>
-              <div className='centeredWrapper'>{effects ? null : <span className='noSupport'>{t('noSupport')}</span>}</div>
-              <div className='sliders slidersEffects'>
-                {sliders
-                  .slice(1)
-                  .filter((slider) => selectedDevices.some((channel) => channel.id === slider.id))
-                  .map((slider, index, filteredSliders) => {
-                    const totalSliders = filteredSliders.length;
-                    return (
-                      <React.Fragment key={slider.id}>
-                        {slider.attributes.channel
-                          .filter(
-                            (channel: { id: number; channel_type: string }) =>
-                              channel.channel_type !== 'main' && channel.channel_type !== 'r' && channel.channel_type !== 'g' && channel.channel_type !== 'b' && channel.channel_type !== 'bi'
-                          )
-                          .map((channel: { id: number; channel_type: string }, channelIndex: number, filteredChannels: string | any[]) => {
-                            const isLastFader = index === totalSliders - 1 && channelIndex === filteredChannels.length - 1;
-                            return (
-                              <div key={slider.id + '-' + channel.id}>
-                                <h2 className='faderText'>{slider.id}</h2>
-                                <Fader
-                                  key={slider.id + '-' + channel.id}
-                                  id={channel.id}
-                                  sliderGroupId={slider.id}
-                                  name={channel.id !== 0 ? channel.channel_type : slider.name}
-                                  className={isLastFader ? 'noBorder' : ''}
-                                />
-                              </div>
-                            );
-                          })}
-                      </React.Fragment>
-                    );
-                  })}
-              </div>
+              {!effects ? (
+                <>
+                  <span className='controlTitle'>{t('effects')}</span>
+                  <div className='centeredWrapper'>
+                    <span className='noSupport'>{t('noSupport')}</span>
+                  </div>
+                </>
+              ) : (
+                <div className='sliders slidersEffects'>
+                  {sliders
+                    .slice(1)
+                    .filter((slider) => selectedDevices.some((channel) => channel.id === slider.id))
+                    .map((slider, index, filteredSliders) => {
+                      const totalSliders = filteredSliders.length;
+                      return (
+                        <React.Fragment key={slider.id}>
+                          {slider.attributes.channel
+                            .filter(
+                              (channel: { id: number; channel_type: string }) =>
+                                channel.channel_type !== 'main' && channel.channel_type !== 'r' && channel.channel_type !== 'g' && channel.channel_type !== 'b' && channel.channel_type !== 'bi'
+                            )
+                            .map((channel: { id: number; channel_type: string }, channelIndex: number, filteredChannels: string | any[]) => {
+                              const isLastFader = index === totalSliders - 1 && channelIndex === filteredChannels.length - 1;
+                              return (
+                                <div key={slider.id + '-' + channel.id}>
+                                  <h2 className='faderText'>{slider.id}</h2>
+                                  <Fader
+                                    key={slider.id + '-' + channel.id}
+                                    id={channel.id}
+                                    sliderGroupId={slider.id}
+                                    name={channel.id !== 0 ? channel.channel_type : slider.name}
+                                    className={isLastFader ? 'noBorder' : ''}
+                                  />
+                                </div>
+                              );
+                            })}
+                        </React.Fragment>
+                      );
+                    })}
+                </div>
+              )}
             </div>
           </div>
           {/* Background */}

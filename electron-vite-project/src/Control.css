@@ -129,6 +129,7 @@
   height: 425px;
   width: 1394px;
   bottom: 20px;
+  padding: 3px 20px;
 }
 
 .controlTitle {
@@ -162,9 +163,7 @@
 
 .slidersEffects {
   position: relative;
-  left: 200px;
-  width: 1169px;
-  min-width: 1169px;
+  width: stretch;
 }
 
 .controlButtons {

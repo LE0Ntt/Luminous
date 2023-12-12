@@ -109,8 +109,8 @@
   top: 40px;
   margin-bottom: 40px;
   bottom: 0;
-  padding: 20px;
-  overflow: auto;
+  padding: 10px 20px 20px;
+  overflow: hidden;
   gap: 20px;
   width: 100%;
   transition: width 200ms ease-out, flex-grow 200ms ease-out, opacity 200ms ease-out, padding 200ms ease-out;
@@ -121,7 +121,7 @@
   flex-grow: 0;
   width: 0;
   opacity: 0;
-  padding: 20px 0px;
+  padding: 10px 0 20px 0;
 }
 
 .LightSettingsWindowUpper {
@@ -135,7 +135,7 @@
 .LightSettingsWindowMid {
   height: 100%;
   position: relative;
-  width: stretch;
+  width: calc(100% + 10px);
   gap: 20px;
   overflow-y: scroll;
   padding-right: 10px;

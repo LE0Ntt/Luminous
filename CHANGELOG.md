@@ -20,11 +20,10 @@
 - Studio-Overview
   - Rearranged layout to reflect the studio
   - Updated bi-color and spot light icons
+  - Background image refined
 - Settings
   - Error/success message on password change
-  - Background image refined
-- Settings error/success message on password change
-  - Added translation, color indication & fade out
+    - Added translation, color indication & fade out
   - Changed layout
   - Added icons for each setting
 - LightSettings
@@ -57,6 +56,7 @@
   - Added icons (also in dialogs)
   - Added animation
   - Enlarged for easier touch selection
+  - Removed lines between items
 - Appended 's' to scenes fade input value
 - Reworked fill light and bi-color light icons
 - Set dark mode as default to prevent bright flash on startup

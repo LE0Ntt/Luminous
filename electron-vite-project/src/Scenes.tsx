@@ -102,11 +102,13 @@ function Scenes() {
       </div>
       <div className='window scenesSolo'>
         <div className='scenesSoloAlign'>
-          <Toggle
-            onClick={handleToggleChange}
-            enabled={localStorage.getItem('sceneSolo') === 'true'}
-          />
-          <span className='relative top-[2px]'>SOLO</span>
+          <div className='toggleScenes'>
+            <Toggle
+              onClick={handleToggleChange}
+              enabled={localStorage.getItem('sceneSolo') === 'true'}
+            />
+          </div>
+          <span>SOLO</span>
         </div>
       </div>
       <div className='window scenesSolo scenesFade'>

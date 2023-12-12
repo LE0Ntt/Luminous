@@ -6,7 +6,7 @@
   - [ ] Layout anpassen, Leon
   - [x] Rendering anpassen, Darwin
 - [ ] Scenes dürfen HMI nicht ausmachen, Darwin
-- [ ] Settingsdesign anpassen, Leon
+- [x] Settingsdesign anpassen, Leon
   - [x] Textinput gleiche höhe wie buttons, Darwin
 - [ ] Offensichtlicheres Faderhighlighting, Leon
 - [x] Effekte richtiges Design (Slider 10px bottom, höhere Fader), Leon
@@ -57,7 +57,7 @@
 - [ ] LightFX
   - [ ] Change to current state of the first light
   - [x] Effects as misc faders for now
-    - [ ] Group faders
+    - [ ] Group faders with same name
   - [x] Device list server updates
   - [ ] "Mute" button
   - [ ] New bi-color slider with higher resolution and value display/input
@@ -111,6 +111,7 @@
 - [ ] Icons for dropdown menu
 - [ ] DIN icons for studio overview
 - [ ] Studio-Overview display bi-color changes
+- [ ] Constistent Fader elements spacing
 
 ## Code Cleanup & Comments
 
@@ -127,7 +128,7 @@
   - [ ] Assets
     - [ ] Compress
     - [ ] Check necessity
-    - [ ] Rename to a more consistent naming scheme
+    - [ ] Rename to PascalCase scheme
   - [ ] Components
     - [x] About.tsx
     - [ ] AddScene.css

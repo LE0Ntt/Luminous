@@ -17,7 +17,6 @@ import './Settings.css';
 import Toggle from './Toggle';
 import { TranslationContext } from './TranslationContext';
 import IconLanguage from '@/assets/IconLanguage';
-import IconSettings from '@/assets/Icon_Settings';
 import IconFlip from '@/assets/IconFlip';
 
 const Setting1: React.FC = () => {
@@ -31,11 +30,13 @@ const Setting1: React.FC = () => {
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.target.value as 'en' | 'de');
   };
+
   return (
     <div className='SettingsOption'>
       <div className='SettingsTitle'>
         <span>{t('set_general')}</span>
       </div>
+      <hr style={{ marginTop: '45px' }} />
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
           <IconLanguage
@@ -53,6 +54,7 @@ const Setting1: React.FC = () => {
           <option value='de'>{t('German 🇩🇪')}</option>
         </select>
       </div>
+      <hr />
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
           <IconFlip

@@ -71,7 +71,7 @@
   display: flex;
   gap: 9px;
   width: calc(var(--ddWidth) - 6px);
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .dropdown > p:hover {

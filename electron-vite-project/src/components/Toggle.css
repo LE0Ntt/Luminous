@@ -54,17 +54,26 @@
   transition: 0.4s;
 }
 
+input:hover + .defaultToggle {
+  background-color: var(--closeButton);
+}
+
+input:checked:hover + .defaultToggle::before {
+  background-color: var(--brightAndNotTooDark);
+}
+
 input:checked + .defaultToggle {
   background-color: var(--mainColor);
 }
 
 input:checked + .defaultToggle:before {
+  background-color: var(--fillUltraThick);
   transform: translateX(15px);
 }
 
 /* Rounded sliders */
 .defaultToggle.round {
-  border-radius: 12px;
+  border-radius: 15px;
 }
 
 .defaultToggle.round:before {

@@ -87,6 +87,7 @@
 
 .SettingsTextBox {
   width: 11vw !important;
+  margin: 0;
 }
 
 .SettingsContent {
@@ -105,9 +106,9 @@
 .SettingContainer {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin: 40px 0; /* Height of a settings element*/
   position: relative;
-  top: 40px;
+  min-height: 48px;
   width: 100%;
 }
 
@@ -151,6 +152,7 @@
 
 .SettingsLanguageSelection {
   width: 11vw !important;
+  margin: 0;
 }
 
 .ChangePassword {

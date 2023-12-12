@@ -16,8 +16,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import './Settings.css';
 import { TranslationContext } from './TranslationContext';
 import Button from './Button';
-import IconAdmin from '@/assets/Icon_Admin';
-import IconSettings from '@/assets/Icon_Settings';
 import IconServer from '@/assets/IconServer';
 import IconKey from '@/assets/IconKey';
 
@@ -121,8 +119,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
   };
 
   useEffect(() => {
-    console.log('fetching ip');
-    console.log(ip);
+    // console.log('fetching ip' + ip);
     const fullUrl = `${ip}:${port}`;
     /*     changeUrl(fullUrl); */
   }, [ip]);
@@ -138,6 +135,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
       <div className='SettingsTitle'>
         <span>{t('set_admin')}</span>
       </div>
+      <hr style={{ marginTop: '45px' }} />
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
           <IconKey
@@ -182,6 +180,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
           {passwordMessage && <div className={`PasswordMessage ${passwordSuccess ? 'successMessage' : 'errorMessage'}`}>{passwordMessage}</div>}
         </div>
       </div>
+      <hr />
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
           <IconServer
@@ -198,7 +197,8 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
         </Button>
       </div>
       {/* only for release not implemented */}
-      {/* <div className='SettingContainer'>
+      {/* <hr />
+      <div className='SettingContainer'>
         <div className='Heading'>
           <span>URL</span>
         </div>

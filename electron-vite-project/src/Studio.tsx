@@ -453,7 +453,7 @@ const Studio = () => {
                       className='studioOverviewTestchartLamp'
                     />
                     <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
-                      <div className='studioOverviewInfopanelText'>{t('testchart')} #11</div>
+                      <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
                       <div className='studioOverviewInfopanelBrightness'>
                         {(((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
                           ? t('Off')
@@ -487,7 +487,7 @@ const Studio = () => {
                       className='studioOverviewTestchartLamp'
                     />
                     <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
-                      <div className='studioOverviewInfopanelText'>{t('testchart')} #12</div>
+                      <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
                       <div className='studioOverviewInfopanelBrightness'>
                         {(((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
                           ? t('Off')
@@ -498,7 +498,7 @@ const Studio = () => {
                 </div>
               </div>
             </div>
-            <div className='studioOverviewTraversen'>
+            {/* <div className='studioOverviewTraversen'>
               {[
                 { top: 82, left: 74 },
                 { top: 401, left: 74 },
@@ -519,7 +519,7 @@ const Studio = () => {
                   />
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

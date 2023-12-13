@@ -29,6 +29,7 @@ import spot from './assets/SpotTop.png';
 import fillLight from './assets/FillTop.png';
 import biColor from './assets/BiColorTop.png';
 import LightBeam from './components/LightBeam';
+import LightsOn from './components/LightsOn';
 
 const Studio = () => {
   const navigate = useNavigate();
@@ -53,25 +54,25 @@ const Studio = () => {
   const studioRows = 6;
   const studioColumns = 4;
   const selectedSliders = [
-    { id: 5, row: 0, col: 0, fake: false },
-    { id: 5, row: 0, col: 1, fake: false },
-    { id: 6, row: 0, col: 2, fake: false },
-    { id: 6, row: 0, col: 3, fake: false },
-    { id: 4, row: 1, col: 0, fake: false },
-    { id: 4, row: 1, col: 1, fake: false },
-    { id: 7, row: 1, col: 2, fake: false },
-    { id: 7, row: 1, col: 3, fake: false },
-    { id: 3, row: 2, col: 0, fake: false },
-    { id: 3, row: 2, col: 1, fake: false },
-    { id: 8, row: 2, col: 2, fake: false },
-    { id: 8, row: 2, col: 3, fake: false },
-    { id: 2, row: 3, col: 0, fake: false },
-    { id: 2, row: 3, col: 1, fake: false },
-    { id: 9, row: 3, col: 2, fake: false },
-    { id: 9, row: 3, col: 3, fake: false },
-    { id: 1, row: 4, col: 0, fake: false },
-    { id: 1, row: 4, col: 1, fake: false },
-    { id: 10, row: 4, col: 3, fake: false },
+    { id: 5, row: 0, col: 0, fake: false, type: spot },
+    { id: 5, row: 0, col: 1, fake: false, type: fillLight },
+    { id: 6, row: 0, col: 2, fake: false, type: fillLight },
+    { id: 6, row: 0, col: 3, fake: false, type: spot },
+    { id: 4, row: 1, col: 0, fake: false, type: fillLight },
+    { id: 4, row: 1, col: 1, fake: false, type: fillLight },
+    { id: 7, row: 1, col: 2, fake: false, type: fillLight },
+    { id: 7, row: 1, col: 3, fake: false, type: fillLight },
+    { id: 3, row: 2, col: 0, fake: false, type: spot },
+    { id: 3, row: 2, col: 1, fake: false, type: fillLight },
+    { id: 8, row: 2, col: 2, fake: false, type: fillLight },
+    { id: 8, row: 2, col: 3, fake: false, type: spot },
+    { id: 2, row: 3, col: 0, fake: false, type: spot },
+    { id: 2, row: 3, col: 1, fake: false, type: spot },
+    { id: 9, row: 3, col: 2, fake: false, type: fillLight },
+    { id: 9, row: 3, col: 3, fake: false, type: spot },
+    { id: 1, row: 4, col: 0, fake: false, type: spot },
+    { id: 1, row: 4, col: 1, fake: false, type: fillLight },
+    { id: 10, row: 4, col: 3, fake: false, type: spot },
   ];
   // Creates an array with the number of rows and columns to be displayed in the Studio Overview
   const grid = Array(studioRows)
@@ -212,7 +213,7 @@ const Studio = () => {
                             }}
                             style={{
                               transform: glowId === slider.id ? 'scale(1.03) translateY(-5px)' : '',
-                              transition: 'transform 0.3s ease-in-out' /* box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out, */,
+                              transition: 'transform 0.3s ease-in-out',
                               outline: 'none',
                             }}
                           >
@@ -294,6 +295,7 @@ const Studio = () => {
                       style={{
                         top: `-35px`,
                         opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
+                        filter: 'blur(2px)',
                       }}
                     />
                     <div
@@ -335,11 +337,12 @@ const Studio = () => {
                             {slider && (
                               <>
                                 <img
-                                  src={schein}
+                                  src={selectedSlider.type === spot ? schein : schein2}
                                   alt='schein'
                                   className={'schein'}
                                   style={{
                                     opacity: (faderValues[slider.id][0] / 255) * (faderValues[0][0] / 255),
+                                    filter: 'blur(5px)',
                                   }}
                                 />
                                 <div
@@ -347,7 +350,7 @@ const Studio = () => {
                                   style={{ cursor: 'pointer' }}
                                 >
                                   <img
-                                    src={spot}
+                                    src={selectedSlider.type}
                                     alt='Lamp'
                                     className='studioOverviewLamp'
                                   />
@@ -372,11 +375,12 @@ const Studio = () => {
                             {slider && (
                               <>
                                 <img
-                                  src={schein}
+                                  src={selectedSlider.type === spot ? schein : schein2}
                                   alt='schein'
                                   className={'schein'}
                                   style={{
                                     opacity: (faderValues[slider.id][0] / 255) * (faderValues[0][0] / 255),
+                                    filter: 'blur(5px)',
                                   }}
                                 />
                                 <div
@@ -384,7 +388,7 @@ const Studio = () => {
                                   style={{ cursor: 'pointer' }}
                                 >
                                   <img
-                                    src={spot}
+                                    src={selectedSlider.type}
                                     alt='Lamp'
                                     className='studioOverviewLamp lampMirrored'
                                   />

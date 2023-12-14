@@ -12,12 +12,12 @@
  * 
  * @file Button.css
  */
-@import url(../Color.css);
 
 .buttonDesign {
+  height: 48px;
   background: var(--colorButton);
   color: var(--primary);
-  border: 1px solid var(--onepStroke);
+  border: 1px solid var(--borderButton);
   box-shadow: var(--shadowButton);
 }
 

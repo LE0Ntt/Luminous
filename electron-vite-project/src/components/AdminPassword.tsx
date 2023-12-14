@@ -13,10 +13,7 @@
  * @file AdminPassword.tsx
  */
 import { useContext, useEffect, useState } from 'react';
-import './BigView.css';
 import Button from './Button';
-import '../index.css';
-import './AddScene.css';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 
@@ -29,17 +26,7 @@ interface AdminPasswordProps {
 function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
   const { url } = useConnectionContext();
   const { t } = useContext(TranslationContext);
-  const [isOpen, setIsOpen] = useState(true);
   const [password, setPassword] = useState('');
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
 
   const handlePasswordChange = (event: { target: { value: any } }) => {
     setPassword(event.target.value);
@@ -67,14 +54,18 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
               document.body.dispatchEvent(new Event('saveScene'));
             }
           }
-          handleClose();
+          onClose();
         } else {
           console.log('Password wrong');
           // If the password is wrong, the text box will be highlighted in red
           const textBox = document.getElementsByClassName('AddSceneTextBox')[0] as HTMLInputElement;
-          textBox.focus();
-          textBox.style.outline = '2px solid red';
-          textBox.style.outlineOffset = '-1px';
+          if (textBox) {
+            textBox.classList.add('error-outline');
+            textBox.focus();
+            setTimeout(() => {
+              textBox.classList.remove('error-outline');
+            }, 4000);
+          }
         }
       })
       .catch((error) => {
@@ -98,23 +89,25 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
   }, []);
 
   return (
-    <div>
+    <>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
-      />{' '}
+        onClick={onClose}
+      />
       {/* Overlay to close the modal when clicked outside */}
       <div className='AddSceneContainer window'>
-        <Button
-          onClick={() => handleClose()}
+        <button
           className='buttonClose'
+          onClick={onClose}
         >
-          <div className='removeIcon centerIcon'></div>
-        </Button>
+          <div className='xClose'>
+            <div className='xClose xiClose'></div>
+          </div>
+        </button>
         <div className='AddSceneContent'>
           <span className='AddSceneTitle'>{t('ap_title')}</span>
           <input
-            className='LightSettingsTextBox AddSceneTextBox'
+            className='textBox AddSceneTextBox'
             type='password'
             placeholder={t('ap_password')}
             value={password}
@@ -138,7 +131,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
               {t('ap_confirm')}
             </Button>
             <Button
-              onClick={() => handleClose()}
+              onClick={onClose}
               className='controlButton'
             >
               {t('as_cancel')}
@@ -146,7 +139,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

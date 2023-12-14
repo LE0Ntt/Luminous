@@ -12,7 +12,6 @@
  * 
  * @file AddScene.css
  */
-@import url(../Color.css);
 
 .AddSceneContainer {
   height: 362px;
@@ -26,10 +25,6 @@
   position: fixed;
   z-index: 9999;
   overflow: hidden;
-}
-
-.buttonClose {
-  z-index: 9999;
 }
 
 .AddSceneTitle {
@@ -59,7 +54,7 @@
 }
 
 .AddSceneFooter {
-  top: 254px;
+  top: 252px;
   height: 100%;
   width: 100%;
   position: absolute;
@@ -74,7 +69,7 @@
 }
 
 .AddSceneButtons button {
-  height: 46px;
+  height: 48px;
 }
 
 .AddSceneButtons button:first-child {

@@ -30,6 +30,10 @@ function App() {
   const mainContentRef = useRef<HTMLDivElement>(null);
   const [contentScale, setContentScale] = useState(1);
   const { connected } = useConnectionContext();
+  const [firstRender, setFirstRender] = useState(true);
+
+  // Start with dark mode
+  if (firstRender) document.body.classList.toggle('dark', true);
 
   // To scale the content when the window is resized
   const updateContentScale = () => {
@@ -48,11 +52,11 @@ function App() {
   };
 
   useEffect(() => {
+    if (firstRender) setFirstRender(false);
+
     updateContentScale();
     window.addEventListener('resize', updateContentScale);
-    return () => {
-      window.removeEventListener('resize', updateContentScale);
-    };
+    return () => window.removeEventListener('resize', updateContentScale);
   }, []);
 
   return (

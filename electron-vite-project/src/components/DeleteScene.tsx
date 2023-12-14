@@ -12,10 +12,8 @@
  *
  * @file DeleteScene.tsx
  */
-import React, { useState, useContext, useEffect } from 'react';
-import './BigView.css';
+import { useContext, useEffect } from 'react';
 import Button from './Button';
-import '../index.css';
 import './AddScene.css';
 import { TranslationContext } from './TranslationContext';
 
@@ -24,21 +22,11 @@ interface DeleteSceneProps {
 }
 
 function DeleteScene({ onClose }: DeleteSceneProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
 
   const handleDelete = () => {
     document.body.dispatchEvent(new Event('deleteScene'));
-    handleClose();
+    onClose();
   };
 
   // Confirm with ENTER
@@ -58,19 +46,21 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
   }, []);
 
   return (
-    <div>
+    <>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
-      />{' '}
+        onClick={onClose}
+      />
       {/* Overlay to close the modal when clicked outside */}
       <div className='AddSceneContainer window'>
-        <Button
-          onClick={handleClose}
+        <button
           className='buttonClose'
+          onClick={onClose}
         >
-          <div className='removeIcon centerIcon'></div>
-        </Button>
+          <div className='xClose'>
+            <div className='xClose xiClose'></div>
+          </div>
+        </button>
         <div className='AddSceneContent'>
           <span className='AddSceneTitle'>{t('ds_title')}</span>
           <div className='AddSceneNote'>
@@ -86,7 +76,7 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
               {t('ds_delete')}
             </Button>
             <Button
-              onClick={handleClose}
+              onClick={onClose}
               className='controlButton'
             >
               {t('as_cancel')}
@@ -94,7 +84,7 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

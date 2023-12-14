@@ -12,7 +12,7 @@
  *
  * @file Control.tsx
  */
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { TranslationContext } from './components/TranslationContext';
 import { useConnectionContext } from './components/ConnectionContext';
 import { useLocation } from 'react-router-dom';
@@ -25,11 +25,12 @@ import { useFaderContext } from './components/FaderContext';
 import AddScene from './components/AddScene';
 import AdminPassword from './components/AdminPassword';
 import ControlHandler from './components/ControlHandler';
+import iro from '@jaames/iro';
 
 // LightFX
 function Control() {
   const { t } = useContext(TranslationContext);
-  const { url } = useConnectionContext();
+  const { url, connected, emit, on, off } = useConnectionContext();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
@@ -40,6 +41,7 @@ function Control() {
   const [addScene, setAddScene] = useState(false);
   const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
   const [isSolo, setIsSolo] = useState(false);
+  const [prevFaderValues, setPrevFaderValues] = useState<number[]>([]);
 
   interface DeviceConfig {
     id: number;
@@ -51,19 +53,24 @@ function Control() {
   }
 
   useEffect(() => {
-    const fetchDevices = async () => {
+    const fetchDevices = async (reset: boolean) => {
       try {
         const response = await fetch(url + '/fader');
         const data = await response.json();
         const parsedData = JSON.parse(data);
         parsedData.shift(); // remove master
         setDevices(parsedData);
+
+        if (reset || savedUnselectedDevices.length == 0) {
+          setUnselectedDevices(parsedData);
+          setSelectedDevices([]);
+        }
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchDevices();
+    if (connected) fetchDevices(false);
 
     // Load saved solo state from session storage
     setIsSolo(sessionStorage.getItem('controlSolo') === 'true');
@@ -76,12 +83,29 @@ function Control() {
     setUnselectedDevices(savedUnselectedDevices);
     setFirstLoad(true);
 
-    // Prevent transition animation before hight has loaded
+    // Prevent transition animation before height has loaded
     const timer = setTimeout(() => {
       setAnimiation(true);
     }, 500);
 
-    return () => clearTimeout(timer);
+    // If a device is updated, reload the devices
+    const lightRespone = (data: any) => {
+      if (data.message === 'success') {
+        fetchDevices(true); // reload devices
+      }
+    };
+    const lightDeleted = () => {
+      fetchDevices(true);
+    };
+
+    on('light_response', lightRespone);
+    on('light_deleted', lightDeleted);
+
+    return () => {
+      clearTimeout(timer);
+      off('light_response', lightRespone);
+      off('light_deleted', lightDeleted);
+    };
   }, []);
 
   useEffect(() => {
@@ -94,17 +118,6 @@ function Control() {
         setHeight(-3);
       } else {
         setHeight(Math.min(selectedDevices.length * 71 + 36, 462));
-      }
-
-      //Check if devices got changed on the server
-      const isDifferent = devices.every((device) => {
-        return unselectedDevices.includes(device) && selectedDevices.includes(device);
-      });
-
-      if (isDifferent || unselectedDevices.length + selectedDevices.length !== devices.length) {
-        setUnselectedDevices(devices);
-        setSelectedDevices([]);
-        console.log('devices changed');
       }
     }
 
@@ -155,11 +168,10 @@ function Control() {
   };
 
   // Color Picker
-  const { emit } = useConnectionContext();
   const [red, setRed] = useState(faderValues[0][3]);
   const [green, setGreen] = useState(faderValues[0][4]);
   const [blue, setBlue] = useState(faderValues[0][5]);
-  const [kelvin, setKelvin] = useState(0);
+  const [kelvin, setKelvin] = useState(faderValues[0][2]);
 
   const handleColorChange = (newRed: number, newGreen: number, newBlue: number) => {
     setRed(newRed);
@@ -168,16 +180,68 @@ function Control() {
     setFaderValue(0, 3, newRed);
     setFaderValue(0, 4, newGreen);
     setFaderValue(0, 5, newBlue);
+    let tempInKelvin = iro.Color.rgbToKelvin({ r: newRed, g: newGreen, b: newBlue });
+    setFaderValue(0, 2, Math.min(255, Math.max(0, Math.round(((tempInKelvin - 2200) / 8800) * 255))));
   };
 
+  // Give changed fader values to ControlHandler
   useEffect(() => {
-    ControlHandler(selectedDevices, faderValues[0][3], faderValues[0][4], faderValues[0][5], faderValues[0][2], faderValues[0][1], setFaderValue, emit);
-  }, [faderValues[0][1], faderValues[0][2], faderValues[0][3], faderValues[0][4], faderValues[0][5]]);
+    const controlValues = faderValues[0].slice(1);
+    const changedFaders = controlValues.map((value, index) => {
+      return prevFaderValues && prevFaderValues.length > 0 && value !== prevFaderValues[index];
+    });
+    ControlHandler(selectedDevices, controlValues, changedFaders, emit);
+    setPrevFaderValues(controlValues);
+  }, [faderValues]);
+
+  // Misc fader support
+  interface SliderConfig {
+    attributes: any;
+    universe: string;
+    id: number;
+    sliderValue: number;
+    name: string;
+  }
+
+  const [sliders, setSliders] = useState<SliderConfig[]>([]);
+
+  useEffect(() => {
+    const fetchSliders = async () => {
+      try {
+        const response = await fetch(url + '/fader');
+        const data = await response.json();
+        setSliders(JSON.parse(data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchSliders();
+  }, []);
+
+  const [effects, setEffects] = useState(true);
+
+  useEffect(() => {
+    let effectFound = false;
+
+    for (const device of selectedDevices) {
+      for (const channel of device.attributes.channel) {
+        if (!['main', 'r', 'g', 'b', 'bi'].includes(channel.channel_type)) {
+          setEffects(true);
+          effectFound = true;
+          break;
+        }
+      }
+
+      if (effectFound) break;
+    }
+
+    if (!effectFound) setEffects(false);
+  }, [selectedDevices]);
 
   return (
-    <div>
+    <>
       {selected ? (
-        <div>
+        <>
           <div
             className={selectAnimation}
             style={{ height: height - 17 + 'px' }}
@@ -188,16 +252,18 @@ function Control() {
               onDeviceButtonClick={handleRemoveDevice}
             />
           </div>
-
           <div className='innerContainer'>
+            {/* Masterfader/Groupfader */}
             <div className='lightFader innerWindow'>
               <Fader
-                height={397}
+                height={327}
                 id={1}
                 sliderGroupId={0}
                 name={t('group')}
+                className='noBorder'
               />
             </div>
+            {/* Control Buttons */}
             <div className='controlButtons innerWindow'>
               <Button
                 onClick={() => setAddScene(true)}
@@ -212,6 +278,7 @@ function Control() {
                 SOLO
               </Button>
             </div>
+            {/* Bi-Color */}
             <div className='controlBiColor innerWindow'>
               <span className='controlTitle'>Bi-Color</span>
               <div className='controlKelvinPicker'>
@@ -224,6 +291,7 @@ function Control() {
                 />
               </div>
             </div>
+            {/* RGB */}
             <div className='controlRGB innerWindow'>
               <span className='controlTitle'>RGB</span>
               <div className='controlRGBFader'>
@@ -232,12 +300,14 @@ function Control() {
                   sliderGroupId={0}
                   name='R'
                   color='#CA2C2C'
+                  className='noBorder'
                 />
                 <Fader
                   id={4}
                   sliderGroupId={0}
                   name='G'
                   color='#59E066'
+                  className='noBorder'
                 />
                 <Fader
                   id={5}
@@ -256,14 +326,52 @@ function Control() {
                 />
               </div>
             </div>
+            {/* Effects */}
             <div className='controlEffects innerWindow'>
-              <span className='controlTitle'>{t('effects')}</span>
-              <div className='centered-wrapper'>
-                <span className='noSupport'>{t('noSupport')}</span>
-              </div>
+              {!effects ? (
+                <>
+                  <span className='controlTitle'>{t('effects')}</span>
+                  <div className='centeredWrapper'>
+                    <span className='noSupport'>{t('noSupport')}</span>
+                  </div>
+                </>
+              ) : (
+                <div className='sliders slidersEffects'>
+                  {sliders
+                    .slice(1)
+                    .filter((slider) => selectedDevices.some((channel) => channel.id === slider.id))
+                    .map((slider, index, filteredSliders) => {
+                      const totalSliders = filteredSliders.length;
+                      return (
+                        <React.Fragment key={slider.id}>
+                          {slider.attributes.channel
+                            .filter(
+                              (channel: { id: number; channel_type: string }) =>
+                                channel.channel_type !== 'main' && channel.channel_type !== 'r' && channel.channel_type !== 'g' && channel.channel_type !== 'b' && channel.channel_type !== 'bi'
+                            )
+                            .map((channel: { id: number; channel_type: string }, channelIndex: number, filteredChannels: string | any[]) => {
+                              const isLastFader = index === totalSliders - 1 && channelIndex === filteredChannels.length - 1;
+                              return (
+                                <div key={slider.id + '-' + channel.id}>
+                                  <h2 className='faderText'>{slider.id}</h2>
+                                  <Fader
+                                    key={slider.id + '-' + channel.id}
+                                    id={channel.id}
+                                    sliderGroupId={slider.id}
+                                    name={channel.id !== 0 ? channel.channel_type : slider.name}
+                                    className={isLastFader ? 'noBorder' : ''}
+                                  />
+                                </div>
+                              );
+                            })}
+                        </React.Fragment>
+                      );
+                    })}
+                </div>
+              )}
             </div>
           </div>
-
+          {/* Background */}
           <svg
             className={mainAnimation}
             width='1860'
@@ -353,9 +461,9 @@ function Control() {
               </filter>
             </defs>
           </svg>
-        </div>
+        </>
       ) : (
-        <div>
+        <>
           <div className='noSelectWindow'>
             <div className='lightFader innerWindow'></div>
             <div className='controlButtons innerWindow'></div>
@@ -372,7 +480,7 @@ function Control() {
               <p dangerouslySetInnerHTML={{ __html: t('noDevices') }}></p>
             </div>
           </div>
-        </div>
+        </>
       )}
       <div
         className={deviceWindow}
@@ -387,7 +495,7 @@ function Control() {
       <div className={hide}></div>
       {addScene && <AddScene onClose={() => setAddScene(false)} />}
       {saveSceneAdmin && <AdminPassword onClose={() => setSaveSceneAdmin(false)} />}
-    </div>
+    </>
   );
 }
 

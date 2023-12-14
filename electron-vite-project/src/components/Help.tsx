@@ -14,26 +14,16 @@
  */
 import { useState, useContext, Fragment } from 'react';
 import './Help.css';
-import Button from './Button';
 import { TranslationContext } from './TranslationContext';
+import IconHelp from '@/assets/Icon_Help';
 
 interface SettingsProps {
   onClose: () => void;
 }
 
 function Help({ onClose }: SettingsProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
   const [openFaqs, setOpenFaqs] = useState({});
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
 
   // Toggle the open state of a FAQ
   const toggleFaq = (faqKey: string) => {
@@ -68,17 +58,20 @@ function Help({ onClose }: SettingsProps) {
     <>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
+        onClick={onClose}
       />
       <div className='LightSettingsContainer'>
-        <Button
-          onClick={handleClose}
+        <button
           className='buttonClose'
+          onClick={onClose}
         >
-          <div className='removeIcon centerIcon'></div>
-        </Button>
+          <div className='xClose'>
+            <div className='xClose xiClose'></div>
+          </div>
+        </button>
         <div className='SettingsTitle'>
-          <span>{t('help')}</span>
+          <IconHelp />
+          <span className='relative left-[10px] top-[-2px]'>{t('help')}</span>
         </div>
         <div className='SettingsContent innerWindow'>
           <div className='SettingsOption'>
@@ -101,7 +94,7 @@ function Help({ onClose }: SettingsProps) {
               <span className='ask'>
                 {t('help_text1')}&nbsp;
                 <a
-                  href='https://th-koeln.sciebo.de/s/FwaIna4jLv9NfWj'
+                  href='https://th-koeln.sciebo.de/s/0Pa9ePOPgiK72ua'
                   target='_blank'
                   rel='noopener noreferrer'
                   style={{ textDecoration: 'underline' }}

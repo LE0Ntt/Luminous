@@ -12,30 +12,66 @@
  * 
  * @file DropDown.css
  */
-@import url(../Color.css);
 
 .dropdown {
   position: absolute;
-  top: 24px;
-
+  top: 23px;
+  left: 2px;
   border: 1px solid var(--onepStroke);
-  border-radius: 0 5px 5px;
+  padding: 2px;
+  border-radius: 5px;
   box-shadow: var(--shadowLight);
-
   background-color: var(--fillUltraThick);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
-
   color: var(--primary);
   text-align: left;
   overflow: hidden;
-  min-width: 140px;
+  --ddHeight: 216px; /* Height of dowpdown */
+  --ddWidth: 170px; /* Width of dowpdown */
+  /* min-width: var(--ddWidth); /* For consistend width in animation */
+  animation: openDropdown 150ms ease-out forwards;
+}
+
+.dropdown.closed {
+  animation: closeDropdown 150ms ease-out forwards;
+}
+
+@keyframes openDropdown {
+  from {
+    max-height: 0;
+    opacity: 0.6;
+    width: 30px;
+  }
+  to {
+    max-height: var(--ddHeight);
+    opacity: 1;
+    width: var(--ddWidth);
+  }
+}
+
+@keyframes closeDropdown {
+  from {
+    max-height: var(--ddHeight);
+    opacity: 1;
+    width: var(--ddWidth);
+  }
+  to {
+    max-height: 0;
+    opacity: 0.6;
+    width: 30px;
+  }
 }
 
 .dropdown > p {
   margin: 0;
-  padding: 0.375rem 0.88rem;
-  border-bottom: 1px solid var(--onepStroke);
+  padding: 9px;
+  /* border-bottom: 1px solid var(--onepStroke); */
+  white-space: nowrap;
+  display: flex;
+  gap: 9px;
+  width: calc(var(--ddWidth) - 6px);
+  border-radius: 3px;
 }
 
 .dropdown > p:hover {

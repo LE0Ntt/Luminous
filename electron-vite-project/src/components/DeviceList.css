@@ -12,11 +12,10 @@
  * 
  * @file DeviceList.css
  */
-@import url(../Color.css);
 
 hr {
   height: 1px;
-  background-color: var(--onepStroke);
+  background-color: var(--faderBorder);
   border: none;
 }
 
@@ -89,4 +88,5 @@ hr {
   border-radius: 50%;
   margin-right: 10px;
   margin-left: 10px;
+  border: 1px solid var(--onepStroke) !important;
 }

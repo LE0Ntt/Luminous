@@ -28,21 +28,27 @@ interface FaderProviderProps {
 
 const FaderContext = createContext<FaderContextProps | undefined>(undefined);
 
-export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
-  const sliderGroupId = 694;
-  const initialFaderValues = Array.from({ length: sliderGroupId }, (_, x) => {
+const createInitialFaderValues = (sliderGroupId: number) => {
+  return Array.from({ length: sliderGroupId }, (_, x) => {
     if (x >= sliderGroupId - 2) {
-      // Last 2 sliders are reserved for DMX
       return new Array(513).fill(0);
     } else {
       return new Array(6).fill(0);
     }
   });
-  initialFaderValues[0][1] = 255;
-  initialFaderValues[0][2] = 128;
-  initialFaderValues[0][3] = 255;
-  initialFaderValues[0][4] = 255;
-  initialFaderValues[0][5] = 255;
+};
+
+export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
+  const sliderGroupId = 694;
+  const initialFaderValues = createInitialFaderValues(sliderGroupId);
+
+  // Values for the Control.tsx
+  initialFaderValues[0][1] = 255; // Master fader
+  initialFaderValues[0][2] = 128; // Bi-color fader
+  initialFaderValues[0][3] = 255; // Red fader
+  initialFaderValues[0][4] = 255; // Green fader
+  initialFaderValues[0][5] = 255; // Blue fader
+
   const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
   const [isDragging, setIsDragging] = useState(false);
   const { on, off } = useConnectionContext();

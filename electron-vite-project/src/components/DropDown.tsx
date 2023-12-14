@@ -12,23 +12,24 @@
  *
  * @file DropDown.tsx
  */
-import React from 'react';
 import './DropDown.css';
 
 type DropDownProps = {
-  settings: string[];
-  settingSelection: (selectedSetting: string) => void;
+  settings: { text: string; icon: React.ElementType }[];
+  settingSelection: (selectedSetting: { text: string; icon: React.ElementType }) => void;
+  open: boolean;
 };
 
-const DropDown: React.FC<DropDownProps> = ({ settings, settingSelection }) => {
+const DropDown: React.FC<DropDownProps> = ({ settings, settingSelection, open }) => {
   return (
-    <div className='dropdown'>
-      {settings.map((selectedSetting, index) => (
+    <div className={`dropdown ${open ? '' : 'closed'}`}>
+      {settings.map((setting, index) => (
         <p
           key={index}
-          onClick={() => settingSelection(selectedSetting)}
+          onClick={() => settingSelection(setting)}
         >
-          {selectedSetting}
+          <setting.icon />
+          <span>{setting.text}</span>
         </p>
       ))}
     </div>

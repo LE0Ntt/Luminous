@@ -12,7 +12,6 @@
  * 
  * @file Scenes.css
  */
-@import url(./Color.css);
 
 .scenesSolo {
   height: 73px;
@@ -32,26 +31,26 @@
 }
 
 .scenesFadeInput {
-  background-color: var(--fillLight);
-  border: var(--onepStrokeSwitched) 1px solid;
-  border-radius: 5px;
-  width: 50px;
-  height: 35px;
-  position: relative;
-  padding-left: 10px;
-  outline: none;
-  margin-bottom: 10px;
+  width: 50px !important;
   margin-left: 10px;
-  margin-top: -7px;
+  margin-top: -14px;
+  text-align: center;
+  padding: 0;
 }
 
 .scenesSoloAlign {
   position: relative;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(calc(-50% - 1px));
   display: flex;
   justify-content: center;
   height: 20px;
+}
+
+.toggleScenes {
+  position: relative;
+  top: -2px;
+  margin-right: 3px;
 }
 
 .scenesMain {

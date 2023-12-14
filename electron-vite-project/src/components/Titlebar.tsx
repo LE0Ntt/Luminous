@@ -12,16 +12,21 @@
  *
  * @file Titlebar.tsx
  */
-import React, { useEffect, useRef, useState, useContext } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
 import { TranslationContext } from './TranslationContext';
+import { useConnectionContext } from './ConnectionContext';
 import './Titlebar.css';
-import '../index.css';
 import Settings from './Settings';
 import DropDown from './DropDown';
 import LightSettings from './LightSettings';
 import Help from './Help';
 import About from './About';
 import IconSettings from '@/assets/Icon_Settings';
+import IconFullscreen from '@/assets/Icon_Fullscreen';
+import IconHelp from '@/assets/Icon_Help';
+import IconWindow from '@/assets/Icon_Window';
+import IconLight from '@/assets/Icon_Light';
+import IconAbout from '@/assets/Icon_About';
 
 enum Dialog {
   None,
@@ -34,9 +39,12 @@ enum Dialog {
 function TitleBar() {
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const { t } = useContext(TranslationContext);
+  const { connected } = useConnectionContext();
   const dropDownRef = useRef<HTMLButtonElement | null>(null);
   const [isMac, setIsMac] = useState(false);
   const [currentDialog, setCurrentDialog] = useState(Dialog.None);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Effect for platform detection
   useEffect(() => {
@@ -48,17 +56,24 @@ function TitleBar() {
 
   const toggleFullScreen = async () => {
     (window as any).electronAPI.send('toggle-full-screen');
-  };
-
-  const handleClose = () => {
-    window.close();
+    if (isFullscreen) {
+      setIsFullscreen(false);
+    } else {
+      setIsFullscreen(true);
+    }
   };
 
   const handleMinimize = () => {
     (window as any).electronAPI.send('minimize');
   };
 
-  const settings = [t('dd_settings'), t('dd_lights'), t('dd_help'), t('dd_about'), t('dd_fullscreen')];
+  const settings = [
+    { icon: IconSettings, text: t('dd_settings') },
+    { icon: IconLight, text: t('dd_lights') },
+    { icon: IconHelp, text: t('dd_help') },
+    { icon: IconAbout, text: t('dd_about') },
+    { icon: isFullscreen ? IconWindow : IconFullscreen, text: isFullscreen ? t('dd_window') : t('dd_fullscreen') },
+  ];
 
   // Closes the drop down if the user clicks outside of it
   const handleClickOutside = (event: MouseEvent) => {
@@ -75,25 +90,36 @@ function TitleBar() {
     }
   }, [showDropDown]);
 
-  const toggleDropDown = () => {
-    setShowDropDown(!showDropDown);
-  };
-
   // The selected setting
   const settingActions = {
-    [settings[0]]: () => setCurrentDialog(Dialog.Settings),
-    [settings[1]]: () => setCurrentDialog(Dialog.LightSettings),
-    [settings[2]]: () => setCurrentDialog(Dialog.Help),
-    [settings[3]]: () => setCurrentDialog(Dialog.About),
-    [settings[4]]: toggleFullScreen,
+    [settings[0].text]: () => setCurrentDialog(Dialog.Settings),
+    [settings[1].text]: () => setCurrentDialog(Dialog.LightSettings),
+    [settings[2].text]: () => setCurrentDialog(Dialog.Help),
+    [settings[3].text]: () => setCurrentDialog(Dialog.About),
+    [settings[4].text]: toggleFullScreen,
   };
 
-  const handleSettingSelection = (setting: string) => {
-    if (settingActions[setting]) settingActions[setting]();
+  const handleSettingSelection = (selectedSetting: { text: string; icon: React.ElementType }) => {
+    if (settingActions[selectedSetting.text]) {
+      settingActions[selectedSetting.text]();
+    }
   };
+
+  // Timeout for the dropdown animation
+  useEffect(() => {
+    let timeout: string | number | NodeJS.Timeout | undefined;
+    if (!showDropDown && isDropdownVisible) {
+      timeout = setTimeout(() => {
+        setIsDropdownVisible(false);
+      }, 150);
+    } else if (showDropDown && !isDropdownVisible) {
+      setIsDropdownVisible(true);
+    }
+    return () => clearTimeout(timeout);
+  }, [showDropDown, isDropdownVisible]);
 
   return (
-    <div className='titlebarComp'>
+    <div className={`titlebarComp ${showDropDown && 'active'}`}>
       <nav>
         <ul>
           <li>
@@ -101,23 +127,20 @@ function TitleBar() {
           </li>
           <li>
             <button
-              className={showDropDown ? 'active settingsButton' : 'settingsButton'}
-              onClick={(): void => toggleDropDown()}
+              onClick={() => setShowDropDown(!showDropDown)}
               ref={dropDownRef}
             >
-              <a
-                href='#'
-                className='absolute top-[3px]'
-              >
+              <div className={`settingsButton ${showDropDown && 'active'}`}>
                 <IconSettings
                   size='20px'
                   color='var(--secondary)'
                 />
-              </a>
-              {showDropDown && (
+              </div>
+              {isDropdownVisible && (
                 <DropDown
                   settings={settings}
                   settingSelection={handleSettingSelection}
+                  open={showDropDown}
                 />
               )}
             </button>
@@ -133,7 +156,7 @@ function TitleBar() {
         </button>
         <button
           className={isMac ? 'hide' : 'titlebar-button close'}
-          onClick={handleClose}
+          onClick={() => window.close()}
         >
           <div className='x'>
             <div className='x xi'></div>
@@ -141,7 +164,7 @@ function TitleBar() {
         </button>
       </div>
       {currentDialog === Dialog.Settings && <Settings onClose={() => setCurrentDialog(Dialog.None)} />}
-      {currentDialog === Dialog.LightSettings && <LightSettings onClose={() => setCurrentDialog(Dialog.None)} />}
+      {currentDialog === Dialog.LightSettings && connected && <LightSettings onClose={() => setCurrentDialog(Dialog.None)} />}
       {currentDialog === Dialog.Help && <Help onClose={() => setCurrentDialog(Dialog.None)} />}
       {currentDialog === Dialog.About && <About onClose={() => setCurrentDialog(Dialog.None)} />}
     </div>

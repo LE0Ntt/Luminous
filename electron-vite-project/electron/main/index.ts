@@ -25,11 +25,11 @@ process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL ? join(process.env.DIST_ELE
 // Set application name for Windows 10+ notifications
 if (process.platform === 'win32') app.setAppUserModelId(app.getName());
 
-// Erlaubt nur eine Instanz laufen zu lassen
-if (!app.requestSingleInstanceLock()) {
-  app.quit();
-  process.exit(0);
-}
+// Allow only one instance of the application
+// if (!app.requestSingleInstanceLock()) {
+//   app.quit();
+//   process.exit(0);
+// }
 
 // Remove electron security warnings
 // This warning only shows in development mode
@@ -54,15 +54,15 @@ async function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
     },
-    width: 1920, //ändert Fenster breite
-    height: 1080, //ändert Fenster höhe
-    minWidth: 1024, // Mindestbreite des Fensters
-    minHeight: 618, // Mindesthöhe des Fensters
+    width: 1920,
+    height: 1080,
+    minWidth: 1024,
+    minHeight: 618,
     titleBarStyle: 'hidden',
     frame: false,
   });
 
-  win.setFullScreen(true); // Startet das Fenster im Fullscreen
+  win.setFullScreen(true); // Starts the app in fullscreen
 
   if (process.env.VITE_DEV_SERVER_URL) {
     // electron-vite-vue#298
@@ -106,7 +106,7 @@ app.on('second-instance', () => {
   }
 });
 
-// mac stuff neues window soweit ich verstehe
+// MacOS stuff
 app.on('activate', () => {
   const allWindows = BrowserWindow.getAllWindows();
   if (allWindows.length) {
@@ -156,7 +156,7 @@ const schema = {
   },
 };
 
-const store = new Store({ schema } as any); // as any, weil sonst ein Fehler kommt
+const store = new Store({ schema } as any);
 
 ipcMain.handle('get-ip', () => {
   const ip = store.get('ip');

@@ -14,8 +14,6 @@
  */
 import { useState, useEffect, useContext } from 'react';
 import './ScenesComponent.css';
-import '../assets/GridLines';
-import GridLines from '../assets/GridLines';
 import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from '../components/ConnectionContext';
 
@@ -36,7 +34,7 @@ interface ScenesComponentProps {
 
 const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, setDeleteScene, setDeleteSceneAdmin, setSaveSceneAdmin }) => {
   const { t } = useContext(TranslationContext);
-  const { on, off, emit, url } = useConnectionContext();
+  const { on, off, emit, url, connected } = useConnectionContext();
   const [scenes, setScenes] = useState<SceneConfig[]>([]);
   const [height, setHeight] = useState(0);
   const [buttonText, setButtonText] = useState(t(''));
@@ -44,7 +42,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   useEffect(() => {
-    fetchScenes();
+    if (connected) fetchScenes();
 
     // Listen for the delete and save scene event
     const handleDeleteScene = () => {
@@ -218,7 +216,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
           style={{ height: `${height}px` }}
           onClick={handleAddScene}
         >
-          <GridLines height={height} />
+          <div className={`sceneBorder ${sideId === 1 ? 'borderBig' : 'borderSmall'}`}></div>
           {!buttonDisabled && <div className='AddSceneIcon'></div>}
           <div className='AddSceneButtonFont'>{buttonText}</div>
         </button>
@@ -228,7 +226,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
             style={{ height: `${height}px` }}
             key={scene.id}
           >
-            <GridLines height={height} />
+            <div className={`sceneBorder ${sideId === 1 ? 'borderBig' : 'borderSmall'}`}></div>
           </div>
         ))}
       </div>

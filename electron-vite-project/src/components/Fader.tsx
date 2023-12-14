@@ -31,32 +31,29 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
   const { emit } = useConnectionContext();
   const { faderValues, setFaderValue } = useFaderContext();
   const [timerRunning, setTimerRunning] = useState<boolean | null>(null);
+  const [isHovered, setIsHovered] = useState(false); // Hover over fader
+  const [isFocused, setIsFocused] = useState(false); // Focus on value input
 
   // Refs to keep track of fader values and if they need to be sent
   const cacheValueRef = useRef<number>(faderValues[sliderGroupId][id]);
   const sendValueRef = useRef<number>(faderValues[sliderGroupId][id]);
 
-  // Generate dynamic class names for the fader
-  const faderClassName = `fader ${height ? 'faderMaster' : ''} ${className}`;
-
   // Calculating the display value (0 to 100%) and update input value
-  const displayValue = Math.round((faderValues[sliderGroupId][id] / 255) * 100);
-  const [inputValue, setInputValue] = useState<any>(displayValue);
+  const scaledDisplayValue = (faderValues[sliderGroupId][id] / 255) * 100;
+  const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue));
 
+  // Update input value when display value changes
+  // UseEffect necessary to display decimal values when changing values while focused
   useEffect(() => {
-    setInputValue(displayValue);
-  }, [displayValue]);
+    const finalDisplayValue = isFocused ? scaledDisplayValue.toFixed(1) : Math.round(scaledDisplayValue);
+    setInputValue(finalDisplayValue);
+  }, [scaledDisplayValue, isFocused]);
 
   // Emit fader value to the server
   const emitValue = (value: number) => {
     emit('fader_value', { deviceId: sliderGroupId, value: value, channelId: id });
     sendValueRef.current = value;
   };
-
-  // Set fader height by the passed parameter //v1.0.3pre, removed useEffect, because it was not needed
-  if (height) {
-    document.documentElement.style.setProperty('--sliderHeight', `${height}px`);
-  }
 
   // Always send the last value
   useEffect(() => {
@@ -89,16 +86,18 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
 
   // Check if the input is valid and set the fader value
   const handleInputConfirm = () => {
-    let numericValue = parseFloat(inputValue.replace(',', '.'));
+    let numericValue = parseFloat(inputValue.toString().replace(',', '.'));
     if (!isNaN(numericValue)) {
       numericValue = Math.max(0, Math.min(100, numericValue));
       const scaledValue = Math.round((numericValue / 100) * 255);
       setFaderValue(sliderGroupId, id, scaledValue);
       emitValue(scaledValue);
-      setInputValue(Math.round(numericValue).toString());
+      const roundedDisplayValue = Math.round(numericValue);
+      setInputValue(roundedDisplayValue);
     } else {
-      setInputValue(displayValue); // Reset value if input is NaN
+      setInputValue(Math.round(scaledDisplayValue)); // Reset value if input is NaN
     }
+    setIsFocused(false);
   };
 
   // Confirm with ENTER
@@ -108,8 +107,62 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
     }
   };
 
+  // Scroll wheel and arrow keys support
+  useEffect(() => {
+    const updateFaderValue = (delta: number) => {
+      const currentValue = faderValues[sliderGroupId][id];
+      let newValue = Math.max(0, Math.min(currentValue + delta, 255));
+      setFaderValue(sliderGroupId, id, newValue);
+      emitValue(newValue);
+    };
+
+    const handleWheel = (event: { preventDefault: () => void; ctrlKey: any; deltaY: number }) => {
+      if (!isHovered) return;
+      event.preventDefault();
+      const step = event.ctrlKey ? 10 : 1; // If CTRL is pressed, increase/decrease by 10, otherwise by 1
+      updateFaderValue(-Math.sign(event.deltaY) * step);
+    };
+
+    const handleKeyDown = (event: { key: string; preventDefault: () => void; ctrlKey: any }) => {
+      if (!isHovered) return;
+      if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        const step = event.ctrlKey ? 10 : 1;
+        updateFaderValue((event.key === 'ArrowUp' ? 1 : -1) * step);
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isHovered, isFocused]);
+
+  // On value input focus
+  const handleFocus = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsFocused(true);
+    // Delay to the next tick
+    setTimeout(() => {
+      event.target.select(); // Select the input text
+    }, 50);
+  };
+
+  // Background color of the lower half of the fader
+  const backgroundColor = color || 'var(--mainColor)';
+  const gradientStyle = {
+    background: `linear-gradient(to right, ${backgroundColor} 0%, ${backgroundColor} ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
+  };
+
   return (
-    <div className={faderClassName}>
+    <div
+      className={`fader ${height ? 'faderMaster' : ''} ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{ '--sliderHeight': `${height}px` } as React.CSSProperties}
+    >
       <div className='midPoint'></div>
       <div className='value-slider'>
         <input
@@ -119,34 +172,29 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
           step='1'
           value={faderValues[sliderGroupId][id]}
           onChange={handleSliderChange}
-          style={{
-            background: color
-              ? `linear-gradient(to right, ${color} 0%, ${color} ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`
-              : `linear-gradient(to right, var(--mainColor) 0%, var(--mainColor) ${displayValue}%, rgba(40, 40, 40, 0.7) ${displayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
-          }}
-          className='slider sliderTrackColor'
+          style={gradientStyle}
+          className='slider'
         />
       </div>
-      <div>
-        <div className='valueDisplay'>
-          <input
-            type='text'
-            value={inputValue}
-            onChange={handleInputChange}
-            onBlur={handleInputConfirm}
-            onKeyDown={handleKeyDown}
-            className='inputNum'
-            style={{ width: `${Math.max(1, inputValue.toString().length)}ch` }}
-          />
-          <span className='inputNumPercent'>%</span>
-        </div>
-        <span
-          title={name}
-          className='faderName'
-        >
-          {name}
-        </span>
+      <div className='valueDisplay'>
+        <input
+          type='text'
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={handleFocus}
+          onBlur={handleInputConfirm}
+          onKeyDown={handleKeyDown}
+          className='inputNum'
+          style={{ width: `${Math.max(1, inputValue.toString().length)}ch` }}
+        />
+        <span className='inputNumPercent'>%</span>
       </div>
+      <span
+        title={name}
+        className='faderName'
+      >
+        {name}
+      </span>
     </div>
   );
 };

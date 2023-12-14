@@ -12,15 +12,14 @@
  * 
  * @file Settings.css
  */
-@import url(../Color.css);
 
 .SettingsContainer {
   position: fixed;
   display: flex;
   z-index: 9999;
   gap: 20px;
-  height: 70vh;
-  width: 70vw;
+  height: 80vh;
+  width: 80vw;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -53,7 +52,7 @@
 
 .settings button {
   color: var(--primary);
-  padding: 10%;
+  padding: 0 10px;
   margin-bottom: 20px;
   cursor: pointer;
   width: 100%;
@@ -69,27 +68,26 @@
   position: absolute;
   top: 10px;
   height: 36px;
-  width: 225px;
   object-fit: contain;
   align-items: center;
   display: flex;
-  font-size: 20px;
+  font-size: 24px;
+  margin-bottom: 10px;
+  gap: 10px;
 }
 
 .SettingsSubTitle {
+  display: flex;
+  gap: 10px;
   font-size: 20px;
   margin-bottom: 10px;
+  position: relative;
+  top: 15px;
 }
 
 .SettingsTextBox {
-  background-color: var(--fillLight);
-  border: var(--onepStrokeSwitched) 1px solid;
-  border-radius: 5px;
-  width: 11vw;
-  height: 35px;
-  position: relative;
-  padding-left: 10px;
-  outline: none;
+  width: 11vw !important;
+  margin: 0;
 }
 
 .SettingsContent {
@@ -106,8 +104,12 @@
 }
 
 .SettingContainer {
-  margin-top: 20px;
-  padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin: 40px 0; /* Height of a settings element*/
+  position: relative;
+  min-height: 48px;
+  width: 100%;
 }
 
 .SettingsIPBox {
@@ -149,14 +151,8 @@
 }
 
 .SettingsLanguageSelection {
-  background-color: var(--fillLight);
-  border: var(--onepStrokeSwitched) 1px solid;
-  border-radius: 5px;
-  height: 35px;
-  width: 11vw;
-  position: relative;
-  padding-left: 10px;
-  outline: none;
+  width: 11vw !important;
+  margin: 0;
 }
 
 .ChangePassword {
@@ -164,23 +160,19 @@
   justify-content: space-between;
 }
 
-.ChangePassword .SettingsButton {
-  top: -6px;
-}
-
-@media (max-width: 1725px) {
+@media (max-width: 1800px) {
   .SettingsTextBoxContainer {
     width: stretch;
   }
 
   .SettingsTextBox {
     width: 100%;
-    margin-bottom: 26px;
+    margin-bottom: 20px;
   }
 
   .ChangePassword {
     flex-direction: column;
-    align-items: start;
+    align-items: end;
   }
 
   .PasswordMessage {
@@ -191,11 +183,7 @@
 .PasswordMessage {
   position: absolute;
   top: 150px;
-  animation-name: fadeOut;
-  animation-duration: 1s;
-  animation-delay: 3s;
-  animation-fill-mode: forwards;
-  animation-iteration-count: 1;
+  animation: fadeOut 1s 3s forwards;
 }
 
 @keyframes fadeOut {
@@ -213,33 +201,21 @@
 
 .errorMessage {
   color: red;
-
-.AboutTextBoxContainer {
-  position: relative;
-  bottom: 20px;
-  top: 20px;
-  gap: 20px;
-  overflow: auto;
-  text-align: center;
-  font-size: 20px;
-  font-weight: 300;
 }
 
-.AboutContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: stretch;
+.error-outline {
+  outline-offset: -1px;
+  animation: fadeOutOutline 4s forwards;
 }
 
-.logoBig {
-  height: 100px;
-  width: 540px;
-  mask: url(../assets/Luminous_Logo.svg);
-  mask-repeat: no-repeat;
-  background: var(--secondary);
-  mask-position: center;
-  top: -10px;
-  position: relative;
-  margin-right: 5px;
+@keyframes fadeOutOutline {
+  0% {
+    outline: 2px solid red;
+  }
+  50% {
+    outline: 2px solid red;
+  }
+  100% {
+    outline: 2px solid transparent;
+  }
 }

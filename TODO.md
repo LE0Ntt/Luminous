@@ -1,26 +1,142 @@
-### Known Issues
+## Version 1.2.0
+
+- [x] Studio Overview,
+  - [x] Icons anpassen, Beide
+  - [x] Testchart anpassen, Leon
+  - [x] Layout anpassen, Leon
+  - [x] Rendering anpassen, Darwin
+- [x] Scenes dürfen HMI nicht ausmachen, Darwin
+- [x] Settingsdesign anpassen, Leon
+  - [x] Textinput gleiche höhe wie buttons, Darwin
+- [ ] Offensichtlicheres Faderhighlighting, Leon
+- [x] Effekte richtiges Design (Slider 10px bottom, höhere Fader), Leon
+- [ ] Alle Lampen aus beim App-Schließen,
+  - [ ] Dialog, Leon
+  - [ ] Backend, Darwin
+- [x] LightSettings buttons anpassen, Darwin
+- [x] Icons für Dropdown, Leon
+
+## Known Issues
 
 - MotorMix
-  - Black-Out button
+  - ~~Master fader not working, only from App to MotorMix~~ (hopefully fixed)
+  - ~~Doesn't use correct values, when changing scenes~~ (hopefully fixed)
+  - Black-out button
   - Display bugs with page wheel
   - Missing light values
   - Displays only two pages until switched to Scenes and back
   - Faders sometimes jump randomly
 - Random server crashes
-- No connection on autostart _[should be fixed in prebuild v1.0.3]_
 - Possibly slower after long operation
 - Studio-Overview just uses ID, not universe
+- Wrong devices displayed after changing number in LightSettings
+- Error if DMX channel exists multiple times
+- Scenes do not fade in exact seconds and are subject to server performance
+- ~~Doesn't show lights after editing them. Need to restart server~~
 
-### Necessary changes
+## Necessary Changes
 
 - [ ] Code cleanup / comments
+- [ ] Testing phase
+- [ ] Settings
+  - [x] Rework Layout
+  - [ ] Add various settings
+    - [ ] Studio-Overview
+    - [ ] Change IP
+- [ ] MotorMix
+  - [ ] Mute
+  - [ ] Solo
+  - [ ] All channels of a device
+  - [ ] Reboot MotorMix
+  - [ ] Detect MotorMix (start after App)
+- [x] Connection screen
+- [x] Reconnect to server
+- [x] Guide / Implement Help
+  - [x] Quick Start Guide
+  - [x] Finetune Quick Start Guide
+- [ ] LightFX
+  - [ ] Change to current state of the first light
+  - [x] Effects as misc faders for now
+    - [ ] Group faders with same name
+  - [x] Device list server updates
+  - [ ] Emit changes with buffer like other faders
+  - [ ] "Mute" button
+  - [ ] New bi-color slider with higher resolution and value display/input
+- [ ] PI
+  - [ ] Production server
+  - [ ] Shutdown button
+  - [ ] Turn off all devices during shutdown
+  - [ ] Config file for server.py (change ip and so on)
+- [ ] Everything off scene - How to implement?
+- [x] Change admin password
+- [x] Input can be empty
+- [x] Use _ENTER_ to accept dialog
+- [ ] Rethink scene logic: Off after e.g. bi-color change?
+- [x] Add support for HMI lights and other devices with on/off channel
+- [ ] Turn off all devices when closing app
+- [x] Input for faders with mousewheel or keyboard (arrow keys)
+- [ ] BigView: Improve visualisation
+  - [ ] Device groups
+  - [ ] Faders for different channels
+
+## Nice to Have Features
+
+- [ ] Show site (light shows)
+- [ ] No animations setting for slow PCs
+- [ ] Change scene fade in/out curve
+- [ ] Vite export, use app in browser
+- [x] Rework close button
+- [ ] Studio-Overview
+  - [x] Device highlight
+  - [x] Move to the left
+  - [ ] Add rgb traverse lights
+  - [ ] Add fill light icon
+  - [ ] Rearrange devices
+  - [ ] Move code to own component
+- [ ] Scenes
+  - [ ] See what you save
+  - [ ] Edit scenes
+  - [ ] Save master fader?
+  - [ ] Choose what to save
+  - [ ] Choose color
+- [ ] Mute / Solo gray out faders
+- [ ] LightFX
+  - [ ] Save scene, only current group or everything
+  - [ ] Bi-Color presets
+- [ ] Light Settings
+  - [ ] Bi-Color range / calibration
+- [ ] Add support for different lights in the studio
+  - [ ] Arri Sky panel
+  - [ ] Astera Titan Tubes
+- [ ] Look into npm packages
+- [ ] Icons for dropdown menu
+- [ ] DIN icons for studio overview
+- [ ] Studio-Overview display bi-color changes
+- [ ] Constistent Fader elements spacing
+
+## Code Cleanup & Comments
+
+- [ ] Backend
+  - [ ] Server
+    - [x] \_\_init\_\_.py
+    - [x] models.py
+    - [ ] motorMix_driver.py
+    - [x] routes.py
+  - [ ] ola_handler.py
+  - [x] server.py
+  - [ ] socket_events.py
+- [ ] Frontend
+  - [ ] Assets
+    - [ ] Compress
+    - [ ] Check necessity
+    - [ ] Rename to PascalCase scheme
   - [ ] Components
     - [x] About.tsx
     - [ ] AddScene.css
     - [ ] AddScene.tsx
     - [ ] AdminPassword.tsx
-    - [ ] BigView.css
-    - [ ] BigView.tsx
+    - [x] BigView.css
+    - [x] BigView.tsx
     - [ ] Button.css
     - [x] Button.tsx
     - [ ] ColorPicker.tsx
@@ -64,65 +180,3 @@
   - [ ] Show.tsx
   - [ ] Studio.css
   - [ ] Studio.tsx
-- [ ] Testing phase
-- [ ] Settings
-  - [ ] Studio-Overview
-  - [x] Rework Layout
-  - [ ] Add different settings
-    - [ ] Change IP
-    - [ ] No animations
-- [ ] MotorMix
-  - [ ] Mute
-  - [ ] Solo
-  - [ ] All channels of a device
-  - [ ] Reboot MotorMix
-  - [ ] Detect MotorMix (start after App)
-- [x] Connection screen
-- [x] Reconnect to server
-- [x] Guide / Implement Help
-  - [x] Quick Start Guide
-  - [ ] Finetune Quick Start Guide
-- [ ] LightFX
-  - [ ] Change to current state of the first light
-  - [ ] Effects
-  - [ ] Device list server updates
-- [ ] PI
-  - [ ] Production server
-  - [ ] Shutdown button
-  - [ ] Turn off all devices during shutdown
-  - [ ] Config file for server.py (change ip and so on)
-- [ ] Everything off scene - How to implement?
-- [ ] Admin
-  - [ ] Change password
-- [x] Input can be empty
-- [x] Use **Enter** to accept dialog
-- [ ] Rethink scene logic: Off after e.g. bi-colour change?
-- [ ] Add support for Wifi-Lights and devices with an On/Off channel
-
-### Nice to have features
-
-- [ ] Show site (Lightshows)
-- [ ] Scenes different colors
-- [ ] Change scene fade in/out curve
-- [ ] Vite Export, use App within the browser
-- [ ] Rework close button
-- [ ] Studio-Overview
-  - [x] Device highlight
-  - [x] Move to the left
-  - [ ] Add Traversenlights
-- [ ] Scenes
-  - [ ] See what you save
-  - [ ] Edit scenes
-  - [ ] Save master fader?
-- [ ] Mute / Solo
-  - [ ] Implement solo & mute
-  - [ ] Gray out faders
-- [ ] LightFX
-  - [ ] Save scene, only current group or everything
-  - [ ] Bi-Color presets
-- [ ] Light Settings
-  - [ ] Bi-Color range / calibration
-- [ ] Add support for different lights in the studio
-  - [ ] Arri Sky panel
-  - [ ] Astera Titan Tubes
-- [ ] Look into npm packages

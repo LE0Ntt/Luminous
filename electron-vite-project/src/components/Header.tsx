@@ -12,9 +12,8 @@
  *
  * @file Header.tsx
  */
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import './Header.css';
-import '../index.css';
 import { Link, useLocation } from 'react-router-dom';
 import Button from './Button';
 import { TranslationContext } from './TranslationContext';
@@ -22,22 +21,20 @@ import { TranslationContext } from './TranslationContext';
 function Header() {
   let location = useLocation();
   const { t } = useContext(TranslationContext);
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
+  // Load mode from local storage
   useEffect(() => {
     const storedIsDark = localStorage.getItem('isDark');
-    setIsDark(storedIsDark === 'true');
+    if (storedIsDark !== null) setIsDark(storedIsDark === 'true');
   }, []);
 
+  // Set dark/light mode
   useEffect(() => {
     document.body.classList.toggle('dark', isDark);
     localStorage.setItem('isDark', `${isDark}`);
     document.body.dispatchEvent(new Event('class-change'));
   }, [isDark]);
-
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-  };
 
   return (
     <div className='header'>
@@ -114,7 +111,7 @@ function Header() {
       </div>
       <div className='divTheme'>
         <Button
-          onClick={toggleTheme}
+          onClick={() => setIsDark(!isDark)}
           className='buttonTheme'
         >
           {!isDark ? (

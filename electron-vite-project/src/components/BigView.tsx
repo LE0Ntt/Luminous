@@ -14,13 +14,10 @@
  */
 import { useContext, useEffect, useState } from 'react';
 import './BigView.css';
-import Button from './Button';
-import '../index.css';
 import Toggle from './Toggle';
 import Fader from './Fader';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
-import React from 'react';
 
 interface BigViewProps {
   onClose: () => void;
@@ -35,22 +32,13 @@ interface SliderConfig {
 }
 
 function BigView({ onClose }: BigViewProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
-
   const { url } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
-  const [DMX, setDMX] = useState(false);
+  const [DMX, setDMX] = useState(() => localStorage.getItem('dmx') === 'true'); // DMX or Device channels
+  const [renderedFaders, setRenderedFaders] = useState(20); // Number of DMX faders to render
 
+  // Fetch slider data from the server on mount
   useEffect(() => {
     const fetchSliders = async () => {
       try {
@@ -71,27 +59,48 @@ function BigView({ onClose }: BigViewProps) {
     setDMX(status);
   };
 
-  // On first render, set the DMX value to localStorage
+  // Render DMX faders in steps to prevent lag
   useEffect(() => {
-    setDMX(localStorage.getItem('dmx') === 'true');
-  }, []);
+    let intervalId: string | number | NodeJS.Timeout | undefined;
+
+    if (DMX) {
+      intervalId = setInterval(() => {
+        setRenderedFaders((current) => {
+          const nextCount = current + 164; // Step size
+          if (nextCount >= 512) {
+            clearInterval(intervalId);
+            return 512;
+          }
+          return nextCount;
+        });
+      }, 300);
+    } else {
+      setRenderedFaders(20);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [DMX]);
 
   return (
-    <div>
+    <>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
-      />{' '}
-      {/* Overlay to close the modal when clicked outside */}
+        onClick={onClose}
+      />
+      <div className='BigViewContainer BigViewBackdrop' />
       <div className='BigViewContainer'>
-        <Button
-          onClick={() => handleClose()}
+        <button
           className='buttonClose'
+          onClick={onClose}
         >
-          <div className='removeIcon centerIcon'></div>
-        </Button>
+          <div className='xClose'>
+            <div className='xClose xiClose'></div>
+          </div>
+        </button>
         <div className='BigViewLayer'>
-          <span className='text-right'>{t('bb_lights')}</span>{' '}
+          <span className='text-right'>{t('bb_lights')}</span>
           <div className='toggleUniverse'>
             <Toggle
               onClick={handleToggleChange}
@@ -100,18 +109,20 @@ function BigView({ onClose }: BigViewProps) {
           </div>
           <span className='text-left'>DMX Channel</span>
         </div>
-        {DMX ? (
-          <>
-            <div className='BigViewContent innerWindow'>
-              <div className='universeLabel window'>U1</div>
-              <div className='sliders'>
-                {Array.from({ length: 512 }).map((_, index) => {
-                  const mappedIndex = index + 1;
-                  const matchedSlider = sliders.find(
-                    (slider) => slider.universe === 'U1' && slider.attributes.channel.some((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex)
-                  );
-                  if (matchedSlider) {
-                    const matchedChannel = matchedSlider.attributes.channel.find((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex);
+        {['U1', 'U2'].map((universe) => (
+          <div
+            className='BigViewContent innerWindow'
+            key={universe}
+          >
+            <div className='universeLabel window'>{universe}</div>
+            <div className='sliders'>
+              {DMX
+                ? Array.from({ length: renderedFaders }).map((_, index) => {
+                    const mappedIndex = index + 1;
+                    const matchedSlider = sliders.find(
+                      (slider) => slider.universe === universe && slider.attributes.channel.some((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex)
+                    );
+                    const matchedChannel = matchedSlider ? matchedSlider.attributes.channel.find((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex) : null;
                     return (
                       <div
                         key={index}
@@ -120,86 +131,19 @@ function BigView({ onClose }: BigViewProps) {
                         <h2 className='faderText'>{mappedIndex}</h2>
                         <Fader
                           key={index}
-                          id={matchedChannel.id}
-                          sliderGroupId={matchedSlider.id}
-                          name={matchedSlider.name + ' ' + matchedChannel.channel_type}
+                          id={matchedChannel ? matchedChannel.id : mappedIndex}
+                          sliderGroupId={matchedSlider ? matchedSlider.id : universe === 'U1' ? 692 : 693}
+                          name={matchedSlider ? matchedSlider.name + ' ' + matchedChannel.channel_type : 'Channel'}
+                          className={index === 511 ? 'noBorder' : ''}
                         />
                       </div>
                     );
-                  } else {
-                    return (
-                      <div
-                        key={index}
-                        className='sliderHeight'
-                      >
-                        <h2 className='faderText'>{mappedIndex}</h2>
-                        <Fader
-                          key={index}
-                          id={mappedIndex}
-                          sliderGroupId={692}
-                          name='Channel'
-                        />
-                      </div>
-                    );
-                  }
-                })}
-              </div>
-            </div>
-            <div className='BigViewContent innerWindow'>
-              <div className='universeLabel window'>U2</div>
-              <div className='sliders'>
-                {Array.from({ length: 512 }).map((_, index) => {
-                  const mappedIndex = index + 1;
-                  const matchedSlider = sliders.find(
-                    (slider) => slider.universe === 'U2' && slider.attributes.channel.some((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex)
-                  );
-                  if (matchedSlider) {
-                    const matchedChannel = matchedSlider.attributes.channel.find((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex);
-                    return (
-                      <div
-                        key={index}
-                        className='sliderHeight'
-                      >
-                        <h2 className='faderText'>{mappedIndex}</h2>
-                        <Fader
-                          key={index}
-                          id={matchedChannel.id}
-                          sliderGroupId={matchedSlider.id}
-                          name={matchedSlider.name + ' ' + matchedChannel.channel_type}
-                        />
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div
-                        key={index}
-                        className='sliderHeight'
-                      >
-                        <h2 className='faderText'>{mappedIndex}</h2>
-                        <Fader
-                          key={index}
-                          id={mappedIndex}
-                          sliderGroupId={693}
-                          name='Channel'
-                        />
-                      </div>
-                    );
-                  }
-                })}
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className='BigViewContent innerWindow'>
-              <div className='universeLabel window'>U1</div>
-              <div className='sliders'>
-                {sliders
-                  .slice(1)
-                  .filter((slider) => slider.universe === 'U1')
-                  .map((slider) => (
-                    <React.Fragment key={slider.id}>
-                      {slider.attributes.channel.map((channel: { id: number; channel_type: string }) => (
+                  })
+                : sliders
+                    .slice(1)
+                    .filter((slider) => slider.universe === universe)
+                    .map((slider, sliderIndex, filteredSliders) =>
+                      slider.attributes.channel.map((channel: { id: number; channel_type: string }, channelIndex: number) => (
                         <div
                           key={slider.id + '-' + channel.id}
                           className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}
@@ -210,41 +154,14 @@ function BigView({ onClose }: BigViewProps) {
                             id={channel.id}
                             sliderGroupId={slider.id}
                             name={channel.id !== 0 ? channel.channel_type : slider.name}
+                            className={sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 ? 'noBorder' : ''}
                           />
                         </div>
-                      ))}
-                    </React.Fragment>
-                  ))}
-              </div>
+                      ))
+                    )}
             </div>
-            <div className='BigViewContent innerWindow'>
-              <div className='universeLabel window'>U2</div>
-              <div className='sliders'>
-                {sliders
-                  .slice(1)
-                  .filter((slider) => slider.universe === 'U2')
-                  .map((slider) => (
-                    <React.Fragment key={slider.id}>
-                      {slider.attributes.channel.map((channel: { id: number; channel_type: string }) => (
-                        <div
-                          key={slider.id + '-' + channel.id}
-                          className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}
-                        >
-                          <h2 className='faderText'>{slider.id}</h2>
-                          <Fader
-                            key={slider.id + '-' + channel.id}
-                            id={channel.id}
-                            sliderGroupId={slider.id}
-                            name={channel.id !== 0 ? channel.channel_type : slider.name}
-                          />
-                        </div>
-                      ))}
-                    </React.Fragment>
-                  ))}
-              </div>
-            </div>
-          </>
-        )}
+          </div>
+        ))}
         <div className='mainfaderBigView innerWindow'>
           {sliders[0] && (
             <Fader
@@ -252,11 +169,12 @@ function BigView({ onClose }: BigViewProps) {
               id={0}
               sliderGroupId={0}
               name='Master'
+              className='noBorder'
             />
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

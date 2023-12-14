@@ -12,7 +12,6 @@
  * 
  * @file Titlebar.css
  */
-@import url(../Color.css);
 
 .titlebarComp {
   position: fixed;
@@ -22,6 +21,10 @@
   height: 23px;
   z-index: 99;
   -webkit-app-region: drag;
+}
+
+.titlebarComp.active {
+  -webkit-app-region: no-drag !important;
 }
 
 nav {
@@ -34,12 +37,11 @@ nav ul li {
   float: left;
   list-style: none;
   position: relative;
+  height: 23px;
 }
 
-nav ul li a {
-  color: var(--primary);
-  display: block;
-  padding: 0 5px 0 5px;
+nav ul li button {
+  margin: 0 2px;
 }
 
 .logo {
@@ -57,19 +59,26 @@ nav ul li a {
 .hiddenlogo {
   height: 11px;
   width: 50px;
-  mask-position: center;
   top: 7px;
   position: relative;
   margin-right: 5px;
 }
 
-.settingsButton:hover,
-.active {
-  background: var(--colorButtonHover);
+.settingsButton {
+  height: 23px;
+  width: 31px;
+  display: flex;
+  padding-top: 2px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0 0 3px 3px;
+  -webkit-app-region: no-drag !important;
+  mask: url(../assets/rect.svg); /* Prevent weird pixel */
 }
 
-.active {
-  box-shadow: inset 0px 3px 10px 0px rgba(0, 0, 0, 0.1);
+.settingsButton:hover,
+.settingsButton.active {
+  background-color: var(--colorButtonHover);
 }
 
 .buttonContainer {
@@ -89,6 +98,14 @@ nav ul li a {
   top: 0;
   padding-left: 8px;
   -webkit-app-region: none;
+}
+
+.minimize {
+  border-radius: 0 0 3px 3px;
+}
+
+.close {
+  border-radius: 0 0 0 3px;
 }
 
 .titlebar-button.minimize:hover {

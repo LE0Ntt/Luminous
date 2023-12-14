@@ -32,7 +32,9 @@ function Scenes() {
     const storedValue = sessionStorage.getItem('fadeDuration');
     return storedValue ? storedValue : '0';
   });
+  const [fadeDisplayValue, setFadeDisplayValue] = useState(fadeDuration + ' s');
 
+  // Set toggle status in localStorage
   const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
     localStorage.setItem('sceneSolo', `${status}`);
   };
@@ -48,24 +50,36 @@ function Scenes() {
   const handleFadeDuration = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     if (value.length <= 4) {
-      setFadeDuration(value.replace(/[^0-9.,]+/g, ''));
+      const numbersOnly = value.replace(/[^0-9.,]+/g, '');
+      setFadeDuration(numbersOnly);
+      setFadeDisplayValue(numbersOnly);
     }
   };
 
   // Only allow numbers between 0 and 60
   const handleFadeConfirm = () => {
     let numericValue = parseFloat(fadeDuration.replace(',', '.'));
-    if (!isNaN(numericValue)) {
-      numericValue = Math.max(0, Math.min(60, numericValue));
-      setFadeDuration(numericValue.toString());
-      sessionStorage.setItem('fadeDuration', numericValue.toString());
-    } else {
-      setFadeDuration(sessionStorage?.getItem('fadeDuration') || '0'); // Reset value if input is NaN
+    if (isNaN(numericValue)) {
+      const storedValue = sessionStorage.getItem('fadeDuration');
+      numericValue = storedValue ? parseFloat(storedValue) : 0;
     }
+    numericValue = Math.max(0, Math.min(60, numericValue));
+    setFadeDuration(numericValue.toString());
+    sessionStorage.setItem('fadeDuration', numericValue.toString());
+    setFadeDisplayValue(numericValue + ' s');
+  };
+
+  // On fade input focus
+  const handleFocus = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFadeDisplayValue(fadeDuration); // Display the actual value without 's'
+    // Delay to the next tick
+    setTimeout(() => {
+      event.target.select(); // Select the input text
+    }, 0);
   };
 
   return (
-    <div>
+    <>
       <div className='window scenesMain'>
         <ScenesComponent
           sideId={1}
@@ -82,15 +96,18 @@ function Scenes() {
             sliderGroupId={0}
             id={0}
             name='Master'
+            className='noBorder'
           />
         </div>
       </div>
       <div className='window scenesSolo'>
         <div className='scenesSoloAlign'>
-          <Toggle
-            onClick={handleToggleChange}
-            enabled={localStorage.getItem('sceneSolo') === 'true'}
-          />
+          <div className='toggleScenes'>
+            <Toggle
+              onClick={handleToggleChange}
+              enabled={localStorage.getItem('sceneSolo') === 'true'}
+            />
+          </div>
           <span>SOLO</span>
         </div>
       </div>
@@ -98,12 +115,13 @@ function Scenes() {
         <div className='scenesSoloAlign'>
           <span>FADE</span>
           <input
-            className='scenesFadeInput'
+            className='scenesFadeInput textBox'
             type='text'
-            value={fadeDuration}
+            value={fadeDisplayValue}
             onChange={handleFadeDuration}
             onKeyDown={handleKeyDown}
             onBlur={handleFadeConfirm}
+            onFocus={handleFocus}
           />
         </div>
       </div>
@@ -116,7 +134,7 @@ function Scenes() {
         />
       )}
       {saveSceneAdmin && <AdminPassword onClose={() => setSaveSceneAdmin(false)} />}
-    </div>
+    </>
   );
 }
 

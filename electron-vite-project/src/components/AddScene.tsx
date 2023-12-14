@@ -13,34 +13,23 @@
  * @file AddScene.tsx
  */
 import React, { useState, useCallback, useContext, useEffect } from 'react';
-import './BigView.css';
 import Button from './Button';
-import '../index.css';
 import './AddScene.css';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 import AdminPassword from './AdminPassword';
+import IconNote from '@/assets/IconNote';
 
 interface AddSceneProps {
   onClose: () => void;
 }
 
 function AddScene({ onClose }: AddSceneProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
   const [name, setName] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [showAdminPassword, setShowAdminPassword] = useState(false);
   const { emit } = useConnectionContext();
-
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
 
   const handleNameChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setName(event.target.value);
@@ -65,9 +54,13 @@ function AddScene({ onClose }: AddSceneProps) {
     } else {
       // If the name is empty, the text box will be highlighted in red
       const textBox = document.getElementsByClassName('AddSceneTextBox')[0] as HTMLInputElement;
-      textBox.focus();
-      textBox.style.outline = '2px solid red';
-      textBox.style.outlineOffset = '-1px';
+      if (textBox) {
+        textBox.classList.add('error-outline');
+        textBox.focus();
+        setTimeout(() => {
+          textBox.classList.remove('error-outline');
+        }, 4000);
+      }
     }
   };
 
@@ -86,7 +79,7 @@ function AddScene({ onClose }: AddSceneProps) {
 
   const addScene = (emit: any, scene: { name: string; saved: boolean }) => {
     emit('scene_add', { scene });
-    handleClose();
+    onClose();
   };
 
   // Confirm with ENTER
@@ -106,11 +99,11 @@ function AddScene({ onClose }: AddSceneProps) {
   }, [name, isChecked]);
 
   return (
-    <div>
+    <>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
-      />{' '}
+        onClick={onClose}
+      />
       {/* Overlay to close the modal when clicked outside */}
       {showAdminPassword ? (
         <AdminPassword
@@ -119,16 +112,18 @@ function AddScene({ onClose }: AddSceneProps) {
         />
       ) : (
         <div className='AddSceneContainer window'>
-          <Button
-            onClick={handleClose}
+          <button
             className='buttonClose'
+            onClick={onClose}
           >
-            <div className='removeIcon centerIcon'></div>
-          </Button>
+            <div className='xClose'>
+              <div className='xClose xiClose'></div>
+            </div>
+          </button>
           <div className='AddSceneContent'>
             <span className='AddSceneTitle'>{t('as_title')}</span>
             <input
-              className='LightSettingsTextBox AddSceneTextBox'
+              className='textBox AddSceneTextBox'
               type='text'
               placeholder='Name'
               value={name}
@@ -144,8 +139,12 @@ function AddScene({ onClose }: AddSceneProps) {
               />
               <label htmlFor='checkboxId'>{t('as_checkbox')}</label>
             </div>
-            <div className='AddSceneNote'>
-              <span>❕ {t('as_note')}</span>
+            <div className='AddSceneNote flex'>
+              <IconNote
+                color={'var(--secondary)'}
+                size='20px'
+              />
+              <span className='relative top-[-3px] left-1'>{t('as_note')}</span>
             </div>
           </div>
           <div className='AddSceneFooter'>
@@ -157,7 +156,7 @@ function AddScene({ onClose }: AddSceneProps) {
                 {t('as_save')}
               </Button>
               <Button
-                onClick={handleClose}
+                onClick={onClose}
                 className='controlButton'
               >
                 {t('as_cancel')}
@@ -166,7 +165,7 @@ function AddScene({ onClose }: AddSceneProps) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

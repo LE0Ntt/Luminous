@@ -1,0 +1,56 @@
+/**
+ * Luminous - A Web-Based Lighting Control System
+ * 
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ * 
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ * 
+ * @file About.css
+ */
+.AboutTextBoxContainer {
+  position: relative;
+  bottom: 20px;
+  top: 20px;
+  gap: 20px;
+  overflow: auto;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 300;
+}
+
+.AboutContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: stretch;
+}
+
+.logoBig {
+  height: 100px;
+  width: 540px;
+  mask: url(../assets/Luminous_Logo.svg);
+  mask-repeat: no-repeat;
+  background: var(--secondary);
+  mask-position: center;
+  top: -10px;
+  position: relative;
+  margin-right: 5px;
+}
+
+.logoReflection {
+  height: 200px;
+  width: 200px;
+  mask: url(../assets/iconReflection.png);
+  mask-repeat: no-repeat;
+  background: var(--secondary);
+  mask-position: center;
+  top: -72px;
+  right: 72px;
+  position: absolute;
+  transform: scale(0.31);
+}

@@ -12,7 +12,6 @@
  * 
  * @file Control.css
  */
-@import url(./Color.css);
 
 .devices {
   width: 384px;
@@ -85,17 +84,17 @@
   border-radius: 10px;
   z-index: 3;
   padding: 20px;
-  border: 1px solid rgba(0, 0, 0, 0);
+  border: 1px solid rgba(0 0 0 0%);
   position: absolute;
 }
 
 .lightFader {
-  height: 495px;
+  height: 425px;
   width: 82px;
 }
 
 .controlBiColor {
-  height: 385px;
+  height: 315px;
   width: 553px;
   top: 130px;
   left: 122px;
@@ -103,37 +102,34 @@
 
 .controlKelvinPicker {
   position: absolute;
-  top: 177px;
+  top: 50%;
   left: 60px;
 }
 
 .controlRGB {
-  height: 495px;
+  height: 425px;
   width: 719px;
   right: 20px;
 }
 
 .controlColorPicker {
   position: absolute;
-  top: 100px;
+  bottom: 20px;
   right: 20px;
 }
 
 .controlRGBFader {
   position: absolute;
   display: flex;
-  top: 100px;
+  bottom: 5px;
   left: 20px;
 }
 
-.noBorder {
-  border: none;
-}
-
 .controlEffects {
-  height: 355px;
+  height: 425px;
   width: 1394px;
-  top: 535px;
+  bottom: 20px;
+  padding: 3px 20px;
 }
 
 .controlTitle {
@@ -149,11 +145,25 @@
   font-size: 20px;
 }
 
-.centered-wrapper {
+.centeredWrapper {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.sliders {
+  min-width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: flex-start;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.slidersEffects {
+  position: relative;
+  width: stretch;
 }
 
 .controlButtons {
@@ -169,10 +179,6 @@
   width: 100%;
   height: 100%;
   border-radius: 5px;
-  background-color: var(--colorButton);
-  color: var(--primary);
-  box-shadow: var(--shadowButton);
-  border: solid 1px var(--faderBorder);
   font-weight: 600;
   font-size: 20px;
 }

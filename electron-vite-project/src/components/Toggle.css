@@ -12,14 +12,13 @@
  * 
  * @file Toggle.css
  */
-@import url(../Color.css);
 
 /* The switch - the box around the slider */
 .toggle {
   position: relative;
   display: inline-block;
   width: 40px;
-  height: 20px;
+  height: 25px;
   margin-right: 5px;
 }
 
@@ -38,23 +37,29 @@
   left: 0;
   right: 0;
   bottom: 0;
-  -webkit-transition: 0.4s;
   transition: 0.4s;
-  border: solid 1px var(--primary);
-  background-color: var(--primarySwitched);
+  border: solid 1px var(--faderThumb);
+  background-color: var(--tertiary);
   box-shadow: inset 0px 3px 7px 0px rgba(0, 0, 0, 0.15);
 }
 
 .defaultToggle:before {
   position: absolute;
   content: '';
-  height: 12px;
-  width: 12px;
+  height: 17px;
+  width: 17px;
   left: 3px;
   bottom: 3px;
-  background-color: var(--primary);
-  -webkit-transition: 0.4s;
+  background-color: var(--faderThumb);
   transition: 0.4s;
+}
+
+input:hover + .defaultToggle {
+  background-color: var(--closeButton);
+}
+
+input:checked:hover + .defaultToggle::before {
+  background-color: var(--brightAndNotTooDark);
 }
 
 input:checked + .defaultToggle {
@@ -62,15 +67,13 @@ input:checked + .defaultToggle {
 }
 
 input:checked + .defaultToggle:before {
-  background-color: var(--primaryDark);
-  -webkit-transform: translateX(21px);
-  -ms-transform: translateX(21px);
-  transform: translateX(21px);
+  background-color: var(--fillUltraThick);
+  transform: translateX(15px);
 }
 
 /* Rounded sliders */
 .defaultToggle.round {
-  border-radius: 12px;
+  border-radius: 15px;
 }
 
 .defaultToggle.round:before {

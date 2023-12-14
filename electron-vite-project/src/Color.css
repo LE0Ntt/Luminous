@@ -18,7 +18,7 @@
   --secondary: rgba(0, 0, 0, 0.5);
   --tertiary: rgba(0, 0, 0, 0.25);
 
-  --primarySwitched: rgba(255, 255, 255, 0.85);
+  --primarySwitched: rgba(255, 255, 255, 0.7);
   --secondarySwitched: rgba(255, 255, 255, 0.5);
   --tertiarySwitched: rgba(255, 255, 255, 0.25);
 
@@ -33,18 +33,22 @@
 
   --colorButton: #ffffff;
   --colorButtonHover: #e9e9e9;
+  --borderButton: rgba(0, 0, 0, 0.15);
+
+  --closeButton: rgb(148, 148, 148);
 
   --onepStroke: #fff;
-  --onepStrokeSwitched: #000000;
 
   --midLine: #b7b7b7;
   --faderThumb: rgba(246, 246, 246, 0.84);
   --faderThumbHover: rgba(246, 246, 246, 1);
   --faderBorder: rgba(0, 0, 0, 0.2);
+  --faderThumbBorder: rgba(0, 0, 0, 0.2);
 
   --primaryDark: rgb(255, 255, 255);
   --secondaryDark: rgba(255, 255, 255, 0.5);
   --tertiaryDark: rgba(255, 255, 255, 0.25);
+  --brightAndNotTooDark: rgba(255, 255, 255, 0.95);
 
   --fillUltraLightDark: rgba(40, 40, 40, 0.4);
   --fillLightDark: rgba(40, 40, 40, 0.5);
@@ -87,26 +91,30 @@
 
   --primaryDark: rgb(0, 0, 0);
 
-  --primarySwitched: rgba(65, 65, 65, 0.85);
+  --primarySwitched: rgba(65, 65, 65, 0.7);
   --secondarySwitched: rgba(0, 0, 0, 0.5);
   --tertiarySwitched: rgba(0, 0, 0, 0.25);
+  --brightAndNotTooDark: rgba(0, 0, 0, 0.7);
 
   --fillUltraLight: rgba(40, 40, 40, 0.4);
   --fillLight: rgba(246, 246, 246, 0.03);
   --fillMedium: rgba(63, 63, 63, 0.5);
   --fillThick: rgba(63, 63, 63, 0.6);
-  --fillUltraThick: rgba(40, 40, 40, 0.8);
+  --fillUltraThick: rgba(40, 40, 40, 0.75);
 
   --onepStroke: rgba(255, 255, 255, 0.1);
-  --onepStrokeSwitched: #ffffff;
 
   --midLine: #5c5c5c;
   --faderThumb: rgba(246, 246, 246, 0.5);
   --faderThumbHover: rgba(246, 246, 246, 0.6);
-  --faderBorder: rgba(255, 255, 255, 0.25);
+  --faderBorder: rgba(255, 255, 255, 0.08);
+  --faderThumbBorder: rgba(255, 255, 255, 0.25);
 
-  --colorButton: rgba(72, 72, 72, 0.5);
+  --colorButton: rgba(83, 83, 83, 0.5);
   --colorButtonHover: rgba(100, 100, 100, 0.5);
+  --borderButton: rgba(255, 255, 255, 0.2);
+
+  --closeButton: rgb(145, 145, 145);
 
   --mainColor: #b9bcff;
 

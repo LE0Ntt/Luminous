@@ -1,60 +1,49 @@
-import React, { useState } from 'react';
+/**
+ * Luminous - A Web-Based Lighting Control System
+ *
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ *
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ *
+ * @file LightBeam.tsx
+ */
 
-const LightBeam: React.FC = () => {
-  const [red, setRed] = useState<number>(255);
-  const [green, setGreen] = useState<number>(255);
-  const [blue, setBlue] = useState<number>(255);
+interface LightBeamProps {
+  red: number;
+  green: number;
+  blue: number;
+}
 
-  const updateColor = (colorSetter: React.Dispatch<React.SetStateAction<number>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    colorSetter(Number(e.target.value));
+const LightBeam: React.FC<LightBeamProps> = ({ red, green, blue }) => {
+  const maxColorValue = Math.max(red, green, blue);
+  const alpha = maxColorValue / 255;
+  const scale = 255 / Math.sqrt((red ** 2 + green ** 2 + blue ** 2) / 3);
+
+  const getRGBA = (opacity: number) => `rgba(${red * scale}, ${green * scale}, ${blue * scale}, ${opacity})`;
+
+  const emitterStyle: React.CSSProperties = {
+    boxShadow: `0 0 ${40}px ${20}px ${getRGBA(alpha * 0.7)},
+                0 0 ${50}px ${30}px ${getRGBA(alpha * 0.5)},
+                0 0 ${60}px ${40}px ${getRGBA(alpha * 0.3)}`,
   };
 
-  // rgba wird für die Hintergrundfarbe mit Transparenz verwendet.
-  const emitterStyle: React.CSSProperties = {
-    width: '1px', // Kleine Box-Breite
-    height: '1px', // Kleine Box-Höhe
-    borderRadius: '50%', // Macht die Box kreisförmig
-    backgroundColor: `rgba(${red}, ${green}, ${blue}, 1)`, // Farbe der Box ohne Transparenz
-    boxShadow: `0 0 80px 40px rgba(${red}, ${green}, ${blue}, 0.7),
-                0 0 120px 80px rgba(${red}, ${green}, ${blue}, 0.5),
-                0 0 200px 160px rgba(${red}, ${green}, ${blue}, 0.3)`, // Mehrschichtiger Schatten für einen sanfteren Übergang
-    margin: '100px', // Erhöhter Abstand um den großen Schatten zu sehen
+  const innerGlowStyle: React.CSSProperties = {
+    opacity: Math.min(0.9, alpha ** 0.3), // Exponential function for faster fading. Max opacity is 0.9
   };
 
   return (
-    <div>
+    <>
+      <div
+        className='studioOverviewTraversenLight'
+        style={innerGlowStyle}
+      />
       <div style={emitterStyle} />
-      <label>
-        Rot
-        <input
-          type='range'
-          value={red}
-          onChange={updateColor(setRed)}
-          min='0'
-          max='255'
-        />
-      </label>
-      <label>
-        Grün
-        <input
-          type='range'
-          value={green}
-          onChange={updateColor(setGreen)}
-          min='0'
-          max='255'
-        />
-      </label>
-      <label>
-        Blau
-        <input
-          type='range'
-          value={blue}
-          onChange={updateColor(setBlue)}
-          min='0'
-          max='255'
-        />
-      </label>
-    </div>
+    </>
   );
 };
 

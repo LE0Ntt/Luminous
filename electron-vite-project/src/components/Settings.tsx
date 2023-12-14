@@ -12,53 +12,40 @@
  *
  * @file Settings.tsx
  */
-import { useState, useContext, useEffect, useCallback } from 'react';
+import { useState, useContext, useCallback } from 'react';
 import './Settings.css';
 import Button from './Button';
-import '../index.css';
-import './LightSettings.css';
 import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
 import AdminPassword from './AdminPassword';
-import Setting1 from './Settings_General';
-import Setting2 from './Settings_Admin';
+import Setting1 from './SettingsGeneral';
+import Setting2 from './SettingsAdmin';
 import IconSettings from '@/assets/Icon_Settings';
 import IconAdmin from '@/assets/Icon_Admin';
-import './Titlebar.css';
 
 interface SettingsProps {
   onClose: () => void;
 }
 
 function Settings({ onClose }: SettingsProps) {
-  const [isOpen, setIsOpen] = useState(true);
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const [isOlaWindowOpen, setIsOlaWindowOpen] = useState(false);
   const newUrl = url.toString().slice(0, -5) + ':9090';
   const [selectedSetting, setSelectedSetting] = useState<string | null>('Setting1');
 
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose();
-  };
-
   const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
     if (isConfirmed) {
       window.electronAPI.openExternal(newUrl);
-      handleClose();
+      onClose();
     }
   }, []);
-
-  if (!isOpen) {
-    return null; // Render nothing if the modal is closed
-  }
 
   return (
     <>
       <div
         className='backgroundOverlay'
-        onClick={handleClose}
+        onClick={onClose}
       />
       {isOlaWindowOpen ? (
         <AdminPassword
@@ -68,12 +55,14 @@ function Settings({ onClose }: SettingsProps) {
       ) : (
         <>
           <div className='SettingsContainer'>
-            <Button
-              onClick={handleClose}
+            <button
               className='buttonClose'
+              onClick={onClose}
             >
-              <div className='removeIcon centerIcon'></div>
-            </Button>
+              <div className='xClose'>
+                <div className='xClose xiClose'></div>
+              </div>
+            </button>
             <div className='SettingsTitle'>
               <span>{t('set_title')}</span>
             </div>

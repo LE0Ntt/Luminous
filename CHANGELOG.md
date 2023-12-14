@@ -2,7 +2,7 @@
 
 > All notable changes to this project will be documented in this file.
 
-## [1.2.0] - Pre-Release
+## [1.2.0] - 2023-12-14
 
 ### Changes
 
@@ -21,6 +21,7 @@
   - Rearranged layout to reflect the studio
   - Updated bi-color and spot light icons
   - Background image refined
+  - Added correct icons to the devices
 - Settings
   - Error/success message on password change
     - Added translation, color indication & fade out

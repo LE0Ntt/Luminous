@@ -56,7 +56,9 @@
   - Added animation
   - Enlarged for easier touch selection
   - Removed lines between items
-- Appended 's' to scenes fade input value
+- Scenes
+  - Solo only turns off main fader of each device
+  - Appended 's' to fade input value
 - Reworked fill light and bi-color light icons
 - Set dark mode as default to prevent bright flash on startup
 - Updated scene placeholder dashed border to be more symmetrical

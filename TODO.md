@@ -1,11 +1,11 @@
 ## Version 1.2.0
 
-- [ ] Studio Overview,
-  - [ ] Icons anpassen, Beide
-  - [ ] Testchart anpassen, Leon
-  - [ ] Layout anpassen, Leon
+- [x] Studio Overview,
+  - [x] Icons anpassen, Beide
+  - [x] Testchart anpassen, Leon
+  - [x] Layout anpassen, Leon
   - [x] Rendering anpassen, Darwin
-- [ ] Scenes dürfen HMI nicht ausmachen, Darwin
+- [x] Scenes dürfen HMI nicht ausmachen, Darwin
 - [x] Settingsdesign anpassen, Leon
   - [x] Textinput gleiche höhe wie buttons, Darwin
 - [ ] Offensichtlicheres Faderhighlighting, Leon

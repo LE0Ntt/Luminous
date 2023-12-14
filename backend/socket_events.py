@@ -95,6 +95,7 @@ def register_socketio_events(socketio):
             namespace="/socket",
         )
 
+        # if index > 0 or channelId == 0:
         send_dmx(
             index,
             channelId,
@@ -102,6 +103,11 @@ def register_socketio_events(socketio):
             routes.devices[index],
             routes.devices[index]["attributes"]["channel"][channelId],
         )
+        # else:
+        #     print("Sending: " + str(value) + " to device index " + str(index))
+        #     send_dmx_direct(
+        #         int(routes.devices[index]["universe"][1:]), value, channelId
+        #     )
 
         """ if current_time - last_send_time >= 1:
             last_send_time = current_time
@@ -183,54 +189,39 @@ def register_socketio_events(socketio):
     @socketio.on("controlSolo", namespace="/socket")
     def controlSolo(data):
         solo = bool(data["solo"])
-        selection = data["devices"]
-        selected_ids = {dev["id"] for dev in selection}
+        selected_ids = {dev["id"] for dev in data["devices"]}
+
+        def update_device(device, slider_value):
+            faderSend(device["id"], slider_value, 0)
+            send_dmx(
+                device["id"],
+                0,
+                slider_value,
+                device,
+                device["attributes"]["channel"][0],
+            )
+            if driver is not None:
+                driver.pushFader(device["id"], slider_value)
+                driver.devices = routes.devices
 
         for device in routes.devices:
             device_id = device["id"]
-            slider_value = device["attributes"]["channel"][0]["sliderValue"]
-            backup_value = device["attributes"]["channel"][0].get("backupValue", 0)
+            if device_id == 0:
+                continue
 
-            if solo:
-                if (
-                    device_id not in selected_ids
-                    and slider_value > 0
-                    and device_id != 0
-                ):
-                    device["attributes"]["channel"][0]["sliderValue"] = 0
-                    faderSend(device["id"], 0, 0)
-                    send_dmx(
-                        device["id"], 0, 0, device, device["attributes"]["channel"][0]
-                    )
-                    if driver is not None:
-                        driver.pushFader(device["id"], 0)
-                        driver.devices = routes.devices
-            else:  # unsolo
-                if slider_value == 0 and device_id != 0:
-                    if 0 <= device_id < len(routes.devices):
-                        device["attributes"]["channel"][0]["sliderValue"] = device[
-                            "attributes"
-                        ]["channel"][0]["backupValue"]
-                        faderSend(
-                            device["id"],
-                            device["attributes"]["channel"][0]["backupValue"],
-                            0,
-                        )
-                        send_dmx(
-                            device["id"],
-                            0,
-                            device["attributes"]["channel"][0]["backupValue"],
-                            device,
-                            device["attributes"]["channel"][0],
-                        )
-                        if driver is not None:
-                            driver.pushFader(
-                                device["id"],
-                                device["attributes"]["channel"][0]["backupValue"],
-                            )
-                            driver.devices = routes.devices
-                    else:
-                        print(f"Ungültiger device_id: {device_id}")
+            channel_attrs = device["attributes"]["channel"][0]
+            slider_value = channel_attrs["sliderValue"]
+            backup_value = channel_attrs.get("backupValue", 0)
+
+            if solo and device_id not in selected_ids and slider_value > 0:
+                channel_attrs["sliderValue"] = 0
+                update_device(device, 0)
+            elif not solo and slider_value == 0:
+                if 0 <= device_id < len(routes.devices):
+                    channel_attrs["sliderValue"] = backup_value
+                    update_device(device, backup_value)
+                else:
+                    print(f"Unknown device_id: {device_id}")
 
     fade_threads = {}
 
@@ -265,10 +256,30 @@ def register_socketio_events(socketio):
         global scenes_solo_state
         scene_device_ids = {device["id"] for device in routes.scenes[scene]["channel"]}
 
-        if solo and status:
-            scenes_solo_state = True
+        def start_fade_thread(device, start_value, end_value):
+            channel = device["attributes"]["channel"][0]
+            fade_thread_key = (device["id"], channel["id"])
+            if fade_thread_key in fade_threads:
+                fade_threads[fade_thread_key]["stop"] = True
+                thread = fade_threads[fade_thread_key]["thread"]
+                if thread and thread.is_alive():
+                    thread.join()
+            t = threading.Thread(
+                target=fade_device,
+                args=(
+                    device,
+                    channel,
+                    start_value,
+                    end_value,
+                    steps,
+                    interval,
+                    channel,
+                ),
+            )
+            fade_threads[fade_thread_key] = {"thread": t, "stop": False}
+            t.start()
 
-            # Set all other scenes to off
+        def turn_off_other_scenes():
             for other_scene in routes.scenes:
                 if other_scene["id"] != scene:
                     other_scene["status"] = False
@@ -278,65 +289,28 @@ def register_socketio_events(socketio):
                         namespace="/socket",
                     )
 
+        def update_devices(solo_active):
             for device in routes.devices:
+                master_channel = device["attributes"]["channel"][0]
                 device_id = device["id"]
-                slider_value = device["attributes"]["channel"][0]["sliderValue"]
+                if device_id not in scene_device_ids and device_id != 0:
+                    if solo_active:
+                        start_value = master_channel["sliderValue"]
+                        end_value = 0
+                    else:
+                        start_value = master_channel["sliderValue"]
+                        end_value = master_channel.get("backupValue", 0)
 
-                if (
-                    device_id not in scene_device_ids
-                    and slider_value > 0
-                    and device_id != 0
-                ):
-                    for channel in device["attributes"]["channel"]:
-                        t = threading.Thread(
-                            target=fade_device,
-                            args=(
-                                device,
-                                channel,
-                                slider_value,
-                                0,
-                                steps,
-                                interval,
-                                device["attributes"]["channel"][0],
-                            ),
-                        )
-                        fade_threads[(device["id"], channel["id"])] = {
-                            "thread": t,
-                            "stop": False,
-                        }
-                        t.start()
-        else:  # Unsolo
-            if (scenes_solo_state and solo is False) or (status is False and solo):
-                scenes_solo_state = False
-                for device in routes.devices:
-                    for channel in device["attributes"]["channel"]:
-                        if "backupValue" in device["attributes"]["channel"][0]:
-                            backup_value = device["attributes"]["channel"][0][
-                                "backupValue"
-                            ]
-                            device_id = device["id"]
-                            if device_id not in scene_device_ids and device_id != 0:
-                                current_value = device["attributes"]["channel"][0][
-                                    "sliderValue"
-                                ]
-                                if current_value != backup_value:
-                                    t = threading.Thread(
-                                        target=fade_device,
-                                        args=(
-                                            device,
-                                            channel,
-                                            current_value,
-                                            backup_value,
-                                            steps,
-                                            interval,
-                                            device["attributes"]["channel"][0],
-                                        ),
-                                    )
-                                    fade_threads[(device["id"], channel["id"])] = {
-                                        "thread": t,
-                                        "stop": False,
-                                    }
-                                    t.start()
+                    if start_value != end_value:
+                        start_fade_thread(device, start_value, end_value)
+
+        if solo and status:
+            scenes_solo_state = True
+            turn_off_other_scenes()
+            update_devices(solo_active=True)
+        elif (scenes_solo_state and not solo) or (not status and solo):
+            scenes_solo_state = False
+            update_devices(solo_active=False)
 
         if driver is not None and scene is not None:
             driver.quickSceneButtonUpdate(scene, status)
@@ -344,18 +318,26 @@ def register_socketio_events(socketio):
         if scene < len(routes.scenes):
             routes.scenes[scene]["status"] = status
             for device in routes.scenes[scene]["channel"]:
-                for channel in device["attributes"]["channel"]:
-                    device1 = next(
-                        (d for d in routes.devices if d["id"] == device["id"]),
-                        None,
-                    )
-                    if device1 is not None:
-                        deviceChannel = device1["attributes"]["channel"][channel["id"]]
-                        start_value = deviceChannel["sliderValue"]
-                        if status:  # on
-                            end_value = channel["sliderValue"]
-                        else:  # off
-                            end_value = deviceChannel["backupValue"]
+                device1 = next(
+                    (d for d in routes.devices if d["id"] == device["id"]), None
+                )
+                if device1 is not None:
+                    for channel in device["attributes"]["channel"]:
+                        # Skip turning off power channel for HMI devices
+                        if (
+                            status is False
+                            and device1.get("device_type") == "HMI"
+                            and channel.get("channel_type") == "power"
+                        ):
+                            continue
+
+                        device_channel = device1["attributes"]["channel"][channel["id"]]
+                        start_value = device_channel["sliderValue"]
+                        end_value = (
+                            channel["sliderValue"]
+                            if status
+                            else device_channel.get("backupValue", 0)
+                        )
 
                         # If a fade thread for this device and channel already exists, stop it
                         if (device["id"], channel["id"]) in fade_threads:
@@ -375,7 +357,7 @@ def register_socketio_events(socketio):
                                 end_value,
                                 steps,
                                 interval,
-                                deviceChannel,
+                                device_channel,
                             ),
                         )
                         fade_threads[(device["id"], channel["id"])] = {

@@ -1,26 +1,17 @@
-## Version 1.2.0
+## Version 1.2.x TODOs
 
-- [x] Studio Overview,
-  - [x] Icons anpassen, Beide
-  - [x] Testchart anpassen, Leon
-  - [x] Layout anpassen, Leon
-  - [x] Rendering anpassen, Darwin
-- [x] Scenes dürfen HMI nicht ausmachen, Darwin
-- [x] Settingsdesign anpassen, Leon
-  - [x] Textinput gleiche höhe wie buttons, Darwin
-- [ ] Offensichtlicheres Faderhighlighting, Leon
-- [x] Effekte richtiges Design (Slider 10px bottom, höhere Fader), Leon
-- [ ] Alle Lampen aus beim App-Schließen,
+- [ ] More obvious fader highlighting, Leon
+- [ ] Turn off all lights when closing the app
   - [ ] Dialog, Leon
   - [ ] Backend, Darwin
-- [x] LightSettings buttons anpassen, Darwin
-- [x] Icons für Dropdown, Leon
+- [ ] LightFX rgb should always send all channels, Darwin
+- [ ] Studio-Overview add HMI 14, Leon
+- [ ] Prevent scene and solo overlaps, Darwin
+- [ ] Enlarge fader input fields and include % symbol, Darwin
 
 ## Known Issues
 
 - MotorMix
-  - ~~Master fader not working, only from App to MotorMix~~ (hopefully fixed)
-  - ~~Doesn't use correct values, when changing scenes~~ (hopefully fixed)
   - Black-out button
   - Display bugs with page wheel
   - Missing light values
@@ -29,10 +20,10 @@
 - Random server crashes
 - Possibly slower after long operation
 - Studio-Overview just uses ID, not universe
-- Wrong devices displayed after changing number in LightSettings
+- Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
 - Scenes do not fade in exact seconds and are subject to server performance
-- ~~Doesn't show lights after editing them. Need to restart server~~
+- Error server message on LightFX or DMX channel change
 
 ## Necessary Changes
 

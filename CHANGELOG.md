@@ -21,7 +21,7 @@
   - Rearranged layout to reflect the studio
   - Updated bi-color and spot light icons
   - Background image refined
-  - Added correct icons to the devices
+  - Changed correct icon for the devices, added fill light icon
 - Settings
   - Error/success message on password change
     - Added translation, color indication & fade out

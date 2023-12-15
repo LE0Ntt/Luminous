@@ -79,6 +79,8 @@ const Studio = () => {
     .fill(undefined)
     .map(() => Array(studioColumns).fill(undefined));
 
+  const greenScreen = 14; // change greenScreen in the Studio Overview
+
   interface SliderConfig {
     attributes: any;
     universe: string;
@@ -272,14 +274,14 @@ const Studio = () => {
             <div className='studioOverviewGreenscreen'>
               <div
                 className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
-                onClick={() => handleGlowAndFocus(13)}
+                onClick={() => handleGlowAndFocus(greenScreen)}
                 style={{ cursor: 'pointer' }}
               >
                 <div className='studioOverviewInfopanelText'>Greenscreen</div>
                 <div className='studioOverviewInfopanelBrightness'>
-                  {(((faderValues[13][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                  {(((faderValues[greenScreen][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
                     ? t('Off')
-                    : (((faderValues[13][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+                    : (((faderValues[greenScreen][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
                 </div>
               </div>
               <div>
@@ -294,12 +296,12 @@ const Studio = () => {
                       className='schein'
                       style={{
                         top: `-35px`,
-                        opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
+                        opacity: (faderValues[greenScreen][0] / 255) * (faderValues[0][0] / 255),
                         filter: 'blur(2px)',
                       }}
                     />
                     <div
-                      onClick={() => handleGlowAndFocus(13)}
+                      onClick={() => handleGlowAndFocus(greenScreen)}
                       style={{ cursor: 'pointer' }}
                     >
                       <img

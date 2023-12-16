@@ -1,13 +1,17 @@
 ## Version 1.2.x TODOs
 
-- [ ] More obvious fader highlighting, Leon
 - [ ] Turn off all lights when closing the app
   - [ ] Dialog, Leon
   - [ ] Backend, Darwin
 - [ ] LightFX rgb should always send all channels, Darwin
-- [ ] Studio-Overview add HMI 14, Leon
+- [ ] Studio-Overview
+  - [ ] Add HMI 14, Leon
+  - [ ] Add Traverse Lights
 - [ ] Prevent scene and solo overlaps, Darwin
-- [x] Enlarge fader input fields and include % symbol, Darwin
+- [ ] Fader
+  - [ ] More obvious fader highlighting, Leon
+  - [x] Enlarge fader input fields and include % symbol, Darwin
+  - [ ] Rework spacing
 
 ## Known Issues
 
@@ -81,9 +85,11 @@
   - [x] Device highlight
   - [x] Move to the left
   - [ ] Add rgb traverse lights
-  - [ ] Add fill light icon
-  - [ ] Rearrange devices
+  - [x] Add fill light icon
+  - [x] Rearrange devices
   - [ ] Move code to own component
+  - [ ] Display bi-color changes
+  - [ ] Display traverse light effects
 - [ ] Scenes
   - [ ] See what you save
   - [ ] Edit scenes
@@ -101,8 +107,7 @@
   - [ ] Astera Titan Tubes
 - [ ] Look into npm packages
 - [ ] Icons for dropdown menu
-- [ ] DIN icons for studio overview
-- [ ] Studio-Overview display bi-color changes
+- [ ] DIN icons for Studio-Overview
 - [ ] Constistent Fader elements spacing
 
 ## Code Cleanup & Comments

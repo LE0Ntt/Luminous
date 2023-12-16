@@ -47,7 +47,7 @@ const Studio = () => {
   const [bigView, setBigView] = useState(false);
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
   const [addScene, setAddScene] = useState(false);
-  const [, forceRender] = useState(false); // Used to force a rerender
+  const [, forceRender] = useState(false); // Force rerender for mirrored studio ui setting
   const [glowId, setGlowId] = useState<number | null>(null);
   const refsArray = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -79,7 +79,7 @@ const Studio = () => {
     .fill(undefined)
     .map(() => Array(studioColumns).fill(undefined));
 
-  const greenScreen = 14; // change greenScreen in the Studio Overview
+  const greenScreen = 14; // Change greenScreen in the Studio Overview
 
   interface SliderConfig {
     attributes: any;
@@ -129,6 +129,7 @@ const Studio = () => {
       window.removeEventListener('reverseOrder', handleStorageChange as EventListener);
       off('light_response', lightRespone);
       off('light_deleted', lightDeleted);
+      refsArray.current = [];
     };
   }, []);
 
@@ -158,13 +159,37 @@ const Studio = () => {
     refsArray.current[id]?.focus();
   };
 
+  // Scroll button test ---------------------------------------------
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const elementWidth = 102;
+  const elementsInView = 8;
+
+  const updateScrollButtons = () => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+    setCanScrollLeft(scrollLeft > 0);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth);
+  };
+
   useEffect(() => {
-    // Clean up refs and timeouts # this is ro prevent memory leaks
+    const scrollElement = scrollRef.current;
+    if (scrollElement) scrollElement.addEventListener('scroll', updateScrollButtons);
     return () => {
-      refsArray.current = [];
-      // if you have any timeouts, clear them here
+      if (scrollElement) scrollElement.removeEventListener('scroll', updateScrollButtons);
     };
   }, []);
+
+  const calculateScroll = (direction: string) => {
+    if (!scrollRef.current) return 0;
+    const currentScroll = scrollRef.current.scrollLeft / elementWidth;
+    scrollRef.current?.scrollTo({
+      left: direction === 'next' ? Math.floor(currentScroll) * elementWidth + elementWidth * elementsInView : Math.max(0, Math.ceil(currentScroll) * elementWidth - elementWidth * elementsInView),
+      behavior: 'smooth',
+    });
+  };
+  // End scroll button test -----------------------------------------
 
   return (
     <>
@@ -194,7 +219,27 @@ const Studio = () => {
               </div>
               <>
                 <div className='faders window'>
-                  <div className='sliders'>
+                  {/* Scroll buttons test */}
+                  {canScrollLeft && (
+                    <button
+                      onClick={() => calculateScroll('prev')}
+                      style={{ position: 'absolute', left: '0', top: '50%' }}
+                    >
+                      {'<'}
+                    </button>
+                  )}
+                  {canScrollRight && (
+                    <button
+                      onClick={() => calculateScroll('next')}
+                      style={{ position: 'absolute', right: '0', top: '50%' }}
+                    >
+                      {'>'}
+                    </button>
+                  )}
+                  <div
+                    ref={scrollRef /* End scroll button test*/}
+                    className='sliders'
+                  >
                     {sliders
                       .slice(1)
                       /* .filter((slider) => slider.universe === '') */

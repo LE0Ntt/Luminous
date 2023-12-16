@@ -7,7 +7,7 @@
 - [ ] LightFX rgb should always send all channels, Darwin
 - [ ] Studio-Overview add HMI 14, Leon
 - [ ] Prevent scene and solo overlaps, Darwin
-- [ ] Enlarge fader input fields and include % symbol, Darwin
+- [x] Enlarge fader input fields and include % symbol, Darwin
 
 ## Known Issues
 

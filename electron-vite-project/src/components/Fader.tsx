@@ -40,12 +40,12 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
 
   // Calculating the display value (0 to 100%) and update input value
   const scaledDisplayValue = (faderValues[sliderGroupId][id] / 255) * 100;
-  const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue));
+  const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue) + '%');
 
   // Update input value when display value changes
   // UseEffect necessary to display decimal values when changing values while focused
   useEffect(() => {
-    const finalDisplayValue = isFocused ? scaledDisplayValue.toFixed(1) : Math.round(scaledDisplayValue);
+    const finalDisplayValue = isFocused ? scaledDisplayValue.toFixed(1) : Math.round(scaledDisplayValue) + '%';
     setInputValue(finalDisplayValue);
   }, [scaledDisplayValue, isFocused]);
 
@@ -176,19 +176,15 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
           className='slider'
         />
       </div>
-      <div className='valueDisplay'>
-        <input
-          type='text'
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={handleFocus}
-          onBlur={handleInputConfirm}
-          onKeyDown={handleKeyDown}
-          className='inputNum'
-          style={{ width: `${Math.max(1, inputValue.toString().length)}ch` }}
-        />
-        <span className='inputNumPercent'>%</span>
-      </div>
+      <input
+        type='text'
+        value={inputValue}
+        onChange={handleInputChange}
+        onFocus={handleFocus}
+        onBlur={handleInputConfirm}
+        onKeyDown={handleKeyDown}
+        className='inputNum'
+      />
       <span
         title={name}
         className='faderName'

@@ -30,6 +30,7 @@ import fillLight from './assets/FillTop.png';
 import biColor from './assets/BiColorTop.png';
 import LightBeam from './components/LightBeam';
 import LightsOn from './components/LightsOn';
+import ScrollButton from './components/ScrollButton';
 
 const Studio = () => {
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ const Studio = () => {
   const [, forceRender] = useState(false); // Force rerender for mirrored studio ui setting
   const [glowId, setGlowId] = useState<number | null>(null);
   const refsArray = useRef<(HTMLDivElement | null)[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null); // Scroll button ref
 
   const studioRows = 6;
   const studioColumns = 4;
@@ -159,38 +161,6 @@ const Studio = () => {
     refsArray.current[id]?.focus();
   };
 
-  // Scroll button test ---------------------------------------------
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const elementWidth = 102;
-  const elementsInView = 8;
-
-  const updateScrollButtons = () => {
-    if (!scrollRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-    setCanScrollLeft(scrollLeft > 0);
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth);
-  };
-
-  useEffect(() => {
-    const scrollElement = scrollRef.current;
-    if (scrollElement) scrollElement.addEventListener('scroll', updateScrollButtons);
-    return () => {
-      if (scrollElement) scrollElement.removeEventListener('scroll', updateScrollButtons);
-    };
-  }, []);
-
-  const calculateScroll = (direction: string) => {
-    if (!scrollRef.current) return 0;
-    const currentScroll = scrollRef.current.scrollLeft / elementWidth;
-    scrollRef.current?.scrollTo({
-      left: direction === 'next' ? Math.floor(currentScroll) * elementWidth + elementWidth * elementsInView : Math.max(0, Math.ceil(currentScroll) * elementWidth - elementWidth * elementsInView),
-      behavior: 'smooth',
-    });
-  };
-  // End scroll button test -----------------------------------------
-
   return (
     <>
       <div
@@ -217,100 +187,93 @@ const Studio = () => {
                   />
                 )}
               </div>
-              <>
-                <div className='faders window'>
-                  {/* Scroll buttons test */}
-                  {canScrollLeft && (
-                    <button
-                      onClick={() => calculateScroll('prev')}
-                      style={{ position: 'absolute', left: '0', top: '50%' }}
-                    >
-                      {'<'}
-                    </button>
-                  )}
-                  {canScrollRight && (
-                    <button
-                      onClick={() => calculateScroll('next')}
-                      style={{ position: 'absolute', right: '0', top: '50%' }}
-                    >
-                      {'>'}
-                    </button>
-                  )}
-                  <div
-                    ref={scrollRef /* End scroll button test*/}
-                    className='sliders'
-                  >
-                    {sliders
-                      .slice(1)
-                      /* .filter((slider) => slider.universe === '') */
-                      .map((slider) => (
-                        <React.Fragment key={slider.id}>
-                          <div
-                            key={slider.id}
-                            className='slidersHeight'
-                            ref={(el) => (refsArray.current[slider.id] = el)}
-                            tabIndex={-1} // Make div focusable
-                            onFocus={() => {
-                              // Scroll the element into view when it gains focus
-                              refsArray.current[slider.id]?.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'nearest',
-                                inline: 'nearest',
-                              });
-                            }}
-                            style={{
-                              transform: glowId === slider.id ? 'scale(1.03) translateY(-5px)' : '',
-                              transition: 'transform 0.3s ease-in-out',
-                              outline: 'none',
-                            }}
+              <div className='faders window'>
+                <ScrollButton
+                  scrollRef={scrollRef}
+                  elementWidth={102}
+                  elementsInView={8}
+                  direction='prev'
+                />
+                <ScrollButton
+                  scrollRef={scrollRef}
+                  elementWidth={102}
+                  elementsInView={8}
+                  direction='next'
+                />
+                <div
+                  ref={scrollRef}
+                  className='sliders'
+                >
+                  {sliders
+                    .slice(1)
+                    /* .filter((slider) => slider.universe === '') */
+                    .map((slider) => (
+                      <React.Fragment key={slider.id}>
+                        <div
+                          key={slider.id}
+                          className='slidersHeight'
+                          ref={(el) => (refsArray.current[slider.id] = el)}
+                          tabIndex={-1} // Make div focusable
+                          onFocus={() => {
+                            // Scroll the element into view when it gains focus
+                            refsArray.current[slider.id]?.scrollIntoView({
+                              behavior: 'smooth',
+                              block: 'nearest',
+                              inline: 'nearest',
+                            });
+                          }}
+                          style={{
+                            transform: glowId === slider.id ? 'scale(1.03) translateY(-5px)' : '',
+                            transition: 'transform 0.3s ease-in-out',
+                            outline: 'none',
+                          }}
+                        >
+                          <h2
+                            style={{ textShadow: glowId === slider.id ? '0 0 30px #fff' : '' }}
+                            className='faderText'
                           >
-                            <h2
-                              style={{ textShadow: glowId === slider.id ? '0 0 30px #fff' : '' }}
-                              className='faderText'
+                            {slider.id}
+                          </h2>
+                          <Fader
+                            key={slider.id}
+                            id={0}
+                            sliderGroupId={slider.id}
+                            name={slider.name}
+                            className={sliders.indexOf(slider) === sliders.length - 1 ? 'noBorder' : ''} // No border if last in map
+                          />
+                          <Button
+                            onClick={() => handleClick(slider.id)}
+                            className='buttonOpenControl'
+                          >
+                            <svg
+                              className='centerIcon'
+                              xmlns='http://www.w3.org/2000/svg'
+                              width='24'
+                              height='24'
+                              viewBox='0 0 24 24'
                             >
-                              {slider.id}
-                            </h2>
-                            <Fader
-                              key={slider.id}
-                              id={0}
-                              sliderGroupId={slider.id}
-                              name={slider.name}
-                              className={sliders.indexOf(slider) === sliders.length - 1 ? 'noBorder' : ''} // No border if last in map
-                            />
-                            <Button
-                              onClick={() => handleClick(slider.id)}
-                              className='buttonOpenControl'
-                            >
-                              <svg
-                                className='centerIcon'
-                                xmlns='http://www.w3.org/2000/svg'
-                                width='24'
-                                height='24'
-                                viewBox='0 0 24 24'
-                              >
-                                <path d='m19,20c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v4Zm-12,0c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-8c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29c.19.19.29.43.29.71v8Zm14-8c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71c.19-.19.43-.29.71-.29h1V4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v7h1c.28,0,.52.1.71.29.19.19.29.43.29.71Zm-6,4c0,.28-.1.52-.29.71s-.43.29-.71.29h-1v3c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-3h-1c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h4c.28,0,.52.1.71.29s.29.43.29.71Zm-2-4c0,.28-.1.52-.29.71s-.43.29-.71.29-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71V4c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29.29.43.29.71v8Zm-4-4c0,.28-.1.52-.29.71s-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h1v-3c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v3h1c.28,0,.52.1.71.29s.29.43.29.71Z' />
-                              </svg>
-                            </Button>
-                          </div>
-                        </React.Fragment>
-                      ))}
-                  </div>
-                  <Button
-                    onClick={() => setBigView(true)}
-                    className='buttonBigView'
-                  >
-                    <svg
-                      className='centerIcon'
-                      xmlns='http://www.w3.org/2000/svg'
-                      height='24'
-                      viewBox='0 -960 960 960'
-                      width='24'
-                    >
-                      <path d='M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 28.5T440-760H200v560h560v-240q0-17 11.5-28.5T800-480q17 0 28.5 11.5T840-440v240q0 33-23.5 56.5T760-120H200Zm160-240q-11-11-11-28t11-28l344-344H600q-17 0-28.5-11.5T560-800q0-17 11.5-28.5T600-840h200q17 0 28.5 11.5T840-800v200q0 17-11.5 28.5T800-560q-17 0-28.5-11.5T760-600v-104L415-359q-11 11-27 11t-28-12Z' />
-                    </svg>
-                  </Button>
+                              <path d='m19,20c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v4Zm-12,0c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-8c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29c.19.19.29.43.29.71v8Zm14-8c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71c.19-.19.43-.29.71-.29h1V4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v7h1c.28,0,.52.1.71.29.19.19.29.43.29.71Zm-6,4c0,.28-.1.52-.29.71s-.43.29-.71.29h-1v3c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-3h-1c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h4c.28,0,.52.1.71.29s.29.43.29.71Zm-2-4c0,.28-.1.52-.29.71s-.43.29-.71.29-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71V4c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29.29.43.29.71v8Zm-4-4c0,.28-.1.52-.29.71s-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h1v-3c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v3h1c.28,0,.52.1.71.29s.29.43.29.71Z' />
+                            </svg>
+                          </Button>
+                        </div>
+                      </React.Fragment>
+                    ))}
                 </div>
-              </>
+                <Button
+                  onClick={() => setBigView(true)}
+                  className='buttonBigView'
+                >
+                  <svg
+                    className='centerIcon'
+                    xmlns='http://www.w3.org/2000/svg'
+                    height='24'
+                    viewBox='0 -960 960 960'
+                    width='24'
+                  >
+                    <path d='M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 28.5T440-760H200v560h560v-240q0-17 11.5-28.5T800-480q17 0 28.5 11.5T840-440v240q0 33-23.5 56.5T760-120H200Zm160-240q-11-11-11-28t11-28l344-344H600q-17 0-28.5-11.5T560-800q0-17 11.5-28.5T600-840h200q17 0 28.5 11.5T840-800v200q0 17-11.5 28.5T800-560q-17 0-28.5-11.5T760-600v-104L415-359q-11 11-27 11t-28-12Z' />
+                  </svg>
+                </Button>
+              </div>
             </>
           )}
         </div>

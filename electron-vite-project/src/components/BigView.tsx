@@ -12,12 +12,13 @@
  *
  * @file BigView.tsx
  */
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import './BigView.css';
 import Toggle from './Toggle';
 import Fader from './Fader';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
+import ScrollButton from './ScrollButton';
 
 interface BigViewProps {
   onClose: () => void;
@@ -37,6 +38,15 @@ function BigView({ onClose }: BigViewProps) {
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
   const [DMX, setDMX] = useState(() => localStorage.getItem('dmx') === 'true'); // DMX or Device channels
   const [renderedFaders, setRenderedFaders] = useState(20); // Number of DMX faders to render
+
+  const universes = ['U1', 'U2'];
+  // Initialize refs for scroll buttons for each universe
+  const scrollRefs = useRef(
+    universes.reduce((acc, universe) => {
+      acc[universe] = React.createRef<HTMLDivElement>();
+      return acc;
+    }, {} as { [key: string]: React.RefObject<HTMLDivElement> })
+  ).current;
 
   // Fetch slider data from the server on mount
   useEffect(() => {
@@ -109,13 +119,28 @@ function BigView({ onClose }: BigViewProps) {
           </div>
           <span className='text-left'>DMX Channel</span>
         </div>
-        {['U1', 'U2'].map((universe) => (
+        {universes.map((universe) => (
           <div
             className='BigViewContent innerWindow'
             key={universe}
           >
             <div className='universeLabel window'>{universe}</div>
-            <div className='sliders'>
+            <ScrollButton
+              scrollRef={scrollRefs[universe]}
+              elementWidth={102}
+              elementsInView={16}
+              direction='prev'
+            />
+            <ScrollButton
+              scrollRef={scrollRefs[universe]}
+              elementWidth={102}
+              elementsInView={16}
+              direction='next'
+            />
+            <div
+              className='sliders'
+              ref={scrollRefs[universe]}
+            >
               {DMX
                 ? Array.from({ length: renderedFaders }).map((_, index) => {
                     const mappedIndex = index + 1;

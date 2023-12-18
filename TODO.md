@@ -1,11 +1,11 @@
 ## Version 1.2.1 - 2023-12-20
 
-- [x] Turn off all lights when closing the app
-  - [x] Dialog, Leon
-  - [x] Backend, Darwin
-- [x] LightFX rgb should always send all channels, Darwin
-- [x] Studio-Overview
-  - [x] Add HMI 14, Leon
+- [ ] Turn off all lights when closing the app
+  - [ ] Dialog, Leon
+  - [ ] Backend, Darwin
+- [ ] LightFX rgb should always send all channels, Darwin
+- [ ] Studio-Overview
+  - [ ] Add HMI 14, Leon
 
 ## Version 1.2.x TODOs
 

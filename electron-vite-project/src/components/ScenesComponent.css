@@ -29,6 +29,10 @@
   position: relative;
 }
 
+.AddSceneButton:hover {
+  background-color: var(--colorButtonHover);
+}
+
 .AddSceneButtonFont {
   font-size: 20px;
   font-weight: 500;

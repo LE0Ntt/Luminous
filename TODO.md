@@ -4,15 +4,13 @@
   - [x] Dialog, Leon
   - [x] Backend, Darwin
 - [ ] LightFX rgb should always send all channels, Darwin
-- [ ] Studio-Overview
-  - [ ] Add HMI 14, Leon
+- [ ] Studio-Overview add HMI 14, Leon
 - [x] "!" icon in all dialogs
 - [ ] Fix fullscreen icon, Leon
 
 ## Version 1.2.x TODOs
 
-- [ ] Studio-Overview
-  - [ ] Add Traverse Lights
+- [ ] Studio-Overview add Traverse Lights
 - [ ] Prevent scene and solo overlaps, Darwin
 - [ ] Fader
   - [ ] More obvious fader highlighting, Leon

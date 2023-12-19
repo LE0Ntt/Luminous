@@ -91,11 +91,7 @@ class ola_handler:
                     self.dmx_data[universe][i] = int(value * self.master)
             self.send_to_universe(universe)
 
-    # versuch die funktion zu schreiben, die alle kanäle auf 0 setzt. Da OLA kann es erst mit pi getestet werden
     def everything_off(self):
-        for universe in [1, 2]:
-            for i, value in enumerate(
-                self.dmx_data[universe]
-            ):  # "value" is not accessed Pylance
-                self.dmx_data[universe][i] = 0
+        for universe in self.dmx_data:
+            self.dmx_data[universe] = array.array("B", [0] * 512)
             self.send_to_universe(universe)

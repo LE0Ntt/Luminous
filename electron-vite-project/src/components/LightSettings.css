@@ -158,7 +158,7 @@
   display: grid;
   position: relative;
   top: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   grid-gap: 20px;
   width: 100%;
 }

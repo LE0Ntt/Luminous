@@ -29,7 +29,6 @@ import spot from './assets/SpotTop.png';
 import fillLight from './assets/FillTop.png';
 import biColor from './assets/BiColorTop.png';
 import LightBeam from './components/LightBeam';
-import LightsOn from './components/LightsOn';
 import ScrollButton from './components/ScrollButton';
 
 const Studio = () => {

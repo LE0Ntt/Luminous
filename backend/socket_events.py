@@ -15,13 +15,16 @@
 from flask_socketio import SocketIO
 from server import app, routes, db
 from server.motorMix_driver import Driver
-from server.models import Scene, Device, ignored_channels
+from server.models import Scene, Device
 import json
 import time
 import threading
 import bisect
 
 scenes_solo_state = False
+connections = 0
+last_send_time = 0
+reset = False
 
 try:
     from ola_handler import ola_handler  # ola
@@ -42,8 +45,6 @@ def safe_ola_call(operation_type, func_or_attr_name, *args, **kwargs):
             setattr(ola, func_or_attr_name, args[0])
 
 
-connections = 0
-
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
@@ -52,13 +53,6 @@ socketio = SocketIO(
     ping_timeout=3,
     ping_interval=5,
 )
-
-
-def set_ignored_channels():
-    safe_ola_call("attr", "ignore_channels", ignored_channels)  # ola
-
-
-last_send_time = 0
 
 
 def send_dmx(
@@ -607,9 +601,54 @@ def register_socketio_events(socketio):
                     }
                 )
 
+    @socketio.on("turn_off", namespace="/socket")
+    def turn_off(data):
+        global connections
+        if connections <= 1:
+            print("Turning off...")
+            safe_ola_call("func", "everything_off")
+            global reset
+            reset = True
+            if driver is not None:
+                driver.reset()
+
+    @socketio.on("recover", namespace="/socket")
+    def recover(data):
+        global reset
+        reset = False
+        for device in routes.devices:
+            for channel in device["attributes"]["channel"]:
+                send_dmx(
+                    device["id"], channel["id"], channel["sliderValue"], device, channel
+                )
+                if driver is not None and channel["channel_type"] == "main":
+                    driver.pushFader(device["id"], channel["sliderValue"])
+                    driver.devices = routes.devices
+
+    @socketio.on("reset", namespace="/socket")
+    def reset(data):
+        global reset
+        reset = False
+        routes.devices = routes.get_devices()
+        for device in routes.devices:
+            for channel in device["attributes"]["channel"]:
+                send_dmx(
+                    device["id"], channel["id"], channel["sliderValue"], device, channel
+                )
+                if driver is not None and channel["channel_type"] == "main":
+                    driver.pushFader(device["id"], channel["sliderValue"])
+                    driver.devices = routes.devices
+        routes.scenes = routes.load_scenes()
+        socketio.emit("scene_reload", namespace="/socket")
+        socketio.emit("light_response", {"message": "success"}, namespace="/socket")
+
     @socketio.on("connect", namespace="/socket")
     def connect():
         global connections
+        global reset
+        if reset and connections == 0:
+            print("Recovering...")
+            socketio.emit("recover_dialog", namespace="/socket")
         connections += 1
         print("Client connected", connections)
 

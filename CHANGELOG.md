@@ -6,6 +6,7 @@
 
 ### Changes
 
+- Closing the application turns off all lights. When the app is reopened, the user is asked if the session should be restored or reset
 - Faders
   - Input fields are now larger and include "%" symbol for easier touch input and have a subtle background
   - Introduced compact-style scroll buttons for easier navigation through faders

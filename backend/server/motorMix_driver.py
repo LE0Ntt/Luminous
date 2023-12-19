@@ -297,6 +297,14 @@ class Driver:
 
         self.displayPageNumber(str(self.current_page))
 
+    def reset(self):
+        self.clearDisplay()
+        for index in range(8):
+            self.pushFader(index, 0)
+        self.current_page = 1
+        self.light_mode = True
+        self.setup()
+
     def interpolate_thread(self, value, time_to_sleep, fader):
         while time.monotonic() < self.current_time[fader] + time_to_sleep:
             if value != self.fader_values[fader] or not self.fader_touch[fader]:

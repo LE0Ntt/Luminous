@@ -10,30 +10,36 @@
  * - Marvin Plate
  * - Andree Tomek
  *
- * @file LightsOn.tsx
+ * @file RecoverDialog.tsx
  */
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import Button from './Button';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 
-interface LightsOnProps {
-  onConfirm?: (isConfirmed: boolean) => void;
+interface RecoverDialogProps {
   onClose: () => void;
-  isDelete?: boolean;
 }
 
-function LightsOn({ onConfirm, onClose, isDelete }: LightsOnProps) {
-  const { url } = useConnectionContext();
+function RecoverDialog({ onClose }: RecoverDialogProps) {
+  const { emit } = useConnectionContext();
   const { t } = useContext(TranslationContext);
 
-  const handleConfirm = () => {};
+  const handleReset = () => {
+    emit('reset');
+    onClose();
+  };
+
+  const handleRecover = () => {
+    emit('recover');
+    onClose();
+  };
 
   // Confirm with ENTER
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
-        () => handleConfirm();
+        handleReset();
       }
     };
 
@@ -46,28 +52,31 @@ function LightsOn({ onConfirm, onClose, isDelete }: LightsOnProps) {
 
   return (
     <>
-      {/* Overlay to close the modal when clicked outside */}
+      <div
+        className='backgroundOverlay'
+        style={{ cursor: 'default' }}
+      />
       <div className='AddSceneContainer window'>
         <div className='AddSceneContent'>
-          <span className='AddSceneTitle'>{t('lo_title')}</span>
+          <span className='AddSceneTitle'>{t('rd_title')}</span>
           <p className='hide'>a</p> {/* Hidden element for spacing */}
           <div className='AddSceneNote'>
-            <span>{t('lo_text')}</span>
+            <span>{t('rd_text')}</span>
           </div>
         </div>
         <div className='AddSceneFooter'>
           <div className='controlButtons AddSceneButtons'>
             <Button
-              onClick={() => handleConfirm()}
+              onClick={handleReset}
               className='controlButton'
             >
-              {t('lo_confirm')}
+              {t('rd_reset')}
             </Button>
             <Button
-              onClick={onClose}
+              onClick={handleRecover}
               className='controlButton'
             >
-              {t('lo_cancel')}
+              {t('rd_recover')}
             </Button>
           </div>
         </div>
@@ -76,4 +85,4 @@ function LightsOn({ onConfirm, onClose, isDelete }: LightsOnProps) {
   );
 }
 
-export default LightsOn;
+export default RecoverDialog;

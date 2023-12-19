@@ -511,6 +511,42 @@ const Studio = () => {
                 </div>
               </div>
             </div>
+            <div className='studioOverviewExtra'>
+              <div>
+                {/* 14 */}
+                <div className='studioOverviewLight'>
+                  <img
+                    src={schein}
+                    alt='schein'
+                    className={'schein'}
+                    style={{
+                      opacity: (faderValues[14][0] / 255) * (faderValues[0][0] / 255),
+                      transform: 'rotate(180deg)',
+                      top: '25px',
+                      left: '-10px',
+                    }}
+                  />
+                  <div
+                    onClick={() => handleGlowAndFocus(14)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <img
+                      src={spot}
+                      alt='Lamp'
+                      className='studioOverviewTestchartLamp'
+                    />
+                    <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
+                      <div className='studioOverviewInfopanelText'>HMI</div>
+                      <div className='studioOverviewInfopanelBrightness'>
+                        {(((faderValues[14][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                          ? t('Off')
+                          : (((faderValues[14][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             {/* <div className='studioOverviewTraversen'>
               {[
                 { top: 82, left: 74 },

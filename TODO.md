@@ -6,7 +6,7 @@
 - [ ] LightFX rgb should always send all channels, Darwin
 - [ ] Studio-Overview
   - [ ] Add HMI 14, Leon
-- [ ] "!" icon in all dialogs, Leon
+- [x] "!" icon in all dialogs
 - [ ] Fix fullscreen icon, Leon
 
 ## Version 1.2.x TODOs
@@ -134,7 +134,6 @@
     - [ ] Rename to PascalCase scheme
   - [ ] Components
     - [x] About.tsx
-    - [ ] AddScene.css
     - [ ] AddScene.tsx
     - [ ] AdminPassword.tsx
     - [x] BigView.css
@@ -147,6 +146,7 @@
     - [ ] DeleteScene.tsx
     - [ ] DeviceList.css
     - [ ] DeviceList.tsx
+    - [x] Dialog.css
     - [x] DropDown.css
     - [x] DropDown.tsx
     - [ ] Fader.css

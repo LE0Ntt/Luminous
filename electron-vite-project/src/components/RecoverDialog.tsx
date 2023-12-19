@@ -16,6 +16,7 @@ import { useContext, useEffect } from 'react';
 import Button from './Button';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
+import IconNote from '@/assets/IconNote';
 
 interface RecoverDialogProps {
   onClose: () => void;
@@ -56,16 +57,20 @@ function RecoverDialog({ onClose }: RecoverDialogProps) {
         className='backgroundOverlay'
         style={{ cursor: 'default' }}
       />
-      <div className='AddSceneContainer window'>
-        <div className='AddSceneContent'>
-          <span className='AddSceneTitle'>{t('rd_title')}</span>
-          <p className='hide'>a</p> {/* Hidden element for spacing */}
-          <div className='AddSceneNote'>
+      <div className='DialogContainer window'>
+        <div className='DialogContent'>
+          <span className='DialogTitle'>{t('rd_title')}</span>
+          <div className='DialogIcon' />
+          <div className='DialogNote'>
+            <IconNote
+              color={'var(--secondary)'}
+              size='20px'
+            />
             <span>{t('rd_text')}</span>
           </div>
         </div>
-        <div className='AddSceneFooter'>
-          <div className='controlButtons AddSceneButtons'>
+        <div className='DialogFooter'>
+          <div className='controlButtons DialogButtons'>
             <Button
               onClick={handleReset}
               className='controlButton'

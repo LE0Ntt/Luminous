@@ -16,6 +16,7 @@ import { useContext, useEffect, useState } from 'react';
 import Button from './Button';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
+import IconNote from '@/assets/IconNote';
 
 interface AdminPasswordProps {
   onConfirm?: (isConfirmed: boolean) => void;
@@ -58,7 +59,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
         } else {
           console.log('Password wrong');
           // If the password is wrong, the text box will be highlighted in red
-          const textBox = document.getElementsByClassName('AddSceneTextBox')[0] as HTMLInputElement;
+          const textBox = document.getElementsByClassName('DialogTextBox')[0] as HTMLInputElement;
           if (textBox) {
             textBox.classList.add('error-outline');
             textBox.focus();
@@ -94,8 +95,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
         className='backgroundOverlay'
         onClick={onClose}
       />
-      {/* Overlay to close the modal when clicked outside */}
-      <div className='AddSceneContainer window'>
+      <div className='DialogContainer window'>
         <button
           className='buttonClose'
           onClick={onClose}
@@ -104,10 +104,10 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
             <div className='xClose xiClose'></div>
           </div>
         </button>
-        <div className='AddSceneContent'>
-          <span className='AddSceneTitle'>{t('ap_title')}</span>
+        <div className='DialogContent'>
+          <span className='DialogTitle'>{t('ap_title')}</span>
           <input
-            className='textBox AddSceneTextBox'
+            className='textBox DialogTextBox'
             type='password'
             placeholder={t('ap_password')}
             value={password}
@@ -118,12 +118,16 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
             }}
           />
           <p className='hide'>a</p> {/* Hidden element for spacing */}
-          <div className='AddSceneNote'>
-            <span>❕ {t('ap_note')}</span>
+          <div className='DialogNote'>
+            <IconNote
+              color={'var(--secondary)'}
+              size='20px'
+            />
+            <span>{t('ap_note')}</span>
           </div>
         </div>
-        <div className='AddSceneFooter'>
-          <div className='controlButtons AddSceneButtons'>
+        <div className='DialogFooter'>
+          <div className='controlButtons DialogButtons'>
             <Button
               onClick={() => handleConfirm()}
               className='controlButton'

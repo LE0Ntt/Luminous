@@ -14,8 +14,8 @@
  */
 import { useContext, useEffect } from 'react';
 import Button from './Button';
-import './AddScene.css';
 import { TranslationContext } from './TranslationContext';
+import IconNote from '@/assets/IconNote';
 
 interface DeleteSceneProps {
   onClose: () => void;
@@ -51,8 +51,7 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
         className='backgroundOverlay'
         onClick={onClose}
       />
-      {/* Overlay to close the modal when clicked outside */}
-      <div className='AddSceneContainer window'>
+      <div className='DialogContainer window'>
         <button
           className='buttonClose'
           onClick={onClose}
@@ -61,14 +60,19 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
             <div className='xClose xiClose'></div>
           </div>
         </button>
-        <div className='AddSceneContent'>
-          <span className='AddSceneTitle'>{t('ds_title')}</span>
-          <div className='AddSceneNote'>
-            <span>❕ {t('ds_note')}</span>
+        <div className='DialogContent'>
+          <span className='DialogTitle'>{t('ds_title')}</span>
+          <div className='DialogIcon DeleteIcon' />
+          <div className='DialogNote'>
+            <IconNote
+              color={'var(--secondary)'}
+              size='20px'
+            />
+            <span>{t('ds_note')}</span>
           </div>
         </div>
-        <div className='AddSceneFooter'>
-          <div className='controlButtons AddSceneButtons'>
+        <div className='DialogFooter'>
+          <div className='controlButtons DialogButtons'>
             <Button
               onClick={handleDelete}
               className='controlButton'

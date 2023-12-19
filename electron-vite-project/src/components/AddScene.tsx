@@ -14,7 +14,7 @@
  */
 import React, { useState, useCallback, useContext, useEffect } from 'react';
 import Button from './Button';
-import './AddScene.css';
+import './Dialog.css';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 import AdminPassword from './AdminPassword';
@@ -53,7 +53,7 @@ function AddScene({ onClose }: AddSceneProps) {
       }
     } else {
       // If the name is empty, the text box will be highlighted in red
-      const textBox = document.getElementsByClassName('AddSceneTextBox')[0] as HTMLInputElement;
+      const textBox = document.getElementsByClassName('DialogTextBox')[0] as HTMLInputElement;
       if (textBox) {
         textBox.classList.add('error-outline');
         textBox.focus();
@@ -104,14 +104,13 @@ function AddScene({ onClose }: AddSceneProps) {
         className='backgroundOverlay'
         onClick={onClose}
       />
-      {/* Overlay to close the modal when clicked outside */}
       {showAdminPassword ? (
         <AdminPassword
           onConfirm={handleAdminPasswordConfirm}
           onClose={() => setShowAdminPassword(false)}
         />
       ) : (
-        <div className='AddSceneContainer window'>
+        <div className='DialogContainer window'>
           <button
             className='buttonClose'
             onClick={onClose}
@@ -120,17 +119,17 @@ function AddScene({ onClose }: AddSceneProps) {
               <div className='xClose xiClose'></div>
             </div>
           </button>
-          <div className='AddSceneContent'>
-            <span className='AddSceneTitle'>{t('as_title')}</span>
+          <div className='DialogContent'>
+            <span className='DialogTitle'>{t('as_title')}</span>
             <input
-              className='textBox AddSceneTextBox'
+              className='textBox DialogTextBox'
               type='text'
               placeholder='Name'
               value={name}
               onChange={handleNameChange}
               autoFocus // Activate autofocus
             />
-            <div className='AddSceneChecker'>
+            <div className='DialogChecker'>
               <input
                 type='checkbox'
                 id='checkboxId'
@@ -139,16 +138,16 @@ function AddScene({ onClose }: AddSceneProps) {
               />
               <label htmlFor='checkboxId'>{t('as_checkbox')}</label>
             </div>
-            <div className='AddSceneNote flex'>
+            <div className='DialogNote'>
               <IconNote
                 color={'var(--secondary)'}
                 size='20px'
               />
-              <span className='relative top-[-3px] left-1'>{t('as_note')}</span>
+              <span>{t('as_note')}</span>
             </div>
           </div>
-          <div className='AddSceneFooter'>
-            <div className='controlButtons AddSceneButtons'>
+          <div className='DialogFooter'>
+            <div className='controlButtons DialogButtons'>
               <Button
                 onClick={handleSave}
                 className='controlButton'

@@ -63,9 +63,18 @@ class Driver:
 
         # self.outport = mido.open_output('USB MIDI Interface 1')
         # self.inport  = mido.open_input( 'USB MIDI Interface 0')
+        # self.outport = mido.open_output("USB MIDI Interface MIDI 1")  # type: ignore
+        # self.inport = mido.open_input("USB MIDI Interface MIDI 1")  # type: ignore
         # --MMix Config--#
-        self.outport = mido.open_output("USB MIDI Interface MIDI 1")  # type: ignore
-        self.inport = mido.open_input("USB MIDI Interface MIDI 1")  # type: ignore
+        input_ports = mido.get_input_names()
+        for port in input_ports:
+            print(port)
+            self.inport = mido.open_input(port)  # type: ignore
+
+        output_ports = mido.get_output_names()
+        for port in output_ports:
+            print(port)
+            self.outport = mido.open_output(port)  # type: ignore
 
         self.current_page = 1
 

@@ -6,7 +6,7 @@
 - [ ] LightFX rgb should always send all channels, Darwin
 - [x] Studio-Overview add HMI 14, Leon
 - [x] "!" icon in all dialogs
-- [ ] Fix fullscreen icon, Leon
+- [x] Fix fullscreen icon, Leon
 
 ## Version 1.2.x TODOs
 

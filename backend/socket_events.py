@@ -50,8 +50,6 @@ socketio = SocketIO(
     cors_allowed_origins="*",
     logger=False,
     engineio_logger=False,
-    ping_timeout=3,
-    ping_interval=5,
 )
 
 

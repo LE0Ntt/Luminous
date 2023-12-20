@@ -1,26 +1,25 @@
-## Version 1.2.0
+## Version 1.2.1 - 2023-12-20
 
-- [x] Studio Overview,
-  - [x] Icons anpassen, Beide
-  - [x] Testchart anpassen, Leon
-  - [x] Layout anpassen, Leon
-  - [x] Rendering anpassen, Darwin
-- [x] Scenes dürfen HMI nicht ausmachen, Darwin
-- [x] Settingsdesign anpassen, Leon
-  - [x] Textinput gleiche höhe wie buttons, Darwin
-- [ ] Offensichtlicheres Faderhighlighting, Leon
-- [x] Effekte richtiges Design (Slider 10px bottom, höhere Fader), Leon
-- [ ] Alle Lampen aus beim App-Schließen,
-  - [ ] Dialog, Leon
-  - [ ] Backend, Darwin
-- [x] LightSettings buttons anpassen, Darwin
-- [x] Icons für Dropdown, Leon
+- [x] Turn off all lights when closing the app
+  - [x] Dialog, Leon
+  - [x] Backend, Darwin
+- [x] LightFX rgb should always send all channels, Darwin
+- [x] Studio-Overview add HMI 14, Leon
+- [x] "!" icon in all dialogs
+- [x] Fix fullscreen icon, Leon
+
+## Version 1.2.x TODOs
+
+- [ ] Studio-Overview add Traverse Lights
+- [ ] Prevent scene and solo overlaps, Darwin
+- [ ] Fader
+  - [ ] More obvious fader highlighting, Leon
+  - [x] Enlarge fader input fields and include % symbol, Darwin
+  - [ ] Rework spacing
 
 ## Known Issues
 
 - MotorMix
-  - ~~Master fader not working, only from App to MotorMix~~ (hopefully fixed)
-  - ~~Doesn't use correct values, when changing scenes~~ (hopefully fixed)
   - Black-out button
   - Display bugs with page wheel
   - Missing light values
@@ -29,10 +28,9 @@
 - Random server crashes
 - Possibly slower after long operation
 - Studio-Overview just uses ID, not universe
-- Wrong devices displayed after changing number in LightSettings
+- Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
 - Scenes do not fade in exact seconds and are subject to server performance
-- ~~Doesn't show lights after editing them. Need to restart server~~
 
 ## Necessary Changes
 
@@ -73,7 +71,7 @@
 - [x] Use _ENTER_ to accept dialog
 - [ ] Rethink scene logic: Off after e.g. bi-color change?
 - [x] Add support for HMI lights and other devices with on/off channel
-- [ ] Turn off all devices when closing app
+- [x] Turn off all devices when closing app
 - [x] Input for faders with mousewheel or keyboard (arrow keys)
 - [ ] BigView: Improve visualisation
   - [ ] Device groups
@@ -90,9 +88,11 @@
   - [x] Device highlight
   - [x] Move to the left
   - [ ] Add rgb traverse lights
-  - [ ] Add fill light icon
-  - [ ] Rearrange devices
+  - [x] Add fill light icon
+  - [x] Rearrange devices
   - [ ] Move code to own component
+  - [ ] Display bi-color changes
+  - [ ] Display traverse light effects
 - [ ] Scenes
   - [ ] See what you save
   - [ ] Edit scenes
@@ -110,8 +110,7 @@
   - [ ] Astera Titan Tubes
 - [ ] Look into npm packages
 - [ ] Icons for dropdown menu
-- [ ] DIN icons for studio overview
-- [ ] Studio-Overview display bi-color changes
+- [ ] DIN icons for Studio-Overview
 - [ ] Constistent Fader elements spacing
 
 ## Code Cleanup & Comments
@@ -132,7 +131,6 @@
     - [ ] Rename to PascalCase scheme
   - [ ] Components
     - [x] About.tsx
-    - [ ] AddScene.css
     - [ ] AddScene.tsx
     - [ ] AdminPassword.tsx
     - [x] BigView.css
@@ -145,6 +143,7 @@
     - [ ] DeleteScene.tsx
     - [ ] DeviceList.css
     - [ ] DeviceList.tsx
+    - [x] Dialog.css
     - [x] DropDown.css
     - [x] DropDown.tsx
     - [ ] Fader.css

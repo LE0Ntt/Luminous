@@ -93,14 +93,21 @@
 }
 
 .studioOverviewInfopanelGreenscreen {
-  transform: translate(-50%, -50%);
-  left: 48%;
-  top: 100%;
+  left: 40.7%;
+  top: 80%;
 }
 
 .studioOverviewInfopanelTestchart {
   position: relative;
   top: -75px;
+}
+
+.studioOverviewExtra {
+  position: relative;
+  top: -640px;
+  left: 480px;
+  width: 100%;
+  height: 100%;
 }
 
 .studioOverviewInfopanelText {
@@ -233,6 +240,21 @@
 
 .slidersHeight {
   height: 425px;
+}
+
+.scrollButton {
+  position: absolute;
+  width: 20px;
+  height: 100%;
+  right: 0;
+  mask: url(./assets/Arrow.svg);
+  mask-repeat: no-repeat;
+  background: var(--tertiary);
+  mask-position: center;
+}
+
+.scrollButton:hover {
+  background: var(--primary);
 }
 
 @keyframes holdAndReturn {

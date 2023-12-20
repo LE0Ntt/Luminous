@@ -2,6 +2,22 @@
 
 > All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2023-12-20
+
+### Changes
+
+- Closing the application turns off all lights. When the app is reopened, the user is asked if the session should be restored or reset
+- Faders
+  - Input fields are now larger and include "%" symbol for easier touch input and have a subtle background
+  - Introduced compact-style scroll buttons for easier navigation through faders
+- Added HMI 14 to Studio-Overview
+- Reverted LightFX only sending changed channels, because every grouped light should be updated the same way
+- Minor adjustments
+
+### Fixes
+
+- Fixed full-screen icon not always reflecting the current state
+
 ## [1.2.0] - 2023-12-14
 
 ### Changes
@@ -21,7 +37,7 @@
   - Rearranged layout to reflect the studio
   - Updated bi-color and spot light icons
   - Background image refined
-  - Added correct icons to the devices
+  - Changed correct icon for the devices, added fill light icon
 - Settings
   - Error/success message on password change
     - Added translation, color indication & fade out
@@ -153,7 +169,7 @@
 ### Changes
 
 - Updated icons
-- Launch application in full screen
+- Launch application in full-screen
 
 ### Fixes
 

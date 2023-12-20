@@ -12,9 +12,8 @@
  *
  * @file ControlHandler.tsx
  */
-function ControlHandler(selectedDevices: any, faderValues: number[], changedFaders: boolean[], emit: Function) {
+function ControlHandler(selectedDevices: any, faderValues: number[], emit: Function) {
   const [master, kelvin, red, green, blue] = faderValues;
-  const [masterChanged, kelvinChanged, redChanged, greenChanged, blueChanged] = changedFaders;
   const values = { red, green, blue, kelvin, master };
 
   interface ChannelData {
@@ -27,47 +26,35 @@ function ControlHandler(selectedDevices: any, faderValues: number[], changedFade
     channels: ChannelData[];
   }
 
-  let dataToSend: DeviceData[] = [];
+  const channelValueMap = {
+    RGBDim: {
+      '0': { value: values.master },
+      '1': { value: values.red },
+      '2': { value: values.green },
+      '3': { value: values.blue },
+    },
+    BiColor: {
+      '0': { value: values.master },
+      '1': { value: values.kelvin },
+    },
+    Spot: { '0': { value: values.master } },
+    Fill: { '0': { value: values.master } },
+    HMI: { '0': { value: values.master } },
+    Misc: { '0': { value: values.master } },
+  };
 
-  selectedDevices.forEach((device: any) => {
-    let deviceData: DeviceData = {
+  const dataToSend = selectedDevices.map((device: any) => {
+    const deviceData: DeviceData = {
       deviceId: device.id,
-      channels: [],
+      channels: device.attributes.channel
+        .map((channel: any) => {
+          const channelSettings = (channelValueMap as any)[device.device_type]?.[channel.id.toString()];
+          return channelSettings ? { channelId: channel.id, value: channelSettings.value || 0 } : null;
+        })
+        .filter((channel: any) => channel !== null),
     };
 
-    device.attributes.channel.forEach((channel: any) => {
-      let value: number | undefined;
-      let valueChanged = false;
-
-      const channelValueMap = {
-        RGBDim: {
-          '0': { value: values.master, changed: masterChanged },
-          '1': { value: values.red, changed: redChanged },
-          '2': { value: values.green, changed: greenChanged },
-          '3': { value: values.blue, changed: blueChanged },
-        },
-        BiColor: {
-          '0': { value: values.master, changed: masterChanged },
-          '1': { value: values.kelvin, changed: kelvinChanged },
-        },
-        Spot: { '0': { value: values.master, changed: masterChanged } },
-        Fill: { '0': { value: values.master, changed: masterChanged } },
-        HMI: { '0': { value: values.master, changed: masterChanged } },
-        Misc: { '0': { value: values.master, changed: masterChanged } },
-      };
-
-      const channelSettings = (channelValueMap as any)[device.device_type]?.[channel.id.toString()];
-      if (channelSettings) {
-        value = channelSettings.value || 0;
-        valueChanged = channelSettings.changed;
-      }
-
-      if (value !== undefined && valueChanged) {
-        deviceData.channels.push({ channelId: channel.id, value });
-      }
-    });
-
-    dataToSend.push(deviceData);
+    return deviceData;
   });
 
   emit('bulk_fader_values', dataToSend);

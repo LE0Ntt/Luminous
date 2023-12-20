@@ -118,6 +118,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openExternal: (url) => {
     ipcRenderer.send('open-external', url);
   },
+  getFullScreen: async () => {
+    return await ipcRenderer.invoke('get-full-screen');
+  },
 });
 
 setTimeout(removeLoading, 4999);

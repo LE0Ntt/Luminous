@@ -62,8 +62,6 @@ async function createWindow() {
     frame: false,
   });
 
-  win.setFullScreen(true); // Starts the app in fullscreen
-
   if (process.env.VITE_DEV_SERVER_URL) {
     // electron-vite-vue#298
     win.loadURL(url);
@@ -73,6 +71,7 @@ async function createWindow() {
     });
   } else {
     win.loadFile(indexHtml);
+    win.setFullScreen(true);
   }
 
   // Test actively push message to the Electron-Renderer
@@ -145,6 +144,10 @@ ipcMain.on('toggle-full-screen', () => {
   } else {
     win?.setFullScreen(true);
   }
+});
+
+ipcMain.handle('get-full-screen', () => {
+  return win?.isFullScreen();
 });
 
 // Store

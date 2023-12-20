@@ -27,6 +27,7 @@ import IconHelp from '@/assets/Icon_Help';
 import IconWindow from '@/assets/Icon_Window';
 import IconLight from '@/assets/Icon_Light';
 import IconAbout from '@/assets/Icon_About';
+import RecoverDialog from './RecoverDialog';
 
 enum Dialog {
   None,
@@ -39,12 +40,13 @@ enum Dialog {
 function TitleBar() {
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const { t } = useContext(TranslationContext);
-  const { connected } = useConnectionContext();
+  const { connected, emit, on, off } = useConnectionContext();
   const dropDownRef = useRef<HTMLButtonElement | null>(null);
   const [isMac, setIsMac] = useState(false);
   const [currentDialog, setCurrentDialog] = useState(Dialog.None);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [displayResetDialog, setDisplayResetDialog] = useState(false);
 
   // Effect for platform detection
   useEffect(() => {
@@ -54,13 +56,28 @@ function TitleBar() {
     })();
   }, []);
 
+  // Effect for reset / recover dialog detection
+  useEffect(() => {
+    on('recover_dialog', () => setDisplayResetDialog(true));
+
+    return () => {
+      off('recover_dialog', () => setDisplayResetDialog(false));
+    };
+  }, [on, off]);
+
+  // Toggles the full screen mode
+  useEffect(() => {
+    const fetchFullScreenStatus = async () => {
+      const fullScreenStatus = await (window as any).electronAPI.getFullScreen();
+      setIsFullscreen(fullScreenStatus);
+    };
+
+    fetchFullScreenStatus();
+  }, []);
+
   const toggleFullScreen = async () => {
     (window as any).electronAPI.send('toggle-full-screen');
-    if (isFullscreen) {
-      setIsFullscreen(false);
-    } else {
-      setIsFullscreen(true);
-    }
+    setIsFullscreen(!isFullscreen);
   };
 
   const handleMinimize = () => {
@@ -118,6 +135,11 @@ function TitleBar() {
     return () => clearTimeout(timeout);
   }, [showDropDown, isDropdownVisible]);
 
+  const closeWindow = () => {
+    emit('turn_off');
+    window.close();
+  };
+
   return (
     <div className={`titlebarComp ${showDropDown && 'active'}`}>
       <nav>
@@ -156,7 +178,7 @@ function TitleBar() {
         </button>
         <button
           className={isMac ? 'hide' : 'titlebar-button close'}
-          onClick={() => window.close()}
+          onClick={closeWindow}
         >
           <div className='x'>
             <div className='x xi'></div>
@@ -167,6 +189,7 @@ function TitleBar() {
       {currentDialog === Dialog.LightSettings && connected && <LightSettings onClose={() => setCurrentDialog(Dialog.None)} />}
       {currentDialog === Dialog.Help && <Help onClose={() => setCurrentDialog(Dialog.None)} />}
       {currentDialog === Dialog.About && <About onClose={() => setCurrentDialog(Dialog.None)} />}
+      {displayResetDialog && <RecoverDialog onClose={() => setDisplayResetDialog(false)} />}
     </div>
   );
 }

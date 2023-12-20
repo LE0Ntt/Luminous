@@ -10,22 +10,29 @@
  * - Marvin Plate
  * - Andree Tomek
  *
- * @file DeleteScene.tsx
+ * @file RecoverDialog.tsx
  */
 import { useContext, useEffect } from 'react';
 import Button from './Button';
+import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 import IconNote from '@/assets/IconNote';
 
-interface DeleteSceneProps {
+interface RecoverDialogProps {
   onClose: () => void;
 }
 
-function DeleteScene({ onClose }: DeleteSceneProps) {
+function RecoverDialog({ onClose }: RecoverDialogProps) {
+  const { emit } = useConnectionContext();
   const { t } = useContext(TranslationContext);
 
-  const handleDelete = () => {
-    document.body.dispatchEvent(new Event('deleteScene'));
+  const handleReset = () => {
+    emit('reset');
+    onClose();
+  };
+
+  const handleRecover = () => {
+    emit('recover');
     onClose();
   };
 
@@ -33,8 +40,7 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
-        e.preventDefault();
-        handleDelete();
+        handleReset();
       }
     };
 
@@ -49,41 +55,33 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
     <>
       <div
         className='backgroundOverlay'
-        onClick={onClose}
+        style={{ cursor: 'default' }}
       />
       <div className='DialogContainer window'>
-        <button
-          className='buttonClose'
-          onClick={onClose}
-        >
-          <div className='xClose'>
-            <div className='xClose xiClose'></div>
-          </div>
-        </button>
         <div className='DialogContent'>
-          <span className='DialogTitle'>{t('ds_title')}</span>
-          <div className='DialogIcon DeleteIcon' />
+          <span className='DialogTitle'>{t('rd_title')}</span>
+          <div className='DialogIcon' />
           <div className='DialogNote'>
             <IconNote
               color={'var(--secondary)'}
               size='20px'
             />
-            <span>{t('ds_note')}</span>
+            <span>{t('rd_text')}</span>
           </div>
         </div>
         <div className='DialogFooter'>
           <div className='controlButtons DialogButtons'>
             <Button
-              onClick={handleDelete}
+              onClick={handleReset}
               className='controlButton'
             >
-              {t('ds_delete')}
+              {t('rd_reset')}
             </Button>
             <Button
-              onClick={onClose}
+              onClick={handleRecover}
               className='controlButton'
             >
-              {t('as_cancel')}
+              {t('rd_recover')}
             </Button>
           </div>
         </div>
@@ -92,4 +90,4 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
   );
 }
 
-export default DeleteScene;
+export default RecoverDialog;

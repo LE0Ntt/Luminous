@@ -10,10 +10,10 @@
  * - Marvin Plate
  * - Andree Tomek
  * 
- * @file AddScene.css
+ * @file Dialog.css
  */
 
-.AddSceneContainer {
+.DialogContainer {
   height: 362px;
   width: 886px;
   top: 50%;
@@ -27,12 +27,12 @@
   overflow: hidden;
 }
 
-.AddSceneTitle {
+.DialogTitle {
   font-size: 24px;
   font-weight: 400;
 }
 
-.AddSceneContent {
+.DialogContent {
   height: 200px;
   position: relative;
   display: flex;
@@ -41,19 +41,22 @@
   color: var(--primary);
 }
 
-.AddSceneTextBox {
+.DialogTextBox {
   width: 397px !important;
 }
 
-.AddSceneChecker input {
+.DialogChecker input {
   margin-right: 10px;
 }
 
-.AddSceneNote {
+.DialogNote {
   color: var(--secondary);
+  display: flex;
+  gap: 5px;
+  align-items: flex-end;
 }
 
-.AddSceneFooter {
+.DialogFooter {
   top: 252px;
   height: 100%;
   width: 100%;
@@ -62,17 +65,35 @@
   left: 0;
 }
 
-.AddSceneButtons {
+.DialogButtons {
   gap: 30px !important;
   width: 100% !important;
   padding: 30px !important;
 }
 
-.AddSceneButtons button {
+.DialogButtons button {
   height: 48px;
 }
 
-.AddSceneButtons button:first-child {
+.DialogButtons button:first-child {
   background-color: var(--mainColor);
   color: var(--primaryDark);
+}
+
+.DialogIcon {
+  position: absolute;
+  top: 53%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  aspect-ratio: 1;
+  mask: url(../assets/LightOff.svg);
+  mask-repeat: no-repeat;
+  background: var(--tertiary);
+  mask-size: contain;
+}
+
+.DeleteIcon {
+  mask: url(../assets/delete.svg) !important;
+  mask-size: 100px !important;
 }

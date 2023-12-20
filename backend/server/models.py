@@ -66,7 +66,7 @@ class Device(db.Model):
         global ignored_channels
         universe = int(universe[1:])  # Stripping the 'U' and converting to int
         for channel in channels:
-            if channel["channel_type"] != "master":
+            if channel["channel_type"] != "main":
                 ignored_channels[universe].append(int(channel["dmx_channel"]))
             if channel["channel_type"] in ["r", "g", "b"]:
                 channel["sliderValue"] = 255

@@ -2,7 +2,7 @@
 
 > All notable changes to this project will be documented in this file.
 
-## [1.2.x] - Pre-Release
+## [1.2.1] - 2023-12-20
 
 ### Changes
 
@@ -10,12 +10,13 @@
 - Faders
   - Input fields are now larger and include "%" symbol for easier touch input and have a subtle background
   - Introduced compact-style scroll buttons for easier navigation through faders
+- Added HMI 14 to Studio-Overview
 - Reverted LightFX only sending changed channels, because every grouped light should be updated the same way
 - Minor adjustments
 
 ### Fixes
 
-- x
+- Fixed full-screen icon not always reflecting the current state
 
 ## [1.2.0] - 2023-12-14
 
@@ -168,7 +169,7 @@
 ### Changes
 
 - Updated icons
-- Launch application in full screen
+- Launch application in full-screen
 
 ### Fixes
 

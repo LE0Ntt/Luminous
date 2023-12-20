@@ -10,6 +10,8 @@
 - Faders
   - Input fields are now larger and include "%" symbol for easier touch input and have a subtle background
   - Introduced compact-style scroll buttons for easier navigation through faders
+- Reverted LightFX only sending changed channels, because every grouped light should be updated the same way
+- Minor adjustments
 
 ### Fixes
 

@@ -41,7 +41,6 @@ function Control() {
   const [addScene, setAddScene] = useState(false);
   const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
   const [isSolo, setIsSolo] = useState(false);
-  const [prevFaderValues, setPrevFaderValues] = useState<number[]>([]);
 
   interface DeviceConfig {
     id: number;
@@ -186,12 +185,7 @@ function Control() {
 
   // Give changed fader values to ControlHandler
   useEffect(() => {
-    const controlValues = faderValues[0].slice(1);
-    const changedFaders = controlValues.map((value, index) => {
-      return prevFaderValues && prevFaderValues.length > 0 && value !== prevFaderValues[index];
-    });
-    ControlHandler(selectedDevices, controlValues, changedFaders, emit);
-    setPrevFaderValues(controlValues);
+    ControlHandler(selectedDevices, faderValues[0].slice(1), emit);
   }, [faderValues]);
 
   // Misc fader support

@@ -3,7 +3,7 @@
 - [x] Turn off all lights when closing the app
   - [x] Dialog, Leon
   - [x] Backend, Darwin
-- [ ] LightFX rgb should always send all channels, Darwin
+- [x] LightFX rgb should always send all channels, Darwin
 - [x] Studio-Overview add HMI 14, Leon
 - [x] "!" icon in all dialogs
 - [x] Fix fullscreen icon, Leon
@@ -31,7 +31,6 @@
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
 - Scenes do not fade in exact seconds and are subject to server performance
-- Error server message on LightFX or DMX channel change
 
 ## Necessary Changes
 
@@ -72,7 +71,7 @@
 - [x] Use _ENTER_ to accept dialog
 - [ ] Rethink scene logic: Off after e.g. bi-color change?
 - [x] Add support for HMI lights and other devices with on/off channel
-- [ ] Turn off all devices when closing app
+- [x] Turn off all devices when closing app
 - [x] Input for faders with mousewheel or keyboard (arrow keys)
 - [ ] BigView: Improve visualisation
   - [ ] Device groups

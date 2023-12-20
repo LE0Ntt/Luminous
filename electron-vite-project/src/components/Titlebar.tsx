@@ -65,13 +65,19 @@ function TitleBar() {
     };
   }, [on, off]);
 
+  // Toggles the full screen mode
+  useEffect(() => {
+    const fetchFullScreenStatus = async () => {
+      const fullScreenStatus = await (window as any).electronAPI.getFullScreen();
+      setIsFullscreen(fullScreenStatus);
+    };
+
+    fetchFullScreenStatus();
+  }, []);
+
   const toggleFullScreen = async () => {
     (window as any).electronAPI.send('toggle-full-screen');
-    if (isFullscreen) {
-      setIsFullscreen(false);
-    } else {
-      setIsFullscreen(true);
-    }
+    setIsFullscreen(!isFullscreen);
   };
 
   const handleMinimize = () => {

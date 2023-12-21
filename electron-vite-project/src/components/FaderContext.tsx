@@ -45,13 +45,19 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
   const { on, off } = useConnectionContext();
 
   const setFaderValue = useCallback((sliderGroupId: number, faderId: number, value: number) => {
-    setTimeout(() => {
-      setFaderValues((faderValues) => {
-        const newFaderValues = [...faderValues];
-        newFaderValues[sliderGroupId] = [...newFaderValues[sliderGroupId]];
-        newFaderValues[sliderGroupId][faderId] = value;
-        return newFaderValues;
-      });
+    setFaderValues((prevFaderValues) => {
+      // Überprüfe, ob der Wert sich tatsächlich geändert hat
+      if (prevFaderValues[sliderGroupId][faderId] === value) {
+        return prevFaderValues; // Keine Änderung, gebe den vorherigen Zustand zurück
+      }
+
+      // Erstelle eine neue Kopie des Zustands mit dem aktualisierten Wert
+      const newFaderValues = [...prevFaderValues];
+      const faderGroupValues = [...newFaderValues[sliderGroupId]];
+      faderGroupValues[faderId] = value;
+      newFaderValues[sliderGroupId] = faderGroupValues;
+
+      return newFaderValues;
     });
   }, []);
 

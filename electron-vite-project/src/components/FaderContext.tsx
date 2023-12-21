@@ -12,7 +12,7 @@
  *
  * @file FaderContext.tsx
  */
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useConnectionContext } from './ConnectionContext';
 
 interface FaderContextProps {
@@ -29,29 +29,35 @@ interface FaderProviderProps {
 const FaderContext = createContext<FaderContextProps | undefined>(undefined);
 
 const createInitialFaderValues = (sliderGroupId: number) => {
-  return Array.from({ length: sliderGroupId }, (_, x) => (x >= sliderGroupId - 2 ? new Array(513).fill(0) : new Array(6).fill(0)));
+  return Array.from({ length: sliderGroupId }, (_, x) => {
+    if (x >= sliderGroupId - 2) {
+      return new Array(513).fill(0);
+    } else {
+      return new Array(6).fill(0);
+    }
+  });
 };
 
 export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
   const sliderGroupId = 694;
-  const initialFaderValues = useMemo(() => {
-    const values = createInitialFaderValues(sliderGroupId);
-    values[0] = [0, 255, 128, 255, 255, 255, ...values[0].slice(6)];
-    return values;
-  }, [sliderGroupId]);
+  const initialFaderValues = createInitialFaderValues(sliderGroupId);
+
+  // Values for the Control.tsx
+  initialFaderValues[0][1] = 255; // Master fader
+  initialFaderValues[0][2] = 128; // Bi-color fader
+  initialFaderValues[0][3] = 255; // Red fader
+  initialFaderValues[0][4] = 255; // Green fader
+  initialFaderValues[0][5] = 255; // Blue fader
 
   const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
   const [isDragging, setIsDragging] = useState(false);
   const { on, off } = useConnectionContext();
 
-  const setFaderValue = useCallback((sliderGroupId: number, faderId: number, value: number) => {
-    setFaderValues((faderValues) => {
-      const newFaderValues = [...faderValues];
-      newFaderValues[sliderGroupId] = [...newFaderValues[sliderGroupId]];
-      newFaderValues[sliderGroupId][faderId] = value;
-      return newFaderValues;
-    });
-  }, []);
+  const setFaderValue = (sliderGroupId: number, faderId: number, value: number) => {
+    const newFaderValues = [...faderValues];
+    newFaderValues[sliderGroupId][faderId] = value;
+    setFaderValues(newFaderValues);
+  };
 
   useEffect(() => {
     const eventListener = (data: any) => {

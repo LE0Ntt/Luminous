@@ -12,7 +12,7 @@
  *
  * @file FaderContext.tsx
  */
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useConnectionContext } from './ConnectionContext';
 
 interface FaderContextProps {
@@ -53,17 +53,11 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
   const [isDragging, setIsDragging] = useState(false);
   const { on, off } = useConnectionContext();
 
-  const setFaderValue = useCallback(async (sliderGroupId: number, faderId: number, value: number) => {
-    // Simuliere eine asynchrone Operation
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    setFaderValues((prevFaderValues) => {
-      const newFaderValues = [...prevFaderValues];
-      newFaderValues[sliderGroupId] = [...newFaderValues[sliderGroupId]];
-      newFaderValues[sliderGroupId][faderId] = value;
-      return newFaderValues;
-    });
-  }, []);
+  const setFaderValue = (sliderGroupId: number, faderId: number, value: number) => {
+    const newFaderValues = [...faderValues];
+    newFaderValues[sliderGroupId][faderId] = value;
+    setFaderValues(newFaderValues);
+  };
 
   useEffect(() => {
     const eventListener = (data: any) => {

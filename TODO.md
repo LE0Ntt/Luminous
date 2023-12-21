@@ -1,13 +1,3 @@
-## Version 1.2.1 - 2023-12-20
-
-- [x] Turn off all lights when closing the app
-  - [x] Dialog, Leon
-  - [x] Backend, Darwin
-- [x] LightFX rgb should always send all channels, Darwin
-- [x] Studio-Overview add HMI 14, Leon
-- [x] "!" icon in all dialogs
-- [x] Fix fullscreen icon, Leon
-
 ## Version 1.2.x TODOs
 
 - [ ] Studio-Overview add Traverse Lights
@@ -18,6 +8,13 @@
   - [ ] Rework spacing
 
 ## Known Issues
+
+- fader weird
+- startet nicht mit autostart
+- fader wenn umgedreht nicht bedienbar
+- fader context changes gut??
+- restart dialog gibt es nicht
+- farben komisch, wenn master nicht auf 100%
 
 - MotorMix
   - Black-out button

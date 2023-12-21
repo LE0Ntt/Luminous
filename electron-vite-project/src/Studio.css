@@ -103,11 +103,8 @@
 }
 
 .studioOverviewExtra {
-  position: relative;
   top: -640px;
   left: 480px;
-  width: 100%;
-  height: 100%;
 }
 
 .studioOverviewInfopanelText {

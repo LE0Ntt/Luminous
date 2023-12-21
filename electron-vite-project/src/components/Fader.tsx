@@ -12,7 +12,7 @@
  *
  * @file Fader.tsx
  */
-import { useState, ChangeEvent, useEffect, useRef } from 'react';
+import { useState, ChangeEvent, useEffect, useRef, useCallback } from 'react';
 import './Fader.css';
 import { useConnectionContext } from './ConnectionContext';
 import { useFaderContext } from './FaderContext';
@@ -50,32 +50,43 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
   }, [scaledDisplayValue, isFocused]);
 
   // Emit fader value to the server
-  const emitValue = (value: number) => {
-    if (sliderGroupId === 0 && id > 0) return;
-    emit('fader_value', { deviceId: sliderGroupId, value: value, channelId: id });
-    sendValueRef.current = value;
-  };
+  const emitValue = useCallback(
+    (value: number) => {
+      if (sliderGroupId === 0 && id > 0) return;
+      emit('fader_value', { deviceId: sliderGroupId, value, channelId: id });
+      sendValueRef.current = value;
+    },
+    [sliderGroupId, id, emit]
+  );
 
-  // Always send the last value
+  const lastEmittedValueRef = useRef<number | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleSliderChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
+      setFaderValue(sliderGroupId, id, newValue);
+      lastEmittedValueRef.current = newValue;
+
+      if (timerRef.current === null) {
+        timerRef.current = setTimeout(() => {
+          if (lastEmittedValueRef.current !== null && lastEmittedValueRef.current !== sendValueRef.current) {
+            emitValue(lastEmittedValueRef.current);
+          }
+          timerRef.current = null;
+        }, 20); // Timeout in ms
+      }
+    },
+    [sliderGroupId, id, emitValue]
+  );
+
   useEffect(() => {
-    if (!timerRunning && cacheValueRef.current != null && cacheValueRef.current != sendValueRef.current && !(sliderGroupId === 0 && id > 0))
-      emit('fader_value', { deviceId: sliderGroupId, value: faderValues[sliderGroupId][id], channelId: id });
-  }, [timerRunning]);
-
-  const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
-    let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
-    setFaderValue(sliderGroupId, id, newValue);
-    cacheValueRef.current = newValue;
-
-    // Send only at certain time intervals
-    if (!timerRunning && !(sliderGroupId === 0 && id > 0)) {
-      setTimerRunning(true);
-      emitValue(newValue);
-      setTimeout(() => {
-        setTimerRunning(false);
-      }, 20); // Timeout in ms
-    }
-  };
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   // Check if the input value is a number
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

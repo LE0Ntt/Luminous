@@ -136,8 +136,11 @@ function TitleBar() {
   }, [showDropDown, isDropdownVisible]);
 
   const closeWindow = () => {
+    // delay between sending the turn_off event and closing the window
     emit('turn_off');
-    window.close();
+    setTimeout(() => {
+      window.close();
+    }, 100);
   };
 
   return (

@@ -9,9 +9,9 @@
 
 ## Known Issues
 
-- fader weird
+- fader weird [was genau meinst du?]
 - startet nicht mit autostart
-- fader wenn umgedreht nicht bedienbar
+- ~~fader wenn umgedreht nicht bedienbar~~
 - fader context changes gut??
 - restart dialog gibt es nicht
 - farben komisch, wenn master nicht auf 100%
@@ -28,6 +28,7 @@
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
 - Scenes do not fade in exact seconds and are subject to server performance
+- RGB and bi-color picker mismatch from cursor position when window is resized
 
 ## Necessary Changes
 
@@ -85,23 +86,24 @@
   - [x] Device highlight
   - [x] Move to the left
   - [ ] Add rgb traverse lights
+    - [ ] Display traverse light effects
   - [x] Add fill light icon
   - [x] Rearrange devices
   - [ ] Move code to own component
   - [ ] Display bi-color changes
-  - [ ] Display traverse light effects
 - [ ] Scenes
   - [ ] See what you save
   - [ ] Edit scenes
   - [ ] Save master fader?
   - [ ] Choose what to save
   - [ ] Choose color
+  - [ ] Fader for each scene and master scenes fader
 - [ ] Mute / Solo gray out faders
 - [ ] LightFX
   - [ ] Save scene, only current group or everything
-  - [ ] Bi-Color presets
+  - [ ] Bi-color presets
 - [ ] Light Settings
-  - [ ] Bi-Color range / calibration
+  - [ ] Bi-color range / calibration
 - [ ] Add support for different lights in the studio
   - [ ] Arri Sky panel
   - [ ] Astera Titan Tubes

@@ -16,7 +16,7 @@ import { useConnectionContext } from './components/ConnectionContext';
 import './Show.css';
 import Fader from './components/Fader';
 import ScenesComponent from './components/ScenesComponent';
-import MyTimeline from './components/Timeline';
+import Timeline from './components/Timeline';
 import { useFaderContext } from './components/FaderContext';
 
 function Show() {
@@ -32,7 +32,7 @@ function Show() {
       <div className='window showControls'>
         <div className='showControlButtons innerWindow'></div>
         <div className='showControlTimeline innerWindow'>
-          <MyTimeline />
+          <Timeline />
         </div>
         <div className='showControlMaster innerWindow'>
           <div className='showMasterAlign'>
@@ -41,6 +41,7 @@ function Show() {
               sliderGroupId={0}
               id={0}
               name='Value'
+              className='noBorder'
             />
           </div>
         </div>

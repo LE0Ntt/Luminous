@@ -20,6 +20,16 @@
   flex-direction: row;
 }
 
+.dragHint {
+  position: absolute;
+  top: 45%;
+  width: 100%;
+  text-align: center;
+  color: var(--secondary);
+  font-size: 20px;
+  pointer-events: none;
+}
+
 .timeline-scroll {
   overflow-x: scroll;
   padding-bottom: 10px;
@@ -81,9 +91,9 @@
   background-color: var(--primarySwitched);
 }
 
-.grid-cell:hover {
+/* .grid-cell:hover {
   background-color: var(--colorButtonHover);
-}
+} */
 
 .scene-box {
   position: absolute;

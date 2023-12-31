@@ -15,10 +15,11 @@
 import React, { useEffect, useState } from 'react';
 import './Timeline.css';
 import { eventBus } from './EventBus';
+import { TranslationContext } from './TranslationContext';
 
 interface scene {
+  id: number;
   index: number;
-  left: number;
   width: number;
   sceneId?: number;
   sceneName?: string;
@@ -30,6 +31,7 @@ const Timeline: React.FC = () => {
   const [draggedBox, setDraggedBox] = useState<scene | null>(null);
   const [hoveredCell, setHoveredCell] = useState<number | null>(null);
   const [droppingScene, setDroppingScene] = useState<string>('');
+  const { t } = React.useContext(TranslationContext);
 
   /*const handleCellClick = (cellIndex: number) => {
     const foundBox = scenes.find((box) => box.index === cellIndex);
@@ -48,7 +50,6 @@ const Timeline: React.FC = () => {
         setDraggedBox(foundBox);
         event.dataTransfer.setDragImage(new Image(), 0, 0);
       }
-      //event.dataTransfer.setData('text/plain', String(cellIndex));
     }
   };
 
@@ -82,50 +83,61 @@ const Timeline: React.FC = () => {
     if (draggedBox === null) return;
 
     if (draggedBox.index === 999) {
-      setScenes([...scenes, { index: cellIndex, left: 0, width: 64, sceneId: parseInt(droppingScene) }]);
+      const random4digitId = Math.floor(Math.random() * 9000) + 1000;
+      setScenes([...scenes, { id: random4digitId, index: cellIndex, width: 128, sceneId: parseInt(droppingScene) }]);
       return;
     }
 
-    // Überprüfen, ob die verschobene Box über einer anderen Box platziert wurde
+    // Check if the dragged box is dropped on itself
     const overlappingBox = scenes.find((box) => box.index === cellIndex);
-    if (overlappingBox && overlappingBox.index !== draggedBox.index) {
-      // Entfernen der überlappenden Box
-      setScenes(scenes.filter((box) => box.index !== overlappingBox.index));
+    if (overlappingBox) {
+      // Remove the overlapping box
+      //setScenes(scenes.filter((box) => box.index !== overlappingBox.index));
+    } else {
+      // Move the dragged box to the new position
+      const updatedBoxes = scenes.map((box) => {
+        if (box.index === draggedBox.index) {
+          return { ...box, index: cellIndex };
+        }
+        return box;
+      });
+      setScenes(updatedBoxes);
     }
-
-    // Verschiebe die Box von der ursprünglichen Zelle zur neuen Zelle
-    const updatedBoxes = scenes.map((box) => {
-      if (box.index === draggedBox.index) {
-        return { ...box, index: cellIndex, left: 0 }; // Setze die linke Position auf 0 für die neue Zelle
-      }
-      return box;
-    });
-    setScenes(updatedBoxes);
 
     setDraggedBox(null);
     setHoveredCell(null);
   };
 
-  const handleResize = (event: React.MouseEvent<HTMLDivElement>, boxIndex: number, isRightDrag: boolean) => {
+  const handleResize = (event: React.MouseEvent<HTMLDivElement>, boxId: number, isRightDrag: boolean) => {
     setIsResizing(true);
 
+    document.body.style.cursor = 'ew-resize';
+
     const startX = event.clientX;
-    const foundBox = scenes.find((box) => box.index === boxIndex);
-    const startLeft = foundBox?.left || 0;
+    const foundBox = scenes.find((box) => box.id === boxId);
     const startWidth = foundBox?.width || 32;
+    const startIndex = foundBox?.index || 0;
 
     const handleMouseMove = (event: MouseEvent) => {
       const diffX = event.clientX - startX;
-      const newLeft = startLeft + (isRightDrag ? 0 : diffX);
+      const indexDiff = Math.floor(diffX / 32);
       const newWidth = isRightDrag ? startWidth + diffX : startWidth - diffX;
+      const newIndex = isRightDrag ? foundBox?.index ?? 0 : startIndex + indexDiff;
 
-      if (newWidth >= 32 && newWidth % 32 === 0) {
-        setScenes((prevBoxes) => prevBoxes.map((box) => (box.index === boxIndex ? { ...box, left: newLeft, width: newWidth } : box)));
+      if (
+        newWidth >= 32 &&
+        newWidth % 32 === 0 &&
+        newIndex >= Math.floor(startIndex / 100) * 100 &&
+        // check if other scene + width is not overlapping
+        scenes.every((box) => box.id === boxId || box.index + box.width / 32 <= newIndex || box.index >= newIndex + newWidth / 32)
+      ) {
+        setScenes((prevBoxes) => prevBoxes.map((box) => (box.id === boxId ? { ...box, index: newIndex, width: newWidth } : box)));
       }
     };
 
     const handleMouseUp = () => {
       setIsResizing(false);
+      document.body.style.cursor = '';
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
@@ -138,7 +150,7 @@ const Timeline: React.FC = () => {
     const onDragStart = (id: string) => {
       console.log(`Beginne Ziehen der Szene ${id}`);
       setDroppingScene(id);
-      setDraggedBox({ index: 999, left: 0, width: 64 });
+      setDraggedBox({ id: parseInt(id), index: 999, width: 128 });
     };
 
     const onDragEnd = (id: string) => {
@@ -160,9 +172,14 @@ const Timeline: React.FC = () => {
 
   return (
     <div className='timeline-container'>
+      {scenes.length === 0 && <span className='dragHint'>{t('dragHint')}</span>}
       <table>
+        <thead>
+          <tr>
+            <td className='sticky-col-placeholder'> </td>
+          </tr>
+        </thead>
         <tbody>
-          <td className='sticky-col-placeholder'></td>
           {Array(4)
             .fill(null)
             .map((_, index) => (
@@ -208,7 +225,7 @@ const Timeline: React.FC = () => {
                     .map((_, colIndex) => {
                       const cellIndex = rowIndex * tableCells + colIndex;
                       const foundBox = scenes.find((box) => box.index === cellIndex);
-                      const isCellRed = !!foundBox;
+                      const isCellScene = !!foundBox;
                       const isCellDragged = draggedBox?.index === cellIndex && !isResizing;
                       const isCellHovered = hoveredCell === cellIndex;
                       return (
@@ -221,11 +238,10 @@ const Timeline: React.FC = () => {
                           onDrop={(event) => handleDrop(event, cellIndex)}
                           key={cellIndex}
                         >
-                          {isCellRed && (
+                          {isCellScene && (
                             <div
                               className={`scene-box ${isCellDragged ? 'dragged' : ''}`}
                               style={{
-                                left: `${foundBox?.left}px`,
                                 width: `${foundBox?.width}px`,
                               }}
                               draggable={!isResizing}
@@ -235,11 +251,11 @@ const Timeline: React.FC = () => {
                             >
                               <div
                                 className='scene-box-handle-left'
-                                onMouseDown={(event) => handleResize(event, cellIndex, false)}
+                                onMouseDown={(event) => handleResize(event, foundBox.id, false)}
                               />
                               <div
                                 className='scene-box-handle-right'
-                                onMouseDown={(event) => handleResize(event, cellIndex, true)}
+                                onMouseDown={(event) => handleResize(event, foundBox.id, true)}
                               />
                               <div className='scene-box-content'>Scene {foundBox?.sceneId}</div>
                             </div>

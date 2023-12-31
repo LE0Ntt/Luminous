@@ -199,7 +199,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
               draggable={sideId === 2}
               onDragStart={(e) => onDragStart(e, scene.id)}
               onDragEnd={(e) => onDragEnd(e, scene.id)}
-              className='sceneButton'
+              className={`sceneButton ${sideId === 2 ? 'dragHover' : ''}`}
               onClick={() => toggleSceneStatus(scene.id)}
             >
               <h2>{scene.name}</h2>

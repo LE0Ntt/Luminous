@@ -115,10 +115,19 @@ const Timeline: React.FC = () => {
     setHoveredCell(null);
   };
 
-  // Set the dragged cell
+  // Dragging over a cell
   const handleDragOver = (event: React.DragEvent<HTMLTableCellElement>, cellIndex: number) => {
     event.preventDefault();
+
+    // Set the dragged cell
     setHoveredCell(cellIndex);
+
+    // Set the width of the dragged box to the maximum available width
+    const originalWidth = scenes.find((box) => box.index === draggedBox?.index)?.width || 128;
+    const nextScene = scenes.filter((box) => box.index > cellIndex && box.index !== draggedBox?.index).sort((a, b) => a.index - b.index)[0];
+    const maxAvailableWidth = nextScene ? (nextScene.index - cellIndex) * 32 : originalWidth;
+    const sceneWidth = Math.min(originalWidth, maxAvailableWidth);
+    setDraggedBox((prevBox) => (prevBox ? { ...prevBox, width: sceneWidth } : null));
   };
 
   // Drop the dragged scene
@@ -126,28 +135,19 @@ const Timeline: React.FC = () => {
     event.preventDefault();
     if (draggedBox === null) return;
 
-    // Get the next scene to calculate the maximum width of the dragged box
-    const nextScene = scenes.filter((box) => box.index > cellIndex && box.index !== draggedBox.index).sort((a, b) => a.index - b.index)[0];
-
     if (draggedBox.index === 999) {
       const random4digitId = Math.floor(Math.random() * 9000) + 1000;
 
-      // Calculate if the dragged box has enough space to be 128px wide
-      const maxAvailableWidth = nextScene ? (nextScene.index - cellIndex) * 32 : 128;
-      const sceneWidth = Math.min(128, maxAvailableWidth);
-
-      setScenes([...scenes, { id: random4digitId, index: cellIndex, width: sceneWidth, sceneId: parseInt(droppingScene) }]);
+      setScenes([...scenes, { id: random4digitId, index: cellIndex, width: draggedBox.width, sceneId: parseInt(droppingScene) }]);
       return;
     }
 
     // Check if the dragged box is not dropped on another box
     if (!scenes.find((box) => box.index === cellIndex)) {
-      // Move the dragged box to the new position, but cut it off if it overlaps with another box
+      // Move the dragged box to the new position
       const updatedBoxes = scenes.map((box) => {
         if (box.index === draggedBox.index) {
-          const maxAvailableWidth = nextScene ? (nextScene.index - cellIndex) * 32 : box.width;
-          const sceneWidth = Math.min(box.width, maxAvailableWidth);
-          return { ...box, index: cellIndex, width: sceneWidth };
+          return { ...box, index: cellIndex, width: draggedBox.width };
         }
         return box;
       });
@@ -295,7 +295,7 @@ const Timeline: React.FC = () => {
               .fill(null)
               .map((_, index) => (
                 <tr key={index}>
-                  <td className='layer-col'>Layer {index + 1}</td>
+                  <td className={`layer-col ${index % 2 === 0 && 'row-light'}`}>Layer {index + 1}</td>
                 </tr>
               ))}
           </tbody>
@@ -353,7 +353,7 @@ const Timeline: React.FC = () => {
                             className={`grid-cell 
                             ${isCellHovered ? 'drag-over' : ''} 
                             ${colIndex % 2 === 0 ? 'cell-light' : ''} 
-                            ${rowIndex % 2 === 0 ? 'row-light' : ''}`} // Highlight every second cell
+                            ${rowIndex % 2 === 0 ? 'row-light' : ''}`} // Highlight every second row
                             onDragOver={(event) => handleDragOver(event, cellIndex)}
                             onDrop={(event) => handleDrop(event, cellIndex)}
                             key={cellIndex}

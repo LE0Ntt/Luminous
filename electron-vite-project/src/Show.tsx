@@ -35,15 +35,13 @@ function Show() {
           <Timeline />
         </div>
         <div className='showControlMaster innerWindow'>
-          <div className='showMasterAlign'>
-            <Fader
-              height={290}
-              sliderGroupId={0}
-              id={0}
-              name='Value'
-              className='noBorder'
-            />
-          </div>
+          <Fader
+            height={290}
+            sliderGroupId={0}
+            id={0}
+            name='Value'
+            className='noBorder'
+          />
         </div>
       </div>
     </>

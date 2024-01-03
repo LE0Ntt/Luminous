@@ -20,7 +20,7 @@
 
 .faders {
   position: relative;
-  width: 870px;
+  width: 872px;
   height: 445px;
   left: 0;
   top: -425px;
@@ -31,7 +31,7 @@
 .scenes {
   position: relative;
   height: 445px;
-  width: 974px;
+  width: 976px;
   top: 0;
   overflow-x: auto;
 }
@@ -39,7 +39,7 @@
 .overview {
   position: relative;
   height: 910px;
-  min-width: 846px;
+  min-width: 844px;
   top: 0;
   border-radius: 10px;
 }
@@ -48,7 +48,7 @@
   position: relative;
   height: 445px;
   width: 84px;
-  left: 890px;
+  left: 892px;
   top: 20px;
 }
 
@@ -64,7 +64,7 @@
 .studioOverview {
   background-image: url('./assets/StudioOverview.png');
   height: 868px;
-  width: 804px;
+  width: 802px;
   position: relative;
   left: 50%;
   top: 50%;

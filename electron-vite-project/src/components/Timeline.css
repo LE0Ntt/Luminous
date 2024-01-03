@@ -28,14 +28,50 @@
   color: var(--secondary);
   font-size: 20px;
   pointer-events: none;
+  z-index: 11;
+}
+
+.add-layer-button {
+  width: 140px;
+  height: 29px;
+  border-radius: 5px;
+  z-index: 9;
+  margin-left: 20px;
+  box-shadow: none;
+  border: none;
+}
+
+.layer-table-container {
+  position: absolute;
+  top: 55px;
+  height: 241px;
+  overflow: hidden;
+  min-width: 200px;
+  z-index: 10;
 }
 
 .timeline-scroll {
   overflow-x: scroll;
   padding-bottom: 10px;
-  overflow-y: hidden;
-  width: 100%;
+  overflow-y: auto;
+  width: 1442px;
   height: 295px;
+}
+
+.timeline-table-container {
+  height: 241px;
+  width: fit-content;
+  overflow-y: hidden;
+  overflow-x: visible;
+  position: relative;
+  margin-top: -1px;
+}
+
+.timeline-header {
+  position: relative;
+  left: -1px;
+  border-bottom: 1px solid var(--faderThumbBorder);
+  z-index: 10;
 }
 
 .timeline {
@@ -48,7 +84,7 @@
   line-height: 16px;
 }
 
-.sticky-col {
+.layer-col {
   position: relative;
   border: 1px solid var(--faderThumbBorder);
   border-left: none;
@@ -57,9 +93,11 @@
   height: 60px;
 }
 
-.sticky-col-placeholder {
-  height: 35px;
+.add-layer-container {
+  height: 36px;
   border-right: 1px solid var(--faderThumbBorder);
+  border-bottom: 1px solid var(--faderThumbBorder);
+  width: 201px;
 }
 
 .header-cell {
@@ -67,11 +105,26 @@
   vertical-align: top;
   text-align: start;
   padding-left: 3px;
+  min-width: 64px;
 }
 
 .small-border {
   border-right: 1px solid var(--faderThumbBorder);
   height: 17px;
+}
+
+.scroll-vertical {
+  position: absolute;
+  right: 10px;
+  bottom: 30px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 240px;
+  width: 10px;
+}
+
+.scroll-height {
+  height: 300px;
 }
 
 .grid-cell {

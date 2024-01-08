@@ -9,12 +9,16 @@
 
 ## Known Issues
 
-- fader weird [was genau meinst du?]
-- startet nicht mit autostart
-- ~~fader wenn umgedreht nicht bedienbar~~
-- fader context changes gut??
-- restart dialog gibt es nicht
-- farben komisch, wenn master nicht auf 100%
+- fader weird [was genau meinst du?] - müsste behoben sein.
+- startet nicht mit autostart - muss im studio ausprobiert werden.
+- restart dialog gibt es nicht - gibt es jetzt.
+  - motormix blockiert fader 1-7
+- farben komisch, wenn master nicht auf 100% - ggf. im Studio ausprobieren.
+- motormix richtiger Port?
+- Scene should be on when added
+- LightFX, highlighting if not the current state, button to sync with current state
+- Visualisation of Scenes when specific fader is changed
+- If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
 
 - MotorMix
   - Black-out button

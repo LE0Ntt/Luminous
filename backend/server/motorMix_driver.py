@@ -281,7 +281,7 @@ class Driver:
                 self.rotary_pageUpdate(False)
 
             else:
-                print("Unknown: " + hex_message)
+                # print("Unknown: " + hex_message)
                 continue
 
     def switchModes(self, mode):

@@ -187,16 +187,7 @@ function Control() {
   /* !!! Wird gespammt wenn mehrere clients connected sind !!! */
   useEffect(() => {
     ControlHandler(selectedDevices, faderValues[0].slice(1), emit);
-  }, [faderValues]);
-
-  // Misc fader support
-  interface SliderConfig {
-    attributes: any;
-    universe: string;
-    id: number;
-    sliderValue: number;
-    name: string;
-  }
+  }, [faderValues[0][1], faderValues[0][2], faderValues[0][3], faderValues[0][4], faderValues[0][5]]);
 
   const [effects, setEffects] = useState(true);
 

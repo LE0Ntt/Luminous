@@ -51,14 +51,13 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
 
   // Emit fader value to the server
   const emitValue = (value: number) => {
-    if (sliderGroupId === 0 && id > 0) return;
     emit('fader_value', { deviceId: sliderGroupId, value: value, channelId: id });
     sendValueRef.current = value;
   };
 
   // Always send the last value
   useEffect(() => {
-    if (!timerRunning && cacheValueRef.current != null && cacheValueRef.current != sendValueRef.current && !(sliderGroupId === 0 && id > 0))
+    if (!timerRunning && cacheValueRef.current != null && cacheValueRef.current != sendValueRef.current)
       emit('fader_value', { deviceId: sliderGroupId, value: faderValues[sliderGroupId][id], channelId: id });
   }, [timerRunning]);
 
@@ -68,7 +67,7 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
     cacheValueRef.current = newValue;
 
     // Send only at certain time intervals
-    if (!timerRunning && !(sliderGroupId === 0 && id > 0)) {
+    if (!timerRunning) {
       setTimerRunning(true);
       emitValue(newValue);
       setTimeout(() => {

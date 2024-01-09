@@ -39,6 +39,10 @@ const createInitialFaderValues = (sliderGroupId: number) => {
 };
 
 export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
+  useEffect(() => {
+    console.log('FaderContext Component re-rendered');
+  }); // This will log on every re-render
+
   const sliderGroupId = 694;
   const initialFaderValues = createInitialFaderValues(sliderGroupId);
 
@@ -53,10 +57,25 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
   const [isDragging, setIsDragging] = useState(false);
   const { on, off } = useConnectionContext();
 
+  /*   
   const setFaderValue = (sliderGroupId: number, faderId: number, value: number) => {
+    console.log('setFaderValue is called');
     const newFaderValues = [...faderValues];
     newFaderValues[sliderGroupId][faderId] = value;
     setFaderValues(newFaderValues);
+  }; 
+  */
+  /* änderung beim aufruf der setFaderValue, muss noch im Studio getestet werden.
+   * senkt die Anzahl der Aufrufe von setFaderValue um 1/3-2/3.
+   * Für mich läuft es so glaube ich besser.
+   */
+  const setFaderValue = (sliderGroupId: number, faderId: number, value: number) => {
+    if (faderValues[sliderGroupId][faderId] !== value) {
+      console.log('setFaderValue is called');
+      const newFaderValues = [...faderValues];
+      newFaderValues[sliderGroupId][faderId] = value;
+      setFaderValues(newFaderValues);
+    }
   };
 
   useEffect(() => {

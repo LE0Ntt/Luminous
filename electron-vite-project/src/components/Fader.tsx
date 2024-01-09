@@ -16,6 +16,7 @@ import { useState, ChangeEvent, useEffect, useRef, useCallback } from 'react';
 import './Fader.css';
 import { useConnectionContext } from './ConnectionContext';
 import { useFaderContext } from './FaderContext';
+import React from 'react';
 
 interface SliderProps {
   id: number;
@@ -61,7 +62,6 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
       emit('fader_value', { deviceId: sliderGroupId, value: faderValues[sliderGroupId][id], channelId: id });
   }, [timerRunning]);
 
-  /*   
   const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     console.log('handleSliderChange is called');
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
@@ -76,29 +76,8 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
         setTimerRunning(false);
       }, 20); // Timeout in ms
     }
-  }; 
-  */
-  /* änderung beim aufruf der handleSliderChange, muss noch im Studio getestet werden.
-   * Für mich läuft es so glaube ich besser
-   */
-  const handleSliderChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      console.log('handleSliderChange is called');
-      let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
-      setFaderValue(sliderGroupId, id, newValue);
-      cacheValueRef.current = newValue;
+  };
 
-      // Send only at certain time intervals
-      if (!timerRunning) {
-        setTimerRunning(true);
-        emitValue(newValue);
-        setTimeout(() => {
-          setTimerRunning(false);
-        }, 20); // Timeout in ms
-      }
-    },
-    [sliderGroupId, id, emitValue]
-  );
   useEffect(() => {
     console.log('Fader Component re-rendered');
   }); // This will log on every re-render
@@ -222,4 +201,4 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
   );
 };
 
-export default Fader;
+export default React.memo(Fader);

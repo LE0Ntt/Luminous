@@ -14,50 +14,45 @@
  */
 
 .showScenes {
-  height: 449px;
-  width: 1352px;
+  height: 445px;
+  width: 1354px;
   left: 0;
   top: 0;
 }
 
 .showSaves {
-  height: 449px;
-  width: 468px;
-  left: 1372px;
+  height: 445px;
+  width: 466px;
+  left: 1374px;
   top: 0;
 }
 
 .showControls {
-  height: 441px;
+  height: 445px;
   width: 1840px;
   left: 0;
-  top: 469px;
+  top: 465px;
 }
 
 .showControlButtons {
-  position: relative !important;
-  height: 54px;
-  width: 1675px;
+  position: relative;
+  height: 56px;
+  width: 1694px;
   margin: 20px;
 }
 
 .showControlTimeline {
-  position: relative !important;
+  position: relative;
   height: 327px;
-  width: 1675px;
+  width: 1694px;
   margin: 20px;
+  padding: 20px 20px 10px;
 }
 
 .showControlMaster {
-  position: relative !important;
-  height: 401px;
-  width: 105px;
-  margin: 20px;
-  bottom: calc(401px + 20px);
-  left: calc(1675px + 20px);
-}
-
-.showMasterAlign {
   position: relative;
-  left: 10px;
+  height: 403px;
+  width: 84px;
+  bottom: 423px;
+  left: 1734px;
 }

@@ -12,10 +12,11 @@
  *
  * @file ScenesComponent.tsx
  */
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, DragEvent } from 'react';
 import './ScenesComponent.css';
 import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from '../components/ConnectionContext';
+import { eventBus } from './EventBus';
 
 interface SceneConfig {
   id: number;
@@ -174,6 +175,14 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
     name: 'Empty Scene',
   }));
 
+  const onDragStart = (e: DragEvent<HTMLButtonElement>, id: any) => {
+    eventBus.emit('drag-start', id);
+  };
+
+  const onDragEnd = (e: DragEvent<HTMLButtonElement>, id: any) => {
+    eventBus.emit('drag-end', id);
+  };
+
   return (
     <div className='scenesAlign'>
       <div
@@ -187,7 +196,10 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
             key={scene.id}
           >
             <button
-              className='sceneButton'
+              draggable={sideId === 2}
+              onDragStart={(e) => onDragStart(e, scene.id)}
+              onDragEnd={(e) => onDragEnd(e, scene.id)}
+              className={`sceneButton ${sideId === 2 ? 'dragHover' : ''}`}
               onClick={() => toggleSceneStatus(scene.id)}
             >
               <h2>{scene.name}</h2>

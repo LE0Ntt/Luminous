@@ -2,6 +2,18 @@
 
 > All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2024-01-09
+
+### Changes
+
+- Reverted new fader inplementation to v1.1.1 because of lag
+- New MIDI-Interface support
+
+### Fixes
+
+- Fixed invisible div covering faders in Studio
+- Various minor bug fixes to improve stability
+
 ## [1.2.1] - 2023-12-20
 
 ### Changes

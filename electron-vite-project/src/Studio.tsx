@@ -291,35 +291,33 @@ const Studio = () => {
                     : (((faderValues[greenScreen][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
                 </div>
               </div>
-              <div>
-                {[...Array(6)].map((_, index) => (
+              {[...Array(6)].map((_, index) => (
+                <div
+                  className='studioOverviewLight'
+                  key={index}
+                >
+                  <img
+                    src={schein2}
+                    alt='schein'
+                    className='schein'
+                    style={{
+                      top: `-35px`,
+                      opacity: (faderValues[greenScreen][0] / 255) * (faderValues[0][0] / 255),
+                      filter: 'blur(2px)',
+                    }}
+                  />
                   <div
-                    className='studioOverviewLight'
-                    key={index}
+                    onClick={() => handleGlowAndFocus(greenScreen)}
+                    style={{ cursor: 'pointer' }}
                   >
                     <img
-                      src={schein2}
-                      alt='schein'
-                      className='schein'
-                      style={{
-                        top: `-35px`,
-                        opacity: (faderValues[greenScreen][0] / 255) * (faderValues[0][0] / 255),
-                        filter: 'blur(2px)',
-                      }}
+                      src={biColor}
+                      alt='Lamp'
+                      className={`studioOverviewGreenscreenLamp studioOverviewLamp ${index >= 3 ? 'lampMirrored' : ''}`}
                     />
-                    <div
-                      onClick={() => handleGlowAndFocus(greenScreen)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <img
-                        src={biColor}
-                        alt='Lamp'
-                        className={`studioOverviewGreenscreenLamp studioOverviewLamp ${index >= 3 ? 'lampMirrored' : ''}`}
-                      />
-                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
             <div className='studioOverviewLights'>
               <div
@@ -442,107 +440,100 @@ const Studio = () => {
               </div>
             </div>
             <div className='studioOverviewTestchart'>
-              <div>
-                {/* 11 */}
-                <div className='studioOverviewLight'>
+              {/* 11 */}
+              <div className='studioOverviewLight'>
+                <img
+                  src={schein}
+                  alt='schein'
+                  className={'schein'}
+                  style={{
+                    opacity: (faderValues[11][0] / 255) * (faderValues[0][0] / 255),
+                    transform: 'rotate(180deg)',
+                    top: '25px',
+                    left: '-10px',
+                  }}
+                />
+                <div
+                  onClick={() => handleGlowAndFocus(11)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <img
-                    src={schein}
-                    alt='schein'
-                    className={'schein'}
-                    style={{
-                      opacity: (faderValues[11][0] / 255) * (faderValues[0][0] / 255),
-                      transform: 'rotate(180deg)',
-                      top: '25px',
-                      left: '-10px',
-                    }}
+                    src={spot}
+                    alt='Lamp'
+                    className='studioOverviewTestchartLamp'
                   />
-                  <div
-                    onClick={() => handleGlowAndFocus(11)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <img
-                      src={spot}
-                      alt='Lamp'
-                      className='studioOverviewTestchartLamp'
-                    />
-                    <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
-                      <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
-                      <div className='studioOverviewInfopanelBrightness'>
-                        {(((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
-                          ? t('Off')
-                          : (((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
-                      </div>
+                  <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
+                    <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
+                    <div className='studioOverviewInfopanelBrightness'>
+                      {(((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                        ? t('Off')
+                        : (((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
                     </div>
                   </div>
                 </div>
               </div>
-              <div>
-                {/* 12 */}
-                <div className='studioOverviewLight'>
+              {/* 12 */}
+              <div className='studioOverviewLight'>
+                <img
+                  src={schein}
+                  alt='schein'
+                  className={'schein'}
+                  style={{
+                    opacity: (faderValues[12][0] / 255) * (faderValues[0][0] / 255),
+                    transform: 'rotate(180deg)',
+                    top: '25px',
+                    left: '-10px',
+                  }}
+                />
+                <div
+                  onClick={() => handleGlowAndFocus(12)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <img
-                    src={schein}
-                    alt='schein'
-                    className={'schein'}
-                    style={{
-                      opacity: (faderValues[12][0] / 255) * (faderValues[0][0] / 255),
-                      transform: 'rotate(180deg)',
-                      top: '25px',
-                      left: '-10px',
-                    }}
+                    src={spot}
+                    alt='Lamp'
+                    className='studioOverviewTestchartLamp'
                   />
-                  <div
-                    onClick={() => handleGlowAndFocus(12)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <img
-                      src={spot}
-                      alt='Lamp'
-                      className='studioOverviewTestchartLamp'
-                    />
-                    <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
-                      <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
-                      <div className='studioOverviewInfopanelBrightness'>
-                        {(((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
-                          ? t('Off')
-                          : (((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
-                      </div>
+                  <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
+                    <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
+                    <div className='studioOverviewInfopanelBrightness'>
+                      {(((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                        ? t('Off')
+                        : (((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className='studioOverviewExtra'>
-              <div>
-                {/* 14 */}
-                <div className='studioOverviewLight'>
-                  <img
-                    src={schein}
-                    alt='schein'
-                    className={'schein'}
-                    style={{
-                      opacity: (faderValues[14][0] / 255) * (faderValues[0][0] / 255),
-                      transform: 'rotate(180deg)',
-                      top: '25px',
-                      left: '-10px',
-                    }}
-                  />
-                  <div
-                    onClick={() => handleGlowAndFocus(14)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <img
-                      src={spot}
-                      alt='Lamp'
-                      className='studioOverviewTestchartLamp'
-                    />
-                    <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
-                      <div className='studioOverviewInfopanelText'>HMI</div>
-                      <div className='studioOverviewInfopanelBrightness'>
-                        {(((faderValues[14][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
-                          ? t('Off')
-                          : (((faderValues[14][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
-                      </div>
-                    </div>
+
+            {/* 13 */}
+            <div className='studioOverviewLight studioOverviewExtra'>
+              <img
+                src={schein}
+                alt='schein'
+                className={'schein'}
+                style={{
+                  opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
+                  transform: 'rotate(180deg)',
+                  top: '25px',
+                  left: '-10px',
+                }}
+              />
+              <div
+                onClick={() => handleGlowAndFocus(13)}
+                style={{ cursor: 'pointer' }}
+              >
+                <img
+                  src={spot}
+                  alt='Lamp'
+                  className='studioOverviewTestchartLamp'
+                />
+                <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
+                  <div className='studioOverviewInfopanelText'>HMI</div>
+                  <div className='studioOverviewInfopanelBrightness'>
+                    {(((faderValues[13][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                      ? t('Off')
+                      : (((faderValues[13][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
                   </div>
                 </div>
               </div>

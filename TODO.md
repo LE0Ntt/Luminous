@@ -9,12 +9,16 @@
 
 ## Known Issues
 
-- fader weird
-- startet nicht mit autostart
-- fader wenn umgedreht nicht bedienbar
-- fader context changes gut??
-- restart dialog gibt es nicht
-- farben komisch, wenn master nicht auf 100%
+- fader weird [was genau meinst du?] - müsste behoben sein.
+- startet nicht mit autostart - muss im studio ausprobiert werden.
+- restart dialog gibt es nicht - gibt es jetzt.
+  - motormix blockiert fader 1-7
+- farben komisch, wenn master nicht auf 100% - ggf. im Studio ausprobieren.
+- motormix richtiger Port?
+- Scene should be on when added
+- LightFX, highlighting if not the current state, button to sync with current state
+- Visualisation of Scenes when specific fader is changed
+- If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
 
 - MotorMix
   - Black-out button
@@ -28,6 +32,7 @@
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
 - Scenes do not fade in exact seconds and are subject to server performance
+- RGB and bi-color picker mismatch from cursor position when window is resized
 
 ## Necessary Changes
 
@@ -85,23 +90,24 @@
   - [x] Device highlight
   - [x] Move to the left
   - [ ] Add rgb traverse lights
+    - [ ] Display traverse light effects
   - [x] Add fill light icon
   - [x] Rearrange devices
   - [ ] Move code to own component
   - [ ] Display bi-color changes
-  - [ ] Display traverse light effects
 - [ ] Scenes
   - [ ] See what you save
   - [ ] Edit scenes
   - [ ] Save master fader?
   - [ ] Choose what to save
   - [ ] Choose color
+  - [ ] Fader for each scene and master scenes fader
 - [ ] Mute / Solo gray out faders
 - [ ] LightFX
   - [ ] Save scene, only current group or everything
-  - [ ] Bi-Color presets
+  - [ ] Bi-color presets
 - [ ] Light Settings
-  - [ ] Bi-Color range / calibration
+  - [ ] Bi-color range / calibration
 - [ ] Add support for different lights in the studio
   - [ ] Arri Sky panel
   - [ ] Astera Titan Tubes

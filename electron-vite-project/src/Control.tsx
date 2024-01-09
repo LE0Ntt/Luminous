@@ -184,33 +184,10 @@ function Control() {
   };
 
   // Give changed fader values to ControlHandler
+  /* !!! Wird gespammt wenn mehrere clients connected sind !!! */
   useEffect(() => {
     ControlHandler(selectedDevices, faderValues[0].slice(1), emit);
-  }, [faderValues]);
-
-  // Misc fader support
-  interface SliderConfig {
-    attributes: any;
-    universe: string;
-    id: number;
-    sliderValue: number;
-    name: string;
-  }
-
-  const [sliders, setSliders] = useState<SliderConfig[]>([]);
-
-  useEffect(() => {
-    const fetchSliders = async () => {
-      try {
-        const response = await fetch(url + '/fader');
-        const data = await response.json();
-        setSliders(JSON.parse(data));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchSliders();
-  }, []);
+  }, [faderValues[0][1], faderValues[0][2], faderValues[0][3], faderValues[0][4], faderValues[0][5]]);
 
   const [effects, setEffects] = useState(true);
 
@@ -331,7 +308,7 @@ function Control() {
                 </>
               ) : (
                 <div className='sliders slidersEffects'>
-                  {sliders
+                  {devices
                     .slice(1)
                     .filter((slider) => selectedDevices.some((channel) => channel.id === slider.id))
                     .map((slider, index, filteredSliders) => {

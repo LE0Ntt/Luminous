@@ -55,7 +55,7 @@ class ola_handler:
             if channel in self.ignored_channels.get(
                 universe, []
             ):  # Check if channel is ignored
-                print(f"Channel {channel} is ignoring the master.")
+                # print(f"Channel {channel} is ignoring the master.")
                 self.dmx_data[universe][channel] = int(
                     self.fader_data[universe][channel]
                 )

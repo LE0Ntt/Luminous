@@ -65,16 +65,25 @@ class Driver:
         # self.inport  = mido.open_input( 'USB MIDI Interface 0')
         # self.outport = mido.open_output("USB MIDI Interface MIDI 1")  # type: ignore
         # self.inport = mido.open_input("USB MIDI Interface MIDI 1")  # type: ignore
-        # --MMix Config--#
-        input_ports = mido.get_input_names()
-        for port in input_ports:
-            print(port)
-            self.inport = mido.open_input(port)  # type: ignore
 
-        output_ports = mido.get_output_names()
-        for port in output_ports:
-            print(port)
-            self.outport = mido.open_output(port)  # type: ignore
+        #self.outport = mido.open_output("E-MU XMidi2X2:E-MU XMidi2X2 Midi Out 2  28:1")  # type: ignore
+        #self.inport = mido.open_input("E-MU XMidi2X2:E-MU XMidi2X2 Midi Out 1  28:0")  # type: ignore
+
+        # --MMix Config--#
+        #self.inport = None
+        try:
+            input_ports = mido.get_input_names()  # type: ignore
+            for port in input_ports:
+                print(port)
+                self.inport = mido.open_input(port)  # type: ignore
+                self.outport = mido.open_output(port)  # type: ignore
+
+            output_ports = mido.get_output_names()  # type: ignore
+            for port in output_ports:
+                print(port)
+                #self.outport = mido.open_output(port)  # type: ignore
+        except:
+            print("ERROR: Could not open MIDI Ports!")
 
         self.current_page = 1
 
@@ -89,12 +98,15 @@ class Driver:
         self.thread_interpolation = None
         self.last_active = None
 
-        threading.Thread(target=self.input).start()
-        self.setup()
-        print("Driver Initiated")
+        if self.inport is not None:
+            threading.Thread(target=self.input).start()
+            self.setup()
+            print("Driver Initiated")
         # self.outport.send(mido.Message.from_hex('90 00 00')) # ping
 
     def input(self):
+        if self.inport is None:
+            return
         for message in self.inport:
             hex_message = "".join(format(byte, "02X") for byte in message.bytes())
 
@@ -274,7 +286,7 @@ class Driver:
                 self.rotary_pageUpdate(False)
 
             else:
-                print("Unknown: " + hex_message)
+                # print("Unknown: " + hex_message)
                 continue
 
     def switchModes(self, mode):

@@ -21,10 +21,17 @@ import IconFlip from '@/assets/IconFlip';
 
 const Setting1: React.FC = () => {
   const { t, language, setLanguage } = useContext(TranslationContext);
-  const handleToggleChange = () => {
+
+  const handleOrderChange = () => {
     const newSetting = localStorage.getItem('reverseOrder') !== 'true';
     localStorage.setItem('reverseOrder', String(newSetting));
     window.dispatchEvent(new CustomEvent<boolean>('reverseOrder', { detail: newSetting }));
+  };
+
+  const handleShowChange = () => {
+    const newSetting = localStorage.getItem('showPage') !== 'true';
+    localStorage.setItem('showPage', String(newSetting));
+    window.dispatchEvent(new CustomEvent<boolean>('showPage', { detail: newSetting }));
   };
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -65,8 +72,25 @@ const Setting1: React.FC = () => {
         </div>
         <div className='flex items-center gap-4'>
           <Toggle
-            onClick={handleToggleChange}
+            onClick={handleOrderChange}
             enabled={localStorage.getItem('reverseOrder') === 'true'}
+          />
+        </div>
+      </div>
+      <hr />
+      <div className='SettingContainer'>
+        <div className='SettingsSubTitle'>
+          <IconFlip
+            color={'var(--primary)'}
+            size='20px'
+          />
+          <span className='relative top-[-6px]'>Show-Seite anzeigen (in Entwicklung)</span>
+        </div>
+        <div className='flex items-center gap-4'>
+          Show dev page
+          <Toggle
+            onClick={handleShowChange}
+            enabled={localStorage.getItem('showPage') === 'true'}
           />
         </div>
       </div>

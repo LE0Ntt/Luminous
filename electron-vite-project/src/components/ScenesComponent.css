@@ -159,6 +159,13 @@
   padding: 14px;
   height: 166px;
   display: flex;
+  border-radius: 3px;
+}
+
+.dragHover:hover {
+  /* outline: 1px solid var(--primary);
+  outline-offset: -1px; */
+  box-shadow: inset 0 0 0 1px var(--sceneOn);
 }
 
 .sceneMiddleButton {

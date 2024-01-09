@@ -22,11 +22,19 @@ function Header() {
   let location = useLocation();
   const { t } = useContext(TranslationContext);
   const [isDark, setIsDark] = useState(true);
+  const [, forceRender] = useState(false); // Force rerender for show page setting
 
   // Load mode from local storage
   useEffect(() => {
     const storedIsDark = localStorage.getItem('isDark');
     if (storedIsDark !== null) setIsDark(storedIsDark === 'true');
+
+    // Listen for changes to the show page setting
+    const handleStorageChange = (event: CustomEvent<boolean>) => {
+      if (event.type === 'showPage') forceRender((prev) => !prev);
+    };
+    window.addEventListener('showPage', handleStorageChange as EventListener);
+    return () => window.removeEventListener('showPage', handleStorageChange as EventListener);
   }, []);
 
   // Set dark/light mode
@@ -97,16 +105,27 @@ function Header() {
               </div>
             </Link>
           </li>
-          {/* 
-          <li>
-            <Link to="/Show" className={location.pathname === '/Show' ? 'is-active' : ''}>
-              <div className='headerButton'>
-                <svg className='headerIcon' xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M634-463q9-6 9-17t-9-17L411-640q-10-7-20.5-1T380-623v286q0 12 10.5 18t20.5-1l223-143ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/></svg>
-                {t("show")}
-              </div>
-            </Link>
-          </li>
-          */}
+          {localStorage.getItem('showPage') === 'true' && (
+            <li>
+              <Link
+                to='/Show'
+                className={location.pathname === '/Show' ? 'is-active' : ''}
+              >
+                <div className='headerButton'>
+                  <svg
+                    className='headerIcon'
+                    xmlns='http://www.w3.org/2000/svg'
+                    height='24'
+                    viewBox='0 -960 960 960'
+                    width='24'
+                  >
+                    <path d='M634-463q9-6 9-17t-9-17L411-640q-10-7-20.5-1T380-623v286q0 12 10.5 18t20.5-1l223-143ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z' />
+                  </svg>
+                  {t('show')}
+                </div>
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
       <div className='divTheme'>

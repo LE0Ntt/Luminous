@@ -58,6 +58,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
     }
   };
 
+  // Password Settings
   const handleSavePassword = () => {
     if (newPassword !== newPasswordConfirm) {
       setPasswordSuccess(false);
@@ -112,17 +113,17 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
     }
   }, [passwordMessage]);
 
-  const handleOctetChange = (index: number, value: string) => {
-    const octets = ip.split('.');
-    octets[index - 1] = value;
-    setIP(octets.join('.'));
-  };
-
+  // URL Settings
   useEffect(() => {
-    // console.log('fetching ip' + ip);
-    const fullUrl = `${ip}:${port}`;
-    /*     changeUrl(fullUrl); */
-  }, [ip]);
+    console.log('current ip: ' + url);
+    setIP(url.split(':')[1].substring(2));
+  }, []);
+
+  const handleOctetChange = (index: number, value: string) => {
+    /* const octets = ip.split('.');
+    octets[index - 1] = value;
+    setIP(octets.join('.')); */
+  };
 
   const octets = ip.split('.');
 
@@ -196,8 +197,8 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
           {t('set_ola')}
         </Button>
       </div>
-      {/* only for release not implemented */}
-      {/* <hr />
+      {/* only for release not implemented, still WIP */}
+      <hr />
       <div className='SettingContainer'>
         <div className='Heading'>
           <span>URL</span>
@@ -210,35 +211,35 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
           <div>
             <label>{t('set_current_ip')}</label> <br />
             <input
-              className='SettingsIPBox'
+              className='SettingsIPBox bg-slate-400'
               maxLength={3}
               value={octets[0]}
               onChange={(e) => handleOctetChange(1, e.target.value)}
             />
             .
             <input
-              className='SettingsIPBox'
+              className='SettingsIPBox bg-slate-400'
               maxLength={3}
               value={octets[1]}
               onChange={(e) => handleOctetChange(2, e.target.value)}
             />
             .
             <input
-              className='SettingsIPBox'
+              className='SettingsIPBox bg-slate-400'
               maxLength={3}
               value={octets[2]}
               onChange={(e) => handleOctetChange(3, e.target.value)}
             />
             .
             <input
-              className='SettingsIPBox'
+              className='SettingsIPBox bg-slate-400'
               maxLength={3}
               value={octets[3]}
               onChange={(e) => handleOctetChange(4, e.target.value)}
             />
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

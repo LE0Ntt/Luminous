@@ -1,24 +1,20 @@
 ## Version 1.2.x TODOs
 
 - [ ] Studio-Overview add Traverse Lights
-- [ ] Prevent scene and solo overlaps, Darwin
+- [ ] Prevent scene and solo overlaps
 - [ ] Fader
-  - [ ] More obvious fader highlighting, Leon
-  - [x] Enlarge fader input fields and include % symbol, Darwin
+  - [ ] More obvious fader highlighting
   - [ ] Rework spacing
+- [ ] LightFX
+  - [ ] First light should be the current state
+  - [ ] Second light should show a out of sync icon, if not the current state, and a button to sync
+- [ ] Scenes
+  - [ ] Should be "on" when added
+  - [ ] Visualisation of Scenes when specific fader is changed
+  - [ ] If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
+- [ ] Setting to change the URL of the server
 
 ## Known Issues
-
-- fader weird [was genau meinst du?] - müsste behoben sein.
-- startet nicht mit autostart - muss im studio ausprobiert werden.
-- restart dialog gibt es nicht - gibt es jetzt.
-  - motormix blockiert fader 1-7
-- farben komisch, wenn master nicht auf 100% - ggf. im Studio ausprobieren.
-- motormix richtiger Port?
-- Scene should be on when added
-- LightFX, highlighting if not the current state, button to sync with current state
-- Visualisation of Scenes when specific fader is changed
-- If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
 
 - MotorMix
   - Black-out button
@@ -26,6 +22,7 @@
   - Missing light values
   - Displays only two pages until switched to Scenes and back
   - Faders sometimes jump randomly
+  - Motormix updated backup value nicht
 - Random server crashes
 - Possibly slower after long operation
 - Studio-Overview just uses ID, not universe
@@ -33,6 +30,7 @@
 - Error if DMX channel exists multiple times
 - Scenes do not fade in exact seconds and are subject to server performance
 - RGB and bi-color picker mismatch from cursor position when window is resized
+- Colors of the RGB lights are weird, when master is not at 100% - try in studio
 
 ## Necessary Changes
 

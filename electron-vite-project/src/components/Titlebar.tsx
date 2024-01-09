@@ -84,6 +84,11 @@ function TitleBar() {
     (window as any).electronAPI.send('minimize');
   };
 
+  const closeWindow = () => {
+    emit('turn_off');
+    (window as any).electronAPI.send('close');
+  };
+
   const settings = [
     { icon: IconSettings, text: t('dd_settings') },
     { icon: IconLight, text: t('dd_lights') },
@@ -134,11 +139,6 @@ function TitleBar() {
     }
     return () => clearTimeout(timeout);
   }, [showDropDown, isDropdownVisible]);
-
-  const closeWindow = () => {
-    emit('turn_off');
-    window.close();
-  };
 
   return (
     <div className={`titlebarComp ${showDropDown && 'active'}`}>

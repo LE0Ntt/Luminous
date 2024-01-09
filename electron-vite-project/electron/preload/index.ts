@@ -101,7 +101,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return await ipcRenderer.invoke('get-ip');
   },
   send: (channel, data) => {
-    let validChannels = ['toggle-full-screen', 'minimize'];
+    let validChannels = ['toggle-full-screen', 'minimize', 'close'];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }

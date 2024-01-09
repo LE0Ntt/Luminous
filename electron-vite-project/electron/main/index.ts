@@ -137,6 +137,11 @@ ipcMain.on('minimize', () => {
   win.minimize();
 });
 
+// Close
+ipcMain.on('close', () => {
+  win.close();
+});
+
 // Toggle Fullscreen
 ipcMain.on('toggle-full-screen', () => {
   if (win?.isFullScreen()) {

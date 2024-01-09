@@ -16,6 +16,8 @@
  * TODO:
  * - Solution for finer steps than 32px (1/4s)
  * - Scroll up/down when dragging in the top/bottom visible layer
+ * - Scroll to new layer when added
+ * - Cancel dragging/scaling with right click
  * - Scenes
  *   - Selectable
  *     - Fade in/out handles
@@ -25,9 +27,8 @@
  *     - Adjustable brightness
  *   - Display scene name
  * - Cursor
- *   - Appearance
  *   - Scroll on tableheader hover
- *   - Draggable
+ *   - Draggable on itself and tableheader hover
  *   - Sync with server
  * - Auto adjust show length
  *   - Grayed out time clip
@@ -64,13 +65,14 @@ const Timeline: React.FC = () => {
   const scrollBarRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<HTMLDivElement>(null);
+  const [selectedScenes, setSelectedScenes] = useState<number[]>([]);
   const [layers, setLayers] = useState([
     { name: 'Layer 1', mute: false, solo: false },
     { name: 'Layer 2', mute: false, solo: false },
     { name: 'Layer 3', mute: false, solo: false },
     { name: 'Layer 4', mute: false, solo: false },
   ]);
-  const tableCells = 100;
+  const tableCells = 200;
 
   // Set dragged box on drag start
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>, cellIndex: number) => {
@@ -128,6 +130,11 @@ const Timeline: React.FC = () => {
     const maxAvailableWidth = nextScene ? (nextScene.index - cellIndex) * 32 : originalWidth;
     const sceneWidth = Math.min(originalWidth, maxAvailableWidth);
     setDraggedBox((prevBox) => (prevBox ? { ...prevBox, width: sceneWidth } : null));
+
+    // Check if the dragged box is not dragged on another box
+    if (scenes.find((box) => box.index === cellIndex)) {
+      setDraggedBox((prevBox) => (prevBox ? { ...prevBox, width: 0 } : null));
+    }
   };
 
   // Drop the dragged scene
@@ -135,6 +142,7 @@ const Timeline: React.FC = () => {
     event.preventDefault();
     if (draggedBox === null) return;
 
+    // If dragged box is a new scene
     if (draggedBox.index === 999) {
       const random4digitId = Math.floor(Math.random() * 9000) + 1000;
 
@@ -225,7 +233,7 @@ const Timeline: React.FC = () => {
   }, []);
 
   // Sync scroll position of all divs
-  // Necessary because horizontal and vertical scrolling is not possible with one part staying fixed and the other scrolling.
+  // Necessary because horizontal and vertical scrolling is not possible with one part staying fixed and the other scrolling
   useEffect(() => {
     const handleScroll = (event: Event) => {
       const target = event.target as HTMLDivElement;
@@ -267,12 +275,34 @@ const Timeline: React.FC = () => {
   };
 
   const addLayer = () => {
+    if (layers.length >= 25) return;
     setLayers([...layers, { name: `Layer ${layers.length + 1}`, mute: false, solo: false }]);
   };
 
   const deleteLayer = (index: number) => {
     setLayers(layers.filter((_, i) => i !== index));
   };
+
+  const handleSceneClick = (sceneId: number, event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.shiftKey) {
+      setSelectedScenes((prevSelectedScenes) => (prevSelectedScenes.includes(sceneId) ? prevSelectedScenes.filter((id) => id !== sceneId) : [...prevSelectedScenes, sceneId]));
+    } else {
+      setSelectedScenes((prevSelectedScenes) => (prevSelectedScenes.includes(sceneId) ? [] : [sceneId]));
+    }
+  };
+
+  // Event-Listener für das Klicken außerhalb der Szenen
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (target && !target.closest('.scene-box')) {
+        setSelectedScenes([]);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
 
   return (
     <div className='timeline-container'>
@@ -291,42 +321,44 @@ const Timeline: React.FC = () => {
       >
         <table>
           <tbody>
-            {Array(layers.length)
-              .fill(null)
-              .map((_, index) => (
-                <tr key={index}>
-                  <td className={`layer-col ${index % 2 === 0 && 'row-light'}`}>Layer {index + 1}</td>
-                </tr>
-              ))}
+            {Array.from({ length: layers.length }, (_, index) => (
+              <tr key={index}>
+                <td className={`layer-col ${index % 2 === 0 ? 'row-light' : ''}`}>Layer {index + 1}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
       <div className='timeline-scroll'>
+        <div
+          id='cursor'
+          className='cursor'
+        >
+          <div className='cursorHead'></div>
+          <div className='cursorNeck'></div>
+          <div className='cursorNeedle'></div>
+        </div>
         <table className='timeline-header'>
           <tbody>
-            <tr className={'header-row'}>
-              {Array(Math.round(tableCells / 4))
-                .fill(null)
-                .map((_, index) => (
-                  <td
-                    className='header-cell'
-                    key={index}
-                    colSpan={4}
-                  >
-                    {index}
-                  </td>
-                ))}
+            <tr className='header-row'>
+              {Array.from({ length: Math.round(tableCells / 4) }, (_, index) => (
+                <td
+                  className='header-cell'
+                  key={index}
+                  colSpan={4}
+                >
+                  {index}
+                </td>
+              ))}
             </tr>
-            <tr className={'small-border'}>
-              {Array(Math.round(tableCells / 2))
-                .fill(null)
-                .map((_, index) => (
-                  <td
-                    className='header-cell'
-                    key={index}
-                    colSpan={2}
-                  ></td>
-                ))}
+            <tr className='small-border'>
+              {Array.from({ length: Math.round(tableCells / 2) }, (_, index) => (
+                <td
+                  className='header-cell'
+                  key={index}
+                  colSpan={2}
+                ></td>
+              ))}
             </tr>
           </tbody>
         </table>
@@ -336,74 +368,54 @@ const Timeline: React.FC = () => {
         >
           <table className='timeline'>
             <tbody>
-              {Array(layers.length)
-                .fill(null)
-                .map((_, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {Array(tableCells)
-                      .fill(null)
-                      .map((_, colIndex) => {
-                        const cellIndex = rowIndex * tableCells + colIndex;
-                        const foundBox = scenes.find((box) => box.index === cellIndex);
-                        const isCellScene = !!foundBox;
-                        const isCellDragged = draggedBox?.index === cellIndex && !isResizing;
-                        const isCellHovered = hoveredCell === cellIndex;
-                        return (
-                          <td
-                            className={`grid-cell 
-                            ${isCellHovered ? 'drag-over' : ''} 
-                            ${colIndex % 2 === 0 ? 'cell-light' : ''} 
-                            ${rowIndex % 2 === 0 ? 'row-light' : ''}`} // Highlight every second row
-                            onDragOver={(event) => handleDragOver(event, cellIndex)}
-                            onDrop={(event) => handleDrop(event, cellIndex)}
-                            key={cellIndex}
+              {Array.from({ length: layers.length }, (_, rowIndex) => (
+                <tr key={rowIndex}>
+                  {Array.from({ length: tableCells }, (_, colIndex) => {
+                    const cellIndex = rowIndex * tableCells + colIndex;
+                    const foundBox = scenes.find((box) => box.index === cellIndex);
+                    const isCellHovered = hoveredCell === cellIndex;
+                    return (
+                      <td
+                        className={`grid-cell ${colIndex % 2 === 0 ? 'cell-light' : ''} ${rowIndex % 2 === 0 ? 'row-light' : ''}`}
+                        onDragOver={(event) => handleDragOver(event, cellIndex)}
+                        onDrop={(event) => handleDrop(event, cellIndex)}
+                        key={cellIndex}
+                      >
+                        {foundBox && (
+                          <div
+                            className={`scene-box ${selectedScenes.includes(foundBox.id) ? 'selected-scene' : ''}`}
+                            style={{ width: `${foundBox.width}px` }}
+                            draggable={!isResizing}
+                            onDragStart={(event) => handleDragStart(event, cellIndex)}
+                            onDrag={handleDrag}
+                            onDragEnd={handleDragEnd}
+                            onMouseDown={(event) => handleSceneClick(foundBox.id, event)}
                           >
-                            {isCellScene && (
-                              <div
-                                className={`scene-box ${isCellDragged ? 'dragged' : ''}`}
-                                style={{
-                                  width: `${foundBox?.width}px`,
-                                }}
-                                draggable={!isResizing}
-                                onDragStart={(event) => handleDragStart(event, cellIndex)}
-                                onDrag={handleDrag}
-                                onDragEnd={handleDragEnd}
-                              >
-                                <div
-                                  className='scene-box-handle-left'
-                                  onMouseDown={(event) => handleResize(event, foundBox.id, false)}
-                                />
-                                <div
-                                  className='scene-box-handle-right'
-                                  onMouseDown={(event) => handleResize(event, foundBox.id, true)}
-                                />
-                                <div className='scene-box-content'>Scene {foundBox?.sceneId}</div>
-                              </div>
-                            )}
-                            {isCellHovered && draggedBox && (
-                              <div
-                                className='gray-box'
-                                style={{ width: `${draggedBox.width}px` }}
-                              />
-                            )}
-                          </td>
-                        );
-                      })}
-                  </tr>
-                ))}
+                            <div
+                              className='scene-box-handle-left'
+                              onMouseDown={(event) => handleResize(event, foundBox.id, false)}
+                            />
+                            <div
+                              className='scene-box-handle-right'
+                              onMouseDown={(event) => handleResize(event, foundBox.id, true)}
+                            />
+                            <div className='scene-box-content'>Scene {foundBox.sceneId}</div>
+                          </div>
+                        )}
+                        {isCellHovered && draggedBox && (
+                          <div
+                            className='gray-box'
+                            style={{ width: `${draggedBox.width}px` }}
+                          />
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
-      </div>
-      <div
-        id='cursor'
-        className='cursor'
-        // onWheel={handleWheelEvent}
-        // onMouseDown={() => setIsMouseDown(true)}
-      >
-        <div className='cursorHead'></div>
-        <div className='cursorNeck'></div>
-        <div className='cursorNeedle'></div>
       </div>
       <div
         className='scroll-vertical '

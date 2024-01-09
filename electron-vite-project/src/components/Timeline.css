@@ -52,8 +52,8 @@
 
 .timeline-scroll {
   overflow-x: scroll;
+  overflow-y: hidden;
   padding-bottom: 10px;
-  overflow-y: auto;
   width: 1442px;
   height: 295px;
 }
@@ -72,6 +72,7 @@
   left: -1px;
   border-bottom: 1px solid var(--faderThumbBorder);
   z-index: 10;
+  margin-top: -276px; /* For cursor */
 }
 
 .timeline {
@@ -144,10 +145,6 @@
   background-color: var(--primarySwitched);
 }
 
-/* .grid-cell:hover {
-  background-color: var(--colorButtonHover);
-} */
-
 .scene-box {
   position: absolute;
   top: 0;
@@ -159,6 +156,11 @@
   z-index: 9;
   pointer-events: auto;
   padding: 0 10px;
+}
+
+.selected-scene {
+  outline: solid 2px var(--primary);
+  outline-offset: -2px;
 }
 
 .scene-box-handle-left,
@@ -202,10 +204,6 @@
   z-index: 8;
   border-radius: 5px;
   pointer-events: none;
-}
-
-.grid-cell:hover .gray-box,
-.grid-cell.drag-over .gray-box {
   display: block;
 }
 
@@ -214,8 +212,8 @@
   position: relative;
   height: 100%;
   width: 2px;
-  top: -89.5%;
-  left: -1px;
+  left: 500px;
+  top: 28px;
 }
 
 .cursorHead {
@@ -238,6 +236,6 @@
 
 .cursorNeedle {
   width: 2px;
-  height: 89.5%;
+  height: 90%;
   background-color: var(--mainColor);
 }

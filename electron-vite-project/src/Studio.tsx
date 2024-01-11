@@ -160,6 +160,10 @@ const Studio = () => {
     refsArray.current[id]?.focus();
   };
 
+  useEffect(() => {
+    console.log('Studio Component re-rendered');
+  }); // This will log on every re-render
+
   return (
     <>
       <div
@@ -538,28 +542,32 @@ const Studio = () => {
                 </div>
               </div>
             </div>
-            {/* <div className='studioOverviewTraversen'>
+            <div className='studioOverviewTraversen'>
               {[
-                { top: 82, left: 74 },
-                { top: 401, left: 74 },
-                { top: 720, left: 74 },
-                { top: 82, left: 731 },
-                { top: 401, left: 731 },
-                { top: 566, left: 731 },
-                { top: 720, left: 614 },
-              ].map((position, index) => (
-                <div
-                  key={index}
-                  style={{ top: `${position.top}px`, left: `${position.left}px`, position: 'fixed' }}
-                >
-                  <LightBeam
-                    red={faderValues[1][0]}
-                    green={faderValues[2][0]}
-                    blue={faderValues[3][0]}
-                  />
-                </div>
-              ))}
-            </div> */}
+                { top: 720, left: 74 }, // T1
+                { top: 401, left: 74 }, // T2
+                { top: 82, left: 74 }, // T3
+                { top: 82, left: 731 }, // T4
+                { top: 401, left: 731 }, // T5
+                { top: 566, left: 731 }, // T6
+                { top: 720, left: 614 }, // T7
+              ].map((position, index) => {
+                const baseIndex = 15 + index;
+                return (
+                  <div
+                    key={index}
+                    style={{ top: `${position.top}px`, left: `${position.left}px`, position: 'fixed' }}
+                  >
+                    <LightBeam
+                      master={faderValues[baseIndex][0]}
+                      red={faderValues[baseIndex][1]}
+                      green={faderValues[baseIndex][2]}
+                      blue={faderValues[baseIndex][3]}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

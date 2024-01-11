@@ -1,4 +1,4 @@
-function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
+export function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise((resolve) => {
     if (condition.includes(document.readyState)) {
       resolve(true);
@@ -12,7 +12,7 @@ function domReady(condition: DocumentReadyState[] = ['complete', 'interactive'])
   });
 }
 
-const safeDOM = {
+export const safeDOM = {
   append(parent: HTMLElement, child: HTMLElement) {
     if (!Array.from(parent.children).find((e) => e === child)) {
       return parent.appendChild(child);
@@ -25,7 +25,7 @@ const safeDOM = {
   },
 };
 
-function useLoading() {
+export function useLoading() {
   const className = `loaders-css`;
   const styleContent = `
     .${className} > div {
@@ -89,14 +89,14 @@ const { appendLoading, removeLoading } = useLoading();
 domReady().then(appendLoading);
 
 window.onmessage = (ev) => {
-  ev.data.payload === 'removeLoading' && removeLoading();
+  if (ev.data.payload === 'removeLoading') removeLoading();
 };
 
 // ----------------------------------------------------------------------
 
-const { ipcRenderer, contextBridge } = require('electron');
+import { ipcRenderer, contextBridge } from 'electron';
 
-contextBridge.exposeInMainWorld('electronAPI', {
+export const electronAPI = {
   getIp: async () => {
     return await ipcRenderer.invoke('get-ip');
   },
@@ -121,6 +121,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getFullScreen: async () => {
     return await ipcRenderer.invoke('get-full-screen');
   },
-});
+};
+
+contextBridge.exposeInMainWorld('electronAPI', electronAPI);
 
 setTimeout(removeLoading, 4999);

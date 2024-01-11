@@ -1,7 +1,3 @@
----
-tags:
-  - Luminous
----
 # Introduction
 
 !!! Caution: This installation guide is a work in progress, and the accuracy of the provided steps is uncertain. Please proceed with caution, as we cannot guarantee the functionality at this stage. !!!
@@ -10,7 +6,6 @@ This guide describes the exact installation and configuration of the Luminous ba
 
 German Version: [[Installationsanleitung - DE]]
 Englische Version: [[Installation guide - EN]]
-
 
 # Installation
 
@@ -36,7 +31,6 @@ sudo apt install git
 
 Your Raspberry Pi environment is now ready to proceed with the installation of Luminous.
 
-
 ## OLA
 
 ### General Information
@@ -47,7 +41,9 @@ We will provide comprehensive instructions on how to install OLA here. However, 
 - [OLA - Linux install](https://www.openlighting.org/ola/linuxinstall/)
 
 These instructions provide additional information and can be helpful in the event of problems.
+
 ### Install dependencies
+
 To install all necessary dependencies for the proper functioning of OLA, you need some libraries. Some of them are available as packages in Linux distributions, while others need to be downloaded and compiled manually.
 
 First, you need at least the following dependencies:
@@ -72,15 +68,16 @@ sudo apt-get install libcppunit-dev libcppunit-1.13-0 uuid-dev pkg-config libncu
 ```
 
 _π version?_
+
 ```
 sudo apt install build-essential autoconf libtool pkg-config libcppunit-dev libmicrohttpd-dev zlib1g-dev libftdi-dev libusb-1.0-0-dev protobuf-compiler libprotobuf-dev python3-protobuf libprotoc-dev liblua5.3-dev
 
 ```
 
-The above is recommended, but if it does not work (ie: no direct internet connection), you can also download and install the packages manually. 
+The above is recommended, but if it does not work (ie: no direct internet connection), you can also download and install the packages manually.
 
 1. Google for the package.
-2. Download the archive. ($FILENAME.tar.gz) 
+2. Download the archive. ($FILENAME.tar.gz)
 3. Extract the contents. (Documents folder makes sense)
 4. Open Terminal.
 5. Type "'**cd $FILEPATH'**" then hit ENTER. (Example: “_cd /home/tux/Documents/bison-2.5_”)
@@ -90,7 +87,6 @@ The above is recommended, but if it does not work (ie: no direct internet connec
 9. Type "'**sudo make install'**" then hit ENTER. Wait for it to finish.
 
 Do this for all dependancies.
-
 
 Once all dependencies have been installed, enter `sudo ldconfig` in the console to make the new libraries usable.
 
@@ -107,7 +103,7 @@ Check out the git repo with the following command:
 ```bash
 git clone https://github.com/OpenLightingProject/ola.git ola
 cd ola
- ```
+```
 
 Make sure that you have downloaded version 0.10.9 of OLA, as this is crucial for the following installation.
 
@@ -142,7 +138,6 @@ sudo ldconfig
 
 OLA should now have been successfully installed.
 
-
 ### Execute OLA
 
 To execute OLA, enter `olad` in the terminal.
@@ -153,6 +148,4 @@ olad
 
 Visit the OLA web interface on your device at the following address `http://$yourdeviceIP:9090/`, if you see the web interface, it means that the OLA has been installed correctly.
 
-
 ## Backend Server
-

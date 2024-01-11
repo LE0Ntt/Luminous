@@ -1,8 +1,13 @@
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { release } from 'node:os';
-import { join } from 'node:path';
-import { update } from './update';
 import Store from 'electron-store';
+
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { update } from './update';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // The built directory structure
 //
@@ -10,7 +15,7 @@ import Store from 'electron-store';
 // │ ├─┬ main
 // │ │ └── index.js    > Electron-Main
 // │ └─┬ preload
-// │   └── index.js    > Preload-Scripts
+// │   └── index.mjs    > Preload-Scripts
 // ├─┬ dist
 // │ └── index.html    > Electron-Renderer
 
@@ -38,7 +43,7 @@ if (process.platform === 'win32') app.setAppUserModelId(app.getName());
 
 let win: BrowserWindow | null = null;
 // Here, you can also use other preload
-const preload = join(__dirname, '../preload/index.js');
+const preload = join(__dirname, '../preload/index.mjs');
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
 

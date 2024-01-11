@@ -66,13 +66,6 @@ The project is licensed under the terms of the MIT License.
 
 ## Contact Information
 
-For academic or technical inquiries related to Luminous, please contact:
-
-- Leon Hölzel
-- Darwin Pietas
-- Marvin Plate
-- Andree Tomek
-
 For any inquiries related to Luminous, including academic or technical questions, please contact the current team members:
 
 Leon Hölzel: lhoelzel@th-koeln.de

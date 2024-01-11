@@ -1,6 +1,6 @@
 ## Version 1.2.x TODOs
 
-- [ ] Studio-Overview add Traverse Lights
+- [x] Studio-Overview add Traverse Lights // if everybody is happy with the current implementation
 - [ ] Prevent scene and solo overlaps
 - [ ] Fader
   - [ ] More obvious fader highlighting
@@ -25,7 +25,7 @@
   - Motormix updated backup value nicht
 - Random server crashes
 - Possibly slower after long operation
-- Studio-Overview just uses ID, not universe
+- Studio-Overview just uses ID, not universe // not sure if this is a problem or not
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
 - Scenes do not fade in exact seconds and are subject to server performance
@@ -63,7 +63,7 @@
 - [ ] PI
   - [ ] Production server
   - [ ] Shutdown button
-  - [ ] Turn off all devices during shutdown
+  - [ ] Turn off all devices during shutdown // kind of implemented with the closing of the app
   - [ ] Config file for server.py (change ip and so on)
 - [ ] Everything off scene - How to implement?
 - [x] Change admin password

@@ -31,7 +31,7 @@ export function useLoading() {
     .${className} > div {
       width: 256px;
       height: 256px;
-      background: url('../src/assets/iconStartup.png') no-repeat center/cover;
+      background: url('../src/assets/IconStartup.png') no-repeat center/cover;
       opacity: .6;
       display: flex;
       align-items: center;
@@ -42,7 +42,7 @@ export function useLoading() {
       margin-bottom: 80px;
       width: 94px;
       height: 94px;
-      background: url('../src/assets/iconReflection.png') no-repeat center/cover;
+      background: url('../src/assets/IconReflection.png') no-repeat center/cover;
       animation: spin .8s infinite linear;
     }
     .app-loading-wrap {

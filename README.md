@@ -19,7 +19,7 @@ Download the latest version for your operating system from the [Releases](https:
 ### For Developers: Complete Setup
 
 A detailed setup guide for developers will be available soon, providing step-by-step instructions to get started with Luminous development.
-At the moment, there is an incomplete guide available in the [Installation Guide](https://github.com/LE0Ntt/Luminous/blob/Development-v1.2.3/Installation%20guide%20-%20EN.md)
+At the moment, there is an incomplete guide available at [Installation Guide](https://github.com/LE0Ntt/Luminous/blob/Development-v1.2.3/Installation%20guide%20-%20EN.md)
 
 #### Prerequisites
 

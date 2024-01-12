@@ -14,7 +14,7 @@
     }
   },
   "scripts": {
-    "dev": "VITE_CJS_TRACE=true vite dev",
+    "dev": "vite dev",
     "build": "tsc && vite build && electron-builder",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",

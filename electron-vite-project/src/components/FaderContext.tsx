@@ -12,90 +12,40 @@
  *
  * @file FaderContext.tsx
  */
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, Dispatch, useCallback } from 'react';
 import { useConnectionContext } from './ConnectionContext';
+import { eventBus } from './EventBus';
+
+interface FaderAction {
+  type: 'SET_FADER_VALUE';
+  payload: { sliderGroupId: number; faderId: number; value: number };
+}
 
 interface FaderContextProps {
-  faderValues: number[][];
+  getFaderValue: (sliderGroupId: number, faderId: number) => number;
   setFaderValue: (sliderGroupId: number, faderId: number, value: number) => void;
-  isDragging?: boolean;
-  setIsDragging: (isDragging: boolean) => void;
+  dispatch: Dispatch<FaderAction>;
 }
 
-interface FaderProviderProps {
-  children: React.ReactNode;
-}
-
-const FaderContext = createContext<FaderContextProps | undefined>(undefined);
-
-const createInitialFaderValues = (sliderGroupId: number) => {
-  return Array.from({ length: sliderGroupId }, (_, x) => {
-    if (x >= sliderGroupId - 2) {
-      return new Array(513).fill(0);
-    } else {
-      return new Array(6).fill(0);
+const FaderContext = createContext<
+  | {
+      setGlobalFaderValue: (sliderGroupId: number, faderId: number, value: number) => void;
     }
-  });
-};
+  | undefined
+>(undefined);
 
-export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
-  useEffect(() => {
-    console.log('FaderContext Component re-rendered');
-  }); // This will log on every re-render
-
-  const sliderGroupId = 694;
-  const initialFaderValues = createInitialFaderValues(sliderGroupId);
-
-  // Values for the Control.tsx
-  initialFaderValues[0][1] = 255; // Master fader
-  initialFaderValues[0][2] = 128; // Bi-color fader
-  initialFaderValues[0][3] = 255; // Red fader
-  initialFaderValues[0][4] = 255; // Green fader
-  initialFaderValues[0][5] = 255; // Blue fader
-
-  const [faderValues, setFaderValues] = useState<number[][]>(initialFaderValues);
-  const [isDragging, setIsDragging] = useState(false);
-  const { on, off } = useConnectionContext();
-
-  /*   
-  const setFaderValue = (sliderGroupId: number, faderId: number, value: number) => {
-    console.log('setFaderValue is called');
-    const newFaderValues = [...faderValues];
-    newFaderValues[sliderGroupId][faderId] = value;
-    setFaderValues(newFaderValues);
-  }; 
-  */
-  /* änderung beim aufruf der setFaderValue, muss noch im Studio getestet werden.
-   * senkt die Anzahl der Aufrufe von setFaderValue um 1/3-2/3.
-   * Für mich läuft es so glaube ich besser.
-   */
-  const setFaderValue = (sliderGroupId: number, faderId: number, value: number) => {
-    if (faderValues[sliderGroupId][faderId] !== value) {
-      console.log('setFaderValue is called');
-      const newFaderValues = [...faderValues];
-      newFaderValues[sliderGroupId][faderId] = value;
-      setFaderValues(newFaderValues);
-    }
+export const FaderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const setGlobalFaderValue = (sliderGroupId: number, faderId: number, value: number) => {
+    // Hier die Logik zum Aktualisieren des globalen Zustands
+    eventBus.emit(`globalFaderValueChange-${sliderGroupId}-${faderId}`, value);
   };
 
-  useEffect(() => {
-    const eventListener = (data: any) => {
-      if (!isDragging && data.deviceId !== undefined) {
-        setFaderValue(data.deviceId, data.channelId, data.value);
-      }
-    };
-
-    on('variable_update', eventListener);
-
-    return () => off('variable_update', eventListener);
-  }, [on, off, setFaderValue, isDragging]);
-
-  return <FaderContext.Provider value={{ faderValues, setFaderValue, isDragging, setIsDragging }}>{children}</FaderContext.Provider>;
+  return <FaderContext.Provider value={{ setGlobalFaderValue }}>{children}</FaderContext.Provider>;
 };
 
 export const useFaderContext = () => {
   const context = useContext(FaderContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useFaderContext must be used within a FaderProvider');
   }
   return context;

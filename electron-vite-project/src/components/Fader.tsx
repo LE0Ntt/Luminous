@@ -12,11 +12,12 @@
  *
  * @file Fader.tsx
  */
-import { useState, ChangeEvent, useEffect, useRef, useCallback } from 'react';
+import { useState, ChangeEvent, useEffect, useRef, useCallback, memo } from 'react';
 import './Fader.css';
 import { useConnectionContext } from './ConnectionContext';
 import { useFaderContext } from './FaderContext';
 import React from 'react';
+import { eventBus } from './EventBus';
 
 interface SliderProps {
   id: number;
@@ -27,20 +28,35 @@ interface SliderProps {
   color?: string;
 }
 
-const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, className, color }) => {
+const Fader: React.FC<SliderProps> = memo(({ id, sliderGroupId, name, height, className, color }) => {
   // Initialize context and state
   const { emit } = useConnectionContext();
-  const { faderValues, setFaderValue } = useFaderContext();
+
+  const { setGlobalFaderValue } = useFaderContext();
+  const [faderValue, setFaderValue] = useState(0);
   const [timerRunning, setTimerRunning] = useState<boolean | null>(null);
   const [isHovered, setIsHovered] = useState(false); // Hover over fader
   const [isFocused, setIsFocused] = useState(false); // Focus on value input
 
+  useEffect(() => {
+    const handleValueChange = (newValue: number) => {
+      setFaderValue(newValue);
+    };
+
+    const eventKey = `globalFaderValueChange-${sliderGroupId}-${id}`;
+    eventBus.on(eventKey, handleValueChange);
+
+    return () => {
+      eventBus.off(eventKey, handleValueChange);
+    };
+  }, [id, sliderGroupId]);
+
   // Refs to keep track of fader values and if they need to be sent
-  const cacheValueRef = useRef<number>(faderValues[sliderGroupId][id]);
-  const sendValueRef = useRef<number>(faderValues[sliderGroupId][id]);
+  const cacheValueRef = useRef<number>(faderValue);
+  const sendValueRef = useRef<number>(faderValue);
 
   // Calculating the display value (0 to 100%) and update input value
-  const scaledDisplayValue = (faderValues[sliderGroupId][id] / 255) * 100;
+  const scaledDisplayValue = (faderValue / 255) * 100;
   const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue) + '%');
 
   // Update input value when display value changes
@@ -58,14 +74,13 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
 
   // Always send the last value
   useEffect(() => {
-    if (!timerRunning && cacheValueRef.current != null && cacheValueRef.current != sendValueRef.current)
-      emit('fader_value', { deviceId: sliderGroupId, value: faderValues[sliderGroupId][id], channelId: id });
+    if (!timerRunning && cacheValueRef.current != null && cacheValueRef.current != sendValueRef.current) emit('fader_value', { deviceId: sliderGroupId, value: faderValue, channelId: id });
   }, [timerRunning]);
 
   const handleSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     console.log('handleSliderChange is called');
     let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
-    setFaderValue(sliderGroupId, id, newValue);
+    setFaderValue(newValue);
     cacheValueRef.current = newValue;
 
     // Send only at certain time intervals
@@ -96,7 +111,7 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
     if (!isNaN(numericValue)) {
       numericValue = Math.max(0, Math.min(100, numericValue));
       const scaledValue = Math.round((numericValue / 100) * 255);
-      setFaderValue(sliderGroupId, id, scaledValue);
+      setFaderValue(scaledValue);
       emitValue(scaledValue);
       const roundedDisplayValue = Math.round(numericValue);
       setInputValue(roundedDisplayValue);
@@ -116,9 +131,9 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
   // Scroll wheel and arrow keys support
   useEffect(() => {
     const updateFaderValue = (delta: number) => {
-      const currentValue = faderValues[sliderGroupId][id];
+      const currentValue = faderValue;
       let newValue = Math.max(0, Math.min(currentValue + delta, 255));
-      setFaderValue(sliderGroupId, id, newValue);
+      setFaderValue(newValue);
       emitValue(newValue);
     };
 
@@ -176,7 +191,7 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
           min='0'
           max='255'
           step='1'
-          value={faderValues[sliderGroupId][id]}
+          value={faderValue}
           onChange={handleSliderChange}
           style={gradientStyle}
           className='slider'
@@ -199,6 +214,6 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
       </span>
     </div>
   );
-};
+});
 
-export default React.memo(Fader);
+export default Fader;

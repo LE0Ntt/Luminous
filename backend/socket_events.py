@@ -12,7 +12,7 @@
  *
  * @file socket_events.py
 """
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO  # type: ignore
 from server import app, routes, db
 from server.motorMix_driver import Driver
 from server.models import Scene, Device

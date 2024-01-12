@@ -100,6 +100,9 @@ export const electronAPI = {
   getIp: async () => {
     return await ipcRenderer.invoke('get-ip');
   },
+  getLanguage: async () => {
+    return await ipcRenderer.invoke('get-language');
+  },
   send: (channel, data) => {
     let validChannels = ['toggle-full-screen', 'minimize', 'close'];
     if (validChannels.includes(channel)) {

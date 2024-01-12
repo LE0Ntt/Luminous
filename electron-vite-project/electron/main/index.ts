@@ -167,21 +167,40 @@ const schema = {
     format: 'ipv4',
     default: '127.0.0.1',
   },
+  language: {
+    type: 'string',
+    enum: ['en', 'de'],
+    default: 'de',
+  },
 };
 
 const store = new Store({ schema } as any);
 
+// IP
 ipcMain.handle('get-ip', () => {
   const ip = store.get('ip');
-  const port = '5000'; // Or get it from your config if it's dynamic.
+  const port = '5000'; // at the moment the port is hardcoded
   return { ip, port };
 });
 
-const ip = store.get('ip');
+ipcMain.handle('set-ip', (_, ip) => {
+  store.set('ip', ip);
+});
 
+const ip = store.get('ip');
 console.log(`Current IP: ${ip}`);
 
-let currentIp = store.get('ip');
+// Language
+ipcMain.handle('get-language', () => {
+  return store.get('language');
+});
+
+ipcMain.handle('set-language', (_, language) => {
+  store.set('language', language);
+});
+
+const language = store.get('language');
+console.log(`Current Language: ${language}`);
 
 ipcMain.handle('get-platform', () => {
   return process.platform;

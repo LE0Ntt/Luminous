@@ -61,10 +61,7 @@ function App() {
 
   return (
     <div className='App relative background'>
-      <TranslationProvider
-        translations={translations}
-        defaultLanguage='de'
-      >
+      <TranslationProvider translations={translations}>
         <Router>
           <header style={{ height: '90px' }}>
             <Titlebar />

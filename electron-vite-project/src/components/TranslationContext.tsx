@@ -12,11 +12,10 @@
  *
  * @file TranslationContext.tsx
  */
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 interface TranslationProviderProps {
   translations: Record<string, Record<string, string>>;
-  defaultLanguage: string;
   children: React.ReactNode;
 }
 
@@ -32,8 +31,17 @@ export const TranslationContext = createContext<TranslationContextType>({
   setLanguage: () => {},
 });
 
-export const TranslationProvider: React.FC<TranslationProviderProps> = ({ translations, defaultLanguage, children }) => {
-  const [language, setLanguage] = useState(defaultLanguage);
+export const TranslationProvider: React.FC<TranslationProviderProps> = ({ translations, children }) => {
+  const [language, setLanguage] = useState('en');
+
+  useEffect(() => {
+    async function fetchLangugae() {
+      const [data] = await Promise.all([window.electronAPI.getLanguage()]);
+      console.log(data);
+      setLanguage(data);
+    }
+    fetchLangugae();
+  }, []);
 
   const t = (key: string) => {
     if (translations[language] && translations[language][key]) {

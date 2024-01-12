@@ -58,7 +58,7 @@ const Setting1: React.FC = () => {
           onChange={handleLanguageChange}
         >
           <option value='en'>{t('English 🇬🇧')}</option>
-          <option value='de'>{t('German 🇩🇪')}</option>
+          <option value='de'>{t('Deutsch 🇩🇪')}</option>
         </select>
       </div>
       <hr />

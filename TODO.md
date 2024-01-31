@@ -19,7 +19,7 @@
 - MotorMix
   - ~~Black-out button~~
   - Display bugs with page wheel
-  - Missing display light values
+  - ~~Missing display light values~~
   - Displays only two pages until switched to Scenes and back
   - Faders sometimes jump randomly
   - Scenes do not turn off correctly, maybe backup value?

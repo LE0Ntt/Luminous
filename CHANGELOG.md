@@ -13,6 +13,8 @@
 - MotorMix
   - Fixed blackout button crashing the driver
   - Fixed unassigned quick-scene buttons crashing the driver
+  - Fixed mismatching fader values between MotorMix and the app
+  - Fixed display values missing after many concurrent changes
 
 ## [1.2.2] - 2024-01-09
 

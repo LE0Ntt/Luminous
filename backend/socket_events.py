@@ -146,7 +146,7 @@ def register_socketio_events(socketio):
 
     def blackoutCallback():
         # call reset function
-        reset()
+        reset(True)
 
     try:
         driver = Driver()
@@ -239,11 +239,12 @@ def register_socketio_events(socketio):
         interval = 0.02
         steps = int(fade_time / interval) if fade_time > 0 else 1
         global scenes_solo_state
-        scene_device_ids = {device["id"] for device in routes.scenes[scene]["channel"]}
 
         # return if scene is not in scenes list
         if scene >= len(routes.scenes):
             return
+        
+        scene_device_ids = {device["id"] for device in routes.scenes[scene]["channel"]}
 
         def start_fade_thread(device, start_value, end_value):
             channel = device["attributes"]["channel"][0]

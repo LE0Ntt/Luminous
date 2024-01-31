@@ -558,8 +558,8 @@ class Driver:
             self.displayASCII_perChannel(channel, row, "     ")
 
     def displayFaderValues(self, channel, value):
-        value = (value / 255) * 100
-        self.displayASCII_perChannel(channel, 1, "     ")
+        value = round((value / 255) * 100)
+        #self.displayASCII_perChannel(channel, 1, "     ")
         self.displayASCII_perChannel(channel, 1, (str(int(value))) + "%")
 
     # -------------------- LCD Display END --------------------

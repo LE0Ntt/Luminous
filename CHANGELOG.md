@@ -6,11 +6,13 @@
 
 ### Changes
 
-- x
+- Updated dependencies
 
 ### Fixes
 
-- x
+- MotorMix
+  - Fixed blackout button crashing the driver
+  - Fixed unassigned quick-scene buttons crashing the driver
 
 ## [1.2.2] - 2024-01-09
 

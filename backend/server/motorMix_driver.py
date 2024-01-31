@@ -91,6 +91,7 @@ class Driver:
         self.callback = None
         self.sceneQuickCallback = None
         self.sceneCallback = None
+        self.blackoutCallback = None
 
         self.last_value = [0] * 8
         self.last_time = [float()] * 8
@@ -380,6 +381,9 @@ class Driver:
     def set_sceneCallback(self, sceneCallback):
         self.sceneCallback = sceneCallback
 
+    def set_blackoutCallback(self, blackoutCallback):
+        self.blackoutCallback = blackoutCallback
+
     def map_8bit_to_14bit(self, value_8bit):
         value_14bit = value_8bit << 6
         return value_14bit
@@ -499,11 +503,8 @@ class Driver:
 
     # -------------------- Blackout --------------------
     def blackout(self):
-        for device in self.devices:
-            if self.callback is not None:
-                self.callback(device["id"], 0)
-            self.pushFader(device["id"], 0)
-            time.sleep(0.2)  # temporär
+        if self.blackoutCallback is not None:
+            self.blackoutCallback()
 
     # -------------------- Blackout END--------------------
 

@@ -17,20 +17,19 @@
 ## Known Issues
 
 - MotorMix
-  - Black-out button
+  - ~~Black-out button~~
   - Display bugs with page wheel
-  - Missing light values
+  - Missing display light values
   - Displays only two pages until switched to Scenes and back
   - Faders sometimes jump randomly
-  - Motormix updated backup value nicht
-- Random server crashes
-- Possibly slower after long operation
+  - Scenes do not turn off correctly, maybe backup value?
 - Studio-Overview just uses ID, not universe // not sure if this is a problem or not
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
 - Scenes do not fade in exact seconds and are subject to server performance
 - RGB and bi-color picker mismatch from cursor position when window is resized
 - Colors of the RGB lights are weird, when master is not at 100% - try in studio
+- Reset kills unsafed scenes
 
 ## Necessary Changes
 
@@ -44,9 +43,6 @@
 - [ ] MotorMix
   - [ ] Mute
   - [ ] Solo
-  - [ ] All channels of a device
-  - [ ] Reboot MotorMix
-  - [ ] Detect MotorMix (start after App)
 - [x] Connection screen
 - [x] Reconnect to server
 - [x] Guide / Implement Help
@@ -79,6 +75,11 @@
 
 ## Nice to Have Features
 
+- [ ] MotorMix
+  - [ ] All channels of a device
+  - [ ] Reboot MotorMix
+  - [ ] Detect MotorMix (start after App)
+  - [ ] Blackout lamp on will turn devices on again, changing a fader overwrites that
 - [ ] Show site (light shows)
 - [ ] No animations setting for slow PCs
 - [ ] Change scene fade in/out curve
@@ -106,6 +107,7 @@
   - [ ] Bi-color presets
 - [ ] Light Settings
   - [ ] Bi-color range / calibration
+  - [ ] DMX assignment overview (Channel free or not)
 - [ ] Add support for different lights in the studio
   - [ ] Arri Sky panel
   - [ ] Astera Titan Tubes

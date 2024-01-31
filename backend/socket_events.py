@@ -80,7 +80,6 @@ def register_socketio_events(socketio):
     def faderSend(index, value, channelId):
         global last_send_time
         global last_change
-        current_time = time.time() * 1000
         socketio.emit(
             "variable_update",
             {"deviceId": index, "value": value, "channelId": channelId},
@@ -100,17 +99,6 @@ def register_socketio_events(socketio):
         #     send_dmx_direct(
         #         int(routes.devices[index]["universe"][1:]), value, channelId
         #     )
-
-        """ if current_time - last_send_time >= 1:
-            last_send_time = current_time
-            
-            if(last_change):
-                send_dmx(last_change[0], last_change[1], last_change[2], routes.devices[last_change[0]], routes.devices[last_change[0]]["attributes"]["channel"][last_change[1]])
-            
-            print("Sending: " + str(value) + " to device index " + str(index) + " ,channel " + str(channelId))
-            send_dmx(index, channelId, value, routes.devices[index], routes.devices[index]["attributes"]["channel"][channelId])
-        else:
-            last_change = (index, channelId, value) """
 
     def callback(index, value):
         faderSend(index, value, 0)  # invokes the corresponding socket event
@@ -156,11 +144,16 @@ def register_socketio_events(socketio):
                             master_channel["id"],
                         )
 
+    def blackoutCallback():
+        # call reset function
+        reset()
+
     try:
         driver = Driver()
         driver.set_callback(callback)
         driver.set_sceneQuickCallback(quickSceneCallback)
         driver.set_sceneCallback(sceneCallback)
+        driver.set_blackoutCallback(blackoutCallback)
         driver.devices = routes.devices
         driver.scenes = routes.scenes
         driver.deviceMapping()
@@ -247,6 +240,10 @@ def register_socketio_events(socketio):
         steps = int(fade_time / interval) if fade_time > 0 else 1
         global scenes_solo_state
         scene_device_ids = {device["id"] for device in routes.scenes[scene]["channel"]}
+
+        # return if scene is not in scenes list
+        if scene >= len(routes.scenes):
+            return
 
         def start_fade_thread(device, start_value, end_value):
             channel = device["attributes"]["channel"][0]

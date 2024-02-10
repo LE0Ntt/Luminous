@@ -1,6 +1,7 @@
 ## Version 1.2.x TODOs
 
-- [x] Studio-Overview add Traverse Lights // if everybody is happy with the current implementation
+- [ ] Studio-Overview add Traverse Lights // master missing
+  - [ ] Add info panels
 - [ ] Prevent scene and solo overlaps
 - [ ] Fader
   - [ ] More obvious fader highlighting
@@ -23,13 +24,13 @@
   - Displays only two pages until switched to Scenes and back
   - Faders sometimes jump randomly
   - Scenes do not turn off correctly, maybe backup value?
+  - Reset button kills unsafed scenes
 - Studio-Overview just uses ID, not universe // not sure if this is a problem or not
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
 - Scenes do not fade in exact seconds and are subject to server performance
 - RGB and bi-color picker mismatch from cursor position when window is resized
 - Colors of the RGB lights are weird, when master is not at 100% - try in studio
-- Reset kills unsafed scenes
 
 ## Necessary Changes
 
@@ -107,7 +108,7 @@
   - [ ] Bi-color presets
 - [ ] Light Settings
   - [ ] Bi-color range / calibration
-  - [ ] DMX assignment overview (Channel free or not)
+  - [x] DMX assignment overview (Channel free or not)
 - [ ] Add support for different lights in the studio
   - [ ] Arri Sky panel
   - [ ] Astera Titan Tubes

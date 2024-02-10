@@ -247,3 +247,36 @@
   text-align: center;
   background: none;
 }
+
+.LightSettingsDMXTable {
+  position: relative;
+  width: 100%;
+  border-left: 1px solid var(--onepStroke);
+  border-top: 1px solid var(--onepStroke);
+  border-radius: 5px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  text-align: center;
+  top: 40px;
+  color: var(--secondary);
+  background-color: var(--color00000003);
+}
+
+.LightSettingsDMXTableCell {
+  border-right: 1px solid var(--onepStroke);
+  border-bottom: 1px solid var(--onepStroke);
+  height: 1.4vw;
+  font-size: 0.6vw;
+}
+
+.LightSettingsDMXTableCellOccupied {
+  background-color: var(--mainColor);
+  color: var(--primaryDark);
+}
+
+@media screen and (max-width: 1468px) {
+  .LightSettingsDMXTableCell {
+    font-size: 0.4vw;
+  }
+}

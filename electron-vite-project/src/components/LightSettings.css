@@ -134,9 +134,7 @@
 
 .LightSettingsWindowMid {
   height: 100%;
-  position: relative;
   width: calc(100% + 10px);
-  gap: 20px;
   overflow-y: scroll;
   padding-right: 10px;
 }
@@ -157,7 +155,7 @@
 .LightSettingsDMXContainer {
   display: grid;
   position: relative;
-  top: 20px;
+  top: 10px;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   grid-gap: 20px;
   width: 100%;
@@ -258,7 +256,7 @@
   border-spacing: 0;
   overflow: hidden;
   text-align: center;
-  top: 40px;
+  top: 20px;
   color: var(--secondary);
   background-color: var(--color00000003);
 }

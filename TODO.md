@@ -134,35 +134,45 @@
     - [ ] Check necessity
     - [ ] Rename to PascalCase scheme
   - [ ] Components
+    - [x] About.css
     - [x] About.tsx
-    - [ ] AddScene.tsx
-    - [ ] AdminPassword.tsx
+    - [x] AddScene.tsx
+    - [x] AdminPassword.tsx
     - [x] BigView.css
     - [x] BigView.tsx
-    - [ ] Button.css
+    - [x] Button.css
     - [x] Button.tsx
     - [ ] ColorPicker.tsx
     - [ ] ConnectionContext.tsx
     - [ ] ControlHandler.tsx
-    - [ ] DeleteScene.tsx
+    - [x] DeleteScene.tsx
     - [ ] DeviceList.css
     - [ ] DeviceList.tsx
     - [x] Dialog.css
     - [x] DropDown.css
     - [x] DropDown.tsx
+    - [x] EventBus.tsx
     - [ ] Fader.css
     - [x] Fader.tsx
     - [ ] FaderContext.tsx
     - [ ] Header.css
     - [ ] Header.tsx
+    - [ ] Help.css
     - [x] Help.tsx
+    - [ ] LightBeam.tsx
     - [ ] LightSettings.css
     - [ ] LightSettings.tsx
-    - [x] NewSettings.tsx
     - [ ] NoConnection.css
     - [ ] NoConnection.tsx
+    - [x] RecoverDialog.tsx
+    - [ ] ScenesComponent.css
+    - [ ] ScenesComponent.tsx
+    - [ ] ScrollButton.tsx
     - [ ] Settings.css
     - [ ] Settings.tsx
+    - [ ] SettingsAdmin.tsx
+    - [ ] SettingsGeneral.tsx
+    - [ ] SliderDataLoader.tsx
     - [ ] Timeline.css
     - [ ] Timeline.tsx
     - [ ] Titlebar.css
@@ -172,14 +182,14 @@
     - [ ] TranslationContext.tsx
   - [ ] App.tsx
   - [ ] Color.css
-  - [ ] Color.tsx
   - [ ] Control.css
   - [ ] Control.tsx
   - [ ] index.css
-  - [ ] main.tsx
+  - [x] main.tsx
   - [ ] Scenes.css
   - [ ] Scenes.tsx
   - [ ] Show.css
   - [ ] Show.tsx
   - [ ] Studio.css
   - [ ] Studio.tsx
+  - [ ] translations.json

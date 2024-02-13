@@ -538,6 +538,7 @@ function LightSettings({ onClose }: SettingsProps) {
                   </div>
                 ))}
               </div>
+              <hr style={{ marginTop: '30px' }} />
               <table className='LightSettingsDMXTable'>
                 <tbody>
                   {Array.from({ length: 16 }).map((_, rowIndex) => (

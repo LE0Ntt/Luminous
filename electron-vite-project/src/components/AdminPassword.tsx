@@ -13,9 +13,9 @@
  * @file AdminPassword.tsx
  */
 import { useContext, useEffect, useState } from 'react';
-import Button from './Button';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
+import Button from './Button';
 import IconNote from '@/assets/IconNote';
 
 interface AdminPasswordProps {
@@ -28,11 +28,9 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
   const { url } = useConnectionContext();
   const { t } = useContext(TranslationContext);
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
 
-  const handlePasswordChange = (event: { target: { value: any } }) => {
-    setPassword(event.target.value);
-  };
-
+  // Logic for checking the password
   const handleConfirm = () => {
     fetch(url + '/checkpassword', {
       method: 'POST',
@@ -44,29 +42,21 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
       .then((response) => response.json())
       .then((data) => {
         if (data.match === 'true') {
-          console.log('Password correct');
           if (onConfirm !== undefined) {
             onConfirm(true);
           } else {
             if (isDelete) {
               document.body.dispatchEvent(new Event('deleteScene'));
-              console.log('Delete scene');
             } else {
               document.body.dispatchEvent(new Event('saveScene'));
             }
           }
           onClose();
         } else {
-          console.log('Password wrong');
           // If the password is wrong, the text box will be highlighted in red
-          const textBox = document.getElementsByClassName('DialogTextBox')[0] as HTMLInputElement;
-          if (textBox) {
-            textBox.classList.add('error-outline');
-            textBox.focus();
-            setTimeout(() => {
-              textBox.classList.remove('error-outline');
-            }, 4000);
-          }
+          setError(true);
+          const timer = setTimeout(() => setError(false), 4000);
+          return () => clearTimeout(timer);
         }
       })
       .catch((error) => {
@@ -84,9 +74,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
 
     window.addEventListener('keydown', handleKeyDown);
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   return (
@@ -107,11 +95,11 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
         <div className='DialogContent'>
           <span className='DialogTitle'>{t('ap_title')}</span>
           <input
-            className='textBox DialogTextBox'
+            className={`textBox DialogTextBox ${error ? 'error-outline' : ''}`}
             type='password'
             placeholder={t('ap_password')}
             value={password}
-            onChange={handlePasswordChange}
+            onChange={(event) => setPassword(event.target.value)}
             autoFocus
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleConfirm();

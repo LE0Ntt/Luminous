@@ -544,13 +544,26 @@ function LightSettings({ onClose }: SettingsProps) {
                     <tr key={rowIndex}>
                       {Array.from({ length: 32 }).map((_, cellIndex) => {
                         const cellNumber = rowIndex * 32 + cellIndex + 1;
+                        const isInChannelArray = channelArray.some((ch) => parseInt(ch.dmx_channel) === cellNumber);
                         const isDMXDevice = devices.some(
                           (device) => device.universe === inputUniverse && device.attributes.channel.some((ch: { dmx_channel: string }) => parseInt(ch.dmx_channel) === cellNumber)
                         );
+                        var isInSelectedDevice = false;
+                        if (!isNewDevice && selectedDevice) {
+                          isInSelectedDevice = selectedDevice.attributes.channel.some((ch: { dmx_channel: string }) => parseInt(ch.dmx_channel) === cellNumber);
+                        }
+                        let cellClass = 'LightSettingsDMXTableCell';
+                        if (isDMXDevice && isInChannelArray && !isInSelectedDevice) {
+                          cellClass += ' LightSettingsDMXTableCellOccupiedAndInChannel';
+                        } else if (isInChannelArray) {
+                          cellClass += ' LightSettingsDMXTableCellInChannel';
+                        } else if (isDMXDevice) {
+                          cellClass += ' LightSettingsDMXTableCellOccupied';
+                        }
                         return (
                           <td
                             key={cellIndex}
-                            className={`LightSettingsDMXTableCell ${isDMXDevice ? 'LightSettingsDMXTableCellOccupied' : ''}`}
+                            className={cellClass}
                           >
                             {cellNumber}
                           </td>

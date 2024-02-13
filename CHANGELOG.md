@@ -7,6 +7,7 @@
 ### Changes
 
 - Updated dependencies
+- Added DMX occupancy overview to LightSettings
 
 ### Fixes
 

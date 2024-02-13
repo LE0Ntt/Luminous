@@ -266,13 +266,23 @@
 .LightSettingsDMXTableCell {
   border-right: 1px solid var(--onepStroke);
   border-bottom: 1px solid var(--onepStroke);
-  height: 1.4vw;
+  height: 1.3vw;
   font-size: 0.6vw;
 }
 
 .LightSettingsDMXTableCellOccupied {
   background-color: var(--mainColor);
   color: var(--primaryDark);
+}
+
+.LightSettingsDMXTableCellInChannel {
+  background-color: var(--color00000008);
+  color: var(--primary);
+}
+
+.LightSettingsDMXTableCellOccupiedAndInChannel {
+  background-color: red;
+  color: #fff;
 }
 
 @media screen and (max-width: 1468px) {

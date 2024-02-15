@@ -12,6 +12,7 @@
  *
  * @file socket_events.py
 """
+
 from flask_socketio import SocketIO  # type: ignore
 from server import app, routes, db
 from server.motorMix_driver import Driver
@@ -243,7 +244,7 @@ def register_socketio_events(socketio):
         # return if scene is not in scenes list
         if scene >= len(routes.scenes):
             return
-        
+
         scene_device_ids = {device["id"] for device in routes.scenes[scene]["channel"]}
 
         def start_fade_thread(device, start_value, end_value):
@@ -400,6 +401,7 @@ def register_socketio_events(socketio):
             if device["attributes"]["channel"][0]["sliderValue"] > 0
         ]
         scene["channel"] = json.loads(json.dumps(filtered_devices))
+        scene["status"] = True
         routes.scenes.append(scene)
         if not scene["saved"]:  # If scene is not saved, don't add to database
             socketio.emit("scene_reload", namespace="/socket")

@@ -8,6 +8,7 @@
 
 - Updated dependencies
 - Added DMX occupancy overview to LightSettings
+- Scenes are "on" when created
 
 ### Fixes
 
@@ -86,7 +87,6 @@
   - Removed Vite files for now
   - Further refinements
 - Connection
-  - Reduced SocketIO `ping_timeout`
   - Fetch faders, scenes and devices only if connected
   - LightSettings only open if connected
 - Input fields

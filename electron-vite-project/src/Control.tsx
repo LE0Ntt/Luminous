@@ -12,35 +12,38 @@
  *
  * @file Control.tsx
  */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { TranslationContext } from './components/TranslationContext';
 import { useConnectionContext } from './components/ConnectionContext';
 import { useLocation } from 'react-router-dom';
+import { useFaderContext } from './components/FaderContext';
 import './Control.css';
 import Fader from './components/Fader';
 import DeviceList from './components/DeviceList';
 import Button from './components/Button';
 import ColorPicker from './components/ColorPicker';
-import { useFaderContext } from './components/FaderContext';
 import AddScene from './components/AddScene';
 import AdminPassword from './components/AdminPassword';
 import ControlHandler from './components/ControlHandler';
 import iro from '@jaames/iro';
+import ControlWindow from './assets/ControlWindow';
 
 // LightFX
 function Control() {
   const { t } = useContext(TranslationContext);
   const { url, connected, emit, on, off } = useConnectionContext();
+  const { faderValues, setFaderValue } = useFaderContext();
+  const location = useLocation();
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
   const [firstLoad, setFirstLoad] = useState(false);
-  const [animiation, setAnimiation] = useState(false);
-  const location = useLocation();
-  const { faderValues, setFaderValue } = useFaderContext();
+  const [animation, setAnimation] = useState(false);
   const [addScene, setAddScene] = useState(false);
   const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
   const [isSolo, setIsSolo] = useState(false);
+  const [height, setHeight] = useState(-3);
+  const [selected, setSelected] = useState(selectedDevices[0] && devices.length > 0);
 
   interface DeviceConfig {
     id: number;
@@ -50,6 +53,11 @@ function Control() {
     device_type: string;
     universe: string;
   }
+
+  // update selected state
+  useLayoutEffect(() => {
+    setSelected(selectedDevices[0] && devices.length > 0);
+  }, [selectedDevices, devices]);
 
   useEffect(() => {
     const fetchDevices = async (reset: boolean) => {
@@ -84,7 +92,7 @@ function Control() {
 
     // Prevent transition animation before height has loaded
     const timer = setTimeout(() => {
-      setAnimiation(true);
+      setAnimation(true);
     }, 500);
 
     // If a device is updated, reload the devices
@@ -122,7 +130,7 @@ function Control() {
 
     // Add a device if it was added from Studio
     const id = location.state && location.state.id; // Device ID from Studio
-    if (id && !animiation) {
+    if (id && !animation) {
       const foundDevice = unselectedDevices.find((device) => device.id === id);
       if (foundDevice) {
         setSelectedDevices([...selectedDevices, foundDevice]);
@@ -146,19 +154,6 @@ function Control() {
     setUnselectedDevices([...unselectedDevices, device]);
   };
 
-  // Since the more complex shape of the main window here cannot be displayed with normal divs due to the translucency and the height-adjustable property, we had to use an SVG. Hence also the following paths.
-  const [height, setHeight] = useState(-3);
-  const pathFill = `M10 17A10 10 0 0120 7h1820a10 10 0 0110 10v890a10 10 0 01-10 10H424a10 10 0 01-10-10V${height}a10 10 0 00-10-10H20a10 10 0 01-10-10V17z`;
-  const pathStroke = `M1849.5 17v890a9.5 9.5 0 01-9.5 9.5H424a9.5 9.5 0 01-9.5-9.5V${height}c0-5.8-4.7-10.5-10.5-10.5H20a9.5 9.5 0 01-9.5-9.5V17A9.5 9.5 0 0120 7.5h1820a9.5 9.5 0 019.5 9.5z`;
-  var devicesHeight = 907 - height;
-
-  const selected = selectedDevices[0] && devices.length > 0;
-  var deviceWindow = 'devices window' + (selected ? ' devicesSmall' : ''); // 5px upper right corner if selected
-  deviceWindow = animiation ? deviceWindow + ' devicesAnimation' : deviceWindow;
-  const mainAnimation = 'controlMain' + (animiation ? ' mainAnimation' : '');
-  const hide = 'noSelectWindow window' + (selected ? ' hide' : '');
-  const selectAnimation = 'selectedDevices' + (animiation ? ' devicesAnimation' : '');
-
   // Solo Button
   const toggleSolo = () => {
     emit('controlSolo', { solo: !isSolo, devices: selectedDevices });
@@ -170,7 +165,6 @@ function Control() {
   const [red, setRed] = useState(faderValues[0][3]);
   const [green, setGreen] = useState(faderValues[0][4]);
   const [blue, setBlue] = useState(faderValues[0][5]);
-  const [kelvin, setKelvin] = useState(faderValues[0][2]);
 
   const handleColorChange = (newRed: number, newGreen: number, newBlue: number) => {
     setRed(newRed);
@@ -214,7 +208,7 @@ function Control() {
       {selected ? (
         <>
           <div
-            className={selectAnimation}
+            className={'selectedDevices' + (animation ? ' devicesAnimation' : '')}
             style={{ height: height - 17 + 'px' }}
           >
             <DeviceList
@@ -342,96 +336,10 @@ function Control() {
               )}
             </div>
           </div>
-          {/* Background */}
-          <svg
-            className={mainAnimation}
-            width='1860'
-            height='930'
-            viewBox='0 0 1860 930'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <g filter='url(#filter0_b_873_8277)'>
-              <g
-                filter='url(#filter1_d_873_8277)'
-                shapeRendering='geometricPrecision'
-              >
-                <path
-                  d={pathFill}
-                  fill='var(--fillMedium)'
-                />
-                <path
-                  d={pathStroke}
-                  stroke='var(--onepStroke)'
-                />
-              </g>
-            </g>
-            <defs>
-              <filter
-                id='filter0_b_873_8277'
-                x='-90'
-                y='-93'
-                width='2040'
-                height='1110'
-                filterUnits='userSpaceOnUse'
-                colorInterpolationFilters='sRGB'
-              >
-                <feFlood
-                  floodOpacity='0'
-                  result='BackgroundImageFix'
-                />
-                <feGaussianBlur
-                  in='BackgroundImageFix'
-                  stdDeviation='50'
-                />
-                <feComposite
-                  in2='SourceAlpha'
-                  operator='in'
-                  result='effect1_backgroundBlur_873_8277'
-                />
-                <feBlend
-                  in='SourceGraphic'
-                  in2='effect1_backgroundBlur_873_8277'
-                  result='shape'
-                />
-              </filter>
-              <filter
-                id='filter1_d_873_8277'
-                x='0'
-                y='0'
-                width='1860'
-                height='930'
-                filterUnits='userSpaceOnUse'
-                colorInterpolationFilters='sRGB'
-              >
-                <feFlood
-                  floodOpacity='0'
-                  result='BackgroundImageFix'
-                />
-                <feColorMatrix
-                  in='SourceAlpha'
-                  values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0'
-                  result='hardAlpha'
-                />
-                <feOffset dy='3' />
-                <feGaussianBlur stdDeviation='5' />
-                <feComposite
-                  in2='hardAlpha'
-                  operator='out'
-                />
-                <feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0' />
-                <feBlend
-                  in2='BackgroundImageFix'
-                  result='effect1_dropShadow_873_8277'
-                />
-                <feBlend
-                  in='SourceGraphic'
-                  in2='effect1_dropShadow_873_8277'
-                  result='shape'
-                />
-              </filter>
-            </defs>
-          </svg>
+          <ControlWindow
+            className={'controlMain' + (animation ? ' mainAnimation' : '')}
+            height={height}
+          />
         </>
       ) : (
         <>
@@ -454,8 +362,8 @@ function Control() {
         </>
       )}
       <div
-        className={deviceWindow}
-        style={{ height: devicesHeight + 'px' }}
+        className={`devices window ${selected ? 'devicesSmall' : ''} ${animation ? 'devicesAnimation' : ''}`}
+        style={{ height: 907 - height + 'px' }}
       >
         <DeviceList
           devices={unselectedDevices}
@@ -463,7 +371,7 @@ function Control() {
           onDeviceButtonClick={handleAddDevice}
         />
       </div>
-      <div className={hide}></div>
+      <div className={'noSelectWindow window' + (selected ? ' hide' : '')}></div>
       {addScene && <AddScene onClose={() => setAddScene(false)} />}
       {saveSceneAdmin && <AdminPassword onClose={() => setSaveSceneAdmin(false)} />}
     </>

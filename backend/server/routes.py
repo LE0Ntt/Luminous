@@ -12,6 +12,7 @@
  *
  * @file routes.py
 """
+
 from flask import request, jsonify
 import json
 from server import app, db
@@ -63,7 +64,6 @@ def load_scenes():
         for scene in scenes:
             scene = {
                 "id": scene.id - 1,
-                "statusOn": False,
                 "name": scene.name,
                 "channel": scene.channel,
                 "saved": True,

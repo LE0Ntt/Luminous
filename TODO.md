@@ -6,11 +6,12 @@
 - [ ] Fader
   - [ ] More obvious fader highlighting
   - [ ] Rework spacing
+  - [ ] Prevent rerendering on fader change
 - [ ] LightFX
   - [ ] First light should be the current state
   - [ ] Second light should show a out of sync icon, if not the current state, and a button to sync
 - [ ] Scenes
-  - [ ] Should be "on" when added
+  - [x] Should be "on" when added
   - [ ] Visualisation of Scenes when specific fader is changed
   - [ ] If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
 - [ ] Setting to change the URL of the server
@@ -90,7 +91,7 @@
   - [x] Device highlight
   - [x] Move to the left
   - [ ] Add rgb traverse lights
-    - [ ] Display traverse light effects
+    - [x] Display traverse light effects
   - [x] Add fill light icon
   - [x] Rearrange devices
   - [ ] Move code to own component
@@ -104,7 +105,7 @@
   - [ ] Fader for each scene and master scenes fader
 - [ ] Mute / Solo gray out faders
 - [ ] LightFX
-  - [ ] Save scene, only current group or everything
+  - [ ] Save scene: only current group or everything choice
   - [ ] Bi-color presets
 - [ ] Light Settings
   - [ ] Bi-color range / calibration

@@ -8,8 +8,10 @@
   - [ ] Rework spacing
   - [ ] Prevent rerendering on fader change
 - [ ] LightFX
-  - [ ] First light should be the current state
-  - [ ] Second light should show a out of sync icon, if not the current state, and a button to sync
+  - [x] First light should be the current state
+  - [ ] Other light should show a out of sync button, if not the current state
+  - [ ] Bi-color number input
+  - [ ] Hide not supported areas
 - [ ] Scenes
   - [x] Should be "on" when added
   - [ ] Visualisation of Scenes when specific fader is changed

@@ -98,12 +98,18 @@
   width: 553px;
   top: 130px;
   left: 122px;
+  color: var(--primary);
 }
 
 .controlKelvinPicker {
-  position: absolute;
-  top: 50%;
+  position: relative;
+  top: 142px;
   left: 60px;
+}
+
+.controlBiColor input {
+  margin-bottom: 57px;
+  font-weight: 700;
 }
 
 .controlRGB {

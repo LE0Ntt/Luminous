@@ -11,6 +11,7 @@
 - Scenes are "on" when created
 - LightFX
   - Transfer the values of the first light of its kind to the corresponding faders
+  - Added input field for bi-color
 
 ### Fixes
 

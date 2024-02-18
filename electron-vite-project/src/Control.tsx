@@ -290,6 +290,57 @@ function Control() {
     }
   }, [deviceModified, selectedDevices]);
 
+  // -----------------------------------------------
+  // Bi-Color input field handling ----------------- Does not fix low resolution though
+  const [isFocused, setIsFocused] = useState(false); // Focus on value input
+  const scaledDisplayValue = (faderValues[0][2] / 255) * 100; // (0 to 100%)
+  const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue) + '%');
+
+  // Update input value when display value changes
+  useEffect(() => {
+    const finalDisplayValue = isFocused ? scaledDisplayValue.toFixed(1) : Math.round(scaledDisplayValue) + '%';
+    setInputValue(finalDisplayValue);
+  }, [scaledDisplayValue, isFocused]);
+
+  // Check if the input value is a number
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    if (value.length <= 5) {
+      setInputValue(value.replace(/[^0-9.,]+/g, ''));
+    }
+  };
+
+  // Check if the input is valid and set the fader value
+  const handleInputConfirm = () => {
+    let numericValue = parseFloat(inputValue.toString().replace(',', '.'));
+    if (!isNaN(numericValue)) {
+      numericValue = Math.max(0, Math.min(100, numericValue));
+      setInputValue(Math.round(numericValue));
+      // scaled value to kelvin and set fader values
+      const kelvin = Math.round((Math.round((numericValue / 100) * 255) / 255) * 8800 + 2200);
+      setFaderValue(0, 3, iro.Color.kelvinToRgb(kelvin).r);
+      setFaderValue(0, 5, iro.Color.kelvinToRgb(kelvin).b);
+    } else {
+      setInputValue(Math.round(scaledDisplayValue)); // Reset value if input is NaN
+    }
+    setIsFocused(false);
+  };
+
+  // Confirm with ENTER
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.currentTarget.blur(); // Remove focus from the input
+    }
+  };
+
+  // On value input focus
+  const handleFocus = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsFocused(true);
+    setTimeout(() => {
+      event.target.select(); // Select the input text
+    }, 50);
+  };
+
   return (
     <>
       {selected ? (
@@ -342,6 +393,15 @@ function Control() {
                   onColorChange={handleColorChange}
                 />
               </div>
+              <input
+                type='text'
+                value={inputValue}
+                onChange={handleInputChange}
+                onFocus={handleFocus}
+                onBlur={handleInputConfirm}
+                onKeyDown={handleKeyDown}
+                className='inputNum'
+              />
             </div>
             {/* RGB */}
             <div className='controlRGB innerWindow'>

@@ -10,7 +10,8 @@
 - [ ] LightFX
   - [x] First light should be the current state
   - [ ] Other light should show a out of sync button, if not the current state
-  - [ ] Bi-color number input
+  - [x] Add Bi-color number input
+    - [ ] Find a way to get full resolution
   - [ ] Hide not supported areas
 - [ ] Scenes
   - [x] Should be "on" when added

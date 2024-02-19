@@ -203,19 +203,19 @@ function Control() {
       device.attributes.channel.forEach((channel) => {
         switch (channel.channel_type) {
           case 'main':
-            setFaderValue(device.id, 0, faderValues[0][1]);
+            setFaderValue(device.id, channel.id, faderValues[0][1]);
             break;
           case 'bi':
-            setFaderValue(device.id, 1, faderValues[0][2]);
+            setFaderValue(device.id, channel.id, faderValues[0][2]);
             break;
           case 'r':
-            setFaderValue(device.id, 1, faderValues[0][3]);
+            setFaderValue(device.id, channel.id, faderValues[0][3]);
             break;
           case 'g':
-            setFaderValue(device.id, 2, faderValues[0][4]);
+            setFaderValue(device.id, channel.id, faderValues[0][4]);
             break;
           case 'b':
-            setFaderValue(device.id, 3, faderValues[0][5]);
+            setFaderValue(device.id, channel.id, faderValues[0][5]);
             break;
         }
       });
@@ -247,43 +247,36 @@ function Control() {
     const updateFaderValuesForSelectedDevices = () => {
       if (selectedDevices.length === 0) return;
 
-      let flags = { mainSet: false, biColorSet: false, rgbSet: false };
+      const flags: { mainSet: boolean; biSet: boolean; rSet: boolean; gSet: boolean; bSet: boolean; [key: string]: boolean } = {
+        mainSet: false,
+        biSet: false,
+        rSet: false,
+        gSet: false,
+        bSet: false,
+      };
 
       selectedDevices.forEach((device) => {
         device.attributes.channel.forEach((channel) => {
-          switch (channel.channel_type) {
-            case 'main':
-              if (!flags.mainSet) {
-                setFaderValue(0, 1, faderValues[device.id][0]);
-                flags.mainSet = true;
-              }
-              break;
-            case 'bi':
-              if (!flags.biColorSet) {
-                const kelvin = Math.round((faderValues[device.id][1] / 255) * 8800 + 2200); // faderValue to kelvin
-                setFaderValue(0, 3, iro.Color.kelvinToRgb(kelvin).r);
-                setFaderValue(0, 5, iro.Color.kelvinToRgb(kelvin).b);
-                flags.biColorSet = true;
-                flags.rgbSet = true;
-              }
-              break;
-            case 'r':
-            case 'g':
-            case 'b':
-              if (!flags.rgbSet) {
-                setFaderValue(0, 3, faderValues[device.id][1]);
-                setFaderValue(0, 4, faderValues[device.id][2]);
-                setFaderValue(0, 5, faderValues[device.id][3]);
-                flags.rgbSet = true;
-                flags.biColorSet = true;
-              }
-              break;
+          const channelValue = faderValues[device.id][channel.id];
+          const kelvinValue = Math.round((channelValue / 255) * 8800 + 2200);
+
+          if (channel.channel_type === 'main' && !flags.mainSet) {
+            setFaderValue(0, 1, channelValue);
+            flags.mainSet = true;
+          } else if (['r', 'g', 'b'].includes(channel.channel_type) && !flags[channel.channel_type + 'Set']) {
+            setFaderValue(0, channel.channel_type === 'r' ? 3 : channel.channel_type === 'g' ? 4 : 5, channelValue);
+            flags[channel.channel_type + 'Set'] = true;
+            flags.biSet = true;
+          } else if (channel.channel_type === 'bi' && !flags.biSet) {
+            setFaderValue(0, 2, channelValue);
+            setFaderValue(0, 3, iro.Color.kelvinToRgb(kelvinValue).r);
+            setFaderValue(0, 5, iro.Color.kelvinToRgb(kelvinValue).b);
+            flags.biSet = flags.rSet = flags.gSet = flags.bSet = true;
           }
         });
       });
     };
 
-    // If a device was added or removed
     if (deviceModified) {
       updateFaderValuesForSelectedDevices();
       setDeviceModified(false);
@@ -293,14 +286,16 @@ function Control() {
   // -----------------------------------------------
   // Bi-Color input field handling ----------------- Does not fix low resolution though
   const [isFocused, setIsFocused] = useState(false); // Focus on value input
-  const scaledDisplayValue = (faderValues[0][2] / 255) * 100; // (0 to 100%)
+  const rgbToBiColor = iro.Color.rgbToKelvin({ r: faderValues[0][3], g: faderValues[0][4], b: faderValues[0][5] });
+  const biColorScaled = Math.min(255, Math.max(0, Math.round(((rgbToBiColor - 2200) / 8800) * 255)));
+  const scaledDisplayValue = (biColorScaled / 255) * 100; // (0 to 100%)
   const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue) + '%');
 
   // Update input value when display value changes
   useEffect(() => {
     const finalDisplayValue = isFocused ? scaledDisplayValue.toFixed(1) : Math.round(scaledDisplayValue) + '%';
     setInputValue(finalDisplayValue);
-  }, [scaledDisplayValue, isFocused]);
+  }, [scaledDisplayValue, isFocused, deviceModified]);
 
   // Check if the input value is a number
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

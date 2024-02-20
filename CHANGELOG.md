@@ -8,12 +8,13 @@
 
 - Updated dependencies
 - Added DMX occupancy overview to LightSettings
-- Scenes are "on" when created
+- Scenes are 'on' when created
 - LightFX
   - Transfer the values of the first light of its kind to the corresponding LightFX faders
   - Added input field for bi-color
   - Bi-color and RGB areas are now blurred if not supported by the selection
   - Miscellaneous visual touch-ups
+  - Added 'out of sync' button for devices that are not in the current state of the selection
 
 ### Fixes
 
@@ -41,7 +42,7 @@
 
 - Closing the application turns off all lights. When the app is reopened, the user is asked if the session should be restored or reset
 - Faders
-  - Input fields are now larger and include "%" symbol for easier touch input and have a subtle background
+  - Input fields are now larger and include '%' symbol for easier touch input and have a subtle background
   - Introduced compact-style scroll buttons for easier navigation through faders
 - Added HMI 14 to Studio-Overview
 - Reverted LightFX only sending changed channels, because every grouped light should be updated the same way
@@ -160,7 +161,7 @@
   - Input now only takes effect if confirmed (_ENTER_ or click outside the field)
   - Reset to default value if confirmed input is invalid
   - Fader input accepts decimal values, but only displays integers
-    - Value with "%" is now always centred
+    - Value with '%' is now always centred
 - Changed Electron app loading screen that only appears on slow PCs
 - Reworked Help page
   - Added FAQ

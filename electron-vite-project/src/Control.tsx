@@ -43,6 +43,7 @@ interface DeviceConfig {
   };
   device_type: string;
   universe: string;
+  upToDate?: boolean;
 }
 
 // LightFX
@@ -201,27 +202,15 @@ function Control() {
     // set all channels of selectedDevices to the corresponding channel values of faderValues[0]
     selectedDevices.forEach((device) => {
       device.attributes.channel.forEach((channel) => {
-        switch (channel.channel_type) {
-          case 'main':
-            setFaderValue(device.id, channel.id, faderValues[0][1]);
-            break;
-          case 'bi':
-            setFaderValue(device.id, channel.id, faderValues[0][2]);
-            break;
-          case 'r':
-            setFaderValue(device.id, channel.id, faderValues[0][3]);
-            break;
-          case 'g':
-            setFaderValue(device.id, channel.id, faderValues[0][4]);
-            break;
-          case 'b':
-            setFaderValue(device.id, channel.id, faderValues[0][5]);
-            break;
+        const controlIndex = getControlIndex(channel.channel_type);
+        if (controlIndex !== undefined) {
+          setFaderValue(device.id, channel.id, faderValues[0][controlIndex]);
         }
       });
     });
   }, [faderValues[0][1], faderValues[0][2], faderValues[0][3], faderValues[0][4], faderValues[0][5]]);
 
+  // Check if effects are available
   useEffect(() => {
     let effectFound = false;
 
@@ -302,8 +291,40 @@ function Control() {
     setSupportFlags({ supportsBiColor: biColorSupported, supportsRGB: rgbSupported });
   }, [selectedDevices]);
 
-  // -----------------------------------------------
-  // Bi-Color input field handling ----------------- Does not fix low resolution though
+  // Get the control index (faderValues[0][x]) for the given channel type
+  const getControlIndex = (channelType: string): number | undefined => ({ main: 1, bi: 2, r: 3, g: 4, b: 5 }[channelType]);
+
+  //Check if the selected devices channels are up to date with the corresponding fader values of the control
+  useEffect(() => {
+    for (const device of selectedDevices) {
+      for (const channel of device.attributes.channel) {
+        const controlIndex = getControlIndex(channel.channel_type);
+
+        if (controlIndex !== undefined && faderValues[device.id][channel.id] !== faderValues[0][controlIndex]) {
+          device.upToDate = false;
+          break;
+        } else {
+          device.upToDate = true;
+        }
+      }
+    }
+  }, [faderValues, selectedDevices]);
+
+  // Sync the selected devices channels with the corresponding fader values of the control
+  const handleSyncClick = (device: DeviceConfig) => {
+    device.attributes.channel.forEach((channel) => {
+      const controlIndex = getControlIndex(channel.channel_type);
+
+      if (controlIndex !== undefined) {
+        const newValue = faderValues[0][controlIndex];
+        setFaderValue(device.id, channel.id, newValue);
+        emit('fader_value', { deviceId: device.id, value: newValue, channelId: channel.id });
+        device.upToDate = true;
+      }
+    });
+  };
+
+  // Bi-Color input field handling --- Does not fix low resolution though
   const [isFocused, setIsFocused] = useState(false); // Focus on value input
   const rgbToBiColor = iro.Color.rgbToKelvin({ r: faderValues[0][3], g: faderValues[0][4], b: faderValues[0][5] });
   const biColorScaled = Math.min(255, Math.max(0, Math.round(((rgbToBiColor - 2200) / 8800) * 255)));
@@ -367,6 +388,7 @@ function Control() {
               devices={selectedDevices}
               isAddButton={false}
               onDeviceButtonClick={handleRemoveDevice}
+              onSyncClick={handleSyncClick}
             />
           </div>
           <div className='innerContainer'>

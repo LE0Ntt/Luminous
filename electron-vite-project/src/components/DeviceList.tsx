@@ -23,15 +23,17 @@ type DeviceConfig = {
   attributes: any;
   device_type: string;
   universe: string;
+  upToDate?: boolean;
 };
 
 type DeviceListProps = {
   devices: DeviceConfig[];
   onDeviceButtonClick: (device: DeviceConfig) => void;
+  onSyncClick?: (device: DeviceConfig) => void;
   isAddButton: boolean;
 };
 
-const DeviceList: React.FC<DeviceListProps> = ({ devices, onDeviceButtonClick, isAddButton }) => {
+const DeviceList: React.FC<DeviceListProps> = ({ devices, onDeviceButtonClick, onSyncClick, isAddButton }) => {
   // No scrollbar for selected list until devices exceed max height
   var deviceListClass = 'deviceList';
   if (isAddButton) {
@@ -79,6 +81,11 @@ const DeviceList: React.FC<DeviceListProps> = ({ devices, onDeviceButtonClick, i
                   {device.name}
                 </span>
               </div>
+              <div
+                className={`sync ${!device.upToDate && !isAddButton && onSyncClick ? 'visible' : ''}`}
+                title='Out of sync'
+                onClick={() => (onSyncClick ? onSyncClick(device) : console.log('No onSyncClick provided'))}
+              ></div>
               <Button
                 onClick={() => onDeviceButtonClick(device)}
                 className='addremoveButton'

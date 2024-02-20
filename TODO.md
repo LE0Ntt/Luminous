@@ -9,7 +9,7 @@
   - [ ] Prevent rerendering on fader change
 - [ ] LightFX
   - [x] First light should be the current state
-  - [ ] Other light should show a out of sync button, if not the current state
+  - [x] Other light should show a out of sync button, if not the current state
   - [x] Add Bi-color number input
     - [ ] Find a way to get full resolution
   - [x] Hide not supported areas

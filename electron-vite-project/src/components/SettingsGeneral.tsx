@@ -77,6 +77,7 @@ const Setting1: React.FC = () => {
           />
         </div>
       </div>
+      {/* Show page (in development) 
       <hr />
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
@@ -94,6 +95,7 @@ const Setting1: React.FC = () => {
           />
         </div>
       </div>
+      */}
     </div>
   );
 };

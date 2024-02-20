@@ -98,14 +98,6 @@
     fill: var(--primary);
   }
 
-  .addIcon {
-    height: 22px;
-    width: 22px;
-    mask: url(./assets/IconAdd.svg);
-    mask-repeat: no-repeat;
-    background: var(--primary);
-  }
-
   select {
     background-color: transparent;
     color: var(--primary);
@@ -113,15 +105,6 @@
 
   select:focus {
     background-color: var(--primarySwitched);
-  }
-
-  .removeIcon {
-    height: 18px;
-    width: 18px;
-    mask: url(./assets/IconRemove.svg);
-    mask-repeat: no-repeat;
-    background: var(--primary);
-    mask-position: center;
   }
 
   .window {

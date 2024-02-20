@@ -13,6 +13,7 @@
   - Transfer the values of the first light of its kind to the corresponding LightFX faders
   - Added input field for bi-color
   - Bi-color and RGB areas are now blurred if not supported by the selection
+  - Miscellaneous visual touch-ups
 
 ### Fixes
 

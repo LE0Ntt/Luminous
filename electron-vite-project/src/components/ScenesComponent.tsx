@@ -229,7 +229,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
           onClick={handleAddScene}
         >
           <div className={`sceneBorder ${sideId === 1 ? 'borderBig' : 'borderSmall'}`}></div>
-          {!buttonDisabled && <div className='AddSceneIcon'></div>}
+          {!buttonDisabled && <div className='addIcon AddSceneIcon'></div>}
           <div className='AddSceneButtonFont'>{buttonText}</div>
         </button>
         {emptyScenes.map((scene) => (

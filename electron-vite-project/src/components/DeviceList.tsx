@@ -83,7 +83,7 @@ const DeviceList: React.FC<DeviceListProps> = ({ devices, onDeviceButtonClick, i
                 onClick={() => onDeviceButtonClick(device)}
                 className='addremoveButton'
               >
-                <div className={`centerIcon ${isAddButton ? 'addIcon' : 'removeIcon'}`}></div>
+                <div className={`centerIcon addIcon ${isAddButton ? '' : 'removeIcon'}`}></div>
               </Button>
             </li>
             {index !== devices.length - 1 && <hr />} {/* Separator line for all elements except the last */}

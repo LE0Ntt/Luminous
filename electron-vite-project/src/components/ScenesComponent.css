@@ -46,11 +46,7 @@
   transform: translate(-50%, -50%);
   left: 50%;
   top: 40%;
-  height: 21px;
-  width: 21px;
-  mask: url(../assets/IconAdd.svg);
-  mask-repeat: no-repeat;
-  background: var(--secondary);
+  background: var(--secondary) !important;
 }
 
 .scenesBox {

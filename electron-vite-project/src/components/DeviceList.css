@@ -90,3 +90,15 @@ hr {
   margin-left: 10px;
   border: 1px solid var(--onepStroke) !important;
 }
+
+.addIcon {
+  height: 22px;
+  width: 22px;
+  mask: url(../assets/IconAdd.svg);
+  mask-repeat: no-repeat;
+  background: var(--primary);
+}
+
+.removeIcon {
+  transform: rotate(45deg);
+}

@@ -62,6 +62,11 @@ function Control() {
   const [height, setHeight] = useState(-3);
   const [selected, setSelected] = useState(selectedDevices[0] && devices.length > 0);
   const [deviceModified, setDeviceModified] = useState(false); // Device added or removed
+  const [supportFlags, setSupportFlags] = useState({ supportsBiColor: false, supportsRGB: false });
+  const [red, setRed] = useState(faderValues[0][3]);
+  const [green, setGreen] = useState(faderValues[0][4]);
+  const [blue, setBlue] = useState(faderValues[0][5]);
+  const [effects, setEffects] = useState(true);
 
   // update selected state
   useLayoutEffect(() => {
@@ -178,11 +183,6 @@ function Control() {
     setIsSolo(!isSolo);
   };
 
-  // Color Picker
-  const [red, setRed] = useState(faderValues[0][3]);
-  const [green, setGreen] = useState(faderValues[0][4]);
-  const [blue, setBlue] = useState(faderValues[0][5]);
-
   const handleColorChange = (newRed: number, newGreen: number, newBlue: number) => {
     setRed(newRed);
     setGreen(newGreen);
@@ -221,8 +221,6 @@ function Control() {
       });
     });
   }, [faderValues[0][1], faderValues[0][2], faderValues[0][3], faderValues[0][4], faderValues[0][5]]);
-
-  const [effects, setEffects] = useState(true);
 
   useEffect(() => {
     let effectFound = false;
@@ -282,6 +280,27 @@ function Control() {
       setDeviceModified(false);
     }
   }, [deviceModified, selectedDevices]);
+
+  // Update support flags for bi-color and RGB
+  useEffect(() => {
+    let biColorSupported = false;
+    let rgbSupported = false;
+
+    for (const device of selectedDevices) {
+      for (const channel of device.attributes.channel) {
+        if (channel.channel_type === 'bi') {
+          biColorSupported = true;
+        } else if (['r', 'g', 'b'].includes(channel.channel_type)) {
+          rgbSupported = true;
+          biColorSupported = true;
+          break;
+        }
+      }
+      if (rgbSupported) break;
+    }
+
+    setSupportFlags({ supportsBiColor: biColorSupported, supportsRGB: rgbSupported });
+  }, [selectedDevices]);
 
   // -----------------------------------------------
   // Bi-Color input field handling ----------------- Does not fix low resolution though
@@ -379,6 +398,9 @@ function Control() {
             {/* Bi-Color */}
             <div className='controlBiColor innerWindow'>
               <span className='controlTitle'>Bi-Color</span>
+              <div className={`noSupportText noSupport ${!supportFlags.supportsBiColor ? '' : 'noSupportHidden'}`}>
+                <span style={{ marginTop: '-110px' }}>{t('noSupport')}</span>
+              </div>
               <div className='controlKelvinPicker'>
                 <ColorPicker
                   pickerType='kelvin'
@@ -401,6 +423,9 @@ function Control() {
             {/* RGB */}
             <div className='controlRGB innerWindow'>
               <span className='controlTitle'>RGB</span>
+              <div className={`noSupportText noSupport ${!supportFlags.supportsRGB ? '' : 'noSupportHidden'}`}>
+                <span>{t('noSupport')}</span>
+              </div>
               <div className='controlRGBFader'>
                 <Fader
                   id={3}
@@ -439,7 +464,7 @@ function Control() {
                 <>
                   <span className='controlTitle'>{t('effects')}</span>
                   <div className='centeredWrapper'>
-                    <span className='noSupport'>{t('noSupport')}</span>
+                    <span className='noSupportText'>{t('noSupport')}</span>
                   </div>
                 </>
               ) : (
@@ -486,6 +511,9 @@ function Control() {
       ) : (
         <>
           <div className='noSelectWindow'>
+            <div className='noSupport noDevice noSupportText noSupportShadow'>
+              <p dangerouslySetInnerHTML={{ __html: t('noDevices') }}></p>
+            </div>
             <div className='lightFader innerWindow'></div>
             <div className='controlButtons innerWindow'></div>
             <div className='controlBiColor innerWindow'>
@@ -496,9 +524,6 @@ function Control() {
             </div>
             <div className='controlEffects innerWindow'>
               <span className='controlTitle'>{t('effects')}</span>
-            </div>
-            <div className='noDevice'>
-              <p dangerouslySetInnerHTML={{ __html: t('noDevices') }}></p>
             </div>
           </div>
         </>

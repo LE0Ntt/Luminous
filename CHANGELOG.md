@@ -10,8 +10,9 @@
 - Added DMX occupancy overview to LightSettings
 - Scenes are "on" when created
 - LightFX
-  - Transfer the values of the first light of its kind to the corresponding faders
+  - Transfer the values of the first light of its kind to the corresponding LightFX faders
   - Added input field for bi-color
+  - Bi-color and RGB areas are now blurred if not supported by the selection
 
 ### Fixes
 

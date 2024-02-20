@@ -61,19 +61,45 @@
 }
 
 .noDevice {
+  height: calc(100% - 2px) !important;
+  width: calc(100% - 2px) !important;
+  border-radius: 10px !important;
+  left: 1px !important;
+  top: 1px !important;
+  z-index: 5 !important;
+  background: none !important;
+}
+
+.noSupport {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
-  height: calc(100% + 2px);
+  position: absolute;
+  height: 100%;
   width: 100%;
   border-radius: 5px;
-  color: var(--primary);
+  backdrop-filter: blur(7px);
+  z-index: 1;
+  background-color: var(--innerWindowOverlay);
+  transition: visibility 0.3s, opacity 0.3s ease;
+  opacity: 1;
+  visibility: visible;
+}
+
+.noSupportHidden {
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility 0.3s, opacity 0.3s ease;
+}
+
+.noSupportText {
   text-align: center;
-  font-size: 25px;
-  font-weight: 500;
-  backdrop-filter: blur(5px);
-  z-index: 9;
+  color: var(--secondary);
+  font-size: 20px;
+}
+
+.noSupportShadow {
+  text-shadow: 0px 0px 5px var(--fillUltraThick), 0px 0px 10px var(--fillUltraThick);
 }
 
 .innerContainer {
@@ -143,12 +169,7 @@
   left: 20px;
   font-size: 50px;
   color: var(--tertiary);
-}
-
-.noSupport {
-  text-align: center;
-  color: var(--secondary);
-  font-size: 20px;
+  z-index: 3;
 }
 
 .centeredWrapper {

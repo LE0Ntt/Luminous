@@ -307,7 +307,7 @@ const Studio = () => {
                     style={{
                       top: `-35px`,
                       opacity: (faderValues[greenScreen][0] / 255) * (faderValues[0][0] / 255),
-                      filter: 'blur(2px)',
+                      filter: 'blur(5px)',
                     }}
                   />
                   <div

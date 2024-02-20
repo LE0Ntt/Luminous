@@ -12,7 +12,7 @@
   - [ ] Other light should show a out of sync button, if not the current state
   - [x] Add Bi-color number input
     - [ ] Find a way to get full resolution
-  - [ ] Hide not supported areas
+  - [x] Hide not supported areas
 - [ ] Scenes
   - [x] Should be "on" when added
   - [ ] Visualisation of Scenes when specific fader is changed
@@ -54,7 +54,7 @@
   - [x] Quick Start Guide
   - [x] Finetune Quick Start Guide
 - [ ] LightFX
-  - [ ] Change to current state of the first light
+  - [x] Change to current state of the first light
   - [x] Effects as misc faders for now
     - [ ] Group faders with same name
   - [x] Device list server updates

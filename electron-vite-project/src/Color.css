@@ -80,6 +80,8 @@
   --shadowLight: 0px 3px 10px rgba(0, 0, 0, 0.1);
   --shadowButton: 0px 1px 5px rgba(0, 0, 0, 0.1);
 
+  --innerWindowOverlay: rgba(248, 248, 248, 0.8);
+
   --sceneOn: rgba(255, 255, 255, 0.8);
   --backgroundImage: url('./assets/bgLight.png');
 }
@@ -121,7 +123,8 @@
 
   --mainColor: #b9bcff;
 
-  --sceneOn: rgba(255, 255, 255, 0.5);
+  --innerWindowOverlay: rgba(62, 62, 62, 0.8);
 
+  --sceneOn: rgba(255, 255, 255, 0.5);
   --backgroundImage: url('./assets/bgDark.png');
 }

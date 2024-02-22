@@ -15,6 +15,7 @@
   - Bi-color and RGB areas are now blurred if not supported by the selection
   - Miscellaneous visual touch-ups
   - Added 'out of sync' button for devices that are not in the current state of the selection
+  - Split updates of selection between 'main' and RGB/bi-color
 
 ### Fixes
 

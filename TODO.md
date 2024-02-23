@@ -10,7 +10,7 @@
 - [ ] LightFX
   - [x] First light should be the current state
     - [x] Update state automatically if only one light is selected instead of showing the button
-    - [ ] If no selected light matches the current state, it should copy one but current implementation would update the state of the other light as well
+    - [ ] Mute button
   - [x] Other light should show a out of sync button, if not the current state
   - [x] Add Bi-color number input
     - [ ] Find a way to get full resolution

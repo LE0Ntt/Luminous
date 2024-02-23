@@ -284,9 +284,10 @@ function Control() {
           flags.biSet = true;
         } else if (channel.channel_type === 'bi' && !flags.biSet) {
           const kelvinValue = Math.round((channelValue / 255) * 8800 + 2200);
-          setFaderValue(0, 2, channelValue);
-          setFaderValue(0, 3, iro.Color.kelvinToRgb(kelvinValue).r);
-          setFaderValue(0, 5, iro.Color.kelvinToRgb(kelvinValue).b);
+          const rgb = iro.Color.kelvinToRgb(kelvinValue);
+          //setFaderValue(0, 2, channelValue);
+          setFaderValue(0, 3, rgb.r);
+          setFaderValue(0, 5, rgb.b);
           flags.biSet = flags.rSet = flags.gSet = flags.bSet = true;
         }
       });
@@ -368,8 +369,9 @@ function Control() {
       setInputValue(Math.round(numericValue));
       // scaled value to kelvin and set fader values
       const kelvin = Math.round((Math.round((numericValue / 100) * 255) / 255) * 8800 + 2200);
-      setFaderValue(0, 3, iro.Color.kelvinToRgb(kelvin).r);
-      setFaderValue(0, 5, iro.Color.kelvinToRgb(kelvin).b);
+      const rgb = iro.Color.kelvinToRgb(kelvin);
+      setFaderValue(0, 3, rgb.r);
+      setFaderValue(0, 5, rgb.b);
     } else {
       setInputValue(Math.round(scaledDisplayValue)); // Reset value if input is NaN
     }

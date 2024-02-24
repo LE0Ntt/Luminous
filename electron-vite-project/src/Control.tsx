@@ -283,16 +283,22 @@ function Control() {
           flags[channel.channel_type + 'Set'] = true;
           flags.biSet = true;
         } else if (channel.channel_type === 'bi' && !flags.biSet) {
-          const kelvinValue = Math.round((channelValue / 255) * 8800 + 2200);
-          const rgb = iro.Color.kelvinToRgb(kelvinValue);
-          //setFaderValue(0, 2, channelValue);
-          setFaderValue(0, 3, rgb.r);
-          setFaderValue(0, 5, rgb.b);
+          setFaderValue(0, 2, channelValue);
           flags.biSet = flags.rSet = flags.gSet = flags.bSet = true;
         }
       });
     });
   };
+
+  // Calculate the RGB values from the Kelvin value on first load or when added
+  useEffect(() => {
+    setTimeout(() => {
+      const kelvinValue = Math.round((faderValues[0][2] / 255) * 8800 + 2200);
+      const rgb = iro.Color.kelvinToRgb(kelvinValue);
+      setFaderValue(0, 3, rgb.r);
+      setFaderValue(0, 5, rgb.b);
+    }, 100);
+  }, [selectedDevices]);
 
   // Check if the selected devices channels are up to date with the corresponding fader values of the control
   useEffect(() => {
@@ -320,11 +326,7 @@ function Control() {
         }
       }
     }
-
-    // if (selectedDevices.every((device) => !device.upToDate)) {
-    //   updateFaderValuesForSelectedDevices();
-    // }
-  }, [selectedDevices, deviceModified]);
+  }, [faderValues, selectedDevices, deviceModified]);
 
   // Sync the selected devices channels with the corresponding fader values of the control
   const handleSyncClick = (device: DeviceConfig) => {
@@ -342,8 +344,6 @@ function Control() {
 
   // Bi-Color input field handling --- Does not fix low resolution though ---
   const [isFocused, setIsFocused] = useState(false); // Focus on value input
-  //const rgbToBiColor = iro.Color.rgbToKelvin({ r: faderValues[0][3], g: faderValues[0][4], b: faderValues[0][5] });
-  //const biColorScaled = Math.min(255, Math.max(0, Math.round(((rgbToBiColor - 2200) / 8800) * 255)));
   const scaledDisplayValue = (faderValues[0][2] / 255) * 100; // (0 to 100%)
   const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue) + '%');
 

@@ -324,7 +324,7 @@ function Control() {
     // if (selectedDevices.every((device) => !device.upToDate)) {
     //   updateFaderValuesForSelectedDevices();
     // }
-  }, [faderValues, selectedDevices, deviceModified]);
+  }, [selectedDevices, deviceModified]);
 
   // Sync the selected devices channels with the corresponding fader values of the control
   const handleSyncClick = (device: DeviceConfig) => {
@@ -342,9 +342,9 @@ function Control() {
 
   // Bi-Color input field handling --- Does not fix low resolution though ---
   const [isFocused, setIsFocused] = useState(false); // Focus on value input
-  const rgbToBiColor = iro.Color.rgbToKelvin({ r: faderValues[0][3], g: faderValues[0][4], b: faderValues[0][5] });
-  const biColorScaled = Math.min(255, Math.max(0, Math.round(((rgbToBiColor - 2200) / 8800) * 255)));
-  const scaledDisplayValue = (biColorScaled / 255) * 100; // (0 to 100%)
+  //const rgbToBiColor = iro.Color.rgbToKelvin({ r: faderValues[0][3], g: faderValues[0][4], b: faderValues[0][5] });
+  //const biColorScaled = Math.min(255, Math.max(0, Math.round(((rgbToBiColor - 2200) / 8800) * 255)));
+  const scaledDisplayValue = (faderValues[0][2] / 255) * 100; // (0 to 100%)
   const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue) + '%');
 
   // Update input value when display value changes

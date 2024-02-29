@@ -4,8 +4,10 @@
   - [ ] Add info panels
 - [ ] Prevent scene and solo overlaps
 - [ ] Fader
-  - [ ] More obvious fader highlighting
+  - [x] More obvious fader highlighting
   - [ ] Rework spacing
+    - [x] Horizontal
+    - [ ] Vertical
   - [ ] Prevent rerendering on fader change
 - [ ] LightFX
   - [x] First light should be the current state

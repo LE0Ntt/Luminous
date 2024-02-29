@@ -16,6 +16,9 @@
   - Miscellaneous visual touch-ups
   - Added 'out of sync' button for devices that are not in the current state of the selection
   - Split updates of selection between 'main' and RGB/bi-color
+- Fader
+  - More obvious fader highlighting when selected in Studio-Overview
+  - Reworked spacing
 
 ### Fixes
 

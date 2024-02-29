@@ -151,7 +151,10 @@ function BigView({ onClose }: BigViewProps) {
                     return (
                       <div
                         key={index}
-                        className='sliderHeight'
+                        style={{
+                          marginLeft: index === 0 ? '-10px' : '',
+                          paddingLeft: index === 511 ? '10px' : '',
+                        }}
                       >
                         <h2 className='faderText'>{mappedIndex}</h2>
                         <Fader
@@ -171,7 +174,11 @@ function BigView({ onClose }: BigViewProps) {
                       slider.attributes.channel.map((channel: { id: number; channel_type: string }, channelIndex: number) => (
                         <div
                           key={slider.id + '-' + channel.id}
-                          className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}
+                          className={`${channel.id !== 0 ? 'grayBackground' : ''}`}
+                          style={{
+                            marginLeft: sliderIndex === 0 && channelIndex === 0 ? '-10px' : '',
+                            paddingLeft: sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 ? '10px' : '',
+                          }}
                         >
                           <h2 className='faderText'>{slider.id}</h2>
                           <Fader

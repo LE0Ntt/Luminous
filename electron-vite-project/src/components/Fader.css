@@ -26,7 +26,6 @@
   position: relative;
   color: var(--primary);
   border-right: 1px solid var(--faderBorder);
-  transform: translateX(-10px);
 }
 
 .faderMaster {
@@ -50,6 +49,12 @@
 
 .noBorder {
   border: none !important;
+  width: 80px !important;
+  margin-left: 1px;
+}
+
+.noBorder .slider {
+  margin-left: 1px;
 }
 
 .slider {

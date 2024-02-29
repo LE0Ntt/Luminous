@@ -511,33 +511,28 @@ function Control() {
                   {devices
                     .slice(1)
                     .filter((slider) => selectedDevices.some((channel) => channel.id === slider.id))
-                    .map((slider, index, filteredSliders) => {
-                      const totalSliders = filteredSliders.length;
-                      return (
-                        <React.Fragment key={slider.id}>
-                          {slider.attributes.channel
-                            .filter(
-                              (channel: Channel) =>
-                                channel.channel_type !== 'main' && channel.channel_type !== 'r' && channel.channel_type !== 'g' && channel.channel_type !== 'b' && channel.channel_type !== 'bi'
-                            )
-                            .map((channel: Channel, channelIndex: number, filteredChannels: Channel[]) => {
-                              const isLastFader = index === totalSliders - 1 && channelIndex === filteredChannels.length - 1;
-                              return (
-                                <div key={slider.id + '-' + channel.id}>
-                                  <h2 className='faderText'>{slider.id}</h2>
-                                  <Fader
-                                    key={slider.id + '-' + channel.id}
-                                    id={channel.id}
-                                    sliderGroupId={slider.id}
-                                    name={channel.id !== 0 ? channel.channel_type : slider.name}
-                                    className={isLastFader ? 'noBorder' : ''}
-                                  />
-                                </div>
-                              );
-                            })}
-                        </React.Fragment>
-                      );
-                    })}
+                    .flatMap((slider, index, filteredSliders) =>
+                      slider.attributes.channel
+                        .filter(({ channel_type }) => !['main', 'r', 'g', 'b', 'bi'].includes(channel_type))
+                        .map((channel, channelIndex, filteredChannels) => (
+                          <div
+                            key={slider.id + '-' + channel.id}
+                            style={{
+                              marginLeft: index === 0 && channelIndex === 0 ? '-10px' : '',
+                              paddingLeft: index === filteredSliders.length - 1 && channelIndex === filteredChannels.length - 1 ? '10px' : '',
+                            }}
+                          >
+                            <h2 className='faderText'>{slider.id}</h2>
+                            <Fader
+                              key={slider.id + '-' + channel.id}
+                              id={channel.id}
+                              sliderGroupId={slider.id}
+                              name={channel.id !== 0 ? channel.channel_type : slider.name}
+                              className={index === filteredSliders.length - 1 && channelIndex === filteredChannels.length - 1 ? 'noBorder' : ''}
+                            />
+                          </div>
+                        ))
+                    )}
                 </div>
               )}
             </div>

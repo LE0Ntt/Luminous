@@ -116,14 +116,14 @@
 
 .lightFader {
   height: 425px;
-  width: 82px;
+  width: 84px;
 }
 
 .controlBiColor {
   height: 315px;
   width: 553px;
   top: 130px;
-  left: 122px;
+  left: 124px;
   color: var(--primary);
 }
 
@@ -140,7 +140,7 @@
 
 .controlRGB {
   height: 425px;
-  width: 719px;
+  width: 717px;
   right: 20px;
 }
 
@@ -196,7 +196,7 @@
 .controlButtons {
   height: 90px;
   width: 553px;
-  left: 122px;
+  left: 124px;
   display: flex;
   gap: 20px;
   padding: 20px;

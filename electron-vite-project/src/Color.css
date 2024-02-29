@@ -30,6 +30,7 @@
 
   /* --mainColor: #4F53B1; */
   --mainColor: #4b4ea5;
+  --mainColorTransparent: rgba(75, 78, 165, 0.6);
 
   --colorButton: #ffffff;
   --colorButtonHover: #e9e9e9;
@@ -122,6 +123,7 @@
   --closeButton: rgb(145, 145, 145);
 
   --mainColor: #b9bcff;
+  --mainColorTransparent: rgba(185, 188, 255, 0.6);
 
   --innerWindowOverlay: rgba(62, 62, 62, 0.8);
 

@@ -37,9 +37,12 @@
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
 - Scenes do not fade in exact seconds and are subject to server performance
-- RGB and bi-color picker mismatch from cursor position when window is resized
 - Colors of the RGB lights are weird, when master is not at 100% - try in studio
-- LightFX sync button wonky with multiple clients
+- LightFX
+  - RGB and bi-color picker mismatch from cursor position when window is resized
+  - Sync button wonky with multiple clients
+  - Bi-color rounding down on page load
+  - Bi-color resolution too low, no 50% possible
 
 ## Necessary Changes
 
@@ -65,13 +68,12 @@
   - [x] Device list server updates
   - [ ] Emit changes with buffer like other faders
   - [ ] "Mute" button
-  - [ ] New bi-color slider with higher resolution and value display/input
+  - [ ] New bi-color slider with higher resolution
 - [ ] PI
   - [ ] Production server
   - [ ] Shutdown button
   - [ ] Turn off all devices during shutdown // kind of implemented with the closing of the app
   - [ ] Config file for server.py (change ip and so on)
-- [ ] Everything off scene - How to implement?
 - [x] Change admin password
 - [x] Input can be empty
 - [x] Use _ENTER_ to accept dialog
@@ -82,6 +84,7 @@
 - [ ] BigView: Improve visualisation
   - [ ] Device groups
   - [ ] Faders for different channels
+- [ ] Minimalistic app version as vite export
 
 ## Nice to Have Features
 
@@ -93,12 +96,11 @@
 - [ ] Show site (light shows)
 - [ ] No animations setting for slow PCs
 - [ ] Change scene fade in/out curve
-- [ ] Vite export, use app in browser
 - [x] Rework close button
 - [ ] Studio-Overview
   - [x] Device highlight
   - [x] Move to the left
-  - [ ] Add rgb traverse lights
+  - [ ] Add rgb traverse lights with info panels
     - [x] Display traverse light effects
   - [x] Add fill light icon
   - [x] Rearrange devices
@@ -122,7 +124,7 @@
   - [ ] Arri Sky panel
   - [ ] Astera Titan Tubes
 - [ ] Look into npm packages
-- [ ] Icons for dropdown menu
+- [x] Icons for dropdown menu
 - [ ] DIN icons for Studio-Overview
 - [ ] Constistent Fader elements spacing
 - [ ] BigView pin button to keep it open when switching between pages

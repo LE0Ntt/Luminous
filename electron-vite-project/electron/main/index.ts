@@ -210,3 +210,32 @@ ipcMain.handle('get-platform', () => {
 ipcMain.on('open-external', (event, url) => {
   shell.openExternal(url);
 });
+
+// OLA
+let popupWindow = null;
+function createPopupWindow() {
+  if (popupWindow !== null) {
+    popupWindow.focus();
+    return;
+  }
+
+  popupWindow = new BrowserWindow({
+    width: 1024,
+    height: 1024,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+    //titleBarStyle: 'hidden',
+  });
+
+  popupWindow.loadURL(`http://${ip}:9090/`);
+
+  popupWindow.on('closed', () => {
+    popupWindow = null;
+  });
+}
+
+ipcMain.on('open-OLA', (event, arg) => {
+  createPopupWindow();
+});

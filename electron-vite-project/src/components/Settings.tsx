@@ -36,7 +36,8 @@ function Settings({ onClose }: SettingsProps) {
 
   const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
     if (isConfirmed) {
-      window.electronAPI.openExternal(olaURL);
+      //window.electronAPI.openExternal(olaURL);
+      (window as any).electronAPI.send('open-OLA', olaURL);
       onClose();
     }
   }, []);

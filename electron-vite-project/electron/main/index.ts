@@ -183,7 +183,8 @@ ipcMain.handle('get-ip', () => {
   return { ip, port };
 });
 
-ipcMain.handle('set-ip', (_, ip) => {
+ipcMain.on('set-ip', (_, ip) => {
+  console.log('set-ip', ip);
   store.set('ip', ip);
 });
 

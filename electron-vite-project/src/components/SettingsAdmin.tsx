@@ -18,6 +18,7 @@ import { TranslationContext } from './TranslationContext';
 import Button from './Button';
 import IconServer from '@/assets/IconServer';
 import IconKey from '@/assets/IconKey';
+import { useConnectionContext } from './ConnectionContext';
 
 interface Setting2Props {
   url: string;
@@ -33,6 +34,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
   const [ip, setIP] = useState<string>('');
   const [port, setPort] = useState<string>('5000');
   const { t } = useContext(TranslationContext);
+  const { changeUrl } = useConnectionContext();
 
   // Confirm with ENTER
   const handleEnterConfirm = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -115,20 +117,33 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
 
   // URL Settings
   useEffect(() => {
-    console.log('current ip: ' + url);
-    setIP(url.split(':')[1].substring(2));
-  }, []);
+    const urlParts = url.split(':');
+    if (urlParts.length > 1) {
+      setIP(urlParts[1].substring(2).split('/')[0]); // Extract IP
+      if (urlParts[2]) {
+        setPort(urlParts[2].split('/')[0]); // Extract port if exists
+      }
+    }
+  }, [url]);
 
   const handleOctetChange = (index: number, value: string) => {
-    /* const octets = ip.split('.');
-    octets[index - 1] = value;
-    setIP(octets.join('.')); */
+    const octets = ip.split('.');
+    if (index >= 1 && index <= 4) {
+      // Ensure index is within the correct range
+      octets[index - 1] = value;
+      setIP(octets.join('.'));
+    }
   };
 
-  const octets = ip.split('.');
-
+  // not in use at the moment, port is hardcoded
   const handlePortChange = (value: string) => {
     setPort(value);
+  };
+
+  const saveNewURL = () => {
+    const newURL = `http://${ip}:${port}`;
+    console.log('New URL:', newURL);
+    changeUrl(newURL);
   };
 
   return (
@@ -213,30 +228,40 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
             <input
               className='SettingsIPBox bg-slate-400'
               maxLength={3}
-              value={octets[0]}
+              value={ip.split('.')[0]}
               onChange={(e) => handleOctetChange(1, e.target.value)}
             />
             .
             <input
               className='SettingsIPBox bg-slate-400'
               maxLength={3}
-              value={octets[1]}
+              value={ip.split('.')[1]}
               onChange={(e) => handleOctetChange(2, e.target.value)}
             />
             .
             <input
               className='SettingsIPBox bg-slate-400'
               maxLength={3}
-              value={octets[2]}
+              value={ip.split('.')[2]}
               onChange={(e) => handleOctetChange(3, e.target.value)}
             />
             .
             <input
               className='SettingsIPBox bg-slate-400'
               maxLength={3}
-              value={octets[3]}
+              value={ip.split('.')[3]}
               onChange={(e) => handleOctetChange(4, e.target.value)}
             />
+            {/* Port is hardcoded at the moment, may change in the future */}
+            {/* <label>{t('set_current_port')}</label> <br />
+            <input
+              className='SettingsPortBox bg-slate-400'
+              maxLength={5}
+              value={port}
+              onChange={(e) => handlePortChange(e.target.value)}
+            /> */}
+            <br />
+            <button onClick={saveNewURL}>Save URL</button>
           </div>
         </div>
       </div>

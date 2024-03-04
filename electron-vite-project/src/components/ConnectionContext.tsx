@@ -25,7 +25,7 @@ interface ConnectionContextType {
   on: OnFunction;
   off: OffFunction;
   url: string;
-  /* changeUrl: (newUrl: string) => void; */
+  changeUrl: (newUrl: string) => void;
 }
 
 const ConnectionContext = createContext<ConnectionContextType | null>(null);
@@ -65,6 +65,9 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
 
   function changeUrl(newUrl: string) {
     setUrl(newUrl);
+    const url = new URL(newUrl);
+    const ip = url.hostname;
+    (window as any).electronAPI.send('set-ip', ip);
   }
 
   useEffect(() => {
@@ -108,7 +111,7 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
     on,
     off,
     url,
-    /* changeUrl ,*/
+    changeUrl,
   };
 
   return <ConnectionContext.Provider value={contextValue}>{children}</ConnectionContext.Provider>;

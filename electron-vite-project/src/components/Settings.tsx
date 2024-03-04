@@ -31,12 +31,12 @@ function Settings({ onClose }: SettingsProps) {
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const [isOlaWindowOpen, setIsOlaWindowOpen] = useState(false);
-  const newUrl = url.toString().slice(0, -5) + ':9090';
+  const olaURL = url.toString().slice(0, -5) + ':9090';
   const [selectedSetting, setSelectedSetting] = useState<string | null>('Setting1');
 
   const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
     if (isConfirmed) {
-      window.electronAPI.openExternal(newUrl);
+      window.electronAPI.openExternal(olaURL);
       onClose();
     }
   }, []);

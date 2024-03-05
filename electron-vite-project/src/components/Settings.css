@@ -112,13 +112,29 @@
   width: 100%;
 }
 
+.SettingsIPBoxContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
 .SettingsIPBox {
   width: 30px;
   text-align: center;
+  background-color: transparent;
 }
 
 .SettingsTextBoxContainer {
   width: 70%;
+  display: flex;
+  position: relative;
+  gap: 20px;
+  flex-direction: row;
+  overflow: auto;
+}
+
+.SettingsTextBoxContainer2 {
   display: flex;
   position: relative;
   gap: 20px;

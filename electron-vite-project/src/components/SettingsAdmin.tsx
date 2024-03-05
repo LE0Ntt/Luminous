@@ -19,6 +19,7 @@ import Button from './Button';
 import IconServer from '@/assets/IconServer';
 import IconKey from '@/assets/IconKey';
 import { useConnectionContext } from './ConnectionContext';
+import IconNetwork from '@/assets/IconNetwork';
 
 interface Setting2Props {
   url: string;
@@ -212,57 +213,59 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
           {t('set_ola')}
         </Button>
       </div>
-      {/* only for release not implemented, still WIP */}
       <hr />
       <div className='SettingContainer'>
-        <div className='Heading'>
-          <span>URL</span>
+        <div className='SettingsSubTitle'>
+          <IconNetwork
+            color={'var(--primary)'}
+            size='20px'
+          />
+          <span className='relative top-[-6px]'>{t('change_URL')}</span>
         </div>
-        <div className='SettingsTextBoxContainer'>
-          <div className='text'>
-            {t('change_url_of_server')}
-            <br />
-          </div>
-          <div>
-            <label>{t('set_current_ip')}</label> <br />
+        <div className='SettingsTextBoxContainer2'>
+          <div className='SettingsTextBox textBox SettingsIPBoxContainer'>
             <input
-              className='SettingsIPBox bg-slate-400'
+              className='SettingsIPBox'
               maxLength={3}
               value={ip.split('.')[0]}
               onChange={(e) => handleOctetChange(1, e.target.value)}
             />
             .
             <input
-              className='SettingsIPBox bg-slate-400'
+              className='SettingsIPBox'
               maxLength={3}
               value={ip.split('.')[1]}
               onChange={(e) => handleOctetChange(2, e.target.value)}
             />
             .
             <input
-              className='SettingsIPBox bg-slate-400'
+              className='SettingsIPBox'
               maxLength={3}
               value={ip.split('.')[2]}
               onChange={(e) => handleOctetChange(3, e.target.value)}
             />
             .
             <input
-              className='SettingsIPBox bg-slate-400'
+              className='SettingsIPBox'
               maxLength={3}
               value={ip.split('.')[3]}
               onChange={(e) => handleOctetChange(4, e.target.value)}
             />
             {/* Port is hardcoded at the moment, may change in the future */}
-            {/* <label>{t('set_current_port')}</label> <br />
+            {/*             :
             <input
-              className='SettingsPortBox bg-slate-400'
+              className='SettingsIPBox'
               maxLength={5}
               value={port}
               onChange={(e) => handlePortChange(e.target.value)}
             /> */}
-            <br />
-            <button onClick={saveNewURL}>Save URL</button>
           </div>
+          <Button
+            className='SettingsButton controlButton'
+            onClick={saveNewURL}
+          >
+            {t('as_saveURL')}
+          </Button>
         </div>
       </div>
     </div>

@@ -31,6 +31,7 @@ interface Channel {
   id: number;
   channel_type: 'main' | 'bi' | 'r' | 'g' | 'b';
   sliderValue: number;
+  deviceId: number;
 }
 
 interface DeviceConfig {
@@ -66,7 +67,7 @@ function Control() {
   const [red, setRed] = useState(faderValues[0][3]);
   const [green, setGreen] = useState(faderValues[0][4]);
   const [blue, setBlue] = useState(faderValues[0][5]);
-  const [effects, setEffects] = useState(true);
+  const [allEffectChannels, setAllEffectChannels] = useState<Channel[]>([]);
   const [prevFaderValues, setPrevFaderValues] = useState<number[]>([]);
 
   // update selected state
@@ -233,28 +234,29 @@ function Control() {
 
   // Check if effects, bi-color or RGB are supported
   useEffect(() => {
-    let effectFound = false;
     let biColorSupported = false;
     let rgbSupported = false;
+    let allChannels = [];
 
     for (const device of selectedDevices) {
       for (const channel of device.attributes.channel) {
-        // Check if an effect are supported
-        if (!['main', 'r', 'g', 'b', 'bi'].includes(channel.channel_type)) {
-          effectFound = true;
-        }
-
-        // Check if bi-color or RGB is supported
         if (channel.channel_type === 'bi') {
           biColorSupported = true;
         } else if (['r', 'g', 'b'].includes(channel.channel_type)) {
           rgbSupported = true;
           biColorSupported = true;
+        } else if (!['main', 'r', 'g', 'b', 'bi'].includes(channel.channel_type)) {
+          // Effects
+          allChannels.push({
+            ...channel,
+            deviceId: device.id,
+          });
         }
       }
     }
 
-    setEffects(effectFound);
+    allChannels = allChannels.sort((a, b) => a.deviceId - b.deviceId); // Sort by device ID
+    setAllEffectChannels(allChannels);
     setSupportFlags({ supportsBiColor: biColorSupported, supportsRGB: rgbSupported });
   }, [selectedDevices]);
 
@@ -499,7 +501,7 @@ function Control() {
             </div>
             {/* Effects */}
             <div className='controlEffects innerWindow'>
-              {!effects ? (
+              {!(allEffectChannels.length > 0) ? (
                 <>
                   <span className='controlTitle'>{t('effects')}</span>
                   <div className='centeredWrapper'>
@@ -508,31 +510,24 @@ function Control() {
                 </>
               ) : (
                 <div className='sliders slidersEffects'>
-                  {devices
-                    .slice(1)
-                    .filter((slider) => selectedDevices.some((channel) => channel.id === slider.id))
-                    .flatMap((slider, index, filteredSliders) =>
-                      slider.attributes.channel
-                        .filter(({ channel_type }) => !['main', 'r', 'g', 'b', 'bi'].includes(channel_type))
-                        .map((channel, channelIndex, filteredChannels) => (
-                          <div
-                            key={slider.id + '-' + channel.id}
-                            style={{
-                              marginLeft: index === 0 && channelIndex === 0 ? '-10px' : '',
-                              paddingLeft: index === filteredSliders.length - 1 && channelIndex === filteredChannels.length - 1 ? '10px' : '',
-                            }}
-                          >
-                            <h2 className='faderText'>{slider.id}</h2>
-                            <Fader
-                              key={slider.id + '-' + channel.id}
-                              id={channel.id}
-                              sliderGroupId={slider.id}
-                              name={channel.id !== 0 ? channel.channel_type : slider.name}
-                              className={index === filteredSliders.length - 1 && channelIndex === filteredChannels.length - 1 ? 'noBorder' : ''}
-                            />
-                          </div>
-                        ))
-                    )}
+                  {allEffectChannels.map((channel, index) => (
+                    <div
+                      key={channel.deviceId + '-' + channel.id}
+                      style={{
+                        marginLeft: index === 0 ? '-10px' : '',
+                        paddingLeft: index === allEffectChannels.length - 1 ? '10px' : '',
+                      }}
+                    >
+                      <h2 className='faderText'>{channel.deviceId}</h2>
+                      <Fader
+                        key={channel.id}
+                        id={channel.id}
+                        sliderGroupId={channel.deviceId}
+                        name={channel.channel_type}
+                        className={index === allEffectChannels.length - 1 ? 'noBorder' : ''}
+                      />
+                    </div>
+                  ))}
                 </div>
               )}
             </div>

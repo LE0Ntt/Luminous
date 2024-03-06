@@ -32,7 +32,8 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState(false);
-  const [ip, setIP] = useState<string>('');
+  const defaultIP = '0.0.0.0'; // placeholder ip to avoid empty string, and error inside the console
+  const [ip, setIP] = useState<string>(defaultIP);
   const [port, setPort] = useState<string>('5000');
   const { t } = useContext(TranslationContext);
   const { changeUrl } = useConnectionContext();

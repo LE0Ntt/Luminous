@@ -92,7 +92,7 @@ function Scenes() {
       <div className='window scenesMaster mainfader'>
         <div className='scenesMasterAlign'>
           <Fader
-            height={610}
+            height={590}
             sliderGroupId={0}
             id={0}
             name='Master'

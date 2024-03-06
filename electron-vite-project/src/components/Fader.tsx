@@ -22,12 +22,13 @@ interface SliderProps {
   id: number;
   sliderGroupId: number;
   name?: string;
+  number?: number;
   height?: number;
   className?: string;
   color?: string;
 }
 
-const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, className, color }) => {
+const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, number, height, className, color }) => {
   // Initialize context and state
   const { emit } = useConnectionContext();
   const { faderValues, setFaderValue } = useFaderContext();
@@ -164,11 +165,12 @@ const Fader: React.FC<SliderProps> = ({ id, sliderGroupId, name, height, classNa
 
   return (
     <div
-      className={`fader ${height ? 'faderMaster' : ''} ${className}`}
+      className={`fader ${height && 'faderMaster'} ${number && 'numberAlign'} ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{ '--sliderHeight': `${height}px` } as React.CSSProperties}
     >
+      {number && <h2 className='faderText'>{number}</h2>}
       <div className='midPoint'></div>
       <div className='value-slider'>
         <input

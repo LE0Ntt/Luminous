@@ -5,9 +5,9 @@
 - [ ] Prevent scene and solo overlaps
 - [ ] Fader
   - [x] More obvious fader highlighting
-  - [ ] Rework spacing
+  - [x] Rework spacing
     - [x] Horizontal
-    - [ ] Vertical
+    - [x] Vertical
   - [ ] Prevent rerendering on fader change
 - [ ] LightFX
   - [x] First light should be the current state
@@ -126,7 +126,7 @@
 - [ ] Look into npm packages
 - [x] Icons for dropdown menu
 - [ ] DIN icons for Studio-Overview
-- [ ] Constistent Fader elements spacing
+- [x] Constistent Fader elements spacing
 - [ ] BigView pin button to keep it open when switching between pages
 
 ## Code Cleanup & Comments

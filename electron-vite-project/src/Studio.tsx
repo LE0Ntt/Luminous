@@ -182,7 +182,7 @@ const Studio = () => {
               <div className='mainfader window'>
                 {sliders[0] && (
                   <Fader
-                    height={340}
+                    height={313}
                     id={0}
                     sliderGroupId={0}
                     name='Master'
@@ -226,13 +226,13 @@ const Studio = () => {
                         paddingLeft: sliderIndex === sliders.length - 2 ? '10px' : '',
                       }}
                     >
-                      <h2 className='faderText'>{slider.id}</h2>
                       <Fader
                         key={slider.id}
                         id={0}
                         sliderGroupId={slider.id}
                         name={slider.name}
-                        className={sliderIndex === sliders.length - 2 ? 'noBorder' : ''}
+                        number={slider.id}
+                        className={sliderIndex === sliders.length - 2 ? 'noBorder bottomSpace' : 'bottomSpace'}
                       />
                       <Button
                         onClick={() => handleClick(slider.id)}

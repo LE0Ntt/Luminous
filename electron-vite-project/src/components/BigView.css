@@ -43,12 +43,11 @@
 }
 
 .BigViewContent .sliders {
-  height: 396px;
+  height: 394px;
 }
 
 .BigViewContent .fader {
-  height: 357px;
-  top: -22px;
+  height: 355px;
 }
 
 .BigViewLayer {

@@ -294,13 +294,15 @@ function Control() {
 
   // Calculate the RGB values from the Kelvin value on first load or when added
   useEffect(() => {
+    if (!supportFlags.supportsBiColor || supportFlags.supportsRGB) return;
+
     setTimeout(() => {
       const kelvinValue = Math.round((faderValues[0][2] / 255) * 8800 + 2200);
       const rgb = iro.Color.kelvinToRgb(kelvinValue);
       setFaderValue(0, 3, rgb.r);
       setFaderValue(0, 5, rgb.b);
     }, 100);
-  }, [selectedDevices]);
+  }, [supportFlags]);
 
   // Check if the selected devices channels are up to date with the corresponding fader values of the control
   useEffect(() => {
@@ -414,7 +416,7 @@ function Control() {
             {/* Masterfader/Groupfader */}
             <div className='lightFader innerWindow'>
               <Fader
-                height={327}
+                height={298}
                 id={1}
                 sliderGroupId={0}
                 name={t('group')}
@@ -473,21 +475,23 @@ function Control() {
                   sliderGroupId={0}
                   name='R'
                   color='#CA2C2C'
-                  className='noBorder'
+                  className='noTopSpace'
                 />
                 <Fader
                   id={4}
                   sliderGroupId={0}
                   name='G'
                   color='#59E066'
-                  className='noBorder'
+                  className='noTopSpace'
                 />
-                <Fader
-                  id={5}
-                  sliderGroupId={0}
-                  name='B'
-                  className='noBorder'
-                />
+                <div style={{ paddingLeft: '10px' }}>
+                  <Fader
+                    id={5}
+                    sliderGroupId={0}
+                    name='B'
+                    className='noBorder noTopSpace'
+                  />
+                </div>
               </div>
               <div className='controlColorPicker'>
                 <ColorPicker
@@ -501,7 +505,7 @@ function Control() {
             </div>
             {/* Effects */}
             <div className='controlEffects innerWindow'>
-              {!(allEffectChannels.length > 0) ? (
+              {!allEffectChannels.length ? (
                 <>
                   <span className='controlTitle'>{t('effects')}</span>
                   <div className='centeredWrapper'>
@@ -516,15 +520,17 @@ function Control() {
                       style={{
                         marginLeft: index === 0 ? '-10px' : '',
                         paddingLeft: index === allEffectChannels.length - 1 ? '10px' : '',
+                        paddingBottom: '5px',
                       }}
                     >
-                      <h2 className='faderText'>{channel.deviceId}</h2>
                       <Fader
                         key={channel.id}
                         id={channel.id}
                         sliderGroupId={channel.deviceId}
                         name={channel.channel_type}
+                        number={channel.deviceId}
                         className={index === allEffectChannels.length - 1 ? 'noBorder' : ''}
+                        height={269}
                       />
                     </div>
                   ))}

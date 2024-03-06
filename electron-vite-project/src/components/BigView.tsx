@@ -156,12 +156,12 @@ function BigView({ onClose }: BigViewProps) {
                           paddingLeft: index === 511 ? '10px' : '',
                         }}
                       >
-                        <h2 className='faderText'>{mappedIndex}</h2>
                         <Fader
                           key={index}
                           id={matchedChannel ? matchedChannel.id : mappedIndex}
                           sliderGroupId={matchedSlider ? matchedSlider.id : universe === 'U1' ? 692 : 693}
                           name={matchedSlider ? matchedSlider.name + ' ' + matchedChannel.channel_type : 'Channel'}
+                          number={mappedIndex}
                           className={index === 511 ? 'noBorder' : ''}
                         />
                       </div>
@@ -180,12 +180,12 @@ function BigView({ onClose }: BigViewProps) {
                             paddingLeft: sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 ? '10px' : '',
                           }}
                         >
-                          <h2 className='faderText'>{slider.id}</h2>
                           <Fader
                             key={slider.id + '-' + channel.id}
                             id={channel.id}
                             sliderGroupId={slider.id}
                             name={channel.id !== 0 ? channel.channel_type : slider.name}
+                            number={slider.id}
                             className={sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 ? 'noBorder' : ''}
                           />
                         </div>
@@ -197,7 +197,7 @@ function BigView({ onClose }: BigViewProps) {
         <div className='mainfaderBigView innerWindow'>
           {sliders[0] && (
             <Fader
-              height={714}
+              height={700}
               id={0}
               sliderGroupId={0}
               name='Master'

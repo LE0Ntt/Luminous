@@ -19,6 +19,8 @@
 - Fader
   - More obvious fader highlighting when selected in Studio-Overview
   - Reworked spacing
+    - First and last fader in a row now have a smaller margin to the edge
+    - Vertical spacing is now more consistent
 
 ### Fixes
 

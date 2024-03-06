@@ -170,27 +170,34 @@ function BigView({ onClose }: BigViewProps) {
                 : sliders
                     .slice(1)
                     .filter((slider) => slider.universe === universe)
-                    .map((slider, sliderIndex, filteredSliders) =>
-                      slider.attributes.channel.map((channel: { id: number; channel_type: string }, channelIndex: number) => (
-                        <div
-                          key={slider.id + '-' + channel.id}
-                          className={`${channel.id !== 0 ? 'grayBackground' : ''}`}
-                          style={{
-                            marginLeft: sliderIndex === 0 && channelIndex === 0 ? '-10px' : '',
-                            paddingLeft: sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 ? '10px' : '',
-                          }}
-                        >
-                          <Fader
+                    .map((slider, sliderIndex, filteredSliders) => (
+                      <div
+                        key={slider.id}
+                        className={slider.attributes.channel.length > 1 ? 'faderGroup' : ''}
+                      >
+                        {slider.attributes.channel.map((channel: { id: number; channel_type: string }, channelIndex: number) => (
+                          <div
                             key={slider.id + '-' + channel.id}
-                            id={channel.id}
-                            sliderGroupId={slider.id}
-                            name={channel.id !== 0 ? channel.channel_type : slider.name}
-                            number={slider.id}
-                            className={sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 ? 'noBorder' : ''}
-                          />
-                        </div>
-                      ))
-                    )}
+                            className={`${channel.id !== 0 ? 'grayBackground' : ''}`}
+                            style={{
+                              marginLeft: sliderIndex === 0 && channelIndex === 0 && slider.attributes.channel.length == 1 ? '-10px' : '',
+                              paddingLeft: sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 && slider.attributes.channel.length == 1 ? '10px' : '',
+                              //boxShadow: channelIndex === slider.attributes.channel.length - 1 ? '-2px 0 0 -1px var(--tertiary) inset' : 'none',
+                            }}
+                          >
+                            <Fader
+                              key={slider.id + '-' + channel.id}
+                              id={channel.id}
+                              sliderGroupId={slider.id}
+                              name={channel.id !== 0 ? channel.channel_type : slider.name}
+                              number={slider.id}
+                              className={sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 && slider.attributes.channel.length == 1 ? 'noBorder' : ''}
+                              color={channel.channel_type === 'r' ? '#CA2C2C' : channel.channel_type === 'g' ? '#59E066' : channel.channel_type === 'b' ? '#4271C6' : ''}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    ))}
             </div>
           </div>
         ))}

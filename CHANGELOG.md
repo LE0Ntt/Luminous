@@ -21,6 +21,7 @@
   - Reworked spacing
     - First and last fader in a row now have a smaller margin to the edge
     - Vertical spacing is now more consistent
+- BigView added outline around all channels of a device and RGB faders are in corresponding color
 
 ### Fixes
 

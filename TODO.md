@@ -12,7 +12,7 @@
 - [ ] LightFX
   - [x] First light should be the current state
     - [x] Update state automatically if only one light is selected instead of showing the button
-    - [ ] Mute button
+    - [ ] "Mute" button
   - [x] Other light should show a out of sync button, if not the current state
   - [x] Add Bi-color number input
     - [ ] Find a way to get full resolution
@@ -54,7 +54,7 @@
     - [ ] Studio-Overview
     - [ ] Change IP
 - [ ] MotorMix
-  - [ ] Mute
+  - [ ] "Mute"
   - [ ] Solo
 - [x] Connection screen
 - [x] Reconnect to server
@@ -81,9 +81,9 @@
 - [x] Add support for HMI lights and other devices with on/off channel
 - [x] Turn off all devices when closing app
 - [x] Input for faders with mousewheel or keyboard (arrow keys)
-- [ ] BigView: Improve visualisation
-  - [ ] Device groups
-  - [ ] Faders for different channels
+- [x] BigView: Improve visualisation
+  - [x] Device groups
+  - [x] Faders for different channels
 - [ ] Minimalistic app version as vite export
 
 ## Nice to Have Features
@@ -113,7 +113,6 @@
   - [ ] Choose what to save
   - [ ] Choose color
   - [ ] Fader for each scene and master scenes fader
-- [ ] Mute / Solo gray out faders
 - [ ] LightFX
   - [ ] Save scene: only current group or everything choice
   - [ ] Bi-color presets

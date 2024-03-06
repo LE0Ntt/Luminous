@@ -489,6 +489,7 @@ function Control() {
                     id={5}
                     sliderGroupId={0}
                     name='B'
+                    color='#4271C6'
                     className='noBorder noTopSpace'
                   />
                 </div>

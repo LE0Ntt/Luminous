@@ -191,7 +191,15 @@ function BigView({ onClose }: BigViewProps) {
                               sliderGroupId={slider.id}
                               name={channel.id !== 0 ? channel.channel_type : slider.name}
                               number={slider.id}
-                              className={sliderIndex === filteredSliders.length - 1 && slider.attributes.channel.length == 1 ? 'noBorder' : ''}
+                              className={`${
+                                sliderIndex === filteredSliders.length - 1
+                                  ? slider.attributes.channel.length === 1
+                                    ? 'noBorder'
+                                    : channelIndex === slider.attributes.channel.length - 1
+                                    ? 'noBorderWithoutSpacing'
+                                    : ''
+                                  : ''
+                              }`}
                               color={channel.channel_type === 'r' ? '#CA2C2C' : channel.channel_type === 'g' ? '#59E066' : channel.channel_type === 'b' ? '#4271C6' : ''}
                             />
                           </div>

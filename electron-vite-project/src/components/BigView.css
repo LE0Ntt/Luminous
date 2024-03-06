@@ -114,3 +114,7 @@
 .grayBackground {
   background-color: var(--color00000010);
 }
+
+.noBorderWithoutSpacing {
+  border: none;
+}

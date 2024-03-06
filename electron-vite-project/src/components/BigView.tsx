@@ -174,6 +174,7 @@ function BigView({ onClose }: BigViewProps) {
                       <div
                         key={slider.id}
                         className={slider.attributes.channel.length > 1 ? 'faderGroup' : ''}
+                        style={{ marginLeft: sliderIndex === 0 && slider.attributes.channel.length > 1 ? '-8px' : '' }}
                       >
                         {slider.attributes.channel.map((channel: { id: number; channel_type: string }, channelIndex: number) => (
                           <div
@@ -181,8 +182,7 @@ function BigView({ onClose }: BigViewProps) {
                             className={`${channel.id !== 0 ? 'grayBackground' : ''}`}
                             style={{
                               marginLeft: sliderIndex === 0 && channelIndex === 0 && slider.attributes.channel.length == 1 ? '-10px' : '',
-                              paddingLeft: sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 && slider.attributes.channel.length == 1 ? '10px' : '',
-                              //boxShadow: channelIndex === slider.attributes.channel.length - 1 ? '-2px 0 0 -1px var(--tertiary) inset' : 'none',
+                              paddingLeft: sliderIndex === filteredSliders.length - 1 && slider.attributes.channel.length == 1 ? '10px' : '',
                             }}
                           >
                             <Fader
@@ -191,7 +191,7 @@ function BigView({ onClose }: BigViewProps) {
                               sliderGroupId={slider.id}
                               name={channel.id !== 0 ? channel.channel_type : slider.name}
                               number={slider.id}
-                              className={sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 && slider.attributes.channel.length == 1 ? 'noBorder' : ''}
+                              className={sliderIndex === filteredSliders.length - 1 && slider.attributes.channel.length == 1 ? 'noBorder' : ''}
                               color={channel.channel_type === 'r' ? '#CA2C2C' : channel.channel_type === 'g' ? '#59E066' : channel.channel_type === 'b' ? '#4271C6' : ''}
                             />
                           </div>

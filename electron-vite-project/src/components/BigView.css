@@ -38,7 +38,7 @@
   border-radius: 15px;
   display: flex;
   flex-direction: row;
-  outline: 1px solid var(--faderBorder);
+  outline: 2px solid var(--faderBorder);
   margin-top: 10px;
 }
 

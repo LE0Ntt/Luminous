@@ -38,8 +38,9 @@
   border-radius: 15px;
   display: flex;
   flex-direction: row;
-  outline: 2px solid var(--faderBorder);
+  outline: 1px solid var(--faderBorder);
   margin-top: 10px;
+  margin-left: -10px;
 }
 
 .BigViewBackdrop {
@@ -111,8 +112,18 @@
   position: absolute;
 }
 
-.grayBackground {
+.grayBackground > .fader {
   background-color: var(--color00000010);
+}
+
+.lastGroupFader {
+  margin-right: 9px;
+  border-radius: 0 5px 5px 0 !important;
+  border: none;
+}
+
+.firstGroupFader {
+  margin-left: 10px;
 }
 
 .noBorderWithoutSpacing {

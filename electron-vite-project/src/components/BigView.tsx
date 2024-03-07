@@ -93,6 +93,22 @@ function BigView({ onClose }: BigViewProps) {
     };
   }, [DMX]);
 
+  function determineClassName(sliderIndex: number, channelIndex: number, filteredSliders: SliderConfig[], channelsLength: number) {
+    const isLastChannel = channelIndex === channelsLength - 1;
+    const isLastSlider = sliderIndex === filteredSliders.length - 1;
+    const hasNextSliderMoreThanOneChannel = !isLastSlider && filteredSliders[sliderIndex + 1].attributes.channel.length > 1;
+
+    if (channelsLength === 1) {
+      if (hasNextSliderMoreThanOneChannel) return 'noBorderWithoutSpacing';
+      if (isLastSlider) return 'noBorder';
+    } else if (channelsLength > 1) {
+      if (channelIndex === 0) return 'firstGroupFader';
+      if (isLastChannel) return 'lastGroupFader';
+    }
+
+    return '';
+  }
+
   return (
     <>
       <div
@@ -191,15 +207,7 @@ function BigView({ onClose }: BigViewProps) {
                               sliderGroupId={slider.id}
                               name={channel.id !== 0 ? channel.channel_type : slider.name}
                               number={slider.id}
-                              className={`${
-                                sliderIndex === filteredSliders.length - 1
-                                  ? slider.attributes.channel.length === 1
-                                    ? 'noBorder'
-                                    : channelIndex === slider.attributes.channel.length - 1
-                                    ? 'noBorderWithoutSpacing'
-                                    : ''
-                                  : ''
-                              }`}
+                              className={determineClassName(sliderIndex, channelIndex, filteredSliders, slider.attributes.channel.length)}
                               color={channel.channel_type === 'r' ? '#CA2C2C' : channel.channel_type === 'g' ? '#59E066' : channel.channel_type === 'b' ? '#4271C6' : ''}
                             />
                           </div>

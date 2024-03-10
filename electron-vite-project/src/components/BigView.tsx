@@ -36,7 +36,7 @@ function BigView({ onClose }: BigViewProps) {
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
-  const [DMX, setDMX] = useState(() => localStorage.getItem('dmx') === 'true'); // DMX or Device channels
+  const [DMX, setDMX] = useState(() => sessionStorage.getItem('dmx') === 'true'); // DMX or Device channels
   const [renderedFaders, setRenderedFaders] = useState(20); // Number of DMX faders to render
 
   const universes = ['U1', 'U2'];
@@ -65,7 +65,7 @@ function BigView({ onClose }: BigViewProps) {
 
   // Toggle between DMX and Device channels
   const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
-    localStorage.setItem('dmx', `${status}`);
+    sessionStorage.setItem('dmx', `${status}`);
     setDMX(status);
   };
 
@@ -93,6 +93,7 @@ function BigView({ onClose }: BigViewProps) {
     };
   }, [DMX]);
 
+  // Classes for device fader
   function determineClassName(sliderIndex: number, channelIndex: number, filteredSliders: SliderConfig[], channelsLength: number) {
     const isLastChannel = channelIndex === channelsLength - 1;
     const isLastSlider = sliderIndex === filteredSliders.length - 1;
@@ -104,9 +105,7 @@ function BigView({ onClose }: BigViewProps) {
     } else if (channelsLength > 1) {
       if (channelIndex === 0) return 'firstGroupFader';
       if (isLastChannel) return 'lastGroupFader';
-    }
-
-    return '';
+    } else return '';
   }
 
   return (
@@ -130,7 +129,7 @@ function BigView({ onClose }: BigViewProps) {
           <div className='toggleUniverse'>
             <Toggle
               onClick={handleToggleChange}
-              enabled={localStorage.getItem('dmx') === 'true'}
+              enabled={sessionStorage.getItem('dmx') === 'true'}
             />
           </div>
           <span className='text-left'>DMX Channel</span>
@@ -190,7 +189,7 @@ function BigView({ onClose }: BigViewProps) {
                       <div
                         key={slider.id}
                         className={slider.attributes.channel.length > 1 ? 'faderGroup' : ''}
-                        style={{ marginLeft: sliderIndex === 0 && slider.attributes.channel.length > 1 ? '-8px' : '' }}
+                        style={{ marginLeft: sliderIndex === 0 && slider.attributes.channel.length > 1 ? '-9px' : '' }}
                       >
                         {slider.attributes.channel.map((channel: { id: number; channel_type: string }, channelIndex: number) => (
                           <div
@@ -209,6 +208,7 @@ function BigView({ onClose }: BigViewProps) {
                               number={slider.id}
                               className={determineClassName(sliderIndex, channelIndex, filteredSliders, slider.attributes.channel.length)}
                               color={channel.channel_type === 'r' ? '#CA2C2C' : channel.channel_type === 'g' ? '#59E066' : channel.channel_type === 'b' ? '#4271C6' : ''}
+                              //height={240}
                             />
                           </div>
                         ))}

@@ -21,7 +21,7 @@
   - [x] Should be "on" when added
   - [ ] Visualisation of Scenes when specific fader is changed
   - [ ] If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
-- [ ] Setting to change the URL of the server
+- [x] Setting to change the URL of the server
 
 ## Known Issues
 
@@ -126,7 +126,6 @@
 - [x] Icons for dropdown menu
 - [ ] DIN icons for Studio-Overview
 - [x] Constistent Fader elements spacing
-- [ ] BigView pin button to keep it open when switching between pages
 
 ## Code Cleanup & Comments
 

@@ -35,7 +35,6 @@
 
 .AddSceneButtonFont {
   font-size: 20px;
-  font-weight: 500;
   color: var(--secondary);
   position: relative;
   top: -50%;

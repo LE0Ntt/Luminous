@@ -208,7 +208,6 @@ function BigView({ onClose }: BigViewProps) {
                               number={slider.id}
                               className={determineClassName(sliderIndex, channelIndex, filteredSliders, slider.attributes.channel.length)}
                               color={channel.channel_type === 'r' ? '#CA2C2C' : channel.channel_type === 'g' ? '#59E066' : channel.channel_type === 'b' ? '#4271C6' : ''}
-                              //height={240}
                             />
                           </div>
                         ))}

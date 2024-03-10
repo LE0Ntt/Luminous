@@ -21,7 +21,7 @@
 .fader {
   height: 360px;
   width: 102px;
-  font-weight: 700;
+  font-weight: 500;
   position: relative;
   color: var(--primary);
   border-right: 1px solid var(--faderBorder);
@@ -99,7 +99,7 @@
 .faderText {
   padding-top: 0px;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--primary);
   text-align: center;
   line-height: 22px;
@@ -235,7 +235,7 @@
   bottom: 0;
   transform: translateX(-50%);
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 22px;
   letter-spacing: 0em;
   text-align: center;

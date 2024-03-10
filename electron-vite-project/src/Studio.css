@@ -109,19 +109,18 @@
 
 .studioOverviewInfopanelText {
   font-size: 13px;
-  font-weight: 600;
   color: var(--primary);
   text-align: right;
   letter-spacing: 0;
   margin-right: 6px;
+  font-weight: 500;
 }
 
 .studioOverviewInfopanelBrightness {
-  font-weight: 600;
-  font-size: 18px;
+  font-size: 16px;
   position: absolute;
   color: var(--primary);
-  bottom: -4px;
+  bottom: -1px;
   right: 6px;
 }
 

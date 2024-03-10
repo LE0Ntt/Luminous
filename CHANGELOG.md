@@ -25,6 +25,7 @@
   - added outline around all channels of a device
   - RGB faders are in corresponding color
   - Channel or device toggle resets to device view after a session
+- Adjusted font weights to be thinner in some places
 
 ### Fixes
 

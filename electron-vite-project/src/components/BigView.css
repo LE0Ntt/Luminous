@@ -32,14 +32,6 @@
   top: -10px;
 }
 
-.faderGroup > div > div {
-  padding-top: 5px;
-}
-
-.faderGroup .faderName {
-  bottom: 5px;
-}
-/* Adjust all instead of only groups
 .BigViewContent .fader {
   padding-top: 5px;
 }
@@ -47,7 +39,7 @@
 .BigViewContent .faderName {
   bottom: 5px;
 }
-*/
+
 .BigViewContent .value-slider {
   bottom: 75px;
 }
@@ -93,7 +85,6 @@
   align-items: center;
   display: flex;
   font-size: 20px;
-  font-weight: 400;
   color: var(--primary);
   gap: 10px;
 }

@@ -84,7 +84,7 @@
   --innerWindowOverlay: rgba(248, 248, 248, 0.8);
 
   --sceneOn: rgba(255, 255, 255, 0.8);
-  --backgroundImage: url('./assets/bgLight.png');
+  --backgroundImage: url('./assets/bgLight2.png');
 }
 
 .dark {

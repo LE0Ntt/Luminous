@@ -123,6 +123,14 @@
   width: 30px;
   text-align: center;
   background-color: transparent;
+  -webkit-appearance: none; /* For Chrome, Safari, Edge */
+  -moz-appearance: textfield; /* For Firefox */
+}
+
+.SettingsIPBox::-webkit-inner-spin-button,
+.SettingsIPBox::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .SettingsTextBoxContainer {

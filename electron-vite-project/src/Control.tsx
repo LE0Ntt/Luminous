@@ -69,6 +69,7 @@ function Control() {
   const [blue, setBlue] = useState(faderValues[0][5]);
   const [allEffectChannels, setAllEffectChannels] = useState<Channel[]>([]);
   const [prevFaderValues, setPrevFaderValues] = useState<number[]>([]);
+  const [, forceRender] = useState(false); // Force rerender for design changes
 
   // update selected state
   useLayoutEffect(() => {
@@ -123,11 +124,20 @@ function Control() {
       fetchDevices(true);
     };
 
+    // Listen for changes to the display order
+    const handleStorageChange = (event: CustomEvent<boolean>) => {
+      if (event.type === 'designChange') {
+        forceRender((prev) => !prev);
+      }
+    };
+
+    window.addEventListener('designChange', handleStorageChange as EventListener);
     on('light_response', lightRespone);
     on('light_deleted', lightDeleted);
 
     return () => {
       clearTimeout(timer);
+      window.removeEventListener('designChange', handleStorageChange as EventListener);
       off('light_response', lightRespone);
       off('light_deleted', lightDeleted);
     };
@@ -542,6 +552,7 @@ function Control() {
           <ControlWindow
             className={'controlMain' + (animation ? ' mainAnimation' : '')}
             height={height}
+            newDesign={document.body.className.includes('defaultB')}
           />
         </>
       ) : (

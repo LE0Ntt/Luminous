@@ -151,9 +151,10 @@
   cursor: pointer;
   appearance: none;
   background: var(--faderThumb);
-  box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
+  transform: rotateZ(90deg);
 }
 
 .slider::-moz-range-thumb {

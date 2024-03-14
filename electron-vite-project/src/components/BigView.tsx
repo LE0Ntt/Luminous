@@ -139,7 +139,7 @@ function BigView({ onClose }: BigViewProps) {
             className='BigViewContent innerWindow'
             key={universe}
           >
-            <div className='universeLabel window'>{universe}</div>
+            <div className='buttonDesign universeLabel'>{universe}</div>
             <ScrollButton
               scrollRef={scrollRefs[universe]}
               elementWidth={102}

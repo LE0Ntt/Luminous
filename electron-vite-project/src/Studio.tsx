@@ -47,7 +47,7 @@ const Studio = () => {
   const [bigView, setBigView] = useState(false);
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
   const [addScene, setAddScene] = useState(false);
-  const [, forceRender] = useState(false); // Force rerender for mirrored studio ui setting
+  const [, forceRender] = useState(false); // Force rerender for design change
   const [glowId, setGlowId] = useState<number | null>(null);
   const refsArray = useRef<(HTMLDivElement | null)[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null); // Scroll button ref
@@ -106,7 +106,7 @@ const Studio = () => {
       fetchSliders();
     }
 
-    // Listen for changes to the display order
+    // Listen for design changes
     const handleStorageChange = (event: CustomEvent<boolean>) => {
       if (event.type === 'reverseOrder') {
         forceRender((prev) => !prev);

@@ -36,6 +36,7 @@
   position: absolute;
 }
 
+.mainAnimation > g > *,
 .mainAnimation > g > g > * {
   transition: all 200ms ease-out;
 }

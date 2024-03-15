@@ -124,7 +124,7 @@ function Control() {
       fetchDevices(true);
     };
 
-    // Listen for changes to the display order
+    // Listen for design changes
     const handleStorageChange = (event: CustomEvent<boolean>) => {
       if (event.type === 'designChange') {
         forceRender((prev) => !prev);

@@ -52,7 +52,7 @@
   - [x] Rework Layout
   - [ ] Add various settings
     - [ ] Studio-Overview
-    - [ ] Change IP
+    - [x] Change IP
 - [ ] MotorMix
   - [ ] "Mute"
   - [ ] Solo

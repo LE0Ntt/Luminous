@@ -13,20 +13,22 @@
   - Transfer the values of the first light of its kind to the corresponding LightFX faders
   - Added input field for bi-color
   - Bi-color and RGB areas are now blurred if not supported by the selection
-  - Miscellaneous visual touch-ups
+  - Various visual tweaks
   - Added 'out of sync' button for devices that are not in the current state of the selection
   - Split updates of selection between 'main' and RGB/bi-color
 - Fader
   - More obvious fader highlighting when selected in Studio-Overview
   - Reworked spacing
-    - First and last fader in a row now have a smaller margin to the edge
+    - First and last faders in a row now have a smaller gap to the edge
     - Vertical spacing is now more consistent
 - BigView
-  - added outline around all channels of a device
-  - RGB faders are in corresponding color
-  - Channel or device toggle resets to device view after a session
-- Adjusted font weights to be thinner in some places
-- Desaturated light mode background
+  - Added outline around all channels of a device
+  - RGB faders have appropriate color
+  - Channel or device toggle resets to device view after session
+- Design
+  - Adjusted font weights to be thinner in some places
+  - Desaturated light mode background
+  - Added a new theme that can be selected in the settings
 
 ### Fixes
 

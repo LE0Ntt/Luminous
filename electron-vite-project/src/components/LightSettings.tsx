@@ -364,7 +364,7 @@ function LightSettings({ onClose }: SettingsProps) {
   );
 
   return (
-    <div className='LightSettingsOverParent'>
+    <>
       <div
         className='backgroundOverlay'
         onClick={onClose}
@@ -375,7 +375,7 @@ function LightSettings({ onClose }: SettingsProps) {
           onClose={() => setShowAdminPassword(false)}
         />
       ) : (
-        <div className={`LightSettingsContainer ${selectedDevice ? '' : 'ContainerGap'}`}>
+        <div className={'LightSettingsContainer'}>
           <button
             className='buttonClose'
             onClick={onClose}
@@ -386,7 +386,7 @@ function LightSettings({ onClose }: SettingsProps) {
           </button>
           <div className='SettingsTitle'>
             <IconLight />
-            <span className='relative left-[10px] top-[-2px]'>{t('ls_title')}</span>
+            <span className='SettingsTitleText'>{t('ls_title')}</span>
           </div>
           <div className='LightSettingsListContainer'>
             <div className='LightSettingsSelected innerWindow'>
@@ -592,7 +592,7 @@ function LightSettings({ onClose }: SettingsProps) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

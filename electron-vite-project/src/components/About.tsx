@@ -65,7 +65,7 @@ function About({ onClose }: SettingsProps) {
         </button>
         <div className='SettingsTitle'>
           <IconAbout />
-          <span className='relative left-[10px] top-[-2px]'>{t('dd_about')}</span>
+          <span className='SettingsTitleText'>{t('dd_about')}</span>
         </div>
         <div className='AboutContainer'>
           <div className='AboutTextBoxContainer'>

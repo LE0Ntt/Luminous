@@ -71,7 +71,7 @@ function Help({ onClose }: SettingsProps) {
         </button>
         <div className='SettingsTitle'>
           <IconHelp />
-          <span className='relative left-[10px] top-[-2px]'>{t('help')}</span>
+          <span className='SettingsTitleText'>{t('help')}</span>
         </div>
         <div className='SettingsContent innerWindow'>
           <div className='SettingsOption'>

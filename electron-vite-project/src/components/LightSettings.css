@@ -29,11 +29,7 @@
   -webkit-backdrop-filter: var(--windowBackdrop);
   backdrop-filter: var(--windowBackdrop);
   border: var(--onepStroke) 1px solid;
-  padding: 15px 20px 20px 20px;
-}
-
-.ContainerGap {
-  gap: 0px;
+  padding: 20px;
 }
 
 .LightSettingsListContainer {
@@ -45,8 +41,8 @@
   gap: 20px;
   position: relative;
   height: stretch;
-  top: 40px;
-  margin-bottom: 40px;
+  top: 35px;
+  margin-bottom: 35px;
   bottom: 0;
 }
 
@@ -106,7 +102,7 @@
   display: flex;
   flex-direction: column;
   height: stretch;
-  top: 40px;
+  top: 36px;
   margin-bottom: 40px;
   bottom: 0;
   padding: 10px 20px 20px;
@@ -118,10 +114,7 @@
 }
 
 .LightSettingsWindowInvisible {
-  flex-grow: 0;
-  width: 0;
-  opacity: 0;
-  padding: 10px 0 20px 0;
+  display: none;
 }
 
 .LightSettingsWindowUpper {

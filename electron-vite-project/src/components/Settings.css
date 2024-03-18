@@ -18,8 +18,8 @@
   display: flex;
   z-index: 9999;
   gap: 20px;
-  height: 80vh;
-  width: 80vw;
+  height: 70vh;
+  width: 70vw;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -74,6 +74,12 @@
   font-size: 24px;
   margin-bottom: 10px;
   gap: 10px;
+}
+
+.SettingsTitleText {
+  position: relative;
+  left: 10px;
+  top: -2ox;
 }
 
 .SettingsSubTitle {

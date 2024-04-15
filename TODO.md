@@ -17,11 +17,13 @@
   - [x] Add Bi-color number input
     - [ ] Find a way to get full resolution
   - [x] Hide not supported areas
+  - [ ] Buffer socketio
 - [ ] Scenes
   - [x] Should be "on" when added
   - [ ] Visualisation of Scenes when specific fader is changed
   - [ ] If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
 - [x] Setting to change the URL of the server
+- [ ] Settings UI cleanup
 
 ## Known Issues
 

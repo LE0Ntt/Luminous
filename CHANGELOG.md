@@ -26,9 +26,10 @@
   - RGB faders have appropriate color
   - Channel or device toggle resets to device view after session
 - Design
+  - Added a new theme that can be selected in the settings
   - Adjusted font weights to be thinner in some places
   - Desaturated light mode background
-  - Added a new theme that can be selected in the settings
+  - Improved spacing consistency
 
 ### Fixes
 

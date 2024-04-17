@@ -71,7 +71,7 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
   }
 
   useEffect(() => {
-    const socketInstance = io(url + '/socket');
+    const socketInstance = io(url + '/'); // testing change for rust
     setSocket(socketInstance);
 
     socketInstance.on('connect', () => {

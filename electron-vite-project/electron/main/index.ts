@@ -179,7 +179,7 @@ const store = new Store({ schema } as any);
 // IP
 ipcMain.handle('get-ip', () => {
   const ip = store.get('ip');
-  const port = '5000'; // at the moment the port is hardcoded
+  const port = '3000'; // at the moment the port is hardcoded default: 5000 // 3000 for rust test
   return { ip, port };
 });
 

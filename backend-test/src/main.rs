@@ -43,6 +43,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let app = axum::Router::new()
         .route("/", get(|| async { "Hello, World!" }))
         .route("/json", get(json_response))
+        .route("/fader", get(models::get_devices))
         .layer(
             ServiceBuilder::new()
                 .layer(CorsLayer::permissive())

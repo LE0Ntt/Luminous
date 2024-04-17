@@ -95,8 +95,10 @@ const Studio = () => {
       try {
         const response = await fetch(url + '/fader');
         const data = await response.json();
-        setSliders(JSON.parse(data));
-        loadFaderValues(JSON.parse(data)); // Loads the fader values from the database
+        //console.log(JSON.parse(data));
+        console.log(data.devices);
+        setSliders(data.devices);
+        loadFaderValues(data.devices); // Loads the fader values from the database
       } catch (error) {
         console.log(error);
       }
@@ -172,10 +174,10 @@ const Studio = () => {
       >
         <div className='scenesAndFaders'>
           <div className='scenes window'>
-            <ScenesComponent
+            {/* <ScenesComponent
               sideId={0}
               setAddScene={setAddScene}
-            />
+            /> */}
           </div>
           {!bigView && (
             <>

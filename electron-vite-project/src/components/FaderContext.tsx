@@ -26,6 +26,12 @@ interface FaderProviderProps {
   children: React.ReactNode;
 }
 
+interface FaderValue {
+  device_id: number;
+  channel_id: number;
+  value: number;
+}
+
 const FaderContext = createContext<FaderContextProps | undefined>(undefined);
 
 const createInitialFaderValues = (sliderGroupId: number) => {
@@ -39,9 +45,9 @@ const createInitialFaderValues = (sliderGroupId: number) => {
 };
 
 export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
-  useEffect(() => {
+  /* useEffect(() => {
     console.log('FaderContext Component re-rendered');
-  }); // This will log on every re-render
+  }); // This will log on every re-render */
 
   const sliderGroupId = 694;
   const initialFaderValues = createInitialFaderValues(sliderGroupId);
@@ -71,7 +77,7 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
    */
   const setFaderValue = (sliderGroupId: number, faderId: number, value: number) => {
     if (faderValues[sliderGroupId][faderId] !== value) {
-      console.log('setFaderValue is called');
+      //console.log('setFaderValue is called');
       const newFaderValues = [...faderValues];
       newFaderValues[sliderGroupId][faderId] = value;
       setFaderValues(newFaderValues);
@@ -79,9 +85,10 @@ export const FaderProvider: React.FC<FaderProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    const eventListener = (data: any) => {
-      if (!isDragging && data.deviceId !== undefined) {
-        setFaderValue(data.deviceId, data.channelId, data.value);
+    const eventListener = (data: FaderValue) => {
+      console.log('Received data:', data);
+      if (!isDragging && data.device_id !== undefined) {
+        setFaderValue(data.device_id, data.channel_id, data.value);
       }
     };
 

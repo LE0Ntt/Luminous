@@ -1,35 +1,49 @@
-use axum::{
-    //extract::Extension,
-    routing::get,
-    Json, //Router,
-};
+use axum::routing::get;
 use tracing::info;
-use socketioxide::{extract::SocketRef, SocketIo};
+use socketioxide::{
+    extract::{Data, SocketRef},
+    SocketIo
+};
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 use tracing_subscriber::FmtSubscriber;
-//use sqlx::sqlite::SqlitePool;
-use serde::Serialize;
+use tracing::error;
 
 mod models;
 
 async fn on_connect(socket: SocketRef) {
     info!("Client connected: {}", socket.id);
+
+    socket.on("fader_value", |socket: SocketRef, Data::<FaderValueIn>(data)|{
+        info!("Received message: {:?}", data);
+
+        let response = FaderValueOut {
+            device_id: data.device_id + 1,
+            channel_id: data.channel_id,
+            value: data.value,
+        };
+
+        info!("Sending message to client: {:?}", response);
+        if let Err(e) = socket.broadcast().emit("variable_update", &response) {
+            error!("Failed to send message: {:?}", e);
+        } else {
+            info!("Message sent successfully");
+        }
+    });
 }
 
-// Define a struct for your JSON response
-#[derive(Serialize)]
-struct ApiResponse {
-    message: String,
-    status: u16,
+#[derive(Debug, serde::Deserialize)]
+struct FaderValueIn {
+    device_id: u32,
+    channel_id: u32,
+    value: u8,
 }
 
-// Your handler function
-async fn json_response() -> Json<ApiResponse> {
-    Json(ApiResponse {
-        message: "This is a JSON response".to_string(),
-        status: 200,
-    })
+#[derive(Debug, serde::Serialize)]
+struct FaderValueOut {
+    device_id: u32,
+    channel_id: u32,
+    value: u8,
 }
 
 #[tokio::main]
@@ -38,11 +52,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let (layer, io) = SocketIo::new_layer();
 
-    io.ns("/", on_connect);
+    io.ns("/socket", on_connect);
 
     let app = axum::Router::new()
         .route("/", get(|| async { "Hello, World!" }))
-        .route("/json", get(json_response))
         .route("/fader", get(models::get_devices))
         .layer(
             ServiceBuilder::new()

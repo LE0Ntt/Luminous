@@ -96,7 +96,7 @@ const Studio = () => {
         const response = await fetch(url + '/fader');
         const data = await response.json();
         //console.log(JSON.parse(data));
-        console.log(data.devices);
+        //console.log(data.devices);
         setSliders(data.devices);
         loadFaderValues(data.devices); // Loads the fader values from the database
       } catch (error) {
@@ -162,9 +162,9 @@ const Studio = () => {
     refsArray.current[id]?.focus();
   };
 
-  useEffect(() => {
+  /*   useEffect(() => {
     console.log('Studio Component re-rendered');
-  }); // This will log on every re-render
+  }); // This will log on every re-render */
 
   return (
     <>

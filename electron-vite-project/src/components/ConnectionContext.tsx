@@ -71,18 +71,21 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
   }
 
   useEffect(() => {
-    const socketInstance = io(url + '/'); // testing change for rust
+    const socketInstance = io('ws://127.0.0.1:3000/socket'); // testing change for rust : default /socket
     setSocket(socketInstance);
 
     socketInstance.on('connect', () => {
+      console.log('Connected to server');
       setConnected(true);
     });
 
     socketInstance.on('disconnect', () => {
+      console.log('Disconnected from server');
       setConnected(false);
     });
 
     socketInstance.on('reconnect', () => {
+      console.log('Reconnected to server');
       setConnected(true);
     });
 
@@ -104,6 +107,12 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
   const off: OffFunction = (event, callback) => {
     socket?.off(event, callback);
   };
+
+  useEffect(() => {
+    socket?.on('test', () => {
+      console.log('Test event received');
+    });
+  });
 
   const contextValue: ConnectionContextType = {
     connected,

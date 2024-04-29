@@ -81,6 +81,25 @@ pub async fn get_devices() -> Json<Devices> {
                   ],
               },
           },
+          Device {
+              id: 2,
+              name: "D2".to_string(),
+              device_type: Some("Spot".to_string()),
+              number: Some(2),
+              universe: Some("U1".to_string()),
+              mute: Some(false),
+              attributes: DeviceAttributes {
+                  channels: vec![
+                      Channel {
+                          id: "0".to_string(),
+                          dmx_channel: Some("2".to_string()),
+                          channel_type: "main".to_string(),
+                          slider_value: 255,
+                          backup_value: Some(0),
+                      },
+                  ],
+              },
+          },
       ],
   })
 }

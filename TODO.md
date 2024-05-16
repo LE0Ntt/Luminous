@@ -1,3 +1,10 @@
+## Version 1.2.3 TODOs
+
+- [ ] Studio-Overview add Traverse Lights master
+- [ ] Fader - prevent rerendering on fader change
+- [ ] LightFX buffer socketio
+- [ ] Scenes fix weird color bug
+
 ## Version 1.2.x TODOs
 
 - [ ] Studio-Overview add Traverse Lights // master missing

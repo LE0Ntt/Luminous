@@ -52,8 +52,8 @@ const Studio = () => {
   const refsArray = useRef<(HTMLDivElement | null)[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null); // Scroll button ref
 
-  const studioRows = 6;
-  const studioColumns = 4;
+  const [studioRows, setStudioRows] = useState(6);
+  const [studioColumns, setStudioColumns] = useState(4);
   const selectedSliders = [
     { id: 5, row: 0, col: 0, fake: false, type: spot },
     { id: 5, row: 0, col: 1, fake: false, type: fillLight },

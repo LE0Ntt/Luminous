@@ -20,6 +20,7 @@ import { useConnectionContext } from './ConnectionContext';
 import AdminPassword from './AdminPassword';
 import Setting1 from './SettingsGeneral';
 import Setting2 from './SettingsAdmin';
+import Setting3 from './SettingsStudioOverview';
 import IconSettings from '@/assets/Icon_Settings';
 import IconAdmin from '@/assets/Icon_Admin';
 
@@ -88,6 +89,16 @@ function Settings({ onClose }: SettingsProps) {
                     <span>{t('set_admin')}</span>
                   </div>
                 </Button>
+                {/* not for 1.2.x - exclude for release (maybe)????*/}
+                <Button
+                  className={selectedSetting === 'Setting3' ? 'active' : ''}
+                  onClick={() => setSelectedSetting('Setting3')}
+                >
+                  <div className='settingsButtonContent'>
+                    <IconAdmin color={selectedSetting === 'Setting3' ? 'var(--primarySwitched)' : 'var(--primary)'} />
+                    <span>{t('set_studio')}</span>
+                  </div>
+                </Button>
               </div>
               <div className='SettingContent innerWindow'>
                 {selectedSetting === 'Setting1' ? (
@@ -98,7 +109,10 @@ function Settings({ onClose }: SettingsProps) {
                     setIsOlaWindowOpen={setIsOlaWindowOpen}
                   />
                 ) : selectedSetting === 'Setting3' ? (
-                  <div className='SettingsOption'>not used</div>
+                  <Setting3
+                    studioRows={6}
+                    studioColumns={4}
+                  />
                 ) : selectedSetting === 'Setting4' ? (
                   <div className='SettingsOption'>not used</div>
                 ) : null}

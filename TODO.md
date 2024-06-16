@@ -45,7 +45,8 @@
 - Studio-Overview just uses ID, not universe // not sure if this is a problem or not
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
-- Scenes do not fade in exact seconds and are subject to server performance
+- ~~Scenes do not fade in exact seconds and are subject to server performance~~
+- MAYBE: Scenes only fade master? Check if this is a problem
 - Colors of the RGB lights are weird, when master is not at 100% - try in studio
 - LightFX
   - RGB and bi-color picker mismatch from cursor position when window is resized

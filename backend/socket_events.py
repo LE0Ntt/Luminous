@@ -217,6 +217,8 @@ def register_socketio_events(socketio):
         device_id = device["id"]
         channel_id = channel["id"]
         change_per_step = (end_value - start_value) / steps
+        start_time = time.time()
+
         for i in range(steps):
             # Check if the thread should be stopped
             if fade_threads.get((device_id, channel_id), {}).get("stop"):
@@ -228,7 +230,22 @@ def register_socketio_events(socketio):
             if driver is not None and driver.light_mode:
                 driver.pushFader(device_id, current_value)
                 driver.devices = routes.devices
-            time.sleep(interval)
+
+            # Adjust sleep to ensure correct total duration
+            elapsed_time = time.time() - start_time
+            expected_time = (i + 1) * interval
+            sleep_time = expected_time - elapsed_time
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+
+        # Ensure the final value is set
+        if not fade_threads.get((device_id, channel_id), {}).get("stop"):
+            deviceChannel["sliderValue"] = end_value
+            faderSend(device_id, end_value, channel_id)
+            send_dmx(device_id, channel_id, end_value, device, channel)
+            if driver is not None and driver.light_mode:
+                driver.pushFader(device_id, end_value)
+                driver.devices = routes.devices
 
     # Update status (on/off) of a scene
     @socketio.on("scene_update", namespace="/socket")
@@ -552,6 +569,7 @@ def register_socketio_events(socketio):
             if channel:
                 channel["sliderValue"] = channel["backupValue"] = fader_value
                 send_dmx(fader, channelId, fader_value, device, channel)
+                # print(f"Device {fader} Channel {channelId} Value {fader_value}")
                 if driver is not None and channel["channel_type"] == "main":
                     driver.pushFader(fader, fader_value)
                     driver.devices = routes.devices
@@ -570,11 +588,8 @@ def register_socketio_events(socketio):
                         {"deviceId": fader, "channelId": 0, "value": 0, "send": True}
                     )
 
-        universe = None
-        if fader == 692:
-            universe = 1
-        elif fader == 693:
-            universe = 2
+        fader_to_universe = {692: 1, 693: 2}
+        universe = fader_to_universe.get(fader)
         if universe is not None:
             send_dmx_direct(universe, fader_value, channelId)
 

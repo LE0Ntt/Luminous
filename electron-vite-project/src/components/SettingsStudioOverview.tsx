@@ -56,7 +56,7 @@ const Setting3: React.FC<Setting3Props> = ({ studioRows, studioColumns }) => {
 
   return (
     <div className='SettingsOption'>
-      <div className='SettingsTitle'>
+      <div className='SettingsTitle SettingsTitleInner'>
         <span>{t('set_studio')}</span>
       </div>
       <hr style={{ marginTop: '45px' }} />

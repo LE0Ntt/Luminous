@@ -101,21 +101,23 @@ function Settings({ onClose }: SettingsProps) {
                 </Button>
               </div>
               <div className='SettingContent innerWindow'>
-                {selectedSetting === 'Setting1' ? (
-                  <Setting1 />
-                ) : selectedSetting === 'Setting2' ? (
-                  <Setting2
-                    url={url}
-                    setIsOlaWindowOpen={setIsOlaWindowOpen}
-                  />
-                ) : selectedSetting === 'Setting3' ? (
-                  <Setting3
-                    studioRows={6}
-                    studioColumns={4}
-                  />
-                ) : selectedSetting === 'Setting4' ? (
-                  <div className='SettingsOption'>not used</div>
-                ) : null}
+                <div className='settingsContentContainer'>
+                  {selectedSetting === 'Setting1' ? (
+                    <Setting1 />
+                  ) : selectedSetting === 'Setting2' ? (
+                    <Setting2
+                      url={url}
+                      setIsOlaWindowOpen={setIsOlaWindowOpen}
+                    />
+                  ) : selectedSetting === 'Setting3' ? (
+                    <Setting3
+                      studioRows={6}
+                      studioColumns={4}
+                    />
+                  ) : selectedSetting === 'Setting4' ? (
+                    <div className='SettingsOption'>not used</div>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>

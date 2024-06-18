@@ -50,7 +50,7 @@ const Setting1: React.FC = () => {
 
   return (
     <div className='SettingsOption'>
-      <div className='SettingsTitle'>
+      <div className='SettingsTitle SettingsTitleInner'>
         <span>{t('set_general')}</span>
       </div>
       <hr style={{ marginTop: '45px' }} />

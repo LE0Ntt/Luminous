@@ -31,6 +31,7 @@
   - Adjusted font weights to be thinner in some places
   - Desaturated light mode background
   - Improved spacing consistency
+  - Adjusted Settings layout for different window sizes
 
 ### Fixes
 

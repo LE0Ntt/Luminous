@@ -150,7 +150,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
 
   return (
     <div className='SettingsOption'>
-      <div className='SettingsTitle'>
+      <div className='SettingsTitle SettingsTitleInner'>
         <span>{t('set_admin')}</span>
       </div>
       <hr style={{ marginTop: '45px' }} />

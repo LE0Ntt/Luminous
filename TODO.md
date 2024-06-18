@@ -30,7 +30,7 @@
   - [ ] Visualisation of Scenes when specific fader is changed
   - [ ] If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
 - [x] Setting to change the URL of the server
-- [ ] Settings UI cleanup
+- [x] Settings UI cleanup
 
 ## Known Issues
 

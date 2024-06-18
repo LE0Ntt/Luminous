@@ -46,6 +46,32 @@ interface DeviceConfig {
   upToDate?: boolean;
 }
 
+let sendBuffer: { [key: string]: { deviceId: number; channelId: number; value: number } } = {};
+let sendTimer: NodeJS.Timeout | null = null;
+
+// Buffer DMX values and send them in bulk
+function sendDMXBuffered(emit: any, deviceId: number, channelId: number, value: number) {
+  const key = `${deviceId}-${channelId}`;
+  sendBuffer[key] = { deviceId, channelId, value };
+
+  if (!sendTimer) {
+    sendTimer = setTimeout(() => {
+      const deviceDataArray = Object.values(sendBuffer).reduce((acc: any, { deviceId, channelId, value }) => {
+        let device = acc.find((d: any) => d.deviceId === deviceId);
+        if (!device) {
+          device = { deviceId, channels: [] };
+          acc.push(device);
+        }
+        device.channels.push({ channelId, value });
+        return acc;
+      }, []);
+      emit('bulk_fader_values', deviceDataArray);
+      sendBuffer = {};
+      sendTimer = null;
+    }, 20);
+  }
+}
+
 // LightFX
 function Control() {
   const { t } = useContext(TranslationContext);
@@ -218,28 +244,18 @@ function Control() {
     const rgbOrBiChanged = [2, 3, 4, 5].some((index) => prevFaderValues[index] !== faderValues[0][index]);
     setPrevFaderValues([...faderValues[0]]);
 
-    const deviceDataArray = selectedDevices
-      .map((device) => {
-        const channels = device.attributes.channel
-          .filter((channel) => (mainChanged && channel.channel_type === 'main') || (rgbOrBiChanged && ['r', 'g', 'b', 'bi'].includes(channel.channel_type)))
-          .map((channel) => {
-            const controlIndex = getControlIndex(channel.channel_type);
-            if (controlIndex !== undefined) {
-              const newValue = faderValues[0][controlIndex];
-              setFaderValue(device.id, channel.id, newValue);
-              return { channelId: channel.id, value: newValue };
-            }
-            return null;
-          })
-          .filter((channel) => channel !== null);
-
-        return channels.length > 0 ? { deviceId: device.id, channels } : null;
-      })
-      .filter((device) => device !== null);
-
-    if (deviceDataArray.length > 0) {
-      emit('bulk_fader_values', deviceDataArray);
-    }
+    selectedDevices.forEach((device) => {
+      device.attributes.channel
+        .filter((channel) => (mainChanged && channel.channel_type === 'main') || (rgbOrBiChanged && ['r', 'g', 'b', 'bi'].includes(channel.channel_type)))
+        .forEach((channel) => {
+          const controlIndex = getControlIndex(channel.channel_type);
+          if (controlIndex !== undefined) {
+            const newValue = faderValues[0][controlIndex];
+            setFaderValue(device.id, channel.id, newValue);
+            sendDMXBuffered(emit, device.id, channel.id, newValue);
+          }
+        });
+    });
   }, [faderValues[0][1], faderValues[0][2], faderValues[0][3], faderValues[0][4], faderValues[0][5]]);
 
   // Check if effects, bi-color or RGB are supported

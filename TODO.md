@@ -2,8 +2,8 @@
 
 - [ ] Studio-Overview add Traverse Lights master
 - [ ] Fader - prevent rerendering on fader change
-- [ ] LightFX buffer socketio
-- [ ] Scenes fix weird color bug
+- [x] LightFX buffer socketio
+- [?] Scenes fix weird color bug
 
 ## Version 1.2.x TODOs
 
@@ -24,7 +24,7 @@
   - [x] Add Bi-color number input
     - [ ] Find a way to get full resolution
   - [x] Hide not supported areas
-  - [ ] Buffer socketio
+  - [x] Buffer socketio
 - [ ] Scenes
   - [x] Should be "on" when added
   - [ ] Visualisation of Scenes when specific fader is changed

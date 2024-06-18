@@ -10,6 +10,7 @@
 - Added DMX occupancy overview to LightSettings
 - Scenes are 'on' when created
 - LightFX
+  - Implemented buffering of changes, now sent every 20ms to prevent stuttering
   - Transfer the values of the first light of its kind to the corresponding LightFX faders
   - Added input field for bi-color
   - Bi-color and RGB areas are now blurred if not supported by the selection
@@ -33,6 +34,8 @@
 
 ### Fixes
 
+- Fixed scenes not fading in exact seconds as they were subject to server performance
+- MAYBE Fixed a bug where the master fader incorrectly adjusted the channels of scene devices
 - MotorMix
   - Fixed blackout button crashing the driver
   - Fixed unassigned quick-scene buttons crashing the driver

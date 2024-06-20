@@ -7,8 +7,8 @@
 
 ## Version 1.2.x TODOs
 
-- [ ] Studio-Overview add Traverse Lights // master missing
-  - [ ] Add info panels
+- [x] Studio-Overview add Traverse Lights
+  - [x] Add info panels
 - [ ] Prevent scene and solo overlaps
 - [ ] Fader
   - [x] More obvious fader highlighting
@@ -57,7 +57,7 @@
 ## Necessary Changes
 
 - [ ] Code cleanup / comments
-- [ ] Testing phase
+- [x] Testing phase
 - [ ] Settings
   - [x] Rework Layout
   - [ ] Add various settings
@@ -76,7 +76,7 @@
   - [x] Effects as misc faders for now
     - [ ] Group faders with same name
   - [x] Device list server updates
-  - [ ] Emit changes with buffer like other faders
+  - [x] Emit changes with buffer like other faders
   - [ ] "Mute" button
   - [ ] New bi-color slider with higher resolution
 - [ ] PI
@@ -107,15 +107,15 @@
 - [ ] No animations setting for slow PCs
 - [ ] Change scene fade in/out curve
 - [x] Rework close button
-- [ ] Studio-Overview
+- [x] Studio-Overview
   - [x] Device highlight
   - [x] Move to the left
-  - [ ] Add rgb traverse lights with info panels
+  - [x] Add rgb traverse lights with info panels
     - [x] Display traverse light effects
   - [x] Add fill light icon
   - [x] Rearrange devices
-  - [ ] Move code to own component
-  - [ ] Display bi-color changes
+  - [x] Move code to own component
+  - [x] Display bi-color changes
 - [ ] Scenes
   - [ ] See what you save
   - [ ] Edit scenes

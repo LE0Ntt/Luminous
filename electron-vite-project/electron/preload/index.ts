@@ -124,6 +124,7 @@ export const electronAPI = {
   getFullScreen: async () => {
     return await ipcRenderer.invoke('get-full-screen');
   },
+  showAlert: (message: any) => ipcRenderer.invoke('show-alert', message),
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

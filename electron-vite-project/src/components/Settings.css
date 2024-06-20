@@ -144,7 +144,7 @@
   width: 30px;
   text-align: center;
   background-color: transparent;
-  -webkit-appearance: none; /* For Chrome, Safari, Edge */
+  appearance: none; /* For Chrome, Safari, Edge */
   -moz-appearance: textfield; /* For Firefox */
 }
 
@@ -255,6 +255,10 @@
 @media (max-width: 1375px) {
   .SettingsTextBoxContainer2 {
     flex-flow: column wrap;
+  }
+
+  .uploadDBContainer {
+    flex-direction: column;
   }
 }
 
@@ -407,4 +411,33 @@
   100% {
     outline: 2px solid transparent;
   }
+}
+
+.dbSettings {
+  display: grid;
+  gap: 20px;
+  justify-items: end;
+}
+
+.uploadDBContainer {
+  display: flex;
+  gap: 20px;
+}
+
+.dropzone {
+  border: 2px dashed var(--secondary);
+  border-radius: 5px;
+  height: 48px;
+  width: 250px;
+  text-align: center;
+  line-height: 42px;
+  cursor: copy;
+  color: var(--secondary);
+  white-space: nowrap;
+  padding: 0 10px 0 10px;
+}
+
+.dropzone p {
+  text-overflow: ellipsis;
+  overflow: hidden;
 }

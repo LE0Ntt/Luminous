@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { release } from 'node:os';
 import Store from 'electron-store';
 
@@ -260,4 +260,13 @@ function createPopupWindow() {
 
 ipcMain.on('open-OLA', (event, arg) => {
   createPopupWindow();
+});
+
+ipcMain.handle('show-alert', async (event, message) => {
+  await dialog.showMessageBox({
+    type: 'info',
+    buttons: ['OK'],
+    title: 'Alert',
+    message: message,
+  });
 });

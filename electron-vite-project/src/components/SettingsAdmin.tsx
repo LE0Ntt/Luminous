@@ -21,12 +21,7 @@ import IconKey from '@/assets/IconKey';
 import { useConnectionContext } from './ConnectionContext';
 import IconNetwork from '@/assets/IconNetwork';
 
-interface Setting2Props {
-  url: string;
-  setIsOlaWindowOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
+const Setting2: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
@@ -36,7 +31,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
   const [ip, setIP] = useState<string>(defaultIP);
   const [port, setPort] = useState<string>('5000');
   const { t } = useContext(TranslationContext);
-  const { changeUrl } = useConnectionContext();
+  const { changeUrl, url } = useConnectionContext();
 
   // Confirm with ENTER
   const handleEnterConfirm = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -86,7 +81,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
             setPasswordMessage(t('set_changed_successfully'));
           } else if (data.message === 'currrent_wrong') {
             setPasswordSuccess(false);
-            setPasswordMessage(t('set_currrent_wrong'));
+            setPasswordMessage(t('set_current_wrong'));
           } else if (data.message === 'no_match') {
             setPasswordSuccess(false);
             setPasswordMessage(t('set_error_match'));
@@ -146,6 +141,106 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
     const newURL = `http://${ip}:${port}`;
     console.log('New URL:', newURL);
     changeUrl(newURL);
+  };
+
+  // ----- Database Settings -----
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragActive, setIsDragActive] = useState(false);
+
+  // Check if the dropped file is a .db file
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const files = event.dataTransfer.files;
+    if (files && files.length > 0) {
+      if (files[0].name.endsWith('.db') && files.length == 1) {
+        setSelectedFile(files[0]);
+        setIsDragActive(false);
+      } else {
+        window.electronAPI.showAlert(t('set_alertWrongFile'));
+      }
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragActive(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragActive(false);
+  };
+
+  // Upload the selected file
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      window.electronAPI.showAlert(t('set_alertNoFile'));
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const response = await fetch(url + '/upload_db', {
+        method: 'POST',
+        body: formData,
+      });
+      if (response.ok) {
+        window.electronAPI.showAlert(t('set_alertSuccess'));
+      } else {
+        window.electronAPI.showAlert(t('set_alertError'));
+      }
+    } catch (error) {
+      console.error('Error uploading the file:', error);
+      window.electronAPI.showAlert(t('set_alertError'));
+    }
+  };
+
+  // Download the database file
+  const handleBackup = async () => {
+    try {
+      const response = await fetch(`${url}/download_db`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = downloadUrl;
+      a.download = 'database.db';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+    }
+  };
+
+  // Reset the database
+  const handleReset = async () => {
+    try {
+      const response = await fetch(`${url}/reset_db`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      window.electronAPI.showAlert(t('set_resetSuccess'));
+    } catch (error) {
+      console.error('Error resetting the database:', error);
+    }
   };
 
   return (
@@ -209,7 +304,7 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
         </div>
         <Button
           className='SettingsButton controlButton'
-          onClick={() => setIsOlaWindowOpen(true)}
+          onClick={() => (window as any).electronAPI.send('open-OLA', url.toString().slice(0, -5) + ':9090')}
         >
           {t('set_ola')}
         </Button>
@@ -267,6 +362,53 @@ const Setting2: React.FC<Setting2Props> = ({ url, setIsOlaWindowOpen }) => {
           >
             {t('as_saveURL')}
           </Button>
+        </div>
+      </div>
+      <hr />
+      <div className='SettingContainer'>
+        <div className='SettingsSubTitle'>
+          <IconServer
+            color={'var(--primary)'}
+            size='20px'
+          />
+          <span className='relative top-[-6px]'>{t('set_db')}</span>
+        </div>
+        <div className='dbSettings'>
+          <Button
+            className='SettingsButton controlButton'
+            onClick={handleBackup}
+          >
+            {t('set_saveDB')}
+          </Button>
+          <Button
+            className='SettingsButton controlButton'
+            onClick={handleReset}
+          >
+            {t('set_resetDB')}
+          </Button>
+          <div className='uploadDBContainer'>
+            <div
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              className='dropzone'
+              style={{ backgroundColor: isDragActive ? 'var(--colorButton)' : '' }}
+            >
+              {selectedFile ? (
+                <p>
+                  {t('set_selectedFile')}: {selectedFile.name}
+                </p>
+              ) : (
+                <p>{t('set_dropHere')}</p>
+              )}
+            </div>
+            <Button
+              className='SettingsButton controlButton'
+              onClick={handleUpload}
+            >
+              {t('set_uploadDB')}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

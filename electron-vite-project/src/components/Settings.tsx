@@ -16,7 +16,6 @@ import { useState, useContext, useCallback } from 'react';
 import './Settings.css';
 import Button from './Button';
 import { TranslationContext } from './TranslationContext';
-import { useConnectionContext } from './ConnectionContext';
 import AdminPassword from './AdminPassword';
 import Setting1 from './SettingsGeneral';
 import Setting2 from './SettingsAdmin';
@@ -30,16 +29,13 @@ interface SettingsProps {
 
 function Settings({ onClose }: SettingsProps) {
   const { t } = useContext(TranslationContext);
-  const { url } = useConnectionContext();
-  const [isOlaWindowOpen, setIsOlaWindowOpen] = useState(false);
-  const olaURL = url.toString().slice(0, -5) + ':9090';
+  const [isAdmin, setIsAdmin] = useState(false);
   const [selectedSetting, setSelectedSetting] = useState<string | null>('Setting1');
 
   const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
     if (isConfirmed) {
-      //window.electronAPI.openExternal(olaURL);
-      (window as any).electronAPI.send('open-OLA', olaURL);
-      onClose();
+      setSelectedSetting('Setting2');
+      setIsAdmin(false);
     }
   }, []);
 
@@ -49,10 +45,10 @@ function Settings({ onClose }: SettingsProps) {
         className='backgroundOverlay'
         onClick={onClose}
       />
-      {isOlaWindowOpen ? (
+      {isAdmin ? (
         <AdminPassword
           onConfirm={handleAdminPasswordConfirm}
-          onClose={() => setIsOlaWindowOpen(false)}
+          onClose={() => setIsAdmin(false)}
         />
       ) : (
         <>
@@ -82,7 +78,7 @@ function Settings({ onClose }: SettingsProps) {
                 </Button>
                 <Button
                   className={selectedSetting === 'Setting2' ? 'active' : ''}
-                  onClick={() => setSelectedSetting('Setting2')}
+                  onClick={() => setIsAdmin(true)}
                 >
                   <div className='settingsButtonContent'>
                     <IconAdmin color={selectedSetting === 'Setting2' ? 'var(--primarySwitched)' : 'var(--primary)'} />
@@ -105,10 +101,7 @@ function Settings({ onClose }: SettingsProps) {
                   {selectedSetting === 'Setting1' ? (
                     <Setting1 />
                   ) : selectedSetting === 'Setting2' ? (
-                    <Setting2
-                      url={url}
-                      setIsOlaWindowOpen={setIsOlaWindowOpen}
-                    />
+                    <Setting2 />
                   ) : selectedSetting === 'Setting3' ? (
                     <Setting3
                       studioRows={6}

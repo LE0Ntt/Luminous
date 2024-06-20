@@ -327,7 +327,8 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
               >
                 <div style={{ top: `${position.top}px`, left: `${position.left}px`, position: 'fixed' }}>
                   <LightBeam
-                    master={faderValues[baseIndex][0]}
+                    master={faderValues[0][0]}
+                    main={faderValues[baseIndex][0]}
                     red={faderValues[baseIndex][1]}
                     green={faderValues[baseIndex][2]}
                     blue={faderValues[baseIndex][3]}

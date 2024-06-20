@@ -13,8 +13,6 @@
  * @file routes.py
 """
 
-import datetime
-from re import T
 from flask import request, jsonify, send_file
 import json
 from server import app, db  # type: ignore
@@ -128,12 +126,13 @@ def change_password():
 @app.route("/checkpassword", methods=["POST"])
 def check_password():
     data = request.get_json()
-    password = data["password"]
+    password = data.get("password", "")
     admin = Admin.query.first()
-    if admin and admin.check_password(password):
-        return {"match": "true"}
-    else:
-        return {"match": "false"}
+
+    if admin:
+        return {"match": "true" if admin.check_password(password) else "false"}
+    else:  # If no admin exists in DB, allow access for empty password
+        return {"match": "true" if password == "" else "false"}
 
 
 # Send the database file to the client

@@ -43,6 +43,7 @@
 
 - Fixed scenes not fading in exact seconds as they were subject to server performance
 - MAYBE Fixed a bug where the master fader incorrectly adjusted the channels of scene devices
+- Fixed inability to access admin password protected settings when database is empty
 - MotorMix
   - Fixed blackout button crashing the driver
   - Fixed unassigned quick-scene buttons crashing the driver

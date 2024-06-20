@@ -167,10 +167,19 @@ const schema = {
     format: 'ipv4',
     default: '127.0.0.1',
   },
+  port: {
+    type: 'integer',
+    default: 5000,
+  },
   language: {
     type: 'string',
     enum: ['en', 'de'],
     default: 'de',
+  },
+  theme: {
+    type: 'string',
+    enum: ['light', 'dark', 'auto'],
+    default: 'light',
   },
 };
 
@@ -179,7 +188,7 @@ const store = new Store({ schema } as any);
 // IP
 ipcMain.handle('get-ip', () => {
   const ip = store.get('ip');
-  const port = '5000'; // at the moment the port is hardcoded
+  const port = store.get('port'); // at the moment the port is hardcoded
   return { ip, port };
 });
 
@@ -189,7 +198,9 @@ ipcMain.on('set-ip', (_, ip) => {
 });
 
 const ip = store.get('ip');
+const port = store.get('port');
 console.log(`Current IP: ${ip}`);
+console.log(`Current Port: ${port}`);
 
 // Language
 ipcMain.handle('get-language', () => {
@@ -203,10 +214,21 @@ ipcMain.handle('set-language', (_, language) => {
 const language = store.get('language');
 console.log(`Current Language: ${language}`);
 
+// Theme
+ipcMain.handle('get-theme', () => {
+  return store.get('theme');
+});
+
+ipcMain.handle('set-theme', (_, theme) => {
+  store.set('theme', theme);
+});
+
+// Platform
 ipcMain.handle('get-platform', () => {
   return process.platform;
 });
 
+// Open External
 ipcMain.on('open-external', (event, url) => {
   shell.openExternal(url);
 });

@@ -32,6 +32,8 @@
   - Desaturated light mode background
   - Improved spacing consistency
   - Adjusted Settings layout for different window sizes
+- Studio Overview
+  - Added missing info panels for traversen lights
 
 ### Fixes
 
@@ -42,6 +44,7 @@
   - Fixed unassigned quick-scene buttons crashing the driver
   - Fixed mismatching fader values between MotorMix and the app
   - Fixed display values missing after many concurrent changes
+- Fixed the master fader not affecting the traversen light beams
 
 ## [1.2.2] - 2024-01-09
 

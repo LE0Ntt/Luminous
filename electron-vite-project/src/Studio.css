@@ -102,6 +102,49 @@
   top: -75px;
 }
 
+/* ich weiß es ist sehr hässlich */
+.studioOverviewInfopanelTraverse0 {
+  position: relative;
+  top: 14px;
+  left: -77px;
+}
+
+.studioOverviewInfopanelTraverse1 {
+  position: relative;
+  top: 20px;
+  left: -77px;
+}
+
+.studioOverviewInfopanelTraverse2 {
+  position: relative;
+  top: 25px;
+  left: -77px;
+}
+
+.studioOverviewInfopanelTraverse3 {
+  position: relative;
+  top: 25px;
+  left: -25px;
+}
+
+.studioOverviewInfopanelTraverse4 {
+  position: relative;
+  top: 20px;
+  left: -25px;
+}
+
+.studioOverviewInfopanelTraverse5 {
+  position: relative;
+  top: 20px;
+  left: -25px;
+}
+
+.studioOverviewInfopanelTraverse6 {
+  position: relative;
+  top: 14px;
+  left: -25px;
+}
+
 .studioOverviewExtra {
   top: -640px;
   left: 480px;

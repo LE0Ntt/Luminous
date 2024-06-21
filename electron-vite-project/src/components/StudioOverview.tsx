@@ -7,17 +7,17 @@ import fillLight from '../assets/FillTop.png';
 import biColor from '../assets/BiColorTop.png';
 import LightBeam from './LightBeam';
 import { TranslationContext } from './TranslationContext';
+import { useFaderValue, useFaderContext } from './FaderContext';
 
 interface StudioOverviewProps {
   handleGlowAndFocus: (id: number) => void;
-  sliders: any;
-  faderValues: any;
 }
 
-const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sliders, faderValues }) => {
+const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) => {
   const { t } = useContext(TranslationContext);
-  const [studioRows, setStudioRows] = useState(6);
-  const [studioColumns, setStudioColumns] = useState(4);
+  const { getFaderValue } = useFaderContext();
+  const [studioRows] = useState(6);
+  const [studioColumns] = useState(4);
   const selectedSliders = [
     { id: 5, row: 0, col: 0, fake: false, type: spot },
     { id: 5, row: 0, col: 1, fake: false, type: fillLight },
@@ -45,6 +45,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
     .map(() => Array(studioColumns).fill(undefined));
 
   const greenScreen = 14; // Change greenScreen in the Studio Overview
+  const masterFaderValue = useFaderValue(0, 0);
 
   return (
     <div className='overview window'>
@@ -57,9 +58,9 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
           >
             <div className='studioOverviewInfopanelText'>Greenscreen</div>
             <div className='studioOverviewInfopanelBrightness'>
-              {(((faderValues[greenScreen][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+              {(((getFaderValue(greenScreen, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
                 ? t('Off')
-                : (((faderValues[greenScreen][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+                : (((getFaderValue(greenScreen, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
             </div>
           </div>
           {[...Array(6)].map((_, index) => (
@@ -73,7 +74,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
                 className='schein'
                 style={{
                   top: `-35px`,
-                  opacity: (faderValues[greenScreen][0] / 255) * (faderValues[0][0] / 255),
+                  opacity: (getFaderValue(greenScreen, 0) / 255) * (masterFaderValue / 255),
                   filter: 'blur(5px)',
                 }}
               />
@@ -107,7 +108,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
               row.map((_, colIndex) => {
                 const selectedSlider = selectedSliders.find((s) => s.row === rowIndex && s.col === colIndex);
                 const sliderId = selectedSlider ? selectedSlider.id : null;
-                const slider = sliders.find((s: any) => s.id === sliderId);
+                const slider = sliderId !== null ? { id: sliderId } : null;
                 if (selectedSlider && colIndex < row.length / 2 && selectedSlider.fake === false) {
                   return (
                     <div key={`${rowIndex}-${colIndex}`}>
@@ -119,7 +120,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
                               alt='schein'
                               className={'schein'}
                               style={{
-                                opacity: (faderValues[slider.id][0] / 255) * (faderValues[0][0] / 255),
+                                opacity: (getFaderValue(slider.id, 0) / 255) * (masterFaderValue / 255),
                                 filter: 'blur(5px)',
                               }}
                             />
@@ -135,9 +136,9 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
                               <div className='studioOverviewInfopanel'>
                                 <div className='studioOverviewInfopanelText'>#{slider.id}</div>
                                 <div className='studioOverviewInfopanelBrightness'>
-                                  {(((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                                  {(((getFaderValue(slider.id, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
                                     ? t('Off')
-                                    : (((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+                                    : (((getFaderValue(slider.id, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
                                 </div>
                               </div>
                             </div>
@@ -157,7 +158,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
                               alt='schein'
                               className={'schein'}
                               style={{
-                                opacity: (faderValues[slider.id][0] / 255) * (faderValues[0][0] / 255),
+                                opacity: (getFaderValue(slider.id, 0) / 255) * (masterFaderValue / 255),
                                 filter: 'blur(5px)',
                               }}
                             />
@@ -173,9 +174,9 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
                               <div className='studioOverviewInfopanel'>
                                 <div className='studioOverviewInfopanelText'>#{slider.id}</div>
                                 <div className='studioOverviewInfopanelBrightness'>
-                                  {(((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                                  {(((getFaderValue(slider.id, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
                                     ? t('Off')
-                                    : (((faderValues[slider.id][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+                                    : (((getFaderValue(slider.id, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
                                 </div>
                               </div>
                             </div>
@@ -218,7 +219,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
               alt='schein'
               className={'schein'}
               style={{
-                opacity: (faderValues[11][0] / 255) * (faderValues[0][0] / 255),
+                opacity: (getFaderValue(11, 0) / 255) * (masterFaderValue / 255),
                 transform: 'rotate(180deg)',
                 top: '25px',
                 left: '-10px',
@@ -236,9 +237,9 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
               <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
                 <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
                 <div className='studioOverviewInfopanelBrightness'>
-                  {(((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                  {(((getFaderValue(11, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
                     ? t('Off')
-                    : (((faderValues[11][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+                    : (((getFaderValue(11, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
                 </div>
               </div>
             </div>
@@ -250,7 +251,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
               alt='schein'
               className={'schein'}
               style={{
-                opacity: (faderValues[12][0] / 255) * (faderValues[0][0] / 255),
+                opacity: (getFaderValue(12, 0) / 255) * (masterFaderValue / 255),
                 transform: 'rotate(180deg)',
                 top: '25px',
                 left: '-10px',
@@ -268,9 +269,9 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
               <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
                 <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
                 <div className='studioOverviewInfopanelBrightness'>
-                  {(((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                  {(((getFaderValue(12, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
                     ? t('Off')
-                    : (((faderValues[12][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+                    : (((getFaderValue(12, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
                 </div>
               </div>
             </div>
@@ -284,7 +285,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
             alt='schein'
             className={'schein'}
             style={{
-              opacity: (faderValues[13][0] / 255) * (faderValues[0][0] / 255),
+              opacity: (getFaderValue(13, 0) / 255) * (masterFaderValue / 255),
               transform: 'rotate(180deg)',
               top: '25px',
               left: '-10px',
@@ -302,9 +303,9 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
             <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
               <div className='studioOverviewInfopanelText'>HMI</div>
               <div className='studioOverviewInfopanelBrightness'>
-                {(((faderValues[13][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                {(((getFaderValue(13, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
                   ? t('Off')
-                  : (((faderValues[13][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+                  : (((getFaderValue(13, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
               </div>
             </div>
           </div>
@@ -327,11 +328,11 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
               >
                 <div style={{ top: `${position.top}px`, left: `${position.left}px`, position: 'fixed' }}>
                   <LightBeam
-                    master={faderValues[0][0]}
-                    main={faderValues[baseIndex][0]}
-                    red={faderValues[baseIndex][1]}
-                    green={faderValues[baseIndex][2]}
-                    blue={faderValues[baseIndex][3]}
+                    master={masterFaderValue}
+                    main={getFaderValue(baseIndex, 0)}
+                    red={getFaderValue(baseIndex, 1)}
+                    green={getFaderValue(baseIndex, 2)}
+                    blue={getFaderValue(baseIndex, 3)}
                   />
                 </div>
                 <div
@@ -341,9 +342,9 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
                 >
                   <div className='studioOverviewInfopanelText'>{t('Traverse ' + (index + 1))}</div>
                   <div className='studioOverviewInfopanelBrightness'>
-                    {(((faderValues[baseIndex][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) === '0'
+                    {(((getFaderValue(baseIndex, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
                       ? t('Off')
-                      : (((faderValues[baseIndex][0] * 10) / 255) * ((faderValues[0][0] * 10) / 255)).toFixed(0) + '%'}
+                      : (((getFaderValue(baseIndex, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
                   </div>
                 </div>
               </div>

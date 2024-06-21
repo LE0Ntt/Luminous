@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useCallback, useSyncExternalStore } from 'react';
+import React, { createContext, useContext, useCallback, useSyncExternalStore, useEffect } from 'react';
+import { useConnectionContext } from './ConnectionContext';
 
 interface FaderState {
   [key: string]: number;
@@ -37,8 +38,21 @@ class FaderStore {
 const faderStore = new FaderStore();
 
 export const FaderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { on, off } = useConnectionContext();
+
   const getFaderValue = useCallback(faderStore.getFaderValue, []);
   const setFaderValue = useCallback(faderStore.setFaderValue, []);
+
+  useEffect(() => {
+    const eventListener = (data: any) => {
+      if (data.deviceId !== undefined) {
+        setFaderValue(data.deviceId, data.channelId, data.value);
+      }
+    };
+
+    on('variable_update', eventListener);
+    return () => off('variable_update', eventListener);
+  }, [on, off, setFaderValue]);
 
   const value = { getFaderValue, setFaderValue };
 
@@ -55,5 +69,9 @@ export const useFaderContext = () => {
 
 export const useFaderValue = (groupId: number, faderId: number) => {
   const { getFaderValue } = useFaderContext();
-  return useSyncExternalStore(faderStore.subscribe, () => getFaderValue(groupId, faderId));
+  return useSyncExternalStore(
+    (listener) => faderStore.subscribe(listener),
+    () => getFaderValue(groupId, faderId),
+    () => getFaderValue(groupId, faderId)
+  );
 };

@@ -303,7 +303,7 @@ function Control() {
   const getControlIndex = (channelType: string): number | undefined => ({ main: 0, bi: 1, r: 2, g: 3, b: 4 }[channelType]);
 
   // Update faderValues[0] for selected devices
-  const updateFaderValuesForSelectedDevices = () => {
+  const updateFaderValuesForSelectedDevices = useCallback(() => {
     const flags: { mainSet: boolean; biSet: boolean; rSet: boolean; gSet: boolean; bSet: boolean; [key: string]: boolean } = {
       mainSet: false,
       biSet: false,
@@ -329,7 +329,7 @@ function Control() {
         }
       });
     });
-  };
+  }, [selectedDevices, getFaderValue, setFaderValue]);
 
   // Calculate the RGB values from the Kelvin value on first load or when added
   useEffect(() => {
@@ -339,9 +339,10 @@ function Control() {
       const kelvinValue = Math.round((biColorFaderValue / 255) * 8800 + 2200);
       const rgb = iro.Color.kelvinToRgb(kelvinValue);
       setFaderValue(0, 3, rgb.r);
+      setFaderValue(0, 4, rgb.g);
       setFaderValue(0, 5, rgb.b);
     }, 100);
-  }, [supportFlags]);
+  }, [supportFlags, biColorFaderValue, setFaderValue]);
 
   // Check if the selected devices channels are up to date with the corresponding fader values of the control
   useEffect(() => {
@@ -350,48 +351,46 @@ function Control() {
       setDeviceModified(false);
     }
 
-    selectedDevices.forEach((device) => {
-      if (selectedDevices.length === 1) {
-        device.upToDate = true;
-        updateFaderValuesForSelectedDevices();
-        return;
-      }
-
-      device.attributes.channel.forEach((channel) => {
-        const controlIndex = getControlIndex(channel.channel_type);
-        const channelValue = getFaderValue(device.id, channel.id);
-
-        if (controlIndex !== undefined && channelValue !== [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][controlIndex]) {
-          device.upToDate = false;
-        } else {
-          device.upToDate = true;
-        }
-      });
+    const updatedDevices = selectedDevices.map((device) => {
+      const isDeviceUpToDate = device.attributes.channel
+        .filter((channel) => ['main', 'bi', 'r', 'g', 'b'].includes(channel.channel_type))
+        .every((channel) => {
+          const controlIndex = getControlIndex(channel.channel_type);
+          if (controlIndex === undefined) return true;
+          const channelValue = getFaderValue(device.id, channel.id);
+          return channelValue === [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][controlIndex];
+        });
+      return { ...device, upToDate: isDeviceUpToDate };
     });
-  }, [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue, selectedDevices, deviceModified]);
+
+    if (JSON.stringify(updatedDevices) !== JSON.stringify(selectedDevices)) {
+      setSelectedDevices(updatedDevices);
+    }
+  }, [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue, selectedDevices, deviceModified, updateFaderValuesForSelectedDevices, getFaderValue]);
 
   // Sync the selected devices channels with the corresponding fader values of the control
-  const handleSyncClick = (deviceToSync: DeviceConfig) => {
-    const updatedDevices = selectedDevices.map((device) => {
-      if (device.id === deviceToSync.id) {
-        // Aktualisiere die Kanäle des Geräts und markiere es als aktuell
-        const updatedChannels = device.attributes.channel.map((channel) => {
-          const controlIndex = getControlIndex(channel.channel_type);
-          if (controlIndex !== undefined) {
-            const newValue = [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][controlIndex];
-            setFaderValue(device.id, channel.id, newValue);
-            emit('fader_value', { deviceId: device.id, value: newValue, channelId: channel.id });
-          }
-          return channel;
-        });
-        return { ...device, attributes: { ...device.attributes, channel: updatedChannels }, upToDate: true };
-      } else {
-        return device;
-      }
-    });
+  const handleSyncClick = useCallback(
+    (deviceToSync: DeviceConfig) => {
+      const updatedDevices = selectedDevices.map((device) => {
+        if (device.id === deviceToSync.id) {
+          device.attributes.channel.forEach((channel) => {
+            const controlIndex = getControlIndex(channel.channel_type);
+            if (controlIndex !== undefined) {
+              const newValue = [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][controlIndex];
+              setFaderValue(device.id, channel.id, newValue);
+              emit('fader_value', { deviceId: device.id, value: newValue, channelId: channel.id });
+            }
+          });
+          return { ...device, upToDate: true };
+        } else {
+          return device;
+        }
+      });
 
-    setSelectedDevices(updatedDevices); // Update den state mit der neuen Liste
-  };
+      setSelectedDevices(updatedDevices);
+    },
+    [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue, selectedDevices, emit, setFaderValue]
+  );
 
   // Bi-Color input field handling --- Does not fix low resolution though ---
   const [isFocused, setIsFocused] = useState(false); // Focus on value input

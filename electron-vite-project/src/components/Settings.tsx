@@ -22,6 +22,7 @@ import Setting2 from './SettingsAdmin';
 import Setting3 from './SettingsStudioOverview';
 import IconSettings from '@/assets/Icon_Settings';
 import IconAdmin from '@/assets/Icon_Admin';
+import { useConnectionContext } from './ConnectionContext';
 
 interface SettingsProps {
   onClose: () => void;
@@ -31,6 +32,8 @@ function Settings({ onClose }: SettingsProps) {
   const { t } = useContext(TranslationContext);
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedSetting, setSelectedSetting] = useState<string | null>('Setting1');
+  const { connected } = useConnectionContext();
+  const [initialConnected, setInitialConnected] = useState<boolean | null>(null);
 
   const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
     if (isConfirmed) {
@@ -38,6 +41,17 @@ function Settings({ onClose }: SettingsProps) {
       setIsAdmin(false);
     }
   }, []);
+
+  // Check that the client is connected so that the password can be confirmed or only the IP address can be set
+  const handleAdminSettings = () => {
+    if (connected) {
+      setIsAdmin(true);
+      setInitialConnected(connected);
+    } else {
+      setSelectedSetting('Setting2');
+      setInitialConnected(connected);
+    }
+  };
 
   return (
     <>
@@ -78,7 +92,7 @@ function Settings({ onClose }: SettingsProps) {
                 </Button>
                 <Button
                   className={selectedSetting === 'Setting2' ? 'active' : ''}
-                  onClick={() => setIsAdmin(true)}
+                  onClick={handleAdminSettings}
                 >
                   <div className='settingsButtonContent'>
                     <IconAdmin color={selectedSetting === 'Setting2' ? 'var(--primarySwitched)' : 'var(--primary)'} />
@@ -100,8 +114,8 @@ function Settings({ onClose }: SettingsProps) {
                 <div className='settingsContentContainer'>
                   {selectedSetting === 'Setting1' ? (
                     <Setting1 />
-                  ) : selectedSetting === 'Setting2' ? (
-                    <Setting2 />
+                  ) : selectedSetting === 'Setting2' && initialConnected !== null ? (
+                    <Setting2 connected={initialConnected} />
                   ) : selectedSetting === 'Setting3' ? (
                     <Setting3
                       studioRows={6}

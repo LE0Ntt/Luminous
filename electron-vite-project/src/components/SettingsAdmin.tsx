@@ -21,7 +21,11 @@ import IconKey from '@/assets/IconKey';
 import { useConnectionContext } from './ConnectionContext';
 import IconNetwork from '@/assets/IconNetwork';
 
-const Setting2: React.FC = () => {
+interface Setting2Props {
+  connected: boolean;
+}
+
+const Setting2: React.FC<Setting2Props> = ({ connected }) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
@@ -245,71 +249,75 @@ const Setting2: React.FC = () => {
 
   return (
     <div className='SettingsOption'>
-      <div className='SettingsTitle SettingsTitleInner'>
-        <span>{t('set_admin')}</span>
-      </div>
-      <hr style={{ marginTop: '45px' }} />
-      <div className='SettingContainer'>
-        <div className='SettingsSubTitle'>
-          <IconKey
-            color={'var(--primary)'}
-            size='20px'
-          />
-          <span className='relative top-[-6px]'>{t('change_password')}</span>
-        </div>
-        <div className='ChangePassword'>
-          <form className='SettingsTextBoxContainer'>
-            <input
-              className='SettingsTextBox textBox'
-              type='password'
-              value={currentPassword}
-              placeholder={t('set_current_pw')}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              onKeyDown={handleEnterNext}
-            />
-            <input
-              className='SettingsTextBox textBox'
-              type='password'
-              value={newPassword}
-              placeholder={t('set_new_pw')}
-              onChange={(e) => setNewPassword(e.target.value)}
-              onKeyDown={handleEnterNext}
-            />
-            <input
-              className='SettingsTextBox textBox'
-              type='password'
-              value={newPasswordConfirm}
-              placeholder={t('set_conew_pw')}
-              onChange={(e) => setNewPasswordConfirm(e.target.value)}
-              onKeyDown={handleEnterConfirm}
-            />
-          </form>
-          <Button
-            className='SettingsButton controlButton'
-            onClick={handleSavePassword}
-          >
-            {t('as_save')}
-          </Button>
-          {passwordMessage && <div className={`PasswordMessage ${passwordSuccess ? 'successMessage' : 'errorMessage'}`}>{passwordMessage}</div>}
-        </div>
-      </div>
-      <hr />
-      <div className='SettingContainer'>
-        <div className='SettingsSubTitle'>
-          <IconServer
-            color={'var(--primary)'}
-            size='20px'
-          />
-          <span className='relative top-[-6px]'>OLA</span>
-        </div>
-        <Button
-          className='SettingsButton controlButton'
-          onClick={() => (window as any).electronAPI.send('open-OLA', url.toString().slice(0, -5) + ':9090')}
-        >
-          {t('set_ola')}
-        </Button>
-      </div>
-      <hr />
+      {connected && (
+        <>
+          <div className='SettingsTitle SettingsTitleInner'>
+            <span>{t('set_admin')}</span>
+          </div>
+          <hr style={{ marginTop: '45px' }} />
+          <div className='SettingContainer'>
+            <div className='SettingsSubTitle'>
+              <IconKey
+                color={'var(--primary)'}
+                size='20px'
+              />
+              <span className='relative top-[-6px]'>{t('change_password')}</span>
+            </div>
+            <div className='ChangePassword'>
+              <form className='SettingsTextBoxContainer'>
+                <input
+                  className='SettingsTextBox textBox'
+                  type='password'
+                  value={currentPassword}
+                  placeholder={t('set_current_pw')}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  onKeyDown={handleEnterNext}
+                />
+                <input
+                  className='SettingsTextBox textBox'
+                  type='password'
+                  value={newPassword}
+                  placeholder={t('set_new_pw')}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  onKeyDown={handleEnterNext}
+                />
+                <input
+                  className='SettingsTextBox textBox'
+                  type='password'
+                  value={newPasswordConfirm}
+                  placeholder={t('set_conew_pw')}
+                  onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                  onKeyDown={handleEnterConfirm}
+                />
+              </form>
+              <Button
+                className='SettingsButton controlButton'
+                onClick={handleSavePassword}
+              >
+                {t('as_save')}
+              </Button>
+              {passwordMessage && <div className={`PasswordMessage ${passwordSuccess ? 'successMessage' : 'errorMessage'}`}>{passwordMessage}</div>}
+            </div>
+          </div>
+          <hr />
+          <div className='SettingContainer'>
+            <div className='SettingsSubTitle'>
+              <IconServer
+                color={'var(--primary)'}
+                size='20px'
+              />
+              <span className='relative top-[-6px]'>OLA</span>
+            </div>
+            <Button
+              className='SettingsButton controlButton'
+              onClick={() => (window as any).electronAPI.send('open-OLA', url.toString().slice(0, -5) + ':9090')}
+            >
+              {t('set_ola')}
+            </Button>
+          </div>
+          <hr />
+        </>
+      )}
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
           <IconNetwork
@@ -347,14 +355,6 @@ const Setting2: React.FC = () => {
               value={ip.split('.')[3]}
               onChange={(e) => handleOctetChange(4, e.target.value)}
             />
-            {/* Port is hardcoded at the moment, may change in the future */}
-            {/*             :
-            <input
-              className='SettingsIPBox'
-              maxLength={5}
-              value={port}
-              onChange={(e) => handlePortChange(e.target.value)}
-            /> */}
           </div>
           <Button
             className='SettingsButton controlButton'
@@ -364,53 +364,57 @@ const Setting2: React.FC = () => {
           </Button>
         </div>
       </div>
-      <hr />
-      <div className='SettingContainer'>
-        <div className='SettingsSubTitle'>
-          <IconServer
-            color={'var(--primary)'}
-            size='20px'
-          />
-          <span className='relative top-[-6px]'>{t('set_db')}</span>
-        </div>
-        <div className='dbSettings'>
-          <Button
-            className='SettingsButton controlButton'
-            onClick={handleBackup}
-          >
-            {t('set_saveDB')}
-          </Button>
-          <Button
-            className='SettingsButton controlButton'
-            onClick={handleReset}
-          >
-            {t('set_resetDB')}
-          </Button>
-          <div className='uploadDBContainer'>
-            <div
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              className='dropzone'
-              style={{ backgroundColor: isDragActive ? 'var(--colorButton)' : '' }}
-            >
-              {selectedFile ? (
-                <p>
-                  {t('set_selectedFile')}: {selectedFile.name}
-                </p>
-              ) : (
-                <p>{t('set_dropHere')}</p>
-              )}
+      {connected && (
+        <>
+          <hr />
+          <div className='SettingContainer'>
+            <div className='SettingsSubTitle'>
+              <IconServer
+                color={'var(--primary)'}
+                size='20px'
+              />
+              <span className='relative top-[-6px]'>{t('set_db')}</span>
             </div>
-            <Button
-              className='SettingsButton controlButton'
-              onClick={handleUpload}
-            >
-              {t('set_uploadDB')}
-            </Button>
+            <div className='dbSettings'>
+              <Button
+                className='SettingsButton controlButton'
+                onClick={handleBackup}
+              >
+                {t('set_saveDB')}
+              </Button>
+              <Button
+                className='SettingsButton controlButton'
+                onClick={handleReset}
+              >
+                {t('set_resetDB')}
+              </Button>
+              <div className='uploadDBContainer'>
+                <div
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  className='dropzone'
+                  style={{ backgroundColor: isDragActive ? 'var(--colorButton)' : '' }}
+                >
+                  {selectedFile ? (
+                    <p>
+                      {t('set_selectedFile')}: {selectedFile.name}
+                    </p>
+                  ) : (
+                    <p>{t('set_dropHere')}</p>
+                  )}
+                </div>
+                <Button
+                  className='SettingsButton controlButton'
+                  onClick={handleUpload}
+                >
+                  {t('set_uploadDB')}
+                </Button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };

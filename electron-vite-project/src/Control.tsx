@@ -244,6 +244,13 @@ function Control() {
     setFaderValue(0, 2, Math.min(255, Math.max(0, Math.round(((tempInKelvin - 2200) / 8800) * 255))));
   };
 
+  // Make sure the fader values are up to date
+  useEffect(() => {
+    setRed(redFaderValue);
+    setGreen(greenFaderValue);
+    setBlue(blueFaderValue);
+  }, [redFaderValue, greenFaderValue, blueFaderValue]);
+
   // Update and emit fader values for all affected devices based on control state (split into main, and RGBbi)
   useEffect(() => {
     const mainChanged = prevFaderValues[0] !== mainFaderValue;

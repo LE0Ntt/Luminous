@@ -183,44 +183,58 @@ const schema = {
   },
 };
 
-const store = new Store({ schema } as any);
+interface StoreSchema {
+  ip: string;
+  port: string;
+  language: string;
+  theme: string;
+}
+
+const store = new Store<StoreSchema>({ schema } as any);
+
+type ElectronStoreType = Store<StoreSchema> & {
+  get: <K extends keyof StoreSchema>(key: K) => StoreSchema[K];
+  set: <K extends keyof StoreSchema>(key: K, value: StoreSchema[K]) => void;
+};
+
+const typedStore = store as ElectronStoreType;
 
 // IP
 ipcMain.handle('get-ip', () => {
-  const ip = store.get('ip');
-  const port = store.get('port'); // at the moment the port is hardcoded
+  const ip = typedStore.get('ip');
+  const port = typedStore.get('port'); // at the moment the port is hardcoded
   return { ip, port };
 });
 
 ipcMain.on('set-ip', (_, ip) => {
   console.log('set-ip', ip);
-  store.set('ip', ip);
+  typedStore.set('ip', ip);
 });
 
-const ip = store.get('ip');
-const port = store.get('port');
+const ip = typedStore.get('ip');
+const port = typedStore.get('port');
 console.log(`Current IP: ${ip}`);
 console.log(`Current Port: ${port}`);
 
 // Language
 ipcMain.handle('get-language', () => {
-  return store.get('language');
+  return typedStore.get('language');
 });
 
 ipcMain.handle('set-language', (_, language) => {
-  store.set('language', language);
+  typedStore.set('language', language);
 });
 
-const language = store.get('language');
+const language = typedStore.get('language');
 console.log(`Current Language: ${language}`);
 
 // Theme
 ipcMain.handle('get-theme', () => {
-  return store.get('theme');
+  return typedStore.get('theme');
 });
 
 ipcMain.handle('set-theme', (_, theme) => {
-  store.set('theme', theme);
+  typedStore.set('theme', theme);
 });
 
 // Platform

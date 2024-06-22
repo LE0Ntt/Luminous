@@ -70,16 +70,17 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
   const handleSliderChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
-      setFaderValue(sliderGroupId, id, newValue);
+
       cacheValueRef.current = newValue;
 
       // Send only at certain time intervals
       if (!timerRunning) {
         setTimerRunning(true);
         emitValue(newValue);
+        setFaderValue(sliderGroupId, id, newValue);
         setTimeout(() => {
           setTimerRunning(false);
-        }, 20); // Timeout in ms
+        }, 10); // Timeout in ms
       }
     },
     [setFaderValue, sliderGroupId, id, timerRunning, emitValue]

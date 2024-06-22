@@ -13,6 +13,8 @@
  * @file LightBeam.tsx
  */
 
+import React, { useMemo } from 'react';
+
 interface LightBeamProps {
   master: number;
   main: number;
@@ -22,40 +24,53 @@ interface LightBeamProps {
 }
 
 const LightBeam: React.FC<LightBeamProps> = ({ master, main, red, green, blue }) => {
-  const scaledMaster = master / 255;
-  const scaledMain = main / 255;
-  const maxColorValue = Math.max(red, green, blue);
-  const alpha = maxColorValue / 255;
-  const scale = 255 / Math.sqrt((red ** 2 + green ** 2 + blue ** 2) / 3);
+  const shouldHide = useMemo(() => {
+    return (red === 0 && green === 0 && blue === 0) || main === 0 || master === 0;
+  }, [red, green, blue, main, master]);
 
-  const getRGBA = (opacity: number) => {
+  const { emitterStyle, innerGlowStyle } = useMemo(() => {
+    if (shouldHide) {
+      return {
+        emitterStyle: {},
+        innerGlowStyle: {},
+      };
+    }
+
+    const scaledMaster = master / 255;
+    const scaledMain = main / 255;
+    const maxColorValue = Math.max(red, green, blue);
+    const alpha = maxColorValue / 255;
+    const scale = 255 / Math.sqrt((red ** 2 + green ** 2 + blue ** 2) / 3);
+
     const scaledRed = Math.min(255, Math.max(0, red * scale));
     const scaledGreen = Math.min(255, Math.max(0, green * scale));
     const scaledBlue = Math.min(255, Math.max(0, blue * scale));
-    const adjustedAlpha = Math.min(1, Math.max(0, opacity));
-    return `rgba(${scaledRed}, ${scaledGreen}, ${scaledBlue}, ${adjustedAlpha})`;
-  };
 
-  const emitterStyle: React.CSSProperties = {
-    boxShadow: `0 0 ${40}px ${20}px ${getRGBA(alpha * 0.7 * scaledMain * scaledMaster)},
-                0 0 ${50}px ${30}px ${getRGBA(alpha * 0.5 * scaledMain * scaledMaster)},
-                0 0 ${60}px ${40}px ${getRGBA(alpha * 0.3 * scaledMain * scaledMaster)}`,
-  };
+    const getRGBA = (opacity: number) => {
+      const adjustedAlpha = Math.min(1, Math.max(0, opacity));
+      return `rgba(${scaledRed}, ${scaledGreen}, ${scaledBlue}, ${adjustedAlpha})`;
+    };
 
-  const innerGlowStyle: React.CSSProperties = {
-    opacity: Math.min(0.9, scaledMain * scaledMaster + 0.2), // Exponential function for faster fading. Max opacity is 0.9
-  };
-
-  const shouldHide = (red === 0 && green === 0 && blue === 0) || main === 0 || master === 0;
+    return {
+      emitterStyle: {
+        boxShadow: `0 0 ${40}px ${20}px ${getRGBA(alpha * 0.7 * scaledMain * scaledMaster)},
+                    0 0 ${50}px ${30}px ${getRGBA(alpha * 0.5 * scaledMain * scaledMaster)},
+                    0 0 ${60}px ${40}px ${getRGBA(alpha * 0.3 * scaledMain * scaledMaster)}`,
+      },
+      innerGlowStyle: {
+        opacity: Math.min(0.9, scaledMain * scaledMaster + 0.2),
+      },
+    };
+  }, [master, main, red, green, blue, shouldHide]);
 
   return (
     <>
       <div
-        className={`studioOverviewTraversenLight ${shouldHide ? 'hide' : ''}`}
+        className={`studioOverviewTraversenLight no-transition ${shouldHide ? 'hide' : ''}`}
         style={innerGlowStyle}
       />
       <div
-        className={`emitter ${shouldHide ? 'hide' : ''}`}
+        className={`emitter no-transition ${shouldHide ? 'hide' : ''}`}
         style={emitterStyle}
       />
     </>

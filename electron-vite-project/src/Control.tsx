@@ -11,6 +11,7 @@
  * - Andree Tomek
  *
  * @file Control.tsx
+ * This is the LightFX component.
  */
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { TranslationContext } from './components/TranslationContext';

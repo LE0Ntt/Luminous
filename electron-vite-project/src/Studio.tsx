@@ -45,7 +45,8 @@ const Studio = () => {
     name: string;
   }
 
-  const handleClick = useCallback(
+  // Open a device in the control (LightFX)
+  const handleOpenControl = useCallback(
     (id: number) => {
       navigate('/control', { state: { id: id } });
     },
@@ -76,6 +77,7 @@ const Studio = () => {
     });
   }, []);
 
+  // Fetch sliders on connection
   useEffect(() => {
     if (connected) {
       fetchSliders();
@@ -109,6 +111,7 @@ const Studio = () => {
     };
   }, [connected, fetchSliders, on, off]);
 
+  // Highlight fader of device selected in overview
   const handleGlowAndFocus = useCallback((id: number) => {
     setGlowId(id);
     setTimeout(() => setGlowId(null), 700);
@@ -185,7 +188,7 @@ const Studio = () => {
                         className={sliderIndex === sliders.length - 2 ? 'noBorder bottomSpace' : 'bottomSpace'}
                       />
                       <Button
-                        onClick={() => handleClick(slider.id)}
+                        onClick={() => handleOpenControl(slider.id)}
                         className='buttonOpenControl'
                       >
                         <svg

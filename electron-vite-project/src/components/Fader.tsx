@@ -12,7 +12,7 @@
  *
  * @file Fader.tsx
  */
-import React, { useState, ChangeEvent, useEffect, useRef, useCallback } from 'react';
+import React, { useState, ChangeEvent, useEffect, useCallback } from 'react';
 import './Fader.css';
 import { useConnectionContext } from './ConnectionContext';
 import { useFaderValue, useFaderContext } from './FaderContext';
@@ -37,10 +37,6 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-  // Refs to keep track of fader values and if they need to be sent
-  const cacheValueRef = useRef<number>(faderValue);
-  const sendValueRef = useRef<number>(faderValue);
-
   // Calculating the display value (0 to 100%) and update input value
   const scaledDisplayValue = (faderValue / 255) * 100;
   const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue) + '%');
@@ -55,23 +51,14 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
   const emitValue = useCallback(
     (value: number) => {
       emit('fader_value', { deviceId: sliderGroupId, value: value, channelId: id });
-      sendValueRef.current = value;
     },
     [emit, sliderGroupId, id]
   );
 
-  // Always send the last value
-  useEffect(() => {
-    if (!timerRunning && cacheValueRef.current != null && cacheValueRef.current !== sendValueRef.current) {
-      emitValue(faderValue);
-    }
-  }, [timerRunning, emitValue, faderValue]);
-
+  // Update the fader value on slider change
   const handleSliderChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       let newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
-
-      cacheValueRef.current = newValue;
 
       // Send only at certain time intervals
       if (!timerRunning) {

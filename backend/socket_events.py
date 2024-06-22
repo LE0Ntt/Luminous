@@ -13,6 +13,7 @@
  * @file socket_events.py
 """
 
+from flask import request
 from flask_socketio import SocketIO  # type: ignore
 from server import app, routes, db
 from server.motorMix_driver import Driver
@@ -78,16 +79,24 @@ def send_dmx_direct(universe: int, value: int, channel: int) -> None:
 
 def register_socketio_events(socketio):
     # Mutator method to get updates from driver
-    def faderSend(index, value, channelId):
+    def faderSend(index, value, channelId, sender_id=None):
         global last_send_time
         global last_change
-        socketio.emit(
-            "variable_update",
-            {"deviceId": index, "value": value, "channelId": channelId},
-            namespace="/socket",
-        )
 
-        # if index > 0 or channelId == 0:
+        if sender_id:
+            socketio.emit(
+                "variable_update",
+                {"deviceId": index, "value": value, "channelId": channelId},
+                namespace="/socket",
+                skip_sid=sender_id,
+            )
+        else:
+            socketio.emit(
+                "variable_update",
+                {"deviceId": index, "value": value, "channelId": channelId},
+                namespace="/socket",
+            )
+
         send_dmx(
             index,
             channelId,
@@ -95,11 +104,6 @@ def register_socketio_events(socketio):
             routes.devices[index],
             routes.devices[index]["attributes"]["channel"][channelId],
         )
-        # else:
-        #     print("Sending: " + str(value) + " to device index " + str(index))
-        #     send_dmx_direct(
-        #         int(routes.devices[index]["universe"][1:]), value, channelId
-        #     )
 
     def callback(index, value):
         faderSend(index, value, 0)  # invokes the corresponding socket event
@@ -561,6 +565,9 @@ def register_socketio_events(socketio):
         fader_value = int(data.get("value", 0))
         fader = int(data["deviceId"])
         channelId = int(data["channelId"])
+        send_to_self = data.get("send", False)
+        client_id = request.sid  # type: ignore # Get the sending client's ID
+
         device = next((d for d in routes.devices if d["id"] == fader), None)
 
         if device:
@@ -569,7 +576,6 @@ def register_socketio_events(socketio):
             if channel:
                 channel["sliderValue"] = channel["backupValue"] = fader_value
                 send_dmx(fader, channelId, fader_value, device, channel)
-                # print(f"Device {fader} Channel {channelId} Value {fader_value}")
                 if driver is not None and channel["channel_type"] == "main":
                     driver.pushFader(fader, fader_value)
                     driver.devices = routes.devices
@@ -593,8 +599,10 @@ def register_socketio_events(socketio):
         if universe is not None:
             send_dmx_direct(universe, fader_value, channelId)
 
-        if connections > 1 or data.get("send", False):
-            faderSend(fader, fader_value, channelId)
+        if connections > 1 or send_to_self:
+            faderSend(
+                fader, fader_value, channelId, client_id if not send_to_self else None
+            )
 
     @socketio.on("bulk_fader_values", namespace="/socket")
     def handle_bulk_fader_values(data):

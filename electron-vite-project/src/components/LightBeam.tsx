@@ -43,7 +43,7 @@ const LightBeam: React.FC<LightBeamProps> = ({ master, main, red, green, blue })
   };
 
   const innerGlowStyle: React.CSSProperties = {
-    opacity: Math.min(0.9, alpha ** 0.3), // Exponential function for faster fading. Max opacity is 0.9
+    opacity: Math.min(0.9, scaledMain * scaledMaster + 0.2), // Exponential function for faster fading. Max opacity is 0.9
   };
 
   const shouldHide = (red === 0 && green === 0 && blue === 0) || main === 0 || master === 0;

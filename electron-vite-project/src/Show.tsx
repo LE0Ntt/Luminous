@@ -21,7 +21,6 @@ import { useFaderContext } from './components/FaderContext';
 
 function Show() {
   const { emit, on } = useConnectionContext();
-  const { isDragging, setIsDragging } = useFaderContext();
 
   return (
     <>

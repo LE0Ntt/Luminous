@@ -78,12 +78,13 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
         setTimerRunning(true);
         emitValue(newValue);
         setFaderValue(sliderGroupId, id, newValue);
+
         setTimeout(() => {
           setTimerRunning(false);
-        }, 10); // Timeout in ms
+        }, 12); // Timeout in ms
       }
     },
-    [setFaderValue, sliderGroupId, id, timerRunning, emitValue]
+    [sliderGroupId, id, timerRunning, emitValue]
   );
 
   // Check if the input value is a number
@@ -108,7 +109,7 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
       setInputValue(Math.round(scaledDisplayValue)); // Reset value if input is NaN
     }
     setIsFocused(false);
-  }, [inputValue, scaledDisplayValue, setFaderValue, sliderGroupId, id, emitValue]);
+  }, [inputValue, scaledDisplayValue, sliderGroupId, id, emitValue]);
 
   // Confirm with ENTER
   const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -149,7 +150,7 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isHovered, faderValue, setFaderValue, sliderGroupId, id, emitValue]);
+  }, [isHovered, faderValue, sliderGroupId, id, emitValue]);
 
   // On value input focus
   const handleFocus = useCallback((event: React.FocusEvent<HTMLInputElement>) => {

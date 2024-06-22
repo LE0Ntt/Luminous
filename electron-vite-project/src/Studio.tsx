@@ -12,14 +12,13 @@
  *
  * @file Studio.tsx
  */
-import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import './Studio.css';
 import Button from './components/Button';
 import Fader from './components/Fader';
 import { useConnectionContext } from './components/ConnectionContext';
-import { TranslationContext } from './components/TranslationContext';
 import { useNavigate } from 'react-router-dom';
-import { FaderProvider, useFaderContext } from './components/FaderContext';
+import { useFaderContext } from './components/FaderContext';
 import ScenesComponent from './components/ScenesComponent';
 import BigView from './components/BigView';
 import AddScene from './components/AddScene';
@@ -29,9 +28,7 @@ import StudioOverview from './components/StudioOverview';
 const Studio = () => {
   const navigate = useNavigate();
   const { url, connected, on, off } = useConnectionContext();
-  const { t } = useContext(TranslationContext);
   const { setFaderValue } = useFaderContext();
-
   const [bigView, setBigView] = useState(false);
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
   const [addScene, setAddScene] = useState(false);
@@ -66,21 +63,18 @@ const Studio = () => {
     }
   }, [url]);
 
-  const loadFaderValues = useCallback(
-    (sliders: SliderConfig[]) => {
-      sliders.forEach((item) => {
-        const { id } = item;
-        if (item.attributes && item.attributes.channel) {
-          item.attributes.channel.forEach((channelItem: any) => {
-            const channelId = parseInt(channelItem.id, 10);
-            const sliderValue = channelItem.sliderValue !== undefined ? channelItem.sliderValue : 0;
-            setFaderValue(id, channelId, sliderValue);
-          });
-        }
-      });
-    },
-    [setFaderValue]
-  );
+  const loadFaderValues = useCallback((sliders: SliderConfig[]) => {
+    sliders.forEach((item) => {
+      const { id } = item;
+      if (item.attributes && item.attributes.channel) {
+        item.attributes.channel.forEach((channelItem: any) => {
+          const channelId = parseInt(channelItem.id, 10);
+          const sliderValue = channelItem.sliderValue !== undefined ? channelItem.sliderValue : 0;
+          setFaderValue(id, channelId, sliderValue);
+        });
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (connected) {
@@ -122,7 +116,7 @@ const Studio = () => {
   }, []);
 
   return (
-    <FaderProvider>
+    <>
       <div
         className='studioLayout'
         style={{ flexDirection: localStorage.getItem('reverseOrder') === 'true' ? 'row-reverse' : 'row' }}
@@ -229,7 +223,7 @@ const Studio = () => {
       </div>
       {bigView && <BigView onClose={() => setBigView(false)} />}
       {addScene && <AddScene onClose={() => setAddScene(false)} />}
-    </FaderProvider>
+    </>
   );
 };
 

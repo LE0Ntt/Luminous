@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import '../Studio.css';
 import schein from '../assets/schein3.png';
 import schein2 from '../assets/schein2.png';
@@ -7,45 +7,106 @@ import fillLight from '../assets/FillTop.png';
 import biColor from '../assets/BiColorTop.png';
 import LightBeam from './LightBeam';
 import { TranslationContext } from './TranslationContext';
-import { useFaderValue, useFaderContext } from './FaderContext';
+import { useFaderValue } from './FaderContext';
 
 interface StudioOverviewProps {
   handleGlowAndFocus: (id: number) => void;
+  sliders?: any[]; // Make sliders optional
 }
 
-const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) => {
+const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sliders = [] }) => {
+  // Provide default empty array
   const { t } = useContext(TranslationContext);
-  const { getFaderValue } = useFaderContext();
-  const [studioRows] = useState(6);
-  const [studioColumns] = useState(4);
-  const selectedSliders = [
-    { id: 5, row: 0, col: 0, fake: false, type: spot },
-    { id: 5, row: 0, col: 1, fake: false, type: fillLight },
-    { id: 6, row: 0, col: 2, fake: false, type: fillLight },
-    { id: 6, row: 0, col: 3, fake: false, type: spot },
-    { id: 4, row: 1, col: 0, fake: false, type: fillLight },
-    { id: 4, row: 1, col: 1, fake: false, type: fillLight },
-    { id: 7, row: 1, col: 2, fake: false, type: fillLight },
-    { id: 7, row: 1, col: 3, fake: false, type: fillLight },
-    { id: 3, row: 2, col: 0, fake: false, type: spot },
-    { id: 3, row: 2, col: 1, fake: false, type: fillLight },
-    { id: 8, row: 2, col: 2, fake: false, type: fillLight },
-    { id: 8, row: 2, col: 3, fake: false, type: spot },
-    { id: 2, row: 3, col: 0, fake: false, type: spot },
-    { id: 2, row: 3, col: 1, fake: false, type: spot },
-    { id: 9, row: 3, col: 2, fake: false, type: fillLight },
-    { id: 9, row: 3, col: 3, fake: false, type: spot },
-    { id: 1, row: 4, col: 0, fake: false, type: spot },
-    { id: 1, row: 4, col: 1, fake: false, type: fillLight },
-    { id: 10, row: 4, col: 3, fake: false, type: spot },
-  ];
-  // Creates an array with the number of rows and columns to be displayed in the Studio Overview
-  const grid = Array(studioRows)
-    .fill(undefined)
-    .map(() => Array(studioColumns).fill(undefined));
+  const masterValue = useFaderValue(0, 0);
+  const studioRows = 6;
+  const studioColumns = 4;
+  const selectedSliders = useMemo(
+    () => [
+      { id: 5, row: 0, col: 0, fake: false, type: spot },
+      { id: 5, row: 0, col: 1, fake: false, type: fillLight },
+      { id: 6, row: 0, col: 2, fake: false, type: fillLight },
+      { id: 6, row: 0, col: 3, fake: false, type: spot },
+      { id: 4, row: 1, col: 0, fake: false, type: fillLight },
+      { id: 4, row: 1, col: 1, fake: false, type: fillLight },
+      { id: 7, row: 1, col: 2, fake: false, type: fillLight },
+      { id: 7, row: 1, col: 3, fake: false, type: fillLight },
+      { id: 3, row: 2, col: 0, fake: false, type: spot },
+      { id: 3, row: 2, col: 1, fake: false, type: fillLight },
+      { id: 8, row: 2, col: 2, fake: false, type: fillLight },
+      { id: 8, row: 2, col: 3, fake: false, type: spot },
+      { id: 2, row: 3, col: 0, fake: false, type: spot },
+      { id: 2, row: 3, col: 1, fake: false, type: spot },
+      { id: 9, row: 3, col: 2, fake: false, type: fillLight },
+      { id: 9, row: 3, col: 3, fake: false, type: spot },
+      { id: 1, row: 4, col: 0, fake: false, type: spot },
+      { id: 1, row: 4, col: 1, fake: false, type: fillLight },
+      { id: 10, row: 4, col: 3, fake: false, type: spot },
+    ],
+    []
+  );
 
-  const greenScreen = 14; // Change greenScreen in the Studio Overview
-  const masterFaderValue = useFaderValue(0, 0);
+  const grid = useMemo(
+    () =>
+      Array(studioRows)
+        .fill(undefined)
+        .map(() => Array(studioColumns).fill(undefined)),
+    []
+  );
+
+  const greenScreen = 14;
+
+  const FaderValueDisplay = React.memo(({ groupId, faderId }: { groupId: number; faderId: number }) => {
+    const value = useFaderValue(groupId, faderId);
+    const brightness = ((value * 10) / 255) * ((masterValue * 10) / 255);
+    return <div className='studioOverviewInfopanelBrightness'>{brightness.toFixed(0) === '0' ? t('Off') : brightness.toFixed(0) + '%'}</div>;
+  });
+
+  const LightOpacity = React.memo(({ groupId, faderId }: { groupId: number; faderId: number }) => {
+    const value = useFaderValue(groupId, faderId);
+    const opacity = (value / 255) * (masterValue / 255);
+    return (
+      <img
+        src={schein}
+        alt='schein'
+        className='schein'
+        style={{
+          opacity: opacity,
+          filter: 'blur(5px)',
+        }}
+      />
+    );
+  });
+
+  const renderLight = useCallback(
+    (selectedSlider: any, isRightSide: boolean) => {
+      return (
+        <div className={`studioOverviewLight ${isRightSide ? 'marginLeft45' : 'marginRight45'}`}>
+          <LightOpacity
+            groupId={selectedSlider.id}
+            faderId={0}
+          />
+          <div
+            onClick={() => handleGlowAndFocus(selectedSlider.id)}
+            style={{ cursor: 'pointer' }}
+          >
+            <img
+              src={selectedSlider.type}
+              alt='Lamp'
+              className={`studioOverviewLamp ${isRightSide ? 'lampMirrored' : ''}`}
+            />
+            <div className='studioOverviewInfopanel'>
+              <div className='studioOverviewInfopanelText'>#{selectedSlider.id}</div>
+              <FaderValueDisplay
+                groupId={selectedSlider.id}
+                faderId={0}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    },
+    [handleGlowAndFocus]
+  );
 
   return (
     <div className='overview window'>
@@ -57,26 +118,19 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
             style={{ cursor: 'pointer' }}
           >
             <div className='studioOverviewInfopanelText'>Greenscreen</div>
-            <div className='studioOverviewInfopanelBrightness'>
-              {(((getFaderValue(greenScreen, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
-                ? t('Off')
-                : (((getFaderValue(greenScreen, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
-            </div>
+            <FaderValueDisplay
+              groupId={greenScreen}
+              faderId={0}
+            />
           </div>
           {[...Array(6)].map((_, index) => (
             <div
               className='studioOverviewLight'
               key={index}
             >
-              <img
-                src={schein2}
-                alt='schein'
-                className='schein'
-                style={{
-                  top: `-35px`,
-                  opacity: (getFaderValue(greenScreen, 0) / 255) * (masterFaderValue / 255),
-                  filter: 'blur(5px)',
-                }}
+              <LightOpacity
+                groupId={greenScreen}
+                faderId={0}
               />
               <div
                 onClick={() => handleGlowAndFocus(greenScreen)}
@@ -108,21 +162,16 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
               row.map((_, colIndex) => {
                 const selectedSlider = selectedSliders.find((s) => s.row === rowIndex && s.col === colIndex);
                 const sliderId = selectedSlider ? selectedSlider.id : null;
-                const slider = sliderId !== null ? { id: sliderId } : null;
+                const slider = sliderId !== null ? sliders.find((s: any) => s.id === sliderId) : null;
                 if (selectedSlider && colIndex < row.length / 2 && selectedSlider.fake === false) {
                   return (
                     <div key={`${rowIndex}-${colIndex}`}>
                       <div className='studioOverviewLight marginRight45'>
                         {slider && (
                           <>
-                            <img
-                              src={selectedSlider.type === spot ? schein : schein2}
-                              alt='schein'
-                              className={'schein'}
-                              style={{
-                                opacity: (getFaderValue(slider.id, 0) / 255) * (masterFaderValue / 255),
-                                filter: 'blur(5px)',
-                              }}
+                            <LightOpacity
+                              groupId={slider.id}
+                              faderId={0}
                             />
                             <div
                               onClick={() => handleGlowAndFocus(slider.id)}
@@ -135,11 +184,10 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
                               />
                               <div className='studioOverviewInfopanel'>
                                 <div className='studioOverviewInfopanelText'>#{slider.id}</div>
-                                <div className='studioOverviewInfopanelBrightness'>
-                                  {(((getFaderValue(slider.id, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
-                                    ? t('Off')
-                                    : (((getFaderValue(slider.id, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
-                                </div>
+                                <FaderValueDisplay
+                                  groupId={slider.id}
+                                  faderId={0}
+                                />
                               </div>
                             </div>
                           </>
@@ -153,14 +201,9 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
                       <div className='studioOverviewLight marginLeft45'>
                         {slider && (
                           <>
-                            <img
-                              src={selectedSlider.type === spot ? schein : schein2}
-                              alt='schein'
-                              className={'schein'}
-                              style={{
-                                opacity: (getFaderValue(slider.id, 0) / 255) * (masterFaderValue / 255),
-                                filter: 'blur(5px)',
-                              }}
+                            <LightOpacity
+                              groupId={slider.id}
+                              faderId={0}
                             />
                             <div
                               onClick={() => handleGlowAndFocus(slider.id)}
@@ -173,11 +216,10 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
                               />
                               <div className='studioOverviewInfopanel'>
                                 <div className='studioOverviewInfopanelText'>#{slider.id}</div>
-                                <div className='studioOverviewInfopanelBrightness'>
-                                  {(((getFaderValue(slider.id, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
-                                    ? t('Off')
-                                    : (((getFaderValue(slider.id, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
-                                </div>
+                                <FaderValueDisplay
+                                  groupId={slider.id}
+                                  faderId={0}
+                                />
                               </div>
                             </div>
                           </>
@@ -212,84 +254,39 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
           </div>
         </div>
         <div className='studioOverviewTestchart'>
-          {/* 11 */}
-          <div className='studioOverviewLight'>
-            <img
-              src={schein}
-              alt='schein'
-              className={'schein'}
-              style={{
-                opacity: (getFaderValue(11, 0) / 255) * (masterFaderValue / 255),
-                transform: 'rotate(180deg)',
-                top: '25px',
-                left: '-10px',
-              }}
-            />
+          {[11, 12].map((id) => (
             <div
-              onClick={() => handleGlowAndFocus(11)}
-              style={{ cursor: 'pointer' }}
+              className='studioOverviewLight'
+              key={id}
             >
-              <img
-                src={spot}
-                alt='Lamp'
-                className='studioOverviewTestchartLamp'
+              <LightOpacity
+                groupId={id}
+                faderId={0}
               />
-              <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
-                <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
-                <div className='studioOverviewInfopanelBrightness'>
-                  {(((getFaderValue(11, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
-                    ? t('Off')
-                    : (((getFaderValue(11, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
+              <div
+                onClick={() => handleGlowAndFocus(id)}
+                style={{ cursor: 'pointer' }}
+              >
+                <img
+                  src={spot}
+                  alt='Lamp'
+                  className='studioOverviewTestchartLamp'
+                />
+                <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
+                  <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
+                  <FaderValueDisplay
+                    groupId={id}
+                    faderId={0}
+                  />
                 </div>
               </div>
             </div>
-          </div>
-          {/* 12 */}
-          <div className='studioOverviewLight'>
-            <img
-              src={schein}
-              alt='schein'
-              className={'schein'}
-              style={{
-                opacity: (getFaderValue(12, 0) / 255) * (masterFaderValue / 255),
-                transform: 'rotate(180deg)',
-                top: '25px',
-                left: '-10px',
-              }}
-            />
-            <div
-              onClick={() => handleGlowAndFocus(12)}
-              style={{ cursor: 'pointer' }}
-            >
-              <img
-                src={spot}
-                alt='Lamp'
-                className='studioOverviewTestchartLamp'
-              />
-              <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
-                <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
-                <div className='studioOverviewInfopanelBrightness'>
-                  {(((getFaderValue(12, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
-                    ? t('Off')
-                    : (((getFaderValue(12, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
-                </div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
-
-        {/* 13 */}
         <div className='studioOverviewLight studioOverviewExtra'>
-          <img
-            src={schein}
-            alt='schein'
-            className={'schein'}
-            style={{
-              opacity: (getFaderValue(13, 0) / 255) * (masterFaderValue / 255),
-              transform: 'rotate(180deg)',
-              top: '25px',
-              left: '-10px',
-            }}
+          <LightOpacity
+            groupId={13}
+            faderId={0}
           />
           <div
             onClick={() => handleGlowAndFocus(13)}
@@ -302,23 +299,22 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
             />
             <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
               <div className='studioOverviewInfopanelText'>HMI</div>
-              <div className='studioOverviewInfopanelBrightness'>
-                {(((getFaderValue(13, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
-                  ? t('Off')
-                  : (((getFaderValue(13, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
-              </div>
+              <FaderValueDisplay
+                groupId={13}
+                faderId={0}
+              />
             </div>
           </div>
         </div>
         <div className='studioOverviewTraversen'>
           {[
-            { top: 720, left: 74 }, // T1
-            { top: 401, left: 74 }, // T2
-            { top: 82, left: 74 }, // T3
-            { top: 82, left: 731 }, // T4
-            { top: 401, left: 731 }, // T5
-            { top: 566, left: 731 }, // T6
-            { top: 720, left: 614 }, // T7
+            { top: 720, left: 74 },
+            { top: 401, left: 74 },
+            { top: 82, left: 74 },
+            { top: 82, left: 731 },
+            { top: 401, left: 731 },
+            { top: 566, left: 731 },
+            { top: 720, left: 614 },
           ].map((position, index) => {
             const baseIndex = 15 + index;
             return (
@@ -328,11 +324,11 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
               >
                 <div style={{ top: `${position.top}px`, left: `${position.left}px`, position: 'fixed' }}>
                   <LightBeam
-                    master={masterFaderValue}
-                    main={getFaderValue(baseIndex, 0)}
-                    red={getFaderValue(baseIndex, 1)}
-                    green={getFaderValue(baseIndex, 2)}
-                    blue={getFaderValue(baseIndex, 3)}
+                    master={masterValue}
+                    main={useFaderValue(baseIndex, 0)}
+                    red={useFaderValue(baseIndex, 1)}
+                    green={useFaderValue(baseIndex, 2)}
+                    blue={useFaderValue(baseIndex, 3)}
                   />
                 </div>
                 <div
@@ -341,11 +337,10 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
                   style={{ cursor: 'pointer' }}
                 >
                   <div className='studioOverviewInfopanelText'>{t('Traverse ' + (index + 1))}</div>
-                  <div className='studioOverviewInfopanelBrightness'>
-                    {(((getFaderValue(baseIndex, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) === '0'
-                      ? t('Off')
-                      : (((getFaderValue(baseIndex, 0) * 10) / 255) * ((masterFaderValue * 10) / 255)).toFixed(0) + '%'}
-                  </div>
+                  <FaderValueDisplay
+                    groupId={baseIndex}
+                    faderId={0}
+                  />
                 </div>
               </div>
             );
@@ -353,6 +348,23 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
         </div>
       </div>
     </div>
+  );
+};
+
+const LightOpacity = ({ groupId, faderId }: { groupId: number; faderId: number }) => {
+  const value = useFaderValue(groupId, faderId);
+  const masterValue = useFaderValue(0, 0);
+  const opacity = (value / 255) * (masterValue / 255);
+  return (
+    <img
+      src={schein}
+      alt='schein'
+      className='schein'
+      style={{
+        opacity: opacity,
+        filter: 'blur(5px)',
+      }}
+    />
   );
 };
 

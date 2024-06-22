@@ -225,7 +225,10 @@ const Studio = () => {
             </>
           )}
         </div>
-        <StudioOverview handleGlowAndFocus={handleGlowAndFocus} />
+        <StudioOverview
+          handleGlowAndFocus={handleGlowAndFocus}
+          sliders={sliders}
+        />
       </div>
       {bigView && <BigView onClose={() => setBigView(false)} />}
       {addScene && <AddScene onClose={() => setAddScene(false)} />}

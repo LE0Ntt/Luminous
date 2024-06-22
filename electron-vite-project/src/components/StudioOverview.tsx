@@ -11,10 +11,9 @@ import { useFaderValue } from './FaderContext';
 
 interface StudioOverviewProps {
   handleGlowAndFocus: (id: number) => void;
-  sliders?: any[]; // Make sliders optional
 }
 
-const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sliders = [] }) => {
+const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) => {
   // Provide default empty array
   const { t } = useContext(TranslationContext);
   const masterValue = useFaderValue(0, 0);
@@ -58,18 +57,17 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus, sli
 
   const greenScreen = 14;
 
-  const FaderValueDisplay = useCallback(
-    ({ groupId, faderId }: { groupId: number; faderId: number }) => {
-      const value = useFaderValue(groupId, faderId);
-      const brightness = ((value * 10) / 255) * ((memoizedMasterValue * 10) / 255);
-      return <div className='studioOverviewInfopanelBrightness'>{brightness.toFixed(0) === '0' ? t('Off') : brightness.toFixed(0) + '%'}</div>;
-    },
-    [memoizedMasterValue, t]
-  );
+  const FaderValueDisplay = useCallback(({ groupId, faderId }: { groupId: number; faderId: number }) => {
+    const value = useFaderValue(groupId, faderId);
+    if (value === 0) return <div className='studioOverviewInfopanelBrightness'>{t('Off')}</div>;
+    const brightness = ((value * 10) / 255) * ((memoizedMasterValue * 10) / 255);
+    return <div className='studioOverviewInfopanelBrightness'>{brightness.toFixed(0) === '0' ? t('Off') : brightness.toFixed(0) + '%'}</div>;
+  }, []);
 
   const LightOpacity = useCallback(
     ({ groupId, faderId }: { groupId: number; faderId: number }) => {
       const value = useFaderValue(groupId, faderId);
+      if (value === 0) return null;
       const opacity = (value / 255) * (memoizedMasterValue / 255);
       return (
         <img

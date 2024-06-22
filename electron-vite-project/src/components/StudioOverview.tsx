@@ -1,3 +1,17 @@
+/**
+ * Luminous - A Web-Based Lighting Control System
+ *
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ *
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ *
+ * @file StudioOverview.tsx
+ */
 import React, { useCallback, useContext, useMemo } from 'react';
 import '../Studio.css';
 import schein from '../assets/schein3.png';
@@ -14,7 +28,6 @@ interface StudioOverviewProps {
 }
 
 const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) => {
-  // Provide default empty array
   const { t } = useContext(TranslationContext);
   const masterValue = useFaderValue(0, 0);
   const memoizedMasterValue = useMemo(() => masterValue, [masterValue]);
@@ -22,6 +35,9 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
   const studioRows = 6;
   const studioColumns = 4;
 
+  const greenScreen = 14;
+
+  // Define selected sliders with their properties
   const selectedSliders = useMemo(
     () => [
       { id: 5, row: 0, col: 0, fake: false, type: spot },
@@ -47,6 +63,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
     []
   );
 
+  // Creates an array with the number of rows and columns to be displayed in the Studio Overview
   const grid = useMemo(
     () =>
       Array(studioRows)
@@ -55,28 +72,32 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
     []
   );
 
-  const greenScreen = 14;
-
-  const FaderValueDisplay = useCallback(({ groupId, faderId }: { groupId: number; faderId: number }) => {
-    const value = useFaderValue(groupId, faderId);
-    if (value === 0) return <div className='studioOverviewInfopanelBrightness'>{t('Off')}</div>;
-    const brightness = ((value * 10) / 255) * ((memoizedMasterValue * 10) / 255);
-    return <div className='studioOverviewInfopanelBrightness'>{brightness.toFixed(0) === '0' ? t('Off') : brightness.toFixed(0) + '%'}</div>;
-  }, []);
-
-  const LightOpacity = useCallback(
+  // Display the fader value with brightness calculation
+  const FaderValueDisplay = useCallback(
     ({ groupId, faderId }: { groupId: number; faderId: number }) => {
+      const value = useFaderValue(groupId, faderId);
+      if (value === 0) return <div className='studioOverviewInfopanelBrightness'>{t('Off')}</div>;
+      const brightness = ((value * 10) / 255) * ((memoizedMasterValue * 10) / 255);
+      return <div className='studioOverviewInfopanelBrightness'>{brightness.toFixed(0) === '0' ? t('Off') : brightness.toFixed(0) + '%'}</div>;
+    },
+    [memoizedMasterValue, t]
+  );
+
+  // Calculate the light opacity and determine which "schein" to use
+  const LightOpacity = useCallback(
+    ({ groupId, faderId, useSchein2, flip }: { groupId: number; faderId: number; useSchein2?: boolean; flip?: boolean }) => {
       const value = useFaderValue(groupId, faderId);
       if (value === 0) return null;
       const opacity = (value / 255) * (memoizedMasterValue / 255);
       return (
         <img
-          src={schein}
+          src={useSchein2 ? schein2 : schein}
           alt='schein'
           className='schein'
           style={{
             opacity: opacity,
             filter: 'blur(5px)',
+            transform: flip ? 'rotate(180deg) translate(10px, -85px)' : groupId == greenScreen ? 'translate(0, 17px)' : 'none', // Flip the light beam if needed
           }}
         />
       );
@@ -84,6 +105,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
     [memoizedMasterValue]
   );
 
+  // Render the light component
   const renderLight = useCallback(
     (selectedSlider: any, isRightSide: boolean) => {
       return (
@@ -91,6 +113,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
           <LightOpacity
             groupId={selectedSlider.id}
             faderId={0}
+            useSchein2={selectedSlider.type === fillLight}
           />
           <div
             onClick={() => handleGlowAndFocus(selectedSlider.id)}
@@ -138,6 +161,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
               <LightOpacity
                 groupId={greenScreen}
                 faderId={0}
+                useSchein2={true}
               />
               <div
                 onClick={() => handleGlowAndFocus(greenScreen)}
@@ -186,6 +210,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
               <LightOpacity
                 groupId={id}
                 faderId={0}
+                flip={true} // Flip the light beam
               />
               <div
                 onClick={() => handleGlowAndFocus(id)}
@@ -211,6 +236,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
           <LightOpacity
             groupId={13}
             faderId={0}
+            flip={true} // Flip the light beam
           />
           <div
             onClick={() => handleGlowAndFocus(13)}
@@ -232,13 +258,13 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
         </div>
         <div className='studioOverviewTraversen'>
           {[
-            { top: 720, left: 74 },
-            { top: 401, left: 74 },
-            { top: 82, left: 74 },
-            { top: 82, left: 731 },
-            { top: 401, left: 731 },
-            { top: 566, left: 731 },
-            { top: 720, left: 614 },
+            { top: 720, left: 74 }, // T1
+            { top: 401, left: 74 }, // T2
+            { top: 82, left: 74 }, // T3
+            { top: 82, left: 731 }, // T4
+            { top: 401, left: 731 }, // T5
+            { top: 566, left: 731 }, // T6
+            { top: 720, left: 614 }, // T7
           ].map((position, index) => {
             const baseIndex = 15 + index;
             return (

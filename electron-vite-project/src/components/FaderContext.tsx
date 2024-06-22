@@ -22,8 +22,6 @@ interface FaderState {
 interface FaderContextType {
   getFaderValue: (groupId: number, faderId: number) => number;
   setFaderValue: (groupId: number, faderId: number, value: number) => void;
-  isDragging?: boolean;
-  setIsDragging: (isDragging: boolean) => void;
 }
 
 const FaderContext = createContext<FaderContextType | undefined>(undefined);
@@ -80,23 +78,21 @@ const faderStore = new FaderStore();
 
 export const FaderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { on, off } = useConnectionContext();
-  const [isDragging, setIsDragging] = useState(false);
-
   const getFaderValue = useCallback(faderStore.getFaderValue, []);
   const setFaderValue = useCallback(faderStore.setFaderValue, []);
 
   useEffect(() => {
     const eventListener = (data: any) => {
-      if (!isDragging && data.deviceId !== undefined) {
+      if (data.deviceId !== undefined) {
         setFaderValue(data.deviceId, data.channelId, data.value);
       }
     };
 
     on('variable_update', eventListener);
     return () => off('variable_update', eventListener);
-  }, [on, off, setFaderValue, isDragging]);
+  }, [on, off, setFaderValue]);
 
-  const value = { getFaderValue, setFaderValue, isDragging, setIsDragging };
+  const value = { getFaderValue, setFaderValue };
 
   return <FaderContext.Provider value={value}>{children}</FaderContext.Provider>;
 };

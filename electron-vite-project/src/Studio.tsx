@@ -12,12 +12,11 @@
  *
  * @file Studio.tsx
  */
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import './Studio.css';
 import Button from './components/Button';
 import Fader from './components/Fader';
 import { useConnectionContext } from './components/ConnectionContext';
-import { TranslationContext } from './components/TranslationContext';
 import { useNavigate } from 'react-router-dom';
 import { useFaderContext } from './components/FaderContext';
 import ScenesComponent from './components/ScenesComponent';
@@ -28,24 +27,15 @@ import StudioOverview from './components/StudioOverview';
 
 const Studio = () => {
   const navigate = useNavigate();
-  // FaderValues from FaderContext
-  const { faderValues, setFaderValue } = useFaderContext();
   const { url, connected, on, off } = useConnectionContext();
-  // Language
-  const { t } = useContext(TranslationContext);
-
-  // Button to open Control
-  const handleClick = (id: number) => {
-    navigate('/control', { state: { id: id } });
-  };
-
+  const { setFaderValue } = useFaderContext();
   const [bigView, setBigView] = useState(false);
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
   const [addScene, setAddScene] = useState(false);
-  const [, forceRender] = useState(false); // Force rerender for mirrored studio UI setting
+  const [, forceRender] = useState(false);
   const [glowId, setGlowId] = useState<number | null>(null);
   const refsArray = useRef<(HTMLDivElement | null)[]>([]);
-  const scrollRef = useRef<HTMLDivElement>(null); // Scroll button ref
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   interface SliderConfig {
     attributes: any;
@@ -55,79 +45,78 @@ const Studio = () => {
     name: string;
   }
 
-  useEffect(() => {
-    const fetchSliders = async () => {
-      try {
-        const response = await fetch(url + '/fader');
-        const data = await response.json();
-        setSliders(JSON.parse(data));
-        loadFaderValues(JSON.parse(data)); // Loads the fader values from the database
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  // Open a device in the control (LightFX)
+  const handleOpenControl = useCallback(
+    (id: number) => {
+      navigate('/control', { state: { id: id } });
+    },
+    [navigate]
+  );
 
+  const fetchSliders = useCallback(async () => {
+    try {
+      const response = await fetch(url + '/fader');
+      const data = await response.json();
+      setSliders(JSON.parse(data));
+      loadFaderValues(JSON.parse(data));
+    } catch (error) {
+      console.log(error);
+    }
+  }, [url]);
+
+  const loadFaderValues = useCallback((sliders: SliderConfig[]) => {
+    sliders.forEach((item) => {
+      const { id } = item;
+      if (item.attributes && item.attributes.channel) {
+        item.attributes.channel.forEach((channelItem: any) => {
+          const channelId = parseInt(channelItem.id, 10);
+          const sliderValue = channelItem.sliderValue !== undefined ? channelItem.sliderValue : 0;
+          setFaderValue(id, channelId, sliderValue);
+        });
+      }
+    });
+  }, []);
+
+  // Fetch sliders on connection
+  useEffect(() => {
     if (connected) {
       fetchSliders();
     }
 
-    // Listen for changes to the display order
     const handleStorageChange = (event: CustomEvent<boolean>) => {
       if (event.type === 'reverseOrder') {
         forceRender((prev) => !prev);
       }
     };
 
-    // If a device is updated, reload the sliders
-    const lightRespone = (data: any) => {
+    const lightResponse = (data: any) => {
       if (data.message === 'success') {
         fetchSliders();
       }
     };
+
     const lightDeleted = () => {
       fetchSliders();
     };
 
     window.addEventListener('reverseOrder', handleStorageChange as EventListener);
-    on('light_response', lightRespone);
+    on('light_response', lightResponse);
     on('light_deleted', lightDeleted);
+
     return () => {
       window.removeEventListener('reverseOrder', handleStorageChange as EventListener);
-      off('light_response', lightRespone);
+      off('light_response', lightResponse);
       off('light_deleted', lightDeleted);
       refsArray.current = [];
     };
-  }, []);
+  }, [connected, fetchSliders, on, off]);
 
-  // Loads the fader values from the database
-  function loadFaderValues(sliders: any[]) {
-    const array: any[][] = [];
-    sliders.forEach((item) => {
-      const { id } = item;
-      if (!array[id]) {
-        array[id] = [];
-      }
-      if (item.attributes && item.attributes.channel) {
-        item.attributes.channel.forEach((channelItem: any) => {
-          const channelId = parseInt(channelItem.id, 10);
-          const sliderValue = channelItem.sliderValue !== undefined ? channelItem.sliderValue : 0;
-          array[id][channelId] = sliderValue;
-          setFaderValue(id, channelId, sliderValue);
-        });
-      }
-    });
-  }
-
-  // Focuses the fader when clicked in the overview
-  const handleGlowAndFocus = (id: number) => {
+  // Highlight fader of device selected in overview
+  const handleGlowAndFocus = useCallback((id: number) => {
     setGlowId(id);
     setTimeout(() => setGlowId(null), 700);
     refsArray.current[id]?.focus();
-  };
-
-  useEffect(() => {
-    console.log('Studio Component re-rendered');
-  }); // This will log on every re-render
+  }, []);
 
   return (
     <>
@@ -177,9 +166,8 @@ const Studio = () => {
                       key={slider.id}
                       className={'faderContainer' + (glowId === slider.id ? ' faderGlow' : '')}
                       ref={(el) => (refsArray.current[slider.id] = el)}
-                      tabIndex={-1} // Make div focusable
+                      tabIndex={-1}
                       onFocus={() => {
-                        // Scroll the element into view when it gains focus
                         refsArray.current[slider.id]?.scrollIntoView({
                           behavior: 'smooth',
                           block: 'nearest',
@@ -200,7 +188,7 @@ const Studio = () => {
                         className={sliderIndex === sliders.length - 2 ? 'noBorder bottomSpace' : 'bottomSpace'}
                       />
                       <Button
-                        onClick={() => handleClick(slider.id)}
+                        onClick={() => handleOpenControl(slider.id)}
                         className='buttonOpenControl'
                       >
                         <svg
@@ -234,11 +222,7 @@ const Studio = () => {
             </>
           )}
         </div>
-        <StudioOverview
-          handleGlowAndFocus={handleGlowAndFocus}
-          sliders={sliders}
-          faderValues={faderValues}
-        />
+        <StudioOverview handleGlowAndFocus={handleGlowAndFocus} />
       </div>
       {bigView && <BigView onClose={() => setBigView(false)} />}
       {addScene && <AddScene onClose={() => setAddScene(false)} />}

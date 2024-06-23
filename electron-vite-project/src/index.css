@@ -41,6 +41,10 @@
     transition: border-color 200ms ease-out, background 200ms ease-out, box-shadow 200ms ease-out;
   }
 
+  .no-transition {
+    transition: none !important;
+  }
+
   .mainContainer {
     position: absolute;
     top: 90px;

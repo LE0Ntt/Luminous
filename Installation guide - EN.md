@@ -1,35 +1,61 @@
 # Introduction
 
-!!! Caution: This installation guide is a work in progress, and the accuracy of the provided steps is uncertain. Please proceed with caution, as we cannot guarantee the functionality at this stage. !!!
+**!!! Attention! This installation guide is still under development and the accuracy and functionality of the steps described may not be fully guaranteed. !!!**
 
 This guide describes the exact installation and configuration of the Luminous backend. You will need a Linux server, in this case a Raspberry Pi 4 B and possibly other required resources.
 
-German Version: [[Installationsanleitung - DE]]
-Englische Version: [[Installation guide - EN]]
+Deutsche Version: [[Installationsanleitung - DE]]
+English Version: [[Installation guide - EN]]
+
+---
 
 # Installation
 
 ## RaspberryPi
 
-1. Start by installing any version of Linux on your Raspberry Pi. In this guide we are using Raspberry Pi OS Lite 64-bit, but any other version of Linux should also work.
-2. Once the Linux distribution has been successfully installed, proceed to configure the Raspberry Pi for Luminous.
-3. Open a terminal or SSH connection to the Raspberry Pi.
-4. First update the system with the following commands:
+1. start by installing any version of Linux on your Raspberry Pi. In this guide we are using Raspberry Pi OS Lite 64-bit, but any other version of Linux should also work.
+2. once the Linux distribution has been successfully installed, proceed to configure the Raspberry Pi for Luminous.
+3. open a terminal or SSH connection to the Raspberry Pi.
+4. first update the system with the following commands:
 
 ```bash
 sudo apt update
 sudo apt upgrade
 ```
 
-5. Install Git with the following command:
+5. install Git with the following command:
 
 ```bash
 sudo apt install git
 ```
 
-6. Once the installation is complete, you can check whether Git has been successfully installed by executing the command `git --version`. If Git has been installed successfully, the installed version will be displayed.
+6. once the installation is complete, you can check whether Git has been successfully installed by executing the command `git --version`. If Git has been installed successfully, the installed version will be displayed.
+7. check whether Python 3.9.2 is installed:
+
+```bash
+python3.9 --version
+```
+
+If Python 3.9.2 is installed, the version is displayed. If not, install Python 3.9.2 with the following commands:
+
+```bash
+cd /opt
+sudo wget https://www.python.org/ftp/python/3.9.2/Python-3.9.2.tgz
+sudo tar -xzf Python-3.9.2.tgz
+cd Python-3.9.2
+sudo ./configure --enable-optimisations
+sudo make altinstall
+```
+
+8. check the installation of Python 3.9.2 again:
+
+```bash
+python3.9 --version
+```
 
 Your Raspberry Pi environment is now ready to proceed with the installation of Luminous.
+
+---
 
 ## OLA
 
@@ -56,7 +82,6 @@ First, you need at least the following dependencies:
 - yacc (or bison) _(we use bison)_
 - the protocol buffers library [http://code.google.com/p/protobuf/](https://code.google.com/p/protobuf/) (version 2.3.0 or later)
 - microhttpd [ftp://ftp.gnu.org/gnu/libmicrohttpd/](ftp://ftp.gnu.org/gnu/libmicrohttpd/) (wenn Sie die Web-Benutzeroberfläche möchten). Sie benötigen mindestens Version 0.4.0 von microhttpd.
-- avahi [avahi.org](http://www.avahi.org/) if you want discovery enabled.
 - libtool
 - automake
 - autoconf
@@ -71,7 +96,6 @@ _π version?_
 
 ```
 sudo apt install build-essential autoconf libtool pkg-config libcppunit-dev libmicrohttpd-dev zlib1g-dev libftdi-dev libusb-1.0-0-dev protobuf-compiler libprotobuf-dev python3-protobuf libprotoc-dev liblua5.3-dev
-
 ```
 
 The above is recommended, but if it does not work (ie: no direct internet connection), you can also download and install the packages manually.
@@ -148,4 +172,117 @@ olad
 
 Visit the OLA web interface on your device at the following address `http://$yourdeviceIP:9090/`, if you see the web interface, it means that the OLA has been installed correctly.
 
-## Backend Server
+---
+
+## Backend server
+
+The next step is to install Luminous on the Raspberry Pi. To do this, change to the directory `/home/pi/`:
+
+```bash
+cd /home/pi/
+```
+
+### Download
+
+Download the Git repository and change to the corresponding directory:
+
+```bash
+git clone https://github.com/le0ntt/Luminous.git
+cd Luminous
+```
+
+### Install dependencies
+
+Make sure that all necessary dependencies are installed. To do this, execute the following commands:
+
+```bash
+cd Luminous/backend
+pip install -r requirements.txt
+```
+
+### Configuration (GGF. ONLY)
+
+Check and adjust the configuration files if necessary. This could include, for example, the customisation of database connections or API keys. To do this, open the configuration files in the editor of your choice and make the necessary changes.
+
+### Starting the backend server
+
+Start the backend server with the following command:
+
+```bash
+python3 server.py
+```
+
+At this stage you just want to check that there are no error messages. The output in the console should look something like this:
+
+```bash
+pi@raspberrypi:~/Luminous/backend $ python server.py
+Ignored channels when checking: {1: [18, 16, 13], 2: [201, 202, 203, 204, 205, 207, 208, 209, 210, 211, 213, 214, 215, 216, 217, 219, 220, 221, 222, 223, 225, 226, 227, 228, 229, 231, 232, 233, 234, 235, 237, 238, 239, 240, 241]}.
+Setting up...
+Setup done
+/home/pi/luminous/Luminous2/Luminous/backend/server/led_control.py:22: RuntimeWarning: This channel is already in use, continuing anyway.  Use GPIO.setwarnings(False) to disable warnings.
+  GPIO.setup(LED_PIN, GPIO.OUT)
+Possibly the MIDI interface is not connected. unknown port 'E-MU XMidi2X2:E-MU XMidi2X2 Midi Out 2 28:1'
+No dmx_channel key for non-master channel
+ * Serving Flask app 'server'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.178.46:5000
+Press CTRL+C to quit
+```
+
+If it does not look like this, get help.
+
+If the output looks like this or similar, you can stop the server again with `CTRL+C` and go to the next step.
+
+### Setting up the autostart
+
+1. create a new service file in the directory `/etc/systemd/system/`. A suitable name would be `Luminous.service`.
+2. open the file with an editor and add the following content:
+
+```ini
+[Unit]
+Description=Luminous Service
+After=network-online.target ola.service
+Wants=network-online.target
+
+[Service]
+User=pi
+ExecStart=/usr/bin/python3 /home/pi/luminous/Luminous2/Luminous/backend/server.py
+WorkingDirectory=/home/pi/luminous/Luminous2/Luminous/backend/
+StandardOutput=journal+tty
+StandardError=journal+file:/home/pi/luminous/logs/error.log+tty
+TTYPath=/dev/tty3
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+3. save the file after editing.
+4. activate the service so that it is started at boot time:
+
+```sh
+sudo systemctl enable Luminous.service
+```
+
+5. start the service immediately (optional):
+
+```sh
+sudo systemctl start Luminous.service
+```
+
+6. restart the Raspberry Pi to check the autostart:
+
+```sh
+sudo reboot
+```
+
+7. check the logs of the service to make sure that everything is working correctly:
+
+```sh
+sudo journalctl -u Luminous.service -f
+```
+
+These steps set up the autostart for the Luminous service and ensure that the service is started automatically when the system boots.

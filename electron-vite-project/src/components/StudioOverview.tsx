@@ -115,22 +115,23 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
             faderId={0}
             useSchein2={selectedSlider.type === fillLight}
           />
+          <img
+            src={selectedSlider.type}
+            alt='Lamp'
+            className={`studioOverviewLamp ${isRightSide ? 'lampMirrored' : ''}`}
+            onClick={() => handleGlowAndFocus(selectedSlider.id)}
+            style={{ cursor: 'pointer' }}
+          />
           <div
+            className='studioOverviewInfopanel'
             onClick={() => handleGlowAndFocus(selectedSlider.id)}
             style={{ cursor: 'pointer' }}
           >
-            <img
-              src={selectedSlider.type}
-              alt='Lamp'
-              className={`studioOverviewLamp ${isRightSide ? 'lampMirrored' : ''}`}
+            <div className='studioOverviewInfopanelText'>#{selectedSlider.id}</div>
+            <FaderValueDisplay
+              groupId={selectedSlider.id}
+              faderId={0}
             />
-            <div className='studioOverviewInfopanel'>
-              <div className='studioOverviewInfopanelText'>#{selectedSlider.id}</div>
-              <FaderValueDisplay
-                groupId={selectedSlider.id}
-                faderId={0}
-              />
-            </div>
           </div>
         </div>
       );
@@ -163,16 +164,13 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
                 faderId={0}
                 useSchein2={true}
               />
-              <div
+              <img
+                src={biColor}
+                alt='Lamp'
+                className={`studioOverviewGreenscreenLamp studioOverviewLamp ${index >= 3 ? 'lampMirrored' : ''}`}
                 onClick={() => handleGlowAndFocus(greenScreen)}
                 style={{ cursor: 'pointer' }}
-              >
-                <img
-                  src={biColor}
-                  alt='Lamp'
-                  className={`studioOverviewGreenscreenLamp studioOverviewLamp ${index >= 3 ? 'lampMirrored' : ''}`}
-                />
-              </div>
+              />
             </div>
           ))}
         </div>
@@ -212,22 +210,19 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
                 faderId={0}
                 flip={true} // Flip the light beam
               />
-              <div
+              <img
+                src={spot}
+                alt='Lamp'
+                className='studioOverviewTestchartLamp'
                 onClick={() => handleGlowAndFocus(id)}
                 style={{ cursor: 'pointer' }}
-              >
-                <img
-                  src={spot}
-                  alt='Lamp'
-                  className='studioOverviewTestchartLamp'
+              />
+              <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
+                <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
+                <FaderValueDisplay
+                  groupId={id}
+                  faderId={0}
                 />
-                <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
-                  <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
-                  <FaderValueDisplay
-                    groupId={id}
-                    faderId={0}
-                  />
-                </div>
               </div>
             </div>
           ))}
@@ -238,22 +233,19 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
             faderId={0}
             flip={true} // Flip the light beam
           />
-          <div
+          <img
+            src={spot}
+            alt='Lamp'
+            className='studioOverviewTestchartLamp'
             onClick={() => handleGlowAndFocus(13)}
             style={{ cursor: 'pointer' }}
-          >
-            <img
-              src={spot}
-              alt='Lamp'
-              className='studioOverviewTestchartLamp'
+          />
+          <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
+            <div className='studioOverviewInfopanelText'>HMI</div>
+            <FaderValueDisplay
+              groupId={13}
+              faderId={0}
             />
-            <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
-              <div className='studioOverviewInfopanelText'>HMI</div>
-              <FaderValueDisplay
-                groupId={13}
-                faderId={0}
-              />
-            </div>
           </div>
         </div>
         <div className='studioOverviewTraversen'>

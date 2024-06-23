@@ -1,7 +1,7 @@
 ## Version 1.2.3 TODOs
 
 - [x] Studio-Overview add Traverse Lights master
-- [ ] Fader - prevent rerendering on fader change
+- [x] Fader - prevent rerendering on fader change
 - [x] LightFX buffer socketio
 - [?] Scenes fix weird color bug
 
@@ -10,12 +10,12 @@
 - [x] Studio-Overview add Traverse Lights
   - [x] Add info panels
 - [ ] Prevent scene and solo overlaps
-- [ ] Fader
+- [x] Fader
   - [x] More obvious fader highlighting
   - [x] Rework spacing
     - [x] Horizontal
     - [x] Vertical
-  - [ ] Prevent rerendering on fader change
+  - [x] Prevent rerendering on fader change
 - [ ] LightFX
   - [x] First light should be the current state
     - [x] Update state automatically if only one light is selected instead of showing the button
@@ -74,7 +74,6 @@
 - [ ] LightFX
   - [x] Change to current state of the first light
   - [x] Effects as misc faders for now
-    - [ ] Group faders with same name
   - [x] Device list server updates
   - [x] Emit changes with buffer like other faders
   - [ ] "Mute" button
@@ -124,6 +123,7 @@
   - [ ] Choose color
   - [ ] Fader for each scene and master scenes fader
 - [ ] LightFX
+  - [ ] Group faders with same name
   - [ ] Save scene: only current group or everything choice
   - [ ] Bi-color presets
 - [ ] Light Settings

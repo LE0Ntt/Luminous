@@ -18,6 +18,9 @@
   - Added 'out of sync' button for devices that are not in the current state of the selection
   - Split updates of selection between 'main' and RGB/bi-color
 - Fader
+  - Completely overhauled fader implementation to prevent rerendering on fader change
+    - This improves performance drastically and makes the app usable on slower devices
+    - Prevent stuttering when multiple clients are connected
   - More obvious fader highlighting when selected in Studio-Overview
   - Reworked spacing
     - First and last faders in a row now have a smaller gap to the edge

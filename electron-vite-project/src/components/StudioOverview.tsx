@@ -217,7 +217,11 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
                 onClick={() => handleGlowAndFocus(id)}
                 style={{ cursor: 'pointer' }}
               />
-              <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
+              <div
+                className='studioOverviewInfopanel studioOverviewInfopanelTestchart'
+                onClick={() => handleGlowAndFocus(id)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
                 <FaderValueDisplay
                   groupId={id}
@@ -240,7 +244,11 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
             onClick={() => handleGlowAndFocus(13)}
             style={{ cursor: 'pointer' }}
           />
-          <div className='studioOverviewInfopanel studioOverviewInfopanelTestchart'>
+          <div
+            className='studioOverviewInfopanel studioOverviewInfopanelTestchart'
+            onClick={() => handleGlowAndFocus(13)}
+            style={{ cursor: 'pointer' }}
+          >
             <div className='studioOverviewInfopanelText'>HMI</div>
             <FaderValueDisplay
               groupId={13}

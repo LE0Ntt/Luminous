@@ -24,13 +24,11 @@ interface LightBeamProps {
 }
 
 const LightBeam: React.FC<LightBeamProps> = ({ master, main, red, green, blue }) => {
-  const shouldHide = useMemo(() => {
-    return (red === 0 && green === 0 && blue === 0) || main === 0 || master === 0;
-  }, [red, green, blue, main, master]);
-
-  const { emitterStyle, innerGlowStyle } = useMemo(() => {
-    if (shouldHide) {
+  const { shouldHide, emitterStyle, innerGlowStyle } = useMemo(() => {
+    const hide = (red === 0 && green === 0 && blue === 0) || main === 0 || master === 0;
+    if (hide) {
       return {
+        shouldHide: true,
         emitterStyle: {},
         innerGlowStyle: {},
       };
@@ -52,6 +50,7 @@ const LightBeam: React.FC<LightBeamProps> = ({ master, main, red, green, blue })
     };
 
     return {
+      shouldHide: false,
       emitterStyle: {
         boxShadow: `0 0 ${40}px ${20}px ${getRGBA(alpha * 0.7 * scaledMain * scaledMaster)},
                     0 0 ${50}px ${30}px ${getRGBA(alpha * 0.5 * scaledMain * scaledMaster)},
@@ -61,7 +60,7 @@ const LightBeam: React.FC<LightBeamProps> = ({ master, main, red, green, blue })
         opacity: Math.min(0.9, scaledMain * scaledMaster + 0.2),
       },
     };
-  }, [master, main, red, green, blue, shouldHide]);
+  }, [master, main, red, green, blue]);
 
   return (
     <>

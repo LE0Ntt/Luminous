@@ -18,16 +18,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { TranslationContext } from './TranslationContext';
 
 function Header() {
-  let location = useLocation();
+  const location = useLocation();
   const { t } = useContext(TranslationContext);
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(() => localStorage.getItem('isDark') === 'true');
   const [, forceRender] = useState(false); // Force rerender for show page setting
 
   // Load mode from local storage
   useEffect(() => {
-    const storedIsDark = localStorage.getItem('isDark');
-    if (storedIsDark !== null) setIsDark(storedIsDark === 'true');
-
     const defaultDesign = localStorage.getItem('defaultDesign') !== 'false';
     if (!defaultDesign) document.body.classList.add('defaultB');
 

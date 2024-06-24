@@ -10,7 +10,7 @@
  * - Marvin Plate
  * - Andree Tomek
  *
- * @file Settings_Admin.tsx
+ * @file SettingsStudioOverview.tsx
  */
 import React, { useContext, useEffect, useState } from 'react';
 import './Settings.css';

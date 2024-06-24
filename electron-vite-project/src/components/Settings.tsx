@@ -28,14 +28,14 @@ interface SettingsProps {
   onClose: () => void;
 }
 
-function Settings({ onClose }: SettingsProps) {
+const Settings: React.FC<SettingsProps> = ({ onClose }) => {
   const { t } = useContext(TranslationContext);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [selectedSetting, setSelectedSetting] = useState<string | null>('Setting1');
   const { connected } = useConnectionContext();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedSetting, setSelectedSetting] = useState<string>('Setting1');
   const [initialConnected, setInitialConnected] = useState<boolean | null>(null);
 
-  const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
+  const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean) => {
     if (isConfirmed) {
       setSelectedSetting('Setting2');
       setIsAdmin(false);
@@ -65,73 +65,71 @@ function Settings({ onClose }: SettingsProps) {
           onClose={() => setIsAdmin(false)}
         />
       ) : (
-        <>
-          <div className='SettingsContainer'>
-            <button
-              className='buttonClose'
-              onClick={onClose}
-            >
-              <div className='xClose'>
-                <div className='xClose xiClose'></div>
-              </div>
-            </button>
-            <div className='SettingsTitle'>
-              <IconSettings />
-              <span className='SettingsTitleText'>{t('set_title')}</span>
+        <div className='SettingsContainer'>
+          <button
+            className='buttonClose'
+            onClick={onClose}
+          >
+            <div className='xClose'>
+              <div className='xClose xiClose'></div>
             </div>
-            <div className='SettingsContent'>
-              <div className='settings'>
-                <Button
-                  className={selectedSetting === 'Setting1' ? 'active' : ''}
-                  onClick={() => setSelectedSetting('Setting1')}
-                >
-                  <div className='settingsButtonContent'>
-                    <IconSettings color={selectedSetting === 'Setting1' ? 'var(--primarySwitched)' : 'var(--primary)'} />
-                    <span>{t('set_general')}</span>
-                  </div>
-                </Button>
-                <Button
-                  className={selectedSetting === 'Setting2' ? 'active' : ''}
-                  onClick={handleAdminSettings}
-                >
-                  <div className='settingsButtonContent'>
-                    <IconAdmin color={selectedSetting === 'Setting2' ? 'var(--primarySwitched)' : 'var(--primary)'} />
-                    <span>{t('set_admin')}</span>
-                  </div>
-                </Button>
-                {/* not for 1.2.x - exclude for release (maybe)????*/}
-                <Button
-                  className={selectedSetting === 'Setting3' ? 'active' : ''}
-                  onClick={() => setSelectedSetting('Setting3')}
-                >
-                  <div className='settingsButtonContent'>
-                    <IconAdmin color={selectedSetting === 'Setting3' ? 'var(--primarySwitched)' : 'var(--primary)'} />
-                    <span>{t('set_studio')}</span>
-                  </div>
-                </Button>
-              </div>
-              <div className='SettingContent innerWindow'>
-                <div className='settingsContentContainer'>
-                  {selectedSetting === 'Setting1' ? (
-                    <Setting1 />
-                  ) : selectedSetting === 'Setting2' && initialConnected !== null ? (
-                    <Setting2 connected={initialConnected} />
-                  ) : selectedSetting === 'Setting3' ? (
-                    <Setting3
-                      studioRows={6}
-                      studioColumns={4}
-                    />
-                  ) : selectedSetting === 'Setting4' ? (
-                    <div className='SettingsOption'>not used</div>
-                  ) : null}
+          </button>
+          <div className='SettingsTitle'>
+            <IconSettings />
+            <span className='SettingsTitleText'>{t('set_title')}</span>
+          </div>
+          <div className='SettingsContent'>
+            <div className='settings'>
+              <Button
+                className={selectedSetting === 'Setting1' ? 'active' : ''}
+                onClick={() => setSelectedSetting('Setting1')}
+              >
+                <div className='settingsButtonContent'>
+                  <IconSettings color={selectedSetting === 'Setting1' ? 'var(--primarySwitched)' : 'var(--primary)'} />
+                  <span>{t('set_general')}</span>
                 </div>
+              </Button>
+              <Button
+                className={selectedSetting === 'Setting2' ? 'active' : ''}
+                onClick={handleAdminSettings}
+              >
+                <div className='settingsButtonContent'>
+                  <IconAdmin color={selectedSetting === 'Setting2' ? 'var(--primarySwitched)' : 'var(--primary)'} />
+                  <span>{t('set_admin')}</span>
+                </div>
+              </Button>
+              {/* not for 1.2.x - exclude for release (maybe)????*/}
+              <Button
+                className={selectedSetting === 'Setting3' ? 'active' : ''}
+                onClick={() => setSelectedSetting('Setting3')}
+              >
+                <div className='settingsButtonContent'>
+                  <IconAdmin color={selectedSetting === 'Setting3' ? 'var(--primarySwitched)' : 'var(--primary)'} />
+                  <span>{t('set_studio')}</span>
+                </div>
+              </Button>
+            </div>
+            <div className='SettingContent innerWindow'>
+              <div className='settingsContentContainer'>
+                {selectedSetting === 'Setting1' ? (
+                  <Setting1 />
+                ) : selectedSetting === 'Setting2' && initialConnected !== null ? (
+                  <Setting2 connected={initialConnected} />
+                ) : selectedSetting === 'Setting3' ? (
+                  <Setting3
+                    studioRows={6}
+                    studioColumns={4}
+                  />
+                ) : selectedSetting === 'Setting4' ? (
+                  <div className='SettingsOption'>not used</div>
+                ) : null}
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );
-}
+};
 
 export default Settings;

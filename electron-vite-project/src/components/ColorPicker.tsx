@@ -24,21 +24,12 @@ interface ColorPickerProps {
 }
 
 const ColorPicker: React.FC<ColorPickerProps> = ({ pickerType, red, green, blue, onColorChange }) => {
-  const pickerRef = useRef(null);
-  const [colorPicker, setColorPicker] = useState<any>(null);
+  const pickerRef = useRef<HTMLDivElement>(null);
+  const [colorPicker, setColorPicker] = useState<iro.ColorPicker | null>(null);
 
   useEffect(() => {
     if (iro && pickerRef.current && !colorPicker) {
-      let layout;
-
-      switch (pickerType) {
-        case 'kelvin':
-          layout = [{ component: iro.ui.Slider, options: { sliderType: 'kelvin' } }];
-          break;
-        case 'wheel':
-        default:
-          layout = [{ component: iro.ui.Wheel, options: {} }];
-      }
+      const layout = pickerType === 'kelvin' ? [{ component: iro.ui.Slider, options: { sliderType: 'kelvin' } }] : [{ component: iro.ui.Wheel, options: {} }];
 
       const newColorPicker = iro.ColorPicker(pickerRef.current, {
         width: pickerType === 'kelvin' ? 431 : 320,
@@ -46,7 +37,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ pickerType, red, green, blue,
         layout,
       });
 
-      newColorPicker.on('color:change', (color: any) => {
+      newColorPicker.on('color:change', (color: iro.Color) => {
         onColorChange(color.rgb.r, color.rgb.g, color.rgb.b);
       });
 
@@ -58,7 +49,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ pickerType, red, green, blue,
     if (colorPicker) {
       colorPicker.color.set(`rgb(${red}, ${green}, ${blue})`);
     }
-  }, [red, green, blue]);
+  }, [red, green, blue, colorPicker]);
 
   return <div ref={pickerRef}></div>;
 };

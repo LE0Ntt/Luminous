@@ -27,7 +27,7 @@ interface TranslationContextType {
 
 export const TranslationContext = createContext<TranslationContextType>({
   t: (key: string) => key,
-  language: '',
+  language: 'en',
   setLanguage: () => {},
 });
 
@@ -35,20 +35,14 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({ transl
   const [language, setLanguage] = useState('en');
 
   useEffect(() => {
-    async function fetchLangugae() {
-      const [data] = await Promise.all([window.electronAPI.getLanguage()]);
-      console.log(data);
+    const fetchLanguage = async () => {
+      const data = await window.electronAPI.getLanguage();
       setLanguage(data);
-    }
-    fetchLangugae();
+    };
+    fetchLanguage();
   }, []);
 
-  const t = (key: string) => {
-    if (translations[language] && translations[language][key]) {
-      return translations[language][key];
-    }
-    return key;
-  };
+  const t = (key: string) => translations[language]?.[key] || key;
 
   return <TranslationContext.Provider value={{ t, language, setLanguage }}>{children}</TranslationContext.Provider>;
 };

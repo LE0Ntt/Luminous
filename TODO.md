@@ -162,44 +162,44 @@
     - [x] BigView.tsx
     - [x] Button.css
     - [x] Button.tsx
-    - [ ] ColorPicker.tsx
-    - [ ] ConnectionContext.tsx
-    - [ ] ControlHandler.tsx
+    - [x] ColorPicker.tsx
+    - [x] ConnectionContext.tsx
     - [x] DeleteScene.tsx
-    - [ ] DeviceList.css
-    - [ ] DeviceList.tsx
+    - [x] DeviceList.css
+    - [x] DeviceList.tsx
     - [x] Dialog.css
     - [x] DropDown.css
     - [x] DropDown.tsx
     - [x] EventBus.tsx
-    - [ ] Fader.css
+    - [x] Fader.css
     - [x] Fader.tsx
-    - [ ] FaderContext.tsx
-    - [ ] Header.css
-    - [ ] Header.tsx
-    - [ ] Help.css
+    - [x] FaderContext.tsx
+    - [x] Header.css
+    - [x] Header.tsx
+    - [x] Help.css
     - [x] Help.tsx
-    - [ ] LightBeam.tsx
+    - [x] LightBeam.tsx
     - [ ] LightSettings.css
     - [ ] LightSettings.tsx
-    - [ ] NoConnection.css
-    - [ ] NoConnection.tsx
+    - [x] NoConnection.css
+    - [x] NoConnection.tsx
     - [x] RecoverDialog.tsx
     - [ ] ScenesComponent.css
     - [ ] ScenesComponent.tsx
-    - [ ] ScrollButton.tsx
-    - [ ] Settings.css
-    - [ ] Settings.tsx
+    - [x] ScrollButton.tsx
+    - [x] Settings.css
+    - [x] Settings.tsx
     - [ ] SettingsAdmin.tsx
     - [ ] SettingsGeneral.tsx
-    - [ ] SliderDataLoader.tsx
+    - [ ] SettingsStudioOverview.tsx
+    - [ ] StudioOverview.tsx
     - [ ] Timeline.css
     - [ ] Timeline.tsx
-    - [ ] Titlebar.css
+    - [x] Titlebar.css
     - [x] Titlebar.tsx
-    - [ ] Toggle.css
-    - [ ] Toggle.tsx
-    - [ ] TranslationContext.tsx
+    - [x] Toggle.css
+    - [x] Toggle.tsx
+    - [x] TranslationContext.tsx
   - [ ] App.tsx
   - [ ] Color.css
   - [ ] Control.css

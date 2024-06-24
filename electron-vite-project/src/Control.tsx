@@ -336,14 +336,13 @@ function Control() {
   useEffect(() => {
     if (!supportFlags.supportsBiColor || supportFlags.supportsRGB) return;
 
-    setTimeout(() => {
-      const kelvinValue = Math.round((biColorFaderValue / 255) * 8800 + 2200);
-      const rgb = iro.Color.kelvinToRgb(kelvinValue);
-      setFaderValue(0, 3, rgb.r);
-      setFaderValue(0, 4, rgb.g);
-      setFaderValue(0, 5, rgb.b);
-    }, 100);
-  }, [supportFlags, biColorFaderValue, setFaderValue]);
+    const kelvinValue = Math.round((biColorFaderValue / 255) * 8800 + 2200);
+    const rgb = iro.Color.kelvinToRgb(kelvinValue);
+
+    setFaderValue(0, 3, rgb.r);
+    setFaderValue(0, 4, rgb.g);
+    setFaderValue(0, 5, rgb.b);
+  }, [supportFlags]);
 
   // Check if the selected devices channels are up to date with the corresponding fader values of the control
   useEffect(() => {

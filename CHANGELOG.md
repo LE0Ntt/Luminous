@@ -8,7 +8,9 @@
 
 - Updated dependencies
 - Added DMX occupancy overview to LightSettings
-- Scenes are 'on' when created
+- Scenes
+  - Are 'on' when created
+  - Show fewer placeholder scenes in grid
 - LightFX
   - Implemented buffering of changes, now sent every 20ms to prevent stuttering
   - Transfer the values of the first light of its kind to the corresponding LightFX faders
@@ -41,6 +43,7 @@
   - Added settings to backup, reset and restore the database
   - Added setting to change the client-side server IP
   - OLA now opens in its own window instead of browser
+- Many code cleanups and improvements
 
 ### Fixes
 

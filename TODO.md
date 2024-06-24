@@ -184,8 +184,8 @@
     - [x] NoConnection.css
     - [x] NoConnection.tsx
     - [x] RecoverDialog.tsx
-    - [ ] ScenesComponent.css
-    - [ ] ScenesComponent.tsx
+    - [x] ScenesComponent.css
+    - [x] ScenesComponent.tsx
     - [x] ScrollButton.tsx
     - [x] Settings.css
     - [x] Settings.tsx
@@ -200,14 +200,14 @@
     - [x] Toggle.css
     - [x] Toggle.tsx
     - [x] TranslationContext.tsx
-  - [ ] App.tsx
+  - [x] App.tsx
   - [ ] Color.css
   - [ ] Control.css
   - [ ] Control.tsx
   - [ ] index.css
   - [x] main.tsx
-  - [ ] Scenes.css
-  - [ ] Scenes.tsx
+  - [x] Scenes.css
+  - [x] Scenes.tsx
   - [ ] Show.css
   - [ ] Show.tsx
   - [ ] Studio.css

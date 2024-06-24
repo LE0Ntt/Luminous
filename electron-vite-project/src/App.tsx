@@ -12,7 +12,7 @@
  *
  * @file App.tsx
  */
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useLayoutEffect } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
 import Studio from './Studio';
@@ -30,10 +30,15 @@ function App() {
   const mainContentRef = useRef<HTMLDivElement>(null);
   const [contentScale, setContentScale] = useState(1);
   const { connected } = useConnectionContext();
-  const [firstRender, setFirstRender] = useState(true);
+  const firstRender = useRef(true);
 
   // Start with dark mode
-  if (firstRender) document.body.classList.toggle('dark', true);
+  useLayoutEffect(() => {
+    if (firstRender.current) {
+      document.body.classList.add('dark');
+      firstRender.current = false;
+    }
+  }, []);
 
   // To scale the content when the window is resized
   const updateContentScale = () => {
@@ -51,16 +56,15 @@ function App() {
     }
   };
 
+  // Add event listener for window resize
   useEffect(() => {
-    if (firstRender) setFirstRender(false);
-
     updateContentScale();
     window.addEventListener('resize', updateContentScale);
     return () => window.removeEventListener('resize', updateContentScale);
   }, []);
 
   return (
-    <div className='App relative background'>
+    <div className='background'>
       <TranslationProvider translations={translations}>
         <Router>
           <header style={{ height: '90px' }}>
@@ -73,56 +77,29 @@ function App() {
           >
             <div style={{ transform: `scale(${contentScale})` }}>
               <div className='mainContent'>
-                {!connected ? (
-                  <>
-                    <NoConnection />
-                    <Routes>
-                      <Route
-                        path='/'
-                        element={<Studio />}
-                      />
-                      <Route
-                        path='/Studio'
-                        element={<Studio />}
-                      />
-                      <Route
-                        path='/Control'
-                        element={<Control />}
-                      />
-                      <Route
-                        path='/Scenes'
-                        element={<Scenes />}
-                      />
-                      <Route
-                        path='/Show'
-                        element={<Show />}
-                      />
-                    </Routes>
-                  </>
-                ) : (
-                  <Routes>
-                    <Route
-                      path='/'
-                      element={<Studio />}
-                    />
-                    <Route
-                      path='/Studio'
-                      element={<Studio />}
-                    />
-                    <Route
-                      path='/Control'
-                      element={<Control />}
-                    />
-                    <Route
-                      path='/Scenes'
-                      element={<Scenes />}
-                    />
-                    <Route
-                      path='/Show'
-                      element={<Show />}
-                    />
-                  </Routes>
-                )}
+                {!connected && <NoConnection />}
+                <Routes>
+                  <Route
+                    path='/'
+                    element={<Studio />}
+                  />
+                  <Route
+                    path='/Studio'
+                    element={<Studio />}
+                  />
+                  <Route
+                    path='/Control'
+                    element={<Control />}
+                  />
+                  <Route
+                    path='/Scenes'
+                    element={<Scenes />}
+                  />
+                  <Route
+                    path='/Show'
+                    element={<Show />}
+                  />
+                </Routes>
               </div>
             </div>
           </div>

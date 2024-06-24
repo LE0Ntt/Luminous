@@ -12,7 +12,7 @@
  *
  * @file ScenesComponent.tsx
  */
-import { useState, useEffect, useContext, DragEvent } from 'react';
+import React, { useState, useEffect, useContext, useCallback, useRef, useLayoutEffect } from 'react';
 import './ScenesComponent.css';
 import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from '../components/ConnectionContext';
@@ -41,11 +41,17 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
   const [buttonText, setButtonText] = useState(t(''));
   const [repeatNumber, setRepeatNumber] = useState(6);
   const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [emptyScenes, setEmptyScenes] = useState(0);
+  const scenesFetched = useRef(false);
 
+  // Fetch scenes from the server when the component is mounted
+  useLayoutEffect(() => {
+    if (connected && scenes.length === 0) fetchScenes();
+    setEmptyScenes(calculateEmptyScenes(scenes.length, repeatNumber));
+  }, [connected, scenes.length, repeatNumber]);
+
+  // Listen for events to delete or save a scene
   useEffect(() => {
-    if (connected) fetchScenes();
-
-    // Listen for the delete and save scene event
     const handleDeleteScene = () => {
       const deleteID = sessionStorage.getItem('deleteID');
       if (deleteID !== null) emit('scene_delete', { id: JSON.parse(deleteID) });
@@ -55,29 +61,23 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
       const saveID = sessionStorage.getItem('saveID');
       if (saveID !== null) emit('scene_save', { id: JSON.parse(saveID) });
     };
+
     document.body.addEventListener('saveScene', handleSaveScene);
     document.body.addEventListener('deleteScene', handleDeleteScene);
+
     return () => {
       document.body.removeEventListener('deleteScene', handleDeleteScene);
       document.body.removeEventListener('saveScene', handleSaveScene);
     };
-  }, []);
+  }, [emit]);
 
+  // Listen for events to update the status of a scene
   useEffect(() => {
     const sceneUpdate = (data: any) => {
-      setScenes((prevScenes) => {
-        return prevScenes.map((scene, index) => {
-          if (index === data.id) {
-            return { ...scene, status: data.status };
-          }
-          return scene;
-        });
-      });
+      setScenes((prevScenes) => prevScenes.map((scene, index) => (index === data.id ? { ...scene, status: data.status } : scene)));
     };
 
-    const reloadScenes = () => {
-      fetchScenes();
-    };
+    const reloadScenes = () => fetchScenes();
 
     on('scene_update', sceneUpdate);
     on('scene_reload', reloadScenes);
@@ -89,7 +89,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
   }, [on, off]);
 
   // Change the appearance of the component depending on which page it is called from
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (sideId === 0) {
       // Studio
       setHeight(105);
@@ -111,17 +111,26 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
     }
   }, [sideId, t]);
 
+  // Calculate the number of empty scenes needed to fill the grid
+  const calculateEmptyScenes = (scenesLength: number, repeatNumber: number) => {
+    const minRows = 4;
+    const totalCells = Math.max(minRows * repeatNumber, Math.ceil((scenesLength + 1) / repeatNumber) * repeatNumber);
+    return totalCells - scenesLength - 1;
+  };
+
   // Get all scenes from the server with an API call
   const fetchScenes = async () => {
     try {
       const response = await fetch(url + '/scenes');
       const data = await response.json();
       setScenes(JSON.parse(data));
+      scenesFetched.current = true;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
+  // Toggle the status of a scene
   const toggleSceneStatus = (sceneId: number) => {
     const solo = localStorage.getItem('sceneSolo') === 'true';
     setScenes((prevScenes) => {
@@ -131,10 +140,9 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
       const updatedScenes = prevScenes.map((scene) => {
         if (scene.id === sceneId) {
           const newStatus = !scene.status;
-          emit('scene_update', { id: sceneId, status: newStatus, fadeTime: fadeDuration, solo: solo });
+          emit('scene_update', { id: sceneId, status: newStatus, fadeTime: fadeDuration, solo });
           return { ...scene, status: newStatus };
         }
-
         return scene;
       });
 
@@ -142,46 +150,30 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
     });
   };
 
+  // Delete a scene
   const deleteScene = (sceneId: number, saved: boolean) => {
     sessionStorage.setItem('deleteID', JSON.stringify(sceneId));
     if (!saved) {
-      if (setDeleteScene) {
-        setDeleteScene(true);
-      }
+      setDeleteScene?.(true);
     } else {
-      if (setDeleteSceneAdmin) {
-        setDeleteSceneAdmin(true);
-      }
+      setDeleteSceneAdmin?.(true);
     }
   };
 
+  // Save a scene
   const saveScene = (sceneId: number) => {
     sessionStorage.setItem('saveID', JSON.stringify(sceneId));
-    if (setSaveSceneAdmin) {
-      setSaveSceneAdmin(true);
-    }
+    setSaveSceneAdmin?.(true);
   };
 
-  const handleAddScene = () => {
-    if (setAddScene) {
-      setAddScene(true);
-    }
-  };
-
-  const extraButton = 1;
-  const emptyScenesLength = Math.ceil((scenes.length + extraButton) / repeatNumber) * repeatNumber - scenes.length - extraButton + repeatNumber * 3;
-  const emptyScenes = Array.from({ length: emptyScenesLength }, (_, index) => ({
-    id: scenes.length + extraButton + index + 1,
-    name: 'Empty Scene',
-  }));
-
-  const onDragStart = (e: DragEvent<HTMLButtonElement>, id: any) => {
+  // Drag and drop functionality for Show page
+  const onDragStart = useCallback((e: React.DragEvent<HTMLButtonElement>, id: number) => {
     eventBus.emit('drag-start', id);
-  };
+  }, []);
 
-  const onDragEnd = (e: DragEvent<HTMLButtonElement>, id: any) => {
+  const onDragEnd = useCallback((e: React.DragEvent<HTMLButtonElement>, id: number) => {
     eventBus.emit('drag-end', id);
-  };
+  }, []);
 
   return (
     <div className='scenesAlign'>
@@ -222,21 +214,23 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
             )}
           </div>
         ))}
-        <button
-          className='AddSceneButton'
-          disabled={buttonDisabled}
-          style={{ height: `${height}px` }}
-          onClick={handleAddScene}
-        >
-          <div className={`sceneBorder ${sideId === 1 ? 'borderBig' : 'borderSmall'}`}></div>
-          {!buttonDisabled && <div className='addIcon AddSceneIcon'></div>}
-          <div className='AddSceneButtonFont'>{buttonText}</div>
-        </button>
-        {emptyScenes.map((scene) => (
+        {scenesFetched.current && (
+          <button
+            className='AddSceneButton'
+            disabled={buttonDisabled}
+            style={{ height: `${height}px` }}
+            onClick={() => setAddScene?.(true)}
+          >
+            <div className={`sceneBorder ${sideId === 1 ? 'borderBig' : 'borderSmall'}`}></div>
+            {!buttonDisabled && <div className='addIcon AddSceneIcon'></div>}
+            <div className='AddSceneButtonFont'>{buttonText}</div>
+          </button>
+        )}
+        {Array.from({ length: emptyScenes }).map((_, index) => (
           <div
             className='scenesEmpty'
             style={{ height: `${height}px` }}
-            key={scene.id}
+            key={`empty-${index}`}
           >
             <div className={`sceneBorder ${sideId === 1 ? 'borderBig' : 'borderSmall'}`}></div>
           </div>

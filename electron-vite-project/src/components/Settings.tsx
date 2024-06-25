@@ -35,6 +35,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
   const [selectedSetting, setSelectedSetting] = useState<string>('Setting1');
   const [initialConnected, setInitialConnected] = useState<boolean | null>(null);
 
+  // Confirm the password to access the admin settings
   const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean) => {
     if (isConfirmed) {
       setSelectedSetting('Setting2');
@@ -46,11 +47,10 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
   const handleAdminSettings = () => {
     if (connected) {
       setIsAdmin(true);
-      setInitialConnected(connected);
     } else {
       setSelectedSetting('Setting2');
-      setInitialConnected(connected);
     }
+    setInitialConnected(connected);
   };
 
   return (
@@ -98,7 +98,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                   <span>{t('set_admin')}</span>
                 </div>
               </Button>
-              {/* not for 1.2.x - exclude for release (maybe)????*/}
+              {/* not for 1.2.x - exclude for release (maybe)????
               <Button
                 className={selectedSetting === 'Setting3' ? 'active' : ''}
                 onClick={() => setSelectedSetting('Setting3')}
@@ -107,7 +107,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                   <IconAdmin color={selectedSetting === 'Setting3' ? 'var(--primarySwitched)' : 'var(--primary)'} />
                   <span>{t('set_studio')}</span>
                 </div>
-              </Button>
+              </Button>*/}
             </div>
             <div className='SettingContent innerWindow'>
               <div className='settingsContentContainer'>

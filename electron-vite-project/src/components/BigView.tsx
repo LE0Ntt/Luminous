@@ -36,7 +36,7 @@ function BigView({ onClose }: BigViewProps) {
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const [sliders, setSliders] = useState<SliderConfig[]>([]);
-  const [DMX, setDMX] = useState(() => localStorage.getItem('dmx') === 'true'); // DMX or Device channels
+  const [DMX, setDMX] = useState(() => sessionStorage.getItem('dmx') === 'true'); // DMX or Device channels
   const [renderedFaders, setRenderedFaders] = useState(20); // Number of DMX faders to render
 
   const universes = ['U1', 'U2'];
@@ -65,7 +65,7 @@ function BigView({ onClose }: BigViewProps) {
 
   // Toggle between DMX and Device channels
   const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
-    localStorage.setItem('dmx', `${status}`);
+    sessionStorage.setItem('dmx', `${status}`);
     setDMX(status);
   };
 
@@ -93,6 +93,21 @@ function BigView({ onClose }: BigViewProps) {
     };
   }, [DMX]);
 
+  // Classes for device fader
+  function determineClassName(sliderIndex: number, channelIndex: number, filteredSliders: SliderConfig[], channelsLength: number) {
+    const isLastChannel = channelIndex === channelsLength - 1;
+    const isLastSlider = sliderIndex === filteredSliders.length - 1;
+    const hasNextSliderMoreThanOneChannel = !isLastSlider && filteredSliders[sliderIndex + 1].attributes.channel.length > 1;
+
+    if (channelsLength === 1) {
+      if (hasNextSliderMoreThanOneChannel) return 'noBorderWithoutSpacing';
+      if (isLastSlider) return 'noBorder';
+    } else if (channelsLength > 1) {
+      if (channelIndex === 0) return 'firstGroupFader';
+      if (isLastChannel) return 'lastGroupFader';
+    } else return '';
+  }
+
   return (
     <>
       <div
@@ -114,7 +129,7 @@ function BigView({ onClose }: BigViewProps) {
           <div className='toggleUniverse'>
             <Toggle
               onClick={handleToggleChange}
-              enabled={localStorage.getItem('dmx') === 'true'}
+              enabled={sessionStorage.getItem('dmx') === 'true'}
             />
           </div>
           <span className='text-left'>DMX Channel</span>
@@ -124,7 +139,7 @@ function BigView({ onClose }: BigViewProps) {
             className='BigViewContent innerWindow'
             key={universe}
           >
-            <div className='universeLabel window'>{universe}</div>
+            <div className='buttonDesign universeLabel'>{universe}</div>
             <ScrollButton
               scrollRef={scrollRefs[universe]}
               elementWidth={102}
@@ -151,14 +166,17 @@ function BigView({ onClose }: BigViewProps) {
                     return (
                       <div
                         key={index}
-                        className='sliderHeight'
+                        style={{
+                          marginLeft: index === 0 ? '-10px' : '',
+                          paddingLeft: index === 511 ? '10px' : '',
+                        }}
                       >
-                        <h2 className='faderText'>{mappedIndex}</h2>
                         <Fader
                           key={index}
                           id={matchedChannel ? matchedChannel.id : mappedIndex}
                           sliderGroupId={matchedSlider ? matchedSlider.id : universe === 'U1' ? 692 : 693}
                           name={matchedSlider ? matchedSlider.name + ' ' + matchedChannel.channel_type : 'Channel'}
+                          number={mappedIndex}
                           className={index === 511 ? 'noBorder' : ''}
                         />
                       </div>
@@ -167,30 +185,41 @@ function BigView({ onClose }: BigViewProps) {
                 : sliders
                     .slice(1)
                     .filter((slider) => slider.universe === universe)
-                    .map((slider, sliderIndex, filteredSliders) =>
-                      slider.attributes.channel.map((channel: { id: number; channel_type: string }, channelIndex: number) => (
-                        <div
-                          key={slider.id + '-' + channel.id}
-                          className={`sliderHeight ${channel.id !== 0 ? 'grayBackground' : ''}`}
-                        >
-                          <h2 className='faderText'>{slider.id}</h2>
-                          <Fader
+                    .map((slider, sliderIndex, filteredSliders) => (
+                      <div
+                        key={slider.id}
+                        className={slider.attributes.channel.length > 1 ? 'faderGroup' : ''}
+                        style={{ marginLeft: sliderIndex === 0 && slider.attributes.channel.length > 1 ? '-9px' : '' }}
+                      >
+                        {slider.attributes.channel.map((channel: { id: number; channel_type: string }, channelIndex: number) => (
+                          <div
                             key={slider.id + '-' + channel.id}
-                            id={channel.id}
-                            sliderGroupId={slider.id}
-                            name={channel.id !== 0 ? channel.channel_type : slider.name}
-                            className={sliderIndex === filteredSliders.length - 1 && channelIndex === slider.attributes.channel.length - 1 ? 'noBorder' : ''}
-                          />
-                        </div>
-                      ))
-                    )}
+                            className={`${channel.id !== 0 ? 'grayBackground' : ''}`}
+                            style={{
+                              marginLeft: sliderIndex === 0 && channelIndex === 0 && slider.attributes.channel.length == 1 ? '-10px' : '',
+                              paddingLeft: sliderIndex === filteredSliders.length - 1 && slider.attributes.channel.length == 1 ? '10px' : '',
+                            }}
+                          >
+                            <Fader
+                              key={slider.id + '-' + channel.id}
+                              id={channel.id}
+                              sliderGroupId={slider.id}
+                              name={channel.id !== 0 ? channel.channel_type : slider.name}
+                              number={slider.id}
+                              className={determineClassName(sliderIndex, channelIndex, filteredSliders, slider.attributes.channel.length)}
+                              color={channel.channel_type === 'r' ? '#CA2C2C' : channel.channel_type === 'g' ? '#59E066' : channel.channel_type === 'b' ? '#4271C6' : ''}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    ))}
             </div>
           </div>
         ))}
         <div className='mainfaderBigView innerWindow'>
           {sliders[0] && (
             <Fader
-              height={714}
+              height={700}
               id={0}
               sliderGroupId={0}
               name='Master'

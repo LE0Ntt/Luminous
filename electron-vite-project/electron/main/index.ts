@@ -1,8 +1,13 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { release } from 'node:os';
-import { join } from 'node:path';
-import { update } from './update';
 import Store from 'electron-store';
+
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { update } from './update';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // The built directory structure
 //
@@ -10,7 +15,7 @@ import Store from 'electron-store';
 // │ ├─┬ main
 // │ │ └── index.js    > Electron-Main
 // │ └─┬ preload
-// │   └── index.js    > Preload-Scripts
+// │   └── index.mjs    > Preload-Scripts
 // ├─┬ dist
 // │ └── index.html    > Electron-Renderer
 
@@ -38,7 +43,7 @@ if (process.platform === 'win32') app.setAppUserModelId(app.getName());
 
 let win: BrowserWindow | null = null;
 // Here, you can also use other preload
-const preload = join(__dirname, '../preload/index.js');
+const preload = join(__dirname, '../preload/index.mjs');
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
 
@@ -137,6 +142,11 @@ ipcMain.on('minimize', () => {
   win.minimize();
 });
 
+// Close
+ipcMain.on('close', () => {
+  win.close();
+});
+
 // Toggle Fullscreen
 ipcMain.on('toggle-full-screen', () => {
   if (win?.isFullScreen()) {
@@ -157,26 +167,120 @@ const schema = {
     format: 'ipv4',
     default: '127.0.0.1',
   },
+  port: {
+    type: 'integer',
+    default: 5000,
+  },
+  language: {
+    type: 'string',
+    enum: ['en', 'de'],
+    default: 'de',
+  },
+  theme: {
+    type: 'string',
+    enum: ['light', 'dark', 'auto'],
+    default: 'light',
+  },
 };
 
-const store = new Store({ schema } as any);
+interface StoreSchema {
+  ip: string;
+  port: string;
+  language: string;
+  theme: string;
+}
 
+const store = new Store<StoreSchema>({ schema } as any);
+
+type ElectronStoreType = Store<StoreSchema> & {
+  get: <K extends keyof StoreSchema>(key: K) => StoreSchema[K];
+  set: <K extends keyof StoreSchema>(key: K, value: StoreSchema[K]) => void;
+};
+
+const typedStore = store as ElectronStoreType;
+
+// IP
 ipcMain.handle('get-ip', () => {
-  const ip = store.get('ip');
-  const port = '5000'; // Or get it from your config if it's dynamic.
+  const ip = typedStore.get('ip');
+  const port = typedStore.get('port'); // at the moment the port is hardcoded
   return { ip, port };
 });
 
-const ip = store.get('ip');
+ipcMain.on('set-ip', (_, ip) => {
+  console.log('set-ip', ip);
+  typedStore.set('ip', ip);
+});
 
+const ip = typedStore.get('ip');
+const port = typedStore.get('port');
 console.log(`Current IP: ${ip}`);
+console.log(`Current Port: ${port}`);
 
-let currentIp = store.get('ip');
+// Language
+ipcMain.handle('get-language', () => {
+  return typedStore.get('language');
+});
 
+ipcMain.handle('set-language', (_, language) => {
+  typedStore.set('language', language);
+});
+
+const language = typedStore.get('language');
+console.log(`Current Language: ${language}`);
+
+// Theme
+ipcMain.handle('get-theme', () => {
+  return typedStore.get('theme');
+});
+
+ipcMain.handle('set-theme', (_, theme) => {
+  typedStore.set('theme', theme);
+});
+
+// Platform
 ipcMain.handle('get-platform', () => {
   return process.platform;
 });
 
+// Open External
 ipcMain.on('open-external', (event, url) => {
   shell.openExternal(url);
+});
+
+// OLA
+let popupWindow = null;
+function createPopupWindow() {
+  if (popupWindow !== null) {
+    popupWindow.focus();
+    return;
+  }
+
+  popupWindow = new BrowserWindow({
+    width: 1024,
+    height: 1024,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+    //titleBarStyle: 'hidden',
+  });
+
+  popupWindow.loadURL(`http://${ip}:9090/`);
+
+  popupWindow.on('closed', () => {
+    popupWindow = null;
+  });
+}
+
+ipcMain.on('open-OLA', (event, arg) => {
+  createPopupWindow();
+});
+
+ipcMain.handle('show-alert', async (event, message) => {
+  await dialog.showMessageBox({
+    type: 'info',
+    buttons: ['OK'],
+    title: 'Alert',
+    message: message,
+  });
 });

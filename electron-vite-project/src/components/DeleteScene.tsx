@@ -13,8 +13,8 @@
  * @file DeleteScene.tsx
  */
 import { useContext, useEffect } from 'react';
-import Button from './Button';
 import { TranslationContext } from './TranslationContext';
+import Button from './Button';
 import IconNote from '@/assets/IconNote';
 
 interface DeleteSceneProps {
@@ -24,6 +24,7 @@ interface DeleteSceneProps {
 function DeleteScene({ onClose }: DeleteSceneProps) {
   const { t } = useContext(TranslationContext);
 
+  // Delete the scene
   const handleDelete = () => {
     document.body.dispatchEvent(new Event('deleteScene'));
     onClose();
@@ -40,9 +41,7 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
 
     window.addEventListener('keydown', handleKeyDown);
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   return (

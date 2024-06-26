@@ -12,8 +12,7 @@
  *
  * @file Scenes.tsx
  */
-import { useContext, useState } from 'react';
-import { TranslationContext } from './components/TranslationContext';
+import { useState, useCallback } from 'react';
 import './Scenes.css';
 import Fader from './components/Fader';
 import ScenesComponent from './components/ScenesComponent';
@@ -23,60 +22,58 @@ import DeleteScene from './components/DeleteScene';
 import AdminPassword from './components/AdminPassword';
 
 function Scenes() {
-  const { t } = useContext(TranslationContext);
   const [addScene, setAddScene] = useState(false);
   const [deleteScene, setDeleteScene] = useState(false);
   const [deleteSceneAdmin, setDeleteSceneAdmin] = useState(false);
   const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
-  const [fadeDuration, setFadeDuration] = useState(() => {
-    const storedValue = sessionStorage.getItem('fadeDuration');
-    return storedValue ? storedValue : '0';
-  });
+  const [fadeDuration, setFadeDuration] = useState(() => sessionStorage.getItem('fadeDuration') || '0');
   const [fadeDisplayValue, setFadeDisplayValue] = useState(fadeDuration + ' s');
 
   // Set toggle status in localStorage
-  const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
+  const handleToggleChange = useCallback((status: boolean) => {
     localStorage.setItem('sceneSolo', `${status}`);
-  };
+  }, []);
 
   // Confirm with ENTER
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.currentTarget.blur(); // Remove focus from the input
     }
-  };
+  }, []);
 
   // Check if the input value is a number
-  const handleFadeDuration = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFadeDuration = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     if (value.length <= 4) {
       const numbersOnly = value.replace(/[^0-9.,]+/g, '');
       setFadeDuration(numbersOnly);
       setFadeDisplayValue(numbersOnly);
     }
-  };
+  }, []);
 
   // Only allow numbers between 0 and 60
-  const handleFadeConfirm = () => {
+  const handleFadeConfirm = useCallback(() => {
     let numericValue = parseFloat(fadeDuration.replace(',', '.'));
     if (isNaN(numericValue)) {
-      const storedValue = sessionStorage.getItem('fadeDuration');
-      numericValue = storedValue ? parseFloat(storedValue) : 0;
+      numericValue = parseFloat(sessionStorage.getItem('fadeDuration') || '0');
     }
     numericValue = Math.max(0, Math.min(60, numericValue));
     setFadeDuration(numericValue.toString());
     sessionStorage.setItem('fadeDuration', numericValue.toString());
     setFadeDisplayValue(numericValue + ' s');
-  };
+  }, [fadeDuration]);
 
   // On fade input focus
-  const handleFocus = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFadeDisplayValue(fadeDuration); // Display the actual value without 's'
-    // Delay to the next tick
-    setTimeout(() => {
-      event.target.select(); // Select the input text
-    }, 0);
-  };
+  const handleFocus = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setFadeDisplayValue(fadeDuration); // Display the actual value without 's'
+      // Delay to the next tick
+      setTimeout(() => {
+        event.target.select(); // Select the input text
+      }, 0);
+    },
+    [fadeDuration]
+  );
 
   return (
     <>
@@ -90,15 +87,13 @@ function Scenes() {
         />
       </div>
       <div className='window scenesMaster mainfader'>
-        <div className='scenesMasterAlign'>
-          <Fader
-            height={610}
-            sliderGroupId={0}
-            id={0}
-            name='Master'
-            className='noBorder'
-          />
-        </div>
+        <Fader
+          height={590}
+          sliderGroupId={0}
+          id={0}
+          name='Master'
+          className='noBorder'
+        />
       </div>
       <div className='window scenesSolo'>
         <div className='scenesSoloAlign'>

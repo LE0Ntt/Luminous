@@ -364,7 +364,7 @@ function LightSettings({ onClose }: SettingsProps) {
   );
 
   return (
-    <div className='LightSettingsOverParent'>
+    <>
       <div
         className='backgroundOverlay'
         onClick={onClose}
@@ -375,7 +375,7 @@ function LightSettings({ onClose }: SettingsProps) {
           onClose={() => setShowAdminPassword(false)}
         />
       ) : (
-        <div className={`LightSettingsContainer ${selectedDevice ? '' : 'ContainerGap'}`}>
+        <div className={'LightSettingsContainer'}>
           <button
             className='buttonClose'
             onClick={onClose}
@@ -386,7 +386,7 @@ function LightSettings({ onClose }: SettingsProps) {
           </button>
           <div className='SettingsTitle'>
             <IconLight />
-            <span className='relative left-[10px] top-[-2px]'>{t('ls_title')}</span>
+            <span className='SettingsTitleText'>{t('ls_title')}</span>
           </div>
           <div className='LightSettingsListContainer'>
             <div className='LightSettingsSelected innerWindow'>
@@ -501,45 +501,79 @@ function LightSettings({ onClose }: SettingsProps) {
             </div>
             <hr />
             <div className='LightSettingsWindowMid'>
-              <div>
-                <div className='LightSettingsSubTitle SettingsSubTitle'>
-                  <span>{t('ls_dmxSettings')}</span>
-                </div>
-                <div className='LightSettingsDMXContainer'>
-                  {Array.from({ length: parseInt(inputDMXrange) }, (_, index) => (
-                    <div
-                      className='LightSettingsDMXBox'
-                      key={index}
-                    >
-                      <div className='LightSettingsDMXBoxLeft'>
+              <div className='LightSettingsSubTitle SettingsSubTitle'>
+                <span>{t('ls_dmxSettings')}</span>
+              </div>
+              <div className='LightSettingsDMXContainer'>
+                {Array.from({ length: parseInt(inputDMXrange) }, (_, index) => (
+                  <div
+                    className='LightSettingsDMXBox'
+                    key={index}
+                  >
+                    <div className='LightSettingsDMXBoxLeft'>
+                      <input
+                        type='text'
+                        value={channelArray[index]?.dmx_channel || ''}
+                        onChange={(e) => handleChannelChange(index, channelArray[index]?.channel_type, e.target.value)}
+                        className='LightSettingsChannelInput'
+                        onKeyUp={handleKeyDown}
+                        onBlur={(e) => handleChannelConfirm(index, channelArray[index]?.channel_type, e.target.value)}
+                        onFocus={handleFocus}
+                      />
+                    </div>
+                    <div className='LightSettingsDMXBoxRight'>
+                      {LampTypeChannels[inputType]?.[index] ? (
+                        <span>{LampTypeChannels[inputType][index]}</span>
+                      ) : (
                         <input
                           type='text'
-                          value={channelArray[index]?.dmx_channel || ''}
-                          onChange={(e) => handleChannelChange(index, channelArray[index]?.channel_type, e.target.value)}
+                          value={channelArray[index]?.channel_type || ''}
+                          onChange={(e) => handleChannelChange(index, e.target.value, channelArray[index]?.dmx_channel)}
                           className='LightSettingsChannelInput'
                           onKeyUp={handleKeyDown}
-                          onBlur={(e) => handleChannelConfirm(index, channelArray[index]?.channel_type, e.target.value)}
                           onFocus={handleFocus}
                         />
-                      </div>
-                      <div className='LightSettingsDMXBoxRight'>
-                        {LampTypeChannels[inputType]?.[index] ? (
-                          <span>{LampTypeChannels[inputType][index]}</span>
-                        ) : (
-                          <input
-                            type='text'
-                            value={channelArray[index]?.channel_type || ''}
-                            onChange={(e) => handleChannelChange(index, e.target.value, channelArray[index]?.dmx_channel)}
-                            className='LightSettingsChannelInput'
-                            onKeyUp={handleKeyDown}
-                            onFocus={handleFocus}
-                          />
-                        )}
-                      </div>
+                      )}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
+              <hr style={{ marginTop: '30px' }} />
+              <table className='LightSettingsDMXTable'>
+                <tbody>
+                  {Array.from({ length: 16 }).map((_, rowIndex) => (
+                    <tr key={rowIndex}>
+                      {Array.from({ length: 32 }).map((_, cellIndex) => {
+                        const cellNumber = rowIndex * 32 + cellIndex + 1;
+                        const isInChannelArray = channelArray.some((ch) => parseInt(ch.dmx_channel) === cellNumber);
+                        const isDMXDevice = devices.some(
+                          (device) => device.universe === inputUniverse && device.attributes.channel.some((ch: { dmx_channel: string }) => parseInt(ch.dmx_channel) === cellNumber)
+                        );
+                        var isInSelectedDevice = false;
+                        if (!isNewDevice && selectedDevice) {
+                          isInSelectedDevice = selectedDevice.attributes.channel.some((ch: { dmx_channel: string }) => parseInt(ch.dmx_channel) === cellNumber);
+                        }
+                        let cellClass = 'LightSettingsDMXTableCell';
+                        if (isDMXDevice && isInChannelArray && !isInSelectedDevice) {
+                          cellClass += ' LightSettingsDMXTableCellOccupiedAndInChannel';
+                        } else if (isInChannelArray) {
+                          cellClass += ' LightSettingsDMXTableCellInChannel';
+                        } else if (isDMXDevice) {
+                          cellClass += ' LightSettingsDMXTableCellOccupied';
+                        }
+                        return (
+                          <td
+                            key={cellIndex}
+                            className={cellClass}
+                          >
+                            {cellNumber}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
             <div className='LightSettingsWindowLower'>
               <Button
@@ -558,7 +592,7 @@ function LightSettings({ onClose }: SettingsProps) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

@@ -14,18 +14,24 @@
  */
 
 .faqContainer {
-  overflow-y: scroll;
-  overflow-x: hidden;
-  margin-top: 5px;
+  overflow: hidden;
   padding: 0px 10px 0px 10px;
   position: relative;
   right: -10px;
-  height: calc(100% - 5px);
+  height: 100%;
+}
+
+.faqScroll {
+  overflow-y: scroll;
+  padding-right: 10px;
+  height: calc(100% - 40px);
+  position: relative;
+  top: 20px;
 }
 
 .faqQuestion {
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 500;
   height: 70px;
   display: flex;
   align-items: center;

@@ -12,9 +12,16 @@
  *
  * @file ScrollButton.tsx
  */
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const ScrollButton = ({ scrollRef, elementWidth, elementsInView, direction }: { scrollRef: React.RefObject<HTMLElement>; elementWidth: number; elementsInView: number; direction: string }) => {
+interface ScrollButtonProps {
+  scrollRef: React.RefObject<HTMLElement>;
+  elementWidth: number;
+  elementsInView: number;
+  direction: 'prev' | 'next';
+}
+
+const ScrollButton: React.FC<ScrollButtonProps> = ({ scrollRef, elementWidth, elementsInView, direction }) => {
   const [canScroll, setCanScroll] = useState(direction === 'next');
 
   const updateCanScroll = () => {
@@ -33,6 +40,7 @@ const ScrollButton = ({ scrollRef, elementWidth, elementsInView, direction }: { 
     if (!scrollElement) return;
 
     scrollElement.addEventListener('scroll', updateCanScroll);
+    updateCanScroll(); // Initial check
 
     // MutationObserver to detect changes in the scroll element
     const observer = new MutationObserver(updateCanScroll);
@@ -42,7 +50,7 @@ const ScrollButton = ({ scrollRef, elementWidth, elementsInView, direction }: { 
       scrollElement.removeEventListener('scroll', updateCanScroll);
       observer.disconnect();
     };
-  }, [scrollRef, direction, elementWidth, elementsInView]);
+  }, [scrollRef, direction]);
 
   const calculateScroll = () => {
     if (!scrollRef.current) return;
@@ -59,7 +67,7 @@ const ScrollButton = ({ scrollRef, elementWidth, elementsInView, direction }: { 
     <button
       onClick={calculateScroll}
       className='scrollButton'
-      style={{ ...(direction === 'prev' ? { transform: 'rotateY(180deg)', left: '0' } : {}) }}
+      style={direction === 'prev' ? { transform: 'rotateY(180deg)', left: '0' } : {}}
     />
   );
 };

@@ -25,7 +25,7 @@ interface ConnectionContextType {
   on: OnFunction;
   off: OffFunction;
   url: string;
-  /* changeUrl: (newUrl: string) => void; */
+  changeUrl: (newUrl: string) => void;
 }
 
 const ConnectionContext = createContext<ConnectionContextType | null>(null);
@@ -45,7 +45,7 @@ interface ConnectionProviderProps {
 export function ConnectionProvider({ children }: ConnectionProviderProps) {
   const [connected, setConnected] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
-
+  const [url, setUrl] = useState<string>('');
   const [ip, setIp] = useState<string>('');
   const [port, setPort] = useState<string>('');
 
@@ -61,46 +61,37 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
   }, []);
 
   // change url to your server address
-  const [url, setUrl] = useState<string>(''); // Default value
-
-  function changeUrl(newUrl: string) {
+  const changeUrl = (newUrl: string) => {
     setUrl(newUrl);
-  }
+    const url = new URL(newUrl);
+    const ip = url.hostname;
+    (window as any).electronAPI.send('set-ip', ip);
+  };
 
   useEffect(() => {
-    const socketInstance = io(url + '/socket');
+    const socketInstance = io(`${url}/socket`);
     setSocket(socketInstance);
 
-    socketInstance.on('connect', () => {
-      setConnected(true);
-    });
+    const handleConnect = () => setConnected(true);
+    const handleDisconnect = () => setConnected(false);
 
-    socketInstance.on('disconnect', () => {
-      setConnected(false);
-    });
-
-    socketInstance.on('reconnect', () => {
-      setConnected(true);
-    });
+    socketInstance.on('connect', handleConnect);
+    socketInstance.on('disconnect', handleDisconnect);
+    socketInstance.on('reconnect', handleConnect);
 
     return () => {
+      socketInstance.off('connect', handleConnect);
+      socketInstance.off('disconnect', handleDisconnect);
+      socketInstance.off('reconnect', handleConnect);
       socketInstance.disconnect();
       setSocket(null);
       setConnected(false);
     };
   }, [url]);
 
-  const emit: EmitFunction = (event, data) => {
-    socket?.emit(event, data);
-  };
-
-  const on: OnFunction = (event, callback) => {
-    socket?.on(event, callback);
-  };
-
-  const off: OffFunction = (event, callback) => {
-    socket?.off(event, callback);
-  };
+  const emit: EmitFunction = (event, data) => socket?.emit(event, data);
+  const on: OnFunction = (event, callback) => socket?.on(event, callback);
+  const off: OffFunction = (event, callback) => socket?.off(event, callback);
 
   const contextValue: ConnectionContextType = {
     connected,
@@ -108,7 +99,7 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
     on,
     off,
     url,
-    /* changeUrl ,*/
+    changeUrl,
   };
 
   return <ConnectionContext.Provider value={contextValue}>{children}</ConnectionContext.Provider>;

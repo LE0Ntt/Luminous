@@ -66,11 +66,11 @@ class Driver:
         # self.outport = mido.open_output("USB MIDI Interface MIDI 1")  # type: ignore
         # self.inport = mido.open_input("USB MIDI Interface MIDI 1")  # type: ignore
 
-        #self.outport = mido.open_output("E-MU XMidi2X2:E-MU XMidi2X2 Midi Out 2  28:1")  # type: ignore
-        #self.inport = mido.open_input("E-MU XMidi2X2:E-MU XMidi2X2 Midi Out 1  28:0")  # type: ignore
+        self.outport = mido.open_output("E-MU XMidi2X2:E-MU XMidi2X2 Midi Out 2  28:1")  # type: ignore
+        self.inport = mido.open_input("E-MU XMidi2X2:E-MU XMidi2X2 Midi Out 1  28:0")  # type: ignore
 
         # --MMix Config--#
-        #self.inport = None
+        # self.inport = None
         try:
             input_ports = mido.get_input_names()  # type: ignore
             for port in input_ports:
@@ -78,10 +78,10 @@ class Driver:
                 self.inport = mido.open_input(port)  # type: ignore
                 self.outport = mido.open_output(port)  # type: ignore
 
-            output_ports = mido.get_output_names()  # type: ignore
-            for port in output_ports:
-                print(port)
-                #self.outport = mido.open_output(port)  # type: ignore
+            # output_ports = mido.get_output_names()  # type: ignore
+            # for port in output_ports:
+            # print(port)
+            # self.outport = mido.open_output(port)  # type: ignore
         except:
             print("ERROR: Could not open MIDI Ports!")
 
@@ -91,6 +91,7 @@ class Driver:
         self.callback = None
         self.sceneQuickCallback = None
         self.sceneCallback = None
+        self.blackoutCallback = None
 
         self.last_value = [0] * 8
         self.last_time = [float()] * 8
@@ -380,6 +381,9 @@ class Driver:
     def set_sceneCallback(self, sceneCallback):
         self.sceneCallback = sceneCallback
 
+    def set_blackoutCallback(self, blackoutCallback):
+        self.blackoutCallback = blackoutCallback
+
     def map_8bit_to_14bit(self, value_8bit):
         value_14bit = value_8bit << 6
         return value_14bit
@@ -499,11 +503,8 @@ class Driver:
 
     # -------------------- Blackout --------------------
     def blackout(self):
-        for device in self.devices:
-            if self.callback is not None:
-                self.callback(device["id"], 0)
-            self.pushFader(device["id"], 0)
-            time.sleep(0.2)  # temporär
+        if self.blackoutCallback is not None:
+            self.blackoutCallback()
 
     # -------------------- Blackout END--------------------
 
@@ -557,8 +558,8 @@ class Driver:
             self.displayASCII_perChannel(channel, row, "     ")
 
     def displayFaderValues(self, channel, value):
-        value = (value / 255) * 100
-        self.displayASCII_perChannel(channel, 1, "     ")
+        value = round((value / 255) * 100)
+        #self.displayASCII_perChannel(channel, 1, "     ")
         self.displayASCII_perChannel(channel, 1, (str(int(value))) + "%")
 
     # -------------------- LCD Display END --------------------

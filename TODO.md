@@ -1,73 +1,88 @@
+## Version 1.2.3 TODOs
+
+- [x] Studio-Overview add Traverse Lights master
+- [x] Fader - prevent rerendering on fader change
+- [x] LightFX buffer socketio
+- [?] Scenes fix weird color bug
+
 ## Version 1.2.x TODOs
 
-- [ ] Studio-Overview add Traverse Lights
-- [ ] Prevent scene and solo overlaps, Darwin
-- [ ] Fader
-  - [ ] More obvious fader highlighting, Leon
-  - [x] Enlarge fader input fields and include % symbol, Darwin
-  - [ ] Rework spacing
+- [x] Studio-Overview add Traverse Lights
+  - [x] Add info panels
+- [ ] Prevent scene and solo overlaps
+- [x] Fader
+  - [x] More obvious fader highlighting
+  - [x] Rework spacing
+    - [x] Horizontal
+    - [x] Vertical
+  - [x] Prevent rerendering on fader change
+- [ ] LightFX
+  - [x] First light should be the current state
+    - [x] Update state automatically if only one light is selected instead of showing the button
+    - [ ] "Mute" button
+  - [x] Other light should show a out of sync button, if not the current state
+  - [x] Add Bi-color number input
+    - [ ] Find a way to get full resolution
+  - [x] Hide not supported areas
+  - [x] Buffer socketio
+- [ ] Scenes
+  - [x] Should be "on" when added
+  - [ ] Visualisation of Scenes when specific fader is changed
+  - [ ] If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
+- [x] Setting to change the URL of the server
+- [x] Settings UI cleanup
 
 ## Known Issues
 
-- fader weird [was genau meinst du?] - müsste behoben sein.
-- startet nicht mit autostart - muss im studio ausprobiert werden.
-- restart dialog gibt es nicht - gibt es jetzt.
-  - motormix blockiert fader 1-7
-- farben komisch, wenn master nicht auf 100% - ggf. im Studio ausprobieren.
-- motormix richtiger Port?
-- Scene should be on when added
-- LightFX, highlighting if not the current state, button to sync with current state
-- Visualisation of Scenes when specific fader is changed
-- If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
-
 - MotorMix
-  - Black-out button
+  - ~~Black-out button~~
   - Display bugs with page wheel
-  - Missing light values
+  - ~~Missing display light values~~
   - Displays only two pages until switched to Scenes and back
   - Faders sometimes jump randomly
-- Random server crashes
-- Possibly slower after long operation
-- Studio-Overview just uses ID, not universe
+  - Scenes do not turn off correctly, maybe backup value?
+  - Reset button kills unsafed scenes
+- Studio-Overview just uses ID, not universe // not sure if this is a problem or not
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
-- Scenes do not fade in exact seconds and are subject to server performance
-- RGB and bi-color picker mismatch from cursor position when window is resized
+- ~~Scenes do not fade in exact seconds and are subject to server performance~~
+- MAYBE: Scenes only fade master? Check if this is a problem
+- Colors of the RGB lights are weird, when master is not at 100% - try in studio
+- LightFX
+  - RGB and bi-color picker mismatch from cursor position when window is resized
+  - Sync button wonky with multiple clients
+  - Bi-color rounding down on page load
+  - Bi-color resolution too low, no 50% possible
 
 ## Necessary Changes
 
 - [ ] Code cleanup / comments
-- [ ] Testing phase
+- [x] Testing phase
 - [ ] Settings
   - [x] Rework Layout
   - [ ] Add various settings
     - [ ] Studio-Overview
-    - [ ] Change IP
+    - [x] Change IP
 - [ ] MotorMix
-  - [ ] Mute
+  - [ ] "Mute"
   - [ ] Solo
-  - [ ] All channels of a device
-  - [ ] Reboot MotorMix
-  - [ ] Detect MotorMix (start after App)
 - [x] Connection screen
 - [x] Reconnect to server
 - [x] Guide / Implement Help
   - [x] Quick Start Guide
   - [x] Finetune Quick Start Guide
 - [ ] LightFX
-  - [ ] Change to current state of the first light
+  - [x] Change to current state of the first light
   - [x] Effects as misc faders for now
-    - [ ] Group faders with same name
   - [x] Device list server updates
-  - [ ] Emit changes with buffer like other faders
+  - [x] Emit changes with buffer like other faders
   - [ ] "Mute" button
-  - [ ] New bi-color slider with higher resolution and value display/input
+  - [ ] New bi-color slider with higher resolution
 - [ ] PI
   - [ ] Production server
   - [ ] Shutdown button
-  - [ ] Turn off all devices during shutdown
+  - [ ] Turn off all devices during shutdown // kind of implemented with the closing of the app
   - [ ] Config file for server.py (change ip and so on)
-- [ ] Everything off scene - How to implement?
 - [x] Change admin password
 - [x] Input can be empty
 - [x] Use _ENTER_ to accept dialog
@@ -75,26 +90,31 @@
 - [x] Add support for HMI lights and other devices with on/off channel
 - [x] Turn off all devices when closing app
 - [x] Input for faders with mousewheel or keyboard (arrow keys)
-- [ ] BigView: Improve visualisation
-  - [ ] Device groups
-  - [ ] Faders for different channels
+- [x] BigView: Improve visualisation
+  - [x] Device groups
+  - [x] Faders for different channels
+- [ ] Minimalistic app version as vite export
 
 ## Nice to Have Features
 
+- [ ] MotorMix
+  - [ ] All channels of a device
+  - [ ] Reboot MotorMix
+  - [ ] Detect MotorMix (start after App)
+  - [ ] Blackout lamp on will turn devices on again, changing a fader overwrites that
 - [ ] Show site (light shows)
 - [ ] No animations setting for slow PCs
 - [ ] Change scene fade in/out curve
-- [ ] Vite export, use app in browser
 - [x] Rework close button
-- [ ] Studio-Overview
+- [x] Studio-Overview
   - [x] Device highlight
   - [x] Move to the left
-  - [ ] Add rgb traverse lights
-    - [ ] Display traverse light effects
+  - [x] Add rgb traverse lights with info panels
+    - [x] Display traverse light effects
   - [x] Add fill light icon
   - [x] Rearrange devices
-  - [ ] Move code to own component
-  - [ ] Display bi-color changes
+  - [x] Move code to own component
+  - [x] Display bi-color changes
 - [ ] Scenes
   - [ ] See what you save
   - [ ] Edit scenes
@@ -102,19 +122,20 @@
   - [ ] Choose what to save
   - [ ] Choose color
   - [ ] Fader for each scene and master scenes fader
-- [ ] Mute / Solo gray out faders
 - [ ] LightFX
-  - [ ] Save scene, only current group or everything
+  - [ ] Group faders with same name
+  - [ ] Save scene: only current group or everything choice
   - [ ] Bi-color presets
 - [ ] Light Settings
   - [ ] Bi-color range / calibration
+  - [x] DMX assignment overview (Channel free or not)
 - [ ] Add support for different lights in the studio
   - [ ] Arri Sky panel
   - [ ] Astera Titan Tubes
 - [ ] Look into npm packages
-- [ ] Icons for dropdown menu
+- [x] Icons for dropdown menu
 - [ ] DIN icons for Studio-Overview
-- [ ] Constistent Fader elements spacing
+- [x] Constistent Fader elements spacing
 
 ## Code Cleanup & Comments
 
@@ -133,52 +154,62 @@
     - [ ] Check necessity
     - [ ] Rename to PascalCase scheme
   - [ ] Components
+    - [x] About.css
     - [x] About.tsx
-    - [ ] AddScene.tsx
-    - [ ] AdminPassword.tsx
+    - [x] AddScene.tsx
+    - [x] AdminPassword.tsx
     - [x] BigView.css
     - [x] BigView.tsx
-    - [ ] Button.css
+    - [x] Button.css
     - [x] Button.tsx
-    - [ ] ColorPicker.tsx
-    - [ ] ConnectionContext.tsx
-    - [ ] ControlHandler.tsx
-    - [ ] DeleteScene.tsx
-    - [ ] DeviceList.css
-    - [ ] DeviceList.tsx
+    - [x] ColorPicker.tsx
+    - [x] ConnectionContext.tsx
+    - [x] DeleteScene.tsx
+    - [x] DeviceList.css
+    - [x] DeviceList.tsx
     - [x] Dialog.css
     - [x] DropDown.css
     - [x] DropDown.tsx
-    - [ ] Fader.css
+    - [x] EventBus.tsx
+    - [x] Fader.css
     - [x] Fader.tsx
-    - [ ] FaderContext.tsx
-    - [ ] Header.css
-    - [ ] Header.tsx
+    - [x] FaderContext.tsx
+    - [x] Header.css
+    - [x] Header.tsx
+    - [x] Help.css
     - [x] Help.tsx
+    - [x] LightBeam.tsx
     - [ ] LightSettings.css
     - [ ] LightSettings.tsx
-    - [x] NewSettings.tsx
-    - [ ] NoConnection.css
-    - [ ] NoConnection.tsx
-    - [ ] Settings.css
-    - [ ] Settings.tsx
+    - [x] NoConnection.css
+    - [x] NoConnection.tsx
+    - [x] RecoverDialog.tsx
+    - [x] ScenesComponent.css
+    - [x] ScenesComponent.tsx
+    - [x] ScrollButton.tsx
+    - [x] Settings.css
+    - [x] Settings.tsx
+    - [ ] SettingsAdmin.tsx
+    - [ ] SettingsGeneral.tsx
+    - [ ] SettingsStudioOverview.tsx
+    - [ ] StudioOverview.tsx
     - [ ] Timeline.css
     - [ ] Timeline.tsx
-    - [ ] Titlebar.css
+    - [x] Titlebar.css
     - [x] Titlebar.tsx
-    - [ ] Toggle.css
-    - [ ] Toggle.tsx
-    - [ ] TranslationContext.tsx
-  - [ ] App.tsx
+    - [x] Toggle.css
+    - [x] Toggle.tsx
+    - [x] TranslationContext.tsx
+  - [x] App.tsx
   - [ ] Color.css
-  - [ ] Color.tsx
   - [ ] Control.css
   - [ ] Control.tsx
   - [ ] index.css
-  - [ ] main.tsx
-  - [ ] Scenes.css
-  - [ ] Scenes.tsx
+  - [x] main.tsx
+  - [x] Scenes.css
+  - [x] Scenes.tsx
   - [ ] Show.css
   - [ ] Show.tsx
   - [ ] Studio.css
   - [ ] Studio.tsx
+  - [ ] translations.json

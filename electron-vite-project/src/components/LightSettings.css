@@ -29,11 +29,7 @@
   -webkit-backdrop-filter: var(--windowBackdrop);
   backdrop-filter: var(--windowBackdrop);
   border: var(--onepStroke) 1px solid;
-  padding: 15px 20px 20px 20px;
-}
-
-.ContainerGap {
-  gap: 0px;
+  padding: 20px;
 }
 
 .LightSettingsListContainer {
@@ -45,8 +41,8 @@
   gap: 20px;
   position: relative;
   height: stretch;
-  top: 40px;
-  margin-bottom: 40px;
+  top: 35px;
+  margin-bottom: 35px;
   bottom: 0;
 }
 
@@ -106,7 +102,7 @@
   display: flex;
   flex-direction: column;
   height: stretch;
-  top: 40px;
+  top: 36px;
   margin-bottom: 40px;
   bottom: 0;
   padding: 10px 20px 20px;
@@ -118,10 +114,7 @@
 }
 
 .LightSettingsWindowInvisible {
-  flex-grow: 0;
-  width: 0;
-  opacity: 0;
-  padding: 10px 0 20px 0;
+  display: none;
 }
 
 .LightSettingsWindowUpper {
@@ -134,11 +127,11 @@
 
 .LightSettingsWindowMid {
   height: 100%;
-  position: relative;
-  width: calc(100% + 10px);
-  gap: 20px;
+  width: calc(100% + 20px);
   overflow-y: scroll;
   padding-right: 10px;
+  padding-left: 10px;
+  margin-left: -10px;
 }
 
 .LightSettingsWindowLower {
@@ -157,7 +150,7 @@
 .LightSettingsDMXContainer {
   display: grid;
   position: relative;
-  top: 20px;
+  top: 10px;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   grid-gap: 20px;
   width: 100%;
@@ -246,4 +239,47 @@
   width: 100%;
   text-align: center;
   background: none;
+}
+
+.LightSettingsDMXTable {
+  position: relative;
+  width: 100%;
+  border-left: 1px solid var(--onepStroke);
+  border-top: 1px solid var(--onepStroke);
+  border-radius: 5px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  text-align: center;
+  top: 20px;
+  color: var(--secondary);
+  background-color: var(--color00000003);
+}
+
+.LightSettingsDMXTableCell {
+  border-right: 1px solid var(--onepStroke);
+  border-bottom: 1px solid var(--onepStroke);
+  height: 1.3vw;
+  font-size: 0.6vw;
+}
+
+.LightSettingsDMXTableCellOccupied {
+  background-color: var(--mainColor);
+  color: var(--primaryDark);
+}
+
+.LightSettingsDMXTableCellInChannel {
+  background-color: var(--color00000008);
+  color: var(--primary);
+}
+
+.LightSettingsDMXTableCellOccupiedAndInChannel {
+  background-color: red;
+  color: #fff;
+}
+
+@media screen and (max-width: 1468px) {
+  .LightSettingsDMXTableCell {
+    font-size: 0.4vw;
+  }
 }

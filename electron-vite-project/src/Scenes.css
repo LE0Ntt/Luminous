@@ -61,22 +61,11 @@
   border-radius: 10px;
 }
 
-.scenesMainAlign {
-  margin-top: 20px;
-  margin-left: 20px;
-  height: 870px;
-  width: 1656px;
-}
-
 .scenesMaster {
   height: 724px;
   width: 124px;
   left: 1716px;
   top: 186px;
   position: absolute;
-}
-
-.scenesMasterAlign {
-  position: relative;
-  left: 20px;
+  padding-left: 20px;
 }

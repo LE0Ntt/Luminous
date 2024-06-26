@@ -27,6 +27,33 @@
   padding: 15px 20px 0;
 }
 
+.faderGroup > div {
+  position: relative;
+  top: -10px;
+}
+
+.BigViewContent .fader {
+  padding-top: 5px;
+}
+
+.BigViewContent .faderName {
+  bottom: 5px;
+}
+
+.BigViewContent .value-slider {
+  bottom: 75px;
+}
+
+.faderGroup {
+  outline-offset: -10px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: row;
+  outline: 1px solid var(--faderBorder);
+  margin-top: 10px;
+  margin-left: -10px;
+}
+
 .BigViewBackdrop {
   background: none;
   border: none;
@@ -43,12 +70,11 @@
 }
 
 .BigViewContent .sliders {
-  height: 396px;
+  height: 394px;
 }
 
 .BigViewContent .fader {
-  height: 357px;
-  top: -22px;
+  height: 355px;
 }
 
 .BigViewLayer {
@@ -59,7 +85,6 @@
   align-items: center;
   display: flex;
   font-size: 20px;
-  font-weight: 400;
   color: var(--primary);
   gap: 10px;
 }
@@ -97,6 +122,20 @@
   position: absolute;
 }
 
-.grayBackground .fader {
+.grayBackground > .fader {
   background-color: var(--color00000010);
+}
+
+.lastGroupFader {
+  margin-right: 9px;
+  border-radius: 0 5px 5px 0 !important;
+  border: none;
+}
+
+.firstGroupFader {
+  margin-left: 10px;
+}
+
+.noBorderWithoutSpacing {
+  border: none;
 }

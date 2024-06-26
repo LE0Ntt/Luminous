@@ -12,7 +12,9 @@
  *
  * @file socket_events.py
 """
-from flask_socketio import SocketIO
+
+from flask import request
+from flask_socketio import SocketIO  # type: ignore
 from server import app, routes, db
 from server.motorMix_driver import Driver
 from server.models import Scene, Device
@@ -77,17 +79,24 @@ def send_dmx_direct(universe: int, value: int, channel: int) -> None:
 
 def register_socketio_events(socketio):
     # Mutator method to get updates from driver
-    def faderSend(index, value, channelId):
+    def faderSend(index, value, channelId, sender_id=None):
         global last_send_time
         global last_change
-        current_time = time.time() * 1000
-        socketio.emit(
-            "variable_update",
-            {"deviceId": index, "value": value, "channelId": channelId},
-            namespace="/socket",
-        )
 
-        # if index > 0 or channelId == 0:
+        if sender_id:
+            socketio.emit(
+                "variable_update",
+                {"deviceId": index, "value": value, "channelId": channelId},
+                namespace="/socket",
+                skip_sid=sender_id,
+            )
+        else:
+            socketio.emit(
+                "variable_update",
+                {"deviceId": index, "value": value, "channelId": channelId},
+                namespace="/socket",
+            )
+
         send_dmx(
             index,
             channelId,
@@ -95,22 +104,6 @@ def register_socketio_events(socketio):
             routes.devices[index],
             routes.devices[index]["attributes"]["channel"][channelId],
         )
-        # else:
-        #     print("Sending: " + str(value) + " to device index " + str(index))
-        #     send_dmx_direct(
-        #         int(routes.devices[index]["universe"][1:]), value, channelId
-        #     )
-
-        """ if current_time - last_send_time >= 1:
-            last_send_time = current_time
-            
-            if(last_change):
-                send_dmx(last_change[0], last_change[1], last_change[2], routes.devices[last_change[0]], routes.devices[last_change[0]]["attributes"]["channel"][last_change[1]])
-            
-            print("Sending: " + str(value) + " to device index " + str(index) + " ,channel " + str(channelId))
-            send_dmx(index, channelId, value, routes.devices[index], routes.devices[index]["attributes"]["channel"][channelId])
-        else:
-            last_change = (index, channelId, value) """
 
     def callback(index, value):
         faderSend(index, value, 0)  # invokes the corresponding socket event
@@ -156,11 +149,16 @@ def register_socketio_events(socketio):
                             master_channel["id"],
                         )
 
+    def blackoutCallback():
+        # call reset function
+        reset(True)
+
     try:
         driver = Driver()
         driver.set_callback(callback)
         driver.set_sceneQuickCallback(quickSceneCallback)
         driver.set_sceneCallback(sceneCallback)
+        driver.set_blackoutCallback(blackoutCallback)
         driver.devices = routes.devices
         driver.scenes = routes.scenes
         driver.deviceMapping()
@@ -223,6 +221,8 @@ def register_socketio_events(socketio):
         device_id = device["id"]
         channel_id = channel["id"]
         change_per_step = (end_value - start_value) / steps
+        start_time = time.time()
+
         for i in range(steps):
             # Check if the thread should be stopped
             if fade_threads.get((device_id, channel_id), {}).get("stop"):
@@ -234,7 +234,22 @@ def register_socketio_events(socketio):
             if driver is not None and driver.light_mode:
                 driver.pushFader(device_id, current_value)
                 driver.devices = routes.devices
-            time.sleep(interval)
+
+            # Adjust sleep to ensure correct total duration
+            elapsed_time = time.time() - start_time
+            expected_time = (i + 1) * interval
+            sleep_time = expected_time - elapsed_time
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+
+        # Ensure the final value is set
+        if not fade_threads.get((device_id, channel_id), {}).get("stop"):
+            deviceChannel["sliderValue"] = end_value
+            faderSend(device_id, end_value, channel_id)
+            send_dmx(device_id, channel_id, end_value, device, channel)
+            if driver is not None and driver.light_mode:
+                driver.pushFader(device_id, end_value)
+                driver.devices = routes.devices
 
     # Update status (on/off) of a scene
     @socketio.on("scene_update", namespace="/socket")
@@ -246,6 +261,11 @@ def register_socketio_events(socketio):
         interval = 0.02
         steps = int(fade_time / interval) if fade_time > 0 else 1
         global scenes_solo_state
+
+        # return if scene is not in scenes list
+        if scene >= len(routes.scenes):
+            return
+
         scene_device_ids = {device["id"] for device in routes.scenes[scene]["channel"]}
 
         def start_fade_thread(device, start_value, end_value):
@@ -402,6 +422,7 @@ def register_socketio_events(socketio):
             if device["attributes"]["channel"][0]["sliderValue"] > 0
         ]
         scene["channel"] = json.loads(json.dumps(filtered_devices))
+        scene["status"] = True
         routes.scenes.append(scene)
         if not scene["saved"]:  # If scene is not saved, don't add to database
             socketio.emit("scene_reload", namespace="/socket")
@@ -544,6 +565,9 @@ def register_socketio_events(socketio):
         fader_value = int(data.get("value", 0))
         fader = int(data["deviceId"])
         channelId = int(data["channelId"])
+        send_to_self = data.get("send", False)
+        client_id = request.sid  # type: ignore # Get the sending client's ID
+
         device = next((d for d in routes.devices if d["id"] == fader), None)
 
         if device:
@@ -570,16 +594,15 @@ def register_socketio_events(socketio):
                         {"deviceId": fader, "channelId": 0, "value": 0, "send": True}
                     )
 
-        universe = None
-        if fader == 692:
-            universe = 1
-        elif fader == 693:
-            universe = 2
+        fader_to_universe = {692: 1, 693: 2}
+        universe = fader_to_universe.get(fader)
         if universe is not None:
             send_dmx_direct(universe, fader_value, channelId)
 
-        if connections > 1 or data.get("send", False):
-            faderSend(fader, fader_value, channelId)
+        if connections > 1 or send_to_self:
+            faderSend(
+                fader, fader_value, channelId, client_id if not send_to_self else None
+            )
 
     @socketio.on("bulk_fader_values", namespace="/socket")
     def handle_bulk_fader_values(data):

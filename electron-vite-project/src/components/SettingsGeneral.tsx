@@ -12,15 +12,17 @@
  *
  * @file Settings_General.tsx
  */
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './Settings.css';
 import Toggle from './Toggle';
 import { TranslationContext } from './TranslationContext';
 import IconLanguage from '@/assets/IconLanguage';
 import IconFlip from '@/assets/IconFlip';
+import IconDesign from '@/assets/IconDesign';
 
 const Setting1: React.FC = () => {
   const { t, language, setLanguage } = useContext(TranslationContext);
+  const [defaultDesign, setDefaultDesign] = useState(localStorage.getItem('defaultDesign') !== 'false');
 
   const handleOrderChange = () => {
     const newSetting = localStorage.getItem('reverseOrder') !== 'true';
@@ -38,9 +40,17 @@ const Setting1: React.FC = () => {
     setLanguage(e.target.value as 'en' | 'de');
   };
 
+  // Toggle design
+  useEffect(() => {
+    if (defaultDesign) document.body.classList.remove('defaultB');
+    else document.body.classList.add('defaultB');
+    localStorage.setItem('defaultDesign', `${defaultDesign}`);
+    window.dispatchEvent(new CustomEvent<boolean>('designChange', { detail: defaultDesign }));
+  }, [defaultDesign]);
+
   return (
     <div className='SettingsOption'>
-      <div className='SettingsTitle'>
+      <div className='SettingsTitle SettingsTitleInner'>
         <span>{t('set_general')}</span>
       </div>
       <hr style={{ marginTop: '45px' }} />
@@ -58,7 +68,7 @@ const Setting1: React.FC = () => {
           onChange={handleLanguageChange}
         >
           <option value='en'>{t('English 🇬🇧')}</option>
-          <option value='de'>{t('German 🇩🇪')}</option>
+          <option value='de'>{t('Deutsch 🇩🇪')}</option>
         </select>
       </div>
       <hr />
@@ -80,6 +90,38 @@ const Setting1: React.FC = () => {
       <hr />
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
+          <IconDesign color={'var(--primary)'} />
+          <span className='relative top-[-6px]'>{t('set_design')}</span>
+        </div>
+        <div className='items-center designContainer'>
+          <div
+            className='defaultDesign'
+            onClick={() => setDefaultDesign(!defaultDesign)}
+            style={{ pointerEvents: defaultDesign ? 'none' : 'auto' }}
+          >
+            <div className='redDiv'></div>
+            <div className='blueDiv'></div>
+            <div className='purpleDiv'></div>
+            <div className={`designBlur ${defaultDesign ? 'activeDesign' : ''}`}></div>
+            <span className='designDefaultSpan'>(Default)</span>
+            <div className='designWindow defaultWindow '>
+              <span className='designSpan'>Glassmorphism</span>
+            </div>
+          </div>
+          <div
+            className={`newDesign ${document.body.className.includes('dark') ? 'defaultB dark' : 'defaultB'} ${defaultDesign ? '' : 'activeDesign'} `}
+            onClick={() => setDefaultDesign(!defaultDesign)}
+          >
+            <div className='designWindow window'>
+              <span className='designSpan'>Neumorphism</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Show page (in development) 
+      <hr />
+      <div className='SettingContainer'>
+        <div className='SettingsSubTitle'>
           <IconFlip
             color={'var(--primary)'}
             size='20px'
@@ -94,6 +136,7 @@ const Setting1: React.FC = () => {
           />
         </div>
       </div>
+      */}
     </div>
   );
 };

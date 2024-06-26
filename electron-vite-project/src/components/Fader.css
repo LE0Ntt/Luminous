@@ -15,18 +15,44 @@
 
 :root {
   --sliderHeight: 260px;
-  /* Height of the slider (width im code) */
+  /* Height of the slider (width in code) */
 }
 
 .fader {
   height: 360px;
   width: 102px;
-  font-weight: 700;
-  top: -4%;
+  font-weight: 500;
   position: relative;
   color: var(--primary);
   border-right: 1px solid var(--faderBorder);
-  transform: translateX(-10px);
+}
+
+.numberAlign {
+  margin: 20px 0 10px 0;
+}
+
+.bottomSpace {
+  height: 394px;
+}
+
+.bottomSpace .value-slider {
+  bottom: 114px;
+}
+
+.bottomSpace .inputNum {
+  bottom: 68px;
+}
+
+.bottomSpace .midPoint {
+  bottom: 230px;
+}
+
+.bottomSpace .faderName {
+  bottom: 42px;
+}
+
+.noTopSpace {
+  height: 327px;
 }
 
 .faderMaster {
@@ -35,7 +61,7 @@
 }
 
 .faderMaster > .midPoint {
-  bottom: calc(var(--sliderHeight) / 2 + 70px) !important;
+  bottom: calc(var(--sliderHeight) / 2 + 66px) !important;
 }
 
 .faderMaster > .value-slider > .slider {
@@ -44,12 +70,18 @@
 
 .value-slider {
   position: absolute;
-  bottom: 83px;
+  bottom: 80px;
   left: 56%;
 }
 
 .noBorder {
   border: none !important;
+  width: 80px !important;
+  margin-left: 1px;
+}
+
+.noBorder .slider {
+  margin-left: 1px;
 }
 
 .slider {
@@ -59,10 +91,21 @@
   border-radius: 50px;
   background: #d3d3d3;
   outline: none;
-  transition: opacity 0.2s;
   position: absolute;
   transform-origin: bottom left;
   transform: rotateZ(270deg) translate3d(0, 0, 0);
+}
+
+.faderText {
+  padding-top: 0px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--primary);
+  text-align: center;
+  line-height: 22px;
+  letter-spacing: 0;
+  margin-bottom: 0;
+  position: relative;
 }
 
 /* Slider Track - all Browsers */
@@ -108,9 +151,10 @@
   cursor: pointer;
   appearance: none;
   background: var(--faderThumb);
-  box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
+  transform: rotateZ(90deg);
 }
 
 .slider::-moz-range-thumb {
@@ -166,7 +210,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 41px;
+  bottom: 30px;
 }
 
 .inputNum::-webkit-outer-spin-button,
@@ -177,7 +221,7 @@
 
 .midPoint {
   position: absolute;
-  bottom: calc(260px / 2 + 70px);
+  bottom: calc(260px / 2 + 66px);
   left: 50%;
   transform: translateX(-50%);
   height: 1px;
@@ -189,10 +233,10 @@
   position: absolute;
   text-align: center;
   left: 50%;
-  bottom: 20px;
+  bottom: 0;
   transform: translateX(-50%);
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 22px;
   letter-spacing: 0em;
   text-align: center;

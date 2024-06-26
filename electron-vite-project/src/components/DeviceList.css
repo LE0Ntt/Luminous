@@ -58,7 +58,7 @@ hr {
 }
 
 .miscIcon {
-  background-image: url('../assets/miscIcon.png');
+  background-image: url('../assets/MiscIcon.png');
 }
 
 .number {
@@ -77,7 +77,7 @@ hr {
 .nameNumberBox {
   width: 70%;
   overflow: hidden;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   text-overflow: ellipsis;
   color: var(--primary);
 }
@@ -89,4 +89,37 @@ hr {
   margin-right: 10px;
   margin-left: 10px;
   border: 1px solid var(--onepStroke) !important;
+}
+
+.addIcon {
+  height: 22px;
+  width: 22px;
+  mask: url(../assets/IconAdd.svg);
+  mask-repeat: no-repeat;
+  background: var(--primary);
+}
+
+.removeIcon {
+  transform: rotate(45deg);
+}
+
+.sync {
+  height: 22px;
+  width: 22px;
+  mask: url(../assets/Sync.svg);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background: var(--primary);
+  align-self: center;
+  position: relative;
+  left: -5px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sync.visible {
+  opacity: 1;
+  pointer-events: auto;
 }

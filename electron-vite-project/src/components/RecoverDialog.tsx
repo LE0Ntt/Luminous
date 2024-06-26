@@ -13,9 +13,9 @@
  * @file RecoverDialog.tsx
  */
 import { useContext, useEffect } from 'react';
-import Button from './Button';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
+import Button from './Button';
 import IconNote from '@/assets/IconNote';
 
 interface RecoverDialogProps {
@@ -26,13 +26,9 @@ function RecoverDialog({ onClose }: RecoverDialogProps) {
   const { emit } = useConnectionContext();
   const { t } = useContext(TranslationContext);
 
-  const handleReset = () => {
-    emit('reset');
-    onClose();
-  };
-
-  const handleRecover = () => {
-    emit('recover');
+  // Reset or recover the workspace
+  const handleAction = (actionType: 'reset' | 'recover') => {
+    emit(actionType);
     onClose();
   };
 
@@ -40,15 +36,13 @@ function RecoverDialog({ onClose }: RecoverDialogProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
-        handleReset();
+        handleAction('reset');
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   return (
@@ -72,13 +66,13 @@ function RecoverDialog({ onClose }: RecoverDialogProps) {
         <div className='DialogFooter'>
           <div className='controlButtons DialogButtons'>
             <Button
-              onClick={handleReset}
+              onClick={() => handleAction('reset')}
               className='controlButton'
             >
               {t('rd_reset')}
             </Button>
             <Button
-              onClick={handleRecover}
+              onClick={() => handleAction('recover')}
               className='controlButton'
             >
               {t('rd_recover')}

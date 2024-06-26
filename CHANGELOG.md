@@ -2,6 +2,60 @@
 
 > All notable changes to this project will be documented in this file.
 
+## [1.2.3] - Pre-Release
+
+### Changes
+
+- Updated dependencies
+- Added DMX occupancy overview to LightSettings
+- Scenes
+  - Are 'on' when created
+  - Show fewer placeholder scenes in grid
+- LightFX
+  - Implemented buffering of changes, now sent every 20ms to prevent stuttering
+  - Transfer the values of the first light of its kind to the corresponding LightFX faders
+  - Added input field for bi-color
+  - Bi-color and RGB areas are now blurred if not supported by the selection
+  - Various visual tweaks
+  - Added 'out of sync' button for devices that are not in the current state of the selection
+  - Split updates of selection between 'main' and RGB/bi-color
+- Fader
+  - Completely overhauled fader implementation to prevent rerendering on fader change
+    - This improves performance drastically and makes the app usable on slower devices
+    - Prevent stuttering when multiple clients are connected
+  - More obvious fader highlighting when selected in Studio-Overview
+  - Reworked spacing
+    - First and last faders in a row now have a smaller gap to the edge
+    - Vertical spacing is now more consistent
+- BigView
+  - Added outline around all channels of a device
+  - RGB faders have appropriate color
+  - Channel or device toggle resets to device view after session
+- Design
+  - Added a new theme that can be selected in the settings
+  - Adjusted font weights to be thinner in some places
+  - Desaturated light mode background
+  - Improved spacing consistency
+  - Adjusted Settings layout for different window sizes
+- Added traverse lights to Studio-Overview with RGB support
+- Settings
+  - Admin page is now only accessible with the admin password
+  - Added settings to backup, reset and restore the database
+  - Added setting to change the client-side server IP
+  - OLA now opens in its own window instead of browser
+- Many code cleanups and improvements
+
+### Fixes
+
+- Fixed scenes not fading in exact seconds as they were subject to server performance
+- MAYBE Fixed a bug where the master fader incorrectly adjusted the channels of scene devices
+- Fixed inability to access admin password protected settings when database is empty
+- MotorMix
+  - Fixed blackout button crashing the driver
+  - Fixed unassigned quick-scene buttons crashing the driver
+  - Fixed mismatching fader values between MotorMix and the app
+  - Fixed display values missing after many concurrent changes
+
 ## [1.2.2] - 2024-01-09
 
 ### Changes
@@ -20,7 +74,7 @@
 
 - Closing the application turns off all lights. When the app is reopened, the user is asked if the session should be restored or reset
 - Faders
-  - Input fields are now larger and include "%" symbol for easier touch input and have a subtle background
+  - Input fields are now larger and include '%' symbol for easier touch input and have a subtle background
   - Introduced compact-style scroll buttons for easier navigation through faders
 - Added HMI 14 to Studio-Overview
 - Reverted LightFX only sending changed channels, because every grouped light should be updated the same way
@@ -71,7 +125,6 @@
   - Removed Vite files for now
   - Further refinements
 - Connection
-  - Reduced SocketIO `ping_timeout`
   - Fetch faders, scenes and devices only if connected
   - LightSettings only open if connected
 - Input fields
@@ -140,7 +193,7 @@
   - Input now only takes effect if confirmed (_ENTER_ or click outside the field)
   - Reset to default value if confirmed input is invalid
   - Fader input accepts decimal values, but only displays integers
-    - Value with "%" is now always centred
+    - Value with '%' is now always centred
 - Changed Electron app loading screen that only appears on slow PCs
 - Reworked Help page
   - Added FAQ

@@ -21,7 +21,7 @@ interface ToggleProps {
   className?: string;
 }
 
-const Toggle: React.FC<ToggleProps> = ({ onClick = () => {}, enabled = false, className }) => {
+const Toggle: React.FC<ToggleProps> = ({ onClick = () => {}, enabled = false, className = '' }) => {
   const [checked, setChecked] = useState(enabled);
 
   // Update checked state if enabled prop changes
@@ -29,6 +29,7 @@ const Toggle: React.FC<ToggleProps> = ({ onClick = () => {}, enabled = false, cl
     setChecked(enabled);
   }, [enabled]);
 
+  // Handle change event
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     setChecked(isChecked);
@@ -36,7 +37,7 @@ const Toggle: React.FC<ToggleProps> = ({ onClick = () => {}, enabled = false, cl
   };
 
   return (
-    <label className={`toggle ${className || ''}`}>
+    <label className={`toggle ${className}`}>
       <input
         type='checkbox'
         checked={checked}

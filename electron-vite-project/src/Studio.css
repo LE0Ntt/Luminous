@@ -74,6 +74,7 @@
   background-size: cover;
   border: none;
   outline: 1px solid var(--onepStroke);
+  overflow: hidden;
 }
 
 .studioOverviewInfopanel {
@@ -102,6 +103,49 @@
   top: -75px;
 }
 
+/* ich weiß es ist sehr hässlich */
+.studioOverviewInfopanelTraverse0 {
+  position: relative;
+  top: 14px;
+  left: -77px;
+}
+
+.studioOverviewInfopanelTraverse1 {
+  position: relative;
+  top: 20px;
+  left: -77px;
+}
+
+.studioOverviewInfopanelTraverse2 {
+  position: relative;
+  top: 25px;
+  left: -77px;
+}
+
+.studioOverviewInfopanelTraverse3 {
+  position: relative;
+  top: 25px;
+  left: -25px;
+}
+
+.studioOverviewInfopanelTraverse4 {
+  position: relative;
+  top: 20px;
+  left: -25px;
+}
+
+.studioOverviewInfopanelTraverse5 {
+  position: relative;
+  top: 20px;
+  left: -25px;
+}
+
+.studioOverviewInfopanelTraverse6 {
+  position: relative;
+  top: 14px;
+  left: -25px;
+}
+
 .studioOverviewExtra {
   top: -640px;
   left: 480px;
@@ -109,19 +153,18 @@
 
 .studioOverviewInfopanelText {
   font-size: 13px;
-  font-weight: 600;
   color: var(--primary);
   text-align: right;
   letter-spacing: 0;
   margin-right: 6px;
+  font-weight: 500;
 }
 
 .studioOverviewInfopanelBrightness {
-  font-weight: 600;
-  font-size: 18px;
+  font-size: 16px;
   position: absolute;
   color: var(--primary);
-  bottom: -4px;
+  bottom: -1px;
   right: 6px;
 }
 
@@ -209,8 +252,8 @@
   border-radius: 5px;
   position: relative;
   left: 50%;
-  top: -2%;
-  transform: translate(calc(-50% - 10px), -50%);
+  bottom: 28px;
+  transform: translate(calc(-50%), -50%);
 }
 
 .buttonBigView {
@@ -223,20 +266,15 @@
   backdrop-filter: blur(10px);
 }
 
-.faderText {
-  padding-top: 20px;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--primary);
-  text-align: center;
-  line-height: 22px;
-  letter-spacing: 0;
-  margin-bottom: 0;
-  transform: translateX(-10px);
+.faderContainer {
+  height: 424px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  outline: none;
 }
 
-.slidersHeight {
-  height: 425px;
+.faderGlow {
+  transform: scaleY(1.03) translateY(-5px);
+  box-shadow: 0 0 50px var(--mainColorTransparent);
 }
 
 .scrollButton {
@@ -252,17 +290,4 @@
 
 .scrollButton:hover {
   background: var(--primary);
-}
-
-@keyframes holdAndReturn {
-  0% {
-    transform: scale(1);
-  }
-  20%,
-  80% {
-    transform: scale(1.03) translateY(-5px);
-  }
-  100% {
-    transform: scale(1);
-  }
 }

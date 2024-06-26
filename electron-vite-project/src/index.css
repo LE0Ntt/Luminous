@@ -41,6 +41,10 @@
     transition: border-color 200ms ease-out, background 200ms ease-out, box-shadow 200ms ease-out;
   }
 
+  .no-transition {
+    transition: none !important;
+  }
+
   .mainContainer {
     position: absolute;
     top: 90px;
@@ -75,7 +79,7 @@
   }
 
   .background {
-    background-image: var(--backgroundImage);
+    background: var(--backgroundImage);
     background-size: cover;
     min-height: 100vh;
   }
@@ -98,14 +102,6 @@
     fill: var(--primary);
   }
 
-  .addIcon {
-    height: 22px;
-    width: 22px;
-    mask: url(./assets/IconAdd.svg);
-    mask-repeat: no-repeat;
-    background: var(--primary);
-  }
-
   select {
     background-color: transparent;
     color: var(--primary);
@@ -113,15 +109,6 @@
 
   select:focus {
     background-color: var(--primarySwitched);
-  }
-
-  .removeIcon {
-    height: 18px;
-    width: 18px;
-    mask: url(./assets/IconRemove.svg);
-    mask-repeat: no-repeat;
-    background: var(--primary);
-    mask-position: center;
   }
 
   .window {
@@ -209,7 +196,7 @@
 
   /* Darker line on the scroll bar when scrolling */
   ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.15);
+    background-color: rgba(0, 0, 0, 0.15) !important;
   }
 
   .flex {

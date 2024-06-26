@@ -71,39 +71,41 @@ function Help({ onClose }: SettingsProps) {
         </button>
         <div className='SettingsTitle'>
           <IconHelp />
-          <span className='relative left-[10px] top-[-2px]'>{t('help')}</span>
+          <span className='SettingsTitleText'>{t('help')}</span>
         </div>
         <div className='SettingsContent innerWindow'>
           <div className='SettingsOption'>
             <div className='faqContainer'>
-              {faqs.map((faq) => (
-                <div key={faq.key}>
-                  <div
-                    className='faqQuestion'
-                    onClick={() => toggleFaq(faq.key)}
+              <div className='faqScroll'>
+                {faqs.map((faq) => (
+                  <div key={faq.key}>
+                    <div
+                      className='faqQuestion'
+                      onClick={() => toggleFaq(faq.key)}
+                    >
+                      <span className={`arrow ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>➜</span>
+                      {faq.question}
+                    </div>
+                    <div className={`faqAnswer ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>
+                      <div className='faqAnswerInner'>{renderAnswer(faq.answer)}</div>
+                    </div>
+                    <hr />
+                  </div>
+                ))}
+                <span className='ask'>
+                  {t('help_text1')}&nbsp;
+                  <a
+                    href='https://th-koeln.sciebo.de/s/0Pa9ePOPgiK72ua'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    style={{ textDecoration: 'underline' }}
                   >
-                    <span className={`arrow ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>➜</span>
-                    {faq.question}
-                  </div>
-                  <div className={`faqAnswer ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>
-                    <div className='faqAnswerInner'>{renderAnswer(faq.answer)}</div>
-                  </div>
-                  <hr />
-                </div>
-              ))}
-              <span className='ask'>
-                {t('help_text1')}&nbsp;
-                <a
-                  href='https://th-koeln.sciebo.de/s/0Pa9ePOPgiK72ua'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  style={{ textDecoration: 'underline' }}
-                >
-                  {t('help_text2')}
-                </a>
-                &nbsp;
-                {t('help_text3')}
-              </span>
+                    {t('help_text2')}
+                  </a>
+                  &nbsp;
+                  {t('help_text3')}
+                </span>
+              </div>
             </div>
           </div>
         </div>

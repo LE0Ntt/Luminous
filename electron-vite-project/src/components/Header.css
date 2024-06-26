@@ -29,7 +29,6 @@
   background: var(--fillThick);
   border-bottom: 1px solid var(--onepStroke);
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(15px);
   height: 90px;
   display: flex;
   color: var(--primary);
@@ -63,7 +62,6 @@
 
 .headerButton {
   position: relative;
-  /* margin: 20px; */
   width: 178px;
   height: 39px;
   display: flex;
@@ -73,9 +71,9 @@
   box-shadow: inset 0px 3px 10px 0px rgba(0, 0, 0, 0.102);
   pointer-events: auto;
   font-size: 24px;
-  font-weight: 500;
 }
 
+.buttonTheme:hover,
 .headerButton:hover {
   background: var(--colorButtonHover);
 }

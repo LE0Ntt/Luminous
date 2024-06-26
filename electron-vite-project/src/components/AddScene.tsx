@@ -12,7 +12,7 @@
  *
  * @file AddScene.tsx
  */
-import React, { useState, useCallback, useContext, useEffect } from 'react';
+import { useState, useCallback, useContext, useEffect } from 'react';
 import Button from './Button';
 import './Dialog.css';
 import { useConnectionContext } from './ConnectionContext';
@@ -26,61 +26,40 @@ interface AddSceneProps {
 
 function AddScene({ onClose }: AddSceneProps) {
   const { t } = useContext(TranslationContext);
+  const { emit } = useConnectionContext();
   const [name, setName] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [showAdminPassword, setShowAdminPassword] = useState(false);
-  const { emit } = useConnectionContext();
+  const [error, setError] = useState(false);
 
-  const handleNameChange = (event: { target: { value: React.SetStateAction<string> } }) => {
-    setName(event.target.value);
-  };
-
-  const handleCheckboxChange = () => {
-    setIsChecked((prevChecked) => !prevChecked);
-  };
-
+  // Save the scene
   const handleSave = () => {
     if (name !== '') {
       console.log('Save scene');
       if (!isChecked) {
-        const scene = {
-          name: name,
-          saved: false,
-        };
-        addScene(emit, scene);
+        emit('scene_add', { scene: { name, saved: false } });
+        onClose();
       } else {
         setShowAdminPassword(true);
       }
     } else {
       // If the name is empty, the text box will be highlighted in red
-      const textBox = document.getElementsByClassName('DialogTextBox')[0] as HTMLInputElement;
-      if (textBox) {
-        textBox.classList.add('error-outline');
-        textBox.focus();
-        setTimeout(() => {
-          textBox.classList.remove('error-outline');
-        }, 4000);
-      }
+      setError(true);
+      const timer = setTimeout(() => setError(false), 4000);
+      return () => clearTimeout(timer);
     }
   };
 
+  // Callback function for the AdminPassword component
   const handleAdminPasswordConfirm = useCallback(
     (isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
       if (isConfirmed) {
-        const scene = {
-          name: name,
-          saved: true,
-        };
-        addScene(emit, scene);
+        emit('scene_add', { scene: { name, saved: true } });
+        onClose();
       }
     },
     [name]
   );
-
-  const addScene = (emit: any, scene: { name: string; saved: boolean }) => {
-    emit('scene_add', { scene });
-    onClose();
-  };
 
   // Confirm with ENTER
   useEffect(() => {
@@ -93,9 +72,7 @@ function AddScene({ onClose }: AddSceneProps) {
 
     window.addEventListener('keydown', handleKeyDown);
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [name, isChecked]);
 
   return (
@@ -122,11 +99,11 @@ function AddScene({ onClose }: AddSceneProps) {
           <div className='DialogContent'>
             <span className='DialogTitle'>{t('as_title')}</span>
             <input
-              className='textBox DialogTextBox'
+              className={`textBox DialogTextBox ${error ? 'error-outline' : ''}`}
               type='text'
               placeholder='Name'
               value={name}
-              onChange={handleNameChange}
+              onChange={(event) => setName(event.target.value)}
               autoFocus // Activate autofocus
             />
             <div className='DialogChecker'>
@@ -134,7 +111,7 @@ function AddScene({ onClose }: AddSceneProps) {
                 type='checkbox'
                 id='checkboxId'
                 checked={isChecked}
-                onChange={handleCheckboxChange}
+                onChange={() => setIsChecked((prevChecked) => !prevChecked)}
               />
               <label htmlFor='checkboxId'>{t('as_checkbox')}</label>
             </div>

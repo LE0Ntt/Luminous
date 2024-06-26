@@ -1,4 +1,4 @@
-function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
+export function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise((resolve) => {
     if (condition.includes(document.readyState)) {
       resolve(true);
@@ -12,7 +12,7 @@ function domReady(condition: DocumentReadyState[] = ['complete', 'interactive'])
   });
 }
 
-const safeDOM = {
+export const safeDOM = {
   append(parent: HTMLElement, child: HTMLElement) {
     if (!Array.from(parent.children).find((e) => e === child)) {
       return parent.appendChild(child);
@@ -25,13 +25,13 @@ const safeDOM = {
   },
 };
 
-function useLoading() {
+export function useLoading() {
   const className = `loaders-css`;
   const styleContent = `
     .${className} > div {
       width: 256px;
       height: 256px;
-      background: url('../src/assets/iconStartup.png') no-repeat center/cover;
+      background: url('../src/assets/IconStartup.png') no-repeat center/cover;
       opacity: .6;
       display: flex;
       align-items: center;
@@ -42,7 +42,7 @@ function useLoading() {
       margin-bottom: 80px;
       width: 94px;
       height: 94px;
-      background: url('../src/assets/iconReflection.png') no-repeat center/cover;
+      background: url('../src/assets/IconReflection.png') no-repeat center/cover;
       animation: spin .8s infinite linear;
     }
     .app-loading-wrap {
@@ -89,19 +89,22 @@ const { appendLoading, removeLoading } = useLoading();
 domReady().then(appendLoading);
 
 window.onmessage = (ev) => {
-  ev.data.payload === 'removeLoading' && removeLoading();
+  if (ev.data.payload === 'removeLoading') removeLoading();
 };
 
 // ----------------------------------------------------------------------
 
-const { ipcRenderer, contextBridge } = require('electron');
+import { ipcRenderer, contextBridge } from 'electron';
 
-contextBridge.exposeInMainWorld('electronAPI', {
+export const electronAPI = {
   getIp: async () => {
     return await ipcRenderer.invoke('get-ip');
   },
+  getLanguage: async () => {
+    return await ipcRenderer.invoke('get-language');
+  },
   send: (channel, data) => {
-    let validChannels = ['toggle-full-screen', 'minimize'];
+    let validChannels = ['toggle-full-screen', 'minimize', 'close', 'set-ip', 'open-OLA'];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
@@ -121,6 +124,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getFullScreen: async () => {
     return await ipcRenderer.invoke('get-full-screen');
   },
-});
+  showAlert: (message: any) => ipcRenderer.invoke('show-alert', message),
+};
+
+contextBridge.exposeInMainWorld('electronAPI', electronAPI);
 
 setTimeout(removeLoading, 4999);

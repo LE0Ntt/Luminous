@@ -18,8 +18,10 @@
   display: flex;
   z-index: 9999;
   gap: 20px;
-  height: 80vh;
-  width: 80vw;
+  height: 70vh;
+  width: 70vw;
+  min-height: 400px;
+  min-width: 900px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -45,6 +47,14 @@
   position: relative;
 }
 
+.settingsContentContainer {
+  overflow-y: auto;
+  position: relative;
+  height: calc(100% - 40px);
+  width: calc(100% - 10px);
+  top: 20px;
+}
+
 .settingsButtonContent {
   display: flex;
   gap: 5px;
@@ -66,7 +76,7 @@
 
 .SettingsTitle {
   position: absolute;
-  top: 10px;
+  top: 12px;
   height: 36px;
   object-fit: contain;
   align-items: center;
@@ -74,6 +84,16 @@
   font-size: 24px;
   margin-bottom: 10px;
   gap: 10px;
+}
+
+.SettingsTitleText {
+  position: relative;
+  left: 10px;
+  top: -2px;
+}
+
+.SettingsTitleInner {
+  top: -6px !important;
 }
 
 .SettingsSubTitle {
@@ -86,7 +106,8 @@
 }
 
 .SettingsTextBox {
-  width: 11vw !important;
+  width: 250px;
+  min-width: 250px;
   margin: 0;
 }
 
@@ -112,25 +133,49 @@
   width: 100%;
 }
 
+.SettingsIPBoxContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
 .SettingsIPBox {
   width: 30px;
   text-align: center;
+  background-color: transparent;
+  appearance: none; /* For Chrome, Safari, Edge */
+  -moz-appearance: textfield; /* For Firefox */
+}
+
+.SettingsIPBox::-webkit-inner-spin-button,
+.SettingsIPBox::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .SettingsTextBoxContainer {
-  width: 70%;
+  width: 100%;
   display: flex;
   position: relative;
   gap: 20px;
   flex-direction: row;
   overflow: auto;
+  margin-right: 20px;
+}
+
+.SettingsTextBoxContainer2 {
+  display: flex;
+  position: relative;
+  gap: 20px;
+  flex-direction: row;
 }
 
 .SettingsOption {
   flex-grow: 10;
   position: relative;
   width: stretch;
-  padding: 15px 20px 20px 0px;
+  padding: 1px 10px 0px 0px;
 }
 
 .SettingsLayer {
@@ -148,10 +193,11 @@
   position: relative;
   height: 48px;
   width: 250px;
+  min-width: 250px;
 }
 
 .SettingsLanguageSelection {
-  width: 11vw !important;
+  width: 250px;
   margin: 0;
 }
 
@@ -160,9 +206,10 @@
   justify-content: space-between;
 }
 
-@media (max-width: 1800px) {
+@media (max-width: 2200px) {
   .SettingsTextBoxContainer {
     width: stretch;
+    margin-right: 0px;
   }
 
   .SettingsTextBox {
@@ -176,14 +223,160 @@
   }
 
   .PasswordMessage {
-    top: 210px !important;
+    top: 80px !important;
+    right: 300px !important;
+  }
+}
+
+@media (max-width: 1820px) {
+  .SettingsTextBoxContainer {
+    width: stretch;
+    margin-right: 0px;
+    flex-flow: column wrap;
+    margin-bottom: 20px;
+  }
+
+  .SettingsTextBox {
+    width: 100%;
+    margin-bottom: 0px;
+  }
+
+  .ChangePassword {
+    flex-flow: column wrap;
+    align-items: end;
+  }
+
+  .PasswordMessage {
+    top: 215px !important;
+    right: 300px !important;
+  }
+}
+
+@media (max-width: 1375px) {
+  .SettingsTextBoxContainer2 {
+    flex-flow: column wrap;
+  }
+
+  .uploadDBContainer {
+    flex-direction: column;
   }
 }
 
 .PasswordMessage {
   position: absolute;
-  top: 150px;
+  top: 55px;
+  right: 30px;
   animation: fadeOut 1s 3s forwards;
+}
+
+.designContainer {
+  display: flex;
+  gap: 20px;
+}
+
+.designContainer > div {
+  width: 200px;
+  height: 150px;
+  border-radius: 5px;
+  color: var(--primary);
+  cursor: pointer;
+  background-color: var(--backgroundDesign);
+}
+
+.designDefaultSpan {
+  position: absolute;
+  top: 120px;
+  z-index: 99;
+  margin-left: 20px;
+  font-size: 14px;
+  color: var(--secondary);
+  font-weight: 300;
+}
+
+.designSpan {
+  position: absolute;
+  top: 21px;
+  z-index: 99;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.redDiv {
+  background-color: var(--red);
+  width: 20px;
+  height: 50px;
+  position: relative;
+  top: 40px;
+  left: 160px;
+}
+
+.blueDiv {
+  background-color: var(--blue);
+  width: 30px;
+  height: 40px;
+  position: relative;
+  top: -30px;
+  left: 16px;
+}
+
+.purpleDiv {
+  background-color: var(--purple);
+  width: 40px;
+  height: 20px;
+  position: relative;
+  top: -20px;
+  left: 80px;
+}
+
+.designBlur {
+  width: 200px;
+  height: 150px;
+  background-color: rgba(125, 125, 125, 0.05);
+  position: absolute;
+  z-index: 4;
+  border-radius: 5px;
+  backdrop-filter: blur(25px);
+  top: 0;
+}
+
+.designWindow {
+  width: 160px;
+  height: 70px;
+  position: absolute;
+  z-index: 99;
+  top: 40px;
+  margin-left: 20px;
+}
+
+:root {
+  --fillMediumDefault: rgba(246, 246, 246, 0.6);
+  --onepStrokeDefault: #fff;
+  --backgroundDesign: rgb(241, 241, 241);
+}
+.dark {
+  --fillMediumDefault: rgba(63, 63, 63, 0.5);
+  --onepStrokeDefault: rgba(255, 255, 255, 0.1);
+  --backgroundDesign: rgb(38, 37, 44);
+}
+
+.defaultWindow {
+  background-color: var(--fillMediumDefault);
+  border: 1px solid var(--onepStrokeDefault);
+  border-radius: 10px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.activeDesign {
+  outline: 2px solid var(--mainColor);
+  outline-offset: -2px;
+  pointer-events: none;
+}
+
+.newDesign {
+  background: var(--backgroundImage);
+  border: 1px solid var(--faderThumbBorder);
 }
 
 @keyframes fadeOut {
@@ -218,4 +411,33 @@
   100% {
     outline: 2px solid transparent;
   }
+}
+
+.dbSettings {
+  display: grid;
+  gap: 20px;
+  justify-items: end;
+}
+
+.uploadDBContainer {
+  display: flex;
+  gap: 20px;
+}
+
+.dropzone {
+  border: 2px dashed var(--secondary);
+  border-radius: 5px;
+  height: 48px;
+  width: 250px;
+  text-align: center;
+  line-height: 42px;
+  cursor: copy;
+  color: var(--secondary);
+  white-space: nowrap;
+  padding: 0 10px 0 10px;
+}
+
+.dropzone p {
+  text-overflow: ellipsis;
+  overflow: hidden;
 }

@@ -12,7 +12,7 @@
  *
  * @file StudioOverview.tsx
  */
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import '../Studio.css';
 import schein from '../assets/schein3.png';
 import schein2 from '../assets/schein2.png';
@@ -32,8 +32,8 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
   const masterValue = useFaderValue(0, 0);
   const memoizedMasterValue = useMemo(() => masterValue, [masterValue]);
 
-  const studioRows = 6;
-  const studioColumns = 4;
+  const [studioRows, setStudioRows] = useState(6);
+  const [studioColumns, setStudioColumns] = useState(4);
 
   const greenScreen = 14;
 

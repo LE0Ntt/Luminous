@@ -2,7 +2,17 @@
 
 > All notable changes to this project will be documented in this file.
 
-## [1.2.3] - Pre-Release
+## [1.2.4] - Pre-Release
+
+### Changes
+
+-
+
+### Fixes
+
+-
+
+## [1.2.3] - 2024-06-26
 
 ### Changes
 

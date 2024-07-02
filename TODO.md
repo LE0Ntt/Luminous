@@ -1,43 +1,22 @@
-## Version 1.2.3 TODOs
+## Version 1.2.4 TODOs
 
-- [x] Studio-Overview add Traverse Lights master
-- [x] Fader - prevent rerendering on fader change
-- [x] LightFX buffer socketio
-- [?] Scenes fix weird color bug
+-
 
 ## Version 1.2.x TODOs
 
-- [x] Studio-Overview add Traverse Lights
-  - [x] Add info panels
 - [ ] Prevent scene and solo overlaps
-- [x] Fader
-  - [x] More obvious fader highlighting
-  - [x] Rework spacing
-    - [x] Horizontal
-    - [x] Vertical
-  - [x] Prevent rerendering on fader change
 - [ ] LightFX
-  - [x] First light should be the current state
-    - [x] Update state automatically if only one light is selected instead of showing the button
-    - [ ] "Mute" button
-  - [x] Other light should show a out of sync button, if not the current state
-  - [x] Add Bi-color number input
-    - [ ] Find a way to get full resolution
-  - [x] Hide not supported areas
-  - [x] Buffer socketio
+  - [ ] "Mute" button
+  - [ ] Find a way to get full resolution
 - [ ] Scenes
-  - [x] Should be "on" when added
   - [ ] Visualisation of Scenes when specific fader is changed
   - [ ] If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
-- [x] Setting to change the URL of the server
-- [x] Settings UI cleanup
+- [ ] Studio-Overview settings
 
 ## Known Issues
 
 - MotorMix
-  - ~~Black-out button~~
   - Display bugs with page wheel
-  - ~~Missing display light values~~
   - Displays only two pages until switched to Scenes and back
   - Faders sometimes jump randomly
   - Scenes do not turn off correctly, maybe backup value?
@@ -45,8 +24,6 @@
 - Studio-Overview just uses ID, not universe // not sure if this is a problem or not
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
-- ~~Scenes do not fade in exact seconds and are subject to server performance~~
-- MAYBE: Scenes only fade master? Check if this is a problem
 - Colors of the RGB lights are weird, when master is not at 100% - try in studio
 - LightFX
   - RGB and bi-color picker mismatch from cursor position when window is resized

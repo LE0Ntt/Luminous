@@ -12,6 +12,7 @@
  *
  * @file __init__.py
 """
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -38,6 +39,5 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
-@app.before_first_request
-def create_tables():
+with app.app_context():
     db.create_all()

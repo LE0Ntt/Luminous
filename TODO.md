@@ -1,6 +1,10 @@
-## Version 1.2.4 TODOs
+## Version 1.2.4 (FINAL) TODOs
 
--
+- [ ] Studio-Overview settings
+- [ ] Scenes
+  - [ ] Prevent scene and solo overlaps
+  - [ ] Save as Array
+  - [ ] (?) If a fader is changed in a scene and the scene is turned off, the fader should reset to its pre-scene value
 
 ## Version 1.2.x TODOs
 
@@ -10,7 +14,7 @@
   - [ ] Find a way to get full resolution
 - [ ] Scenes
   - [ ] Visualisation of Scenes when specific fader is changed
-  - [ ] If specific fader is changed, when scene is turned off, the fader should return to the value before the scene was turned on
+  - [ ] If a fader is changed in a scene and the scene is turned off, the fader should reset to its pre-scene value
 - [ ] Studio-Overview settings
 
 ## Known Issues
@@ -24,7 +28,6 @@
 - Studio-Overview just uses ID, not universe // not sure if this is a problem or not
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
-- Colors of the RGB lights are weird, when master is not at 100% - try in studio
 - LightFX
   - RGB and bi-color picker mismatch from cursor position when window is resized
   - Sync button wonky with multiple clients

@@ -5,6 +5,7 @@ import Store from 'electron-store';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { update } from './update';
+import { i } from 'vite/dist/node/types.d-aGj9QkWt';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -209,6 +210,11 @@ ipcMain.handle('get-ip', () => {
 ipcMain.on('set-ip', (_, ip) => {
   console.log('set-ip', ip);
   typedStore.set('ip', ip);
+});
+
+ipcMain.on('set-port', (_, port) => {
+  console.log('set-port', port);
+  typedStore.set('port', port);
 });
 
 const ip = typedStore.get('ip');

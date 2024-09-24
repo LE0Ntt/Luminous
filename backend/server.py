@@ -24,4 +24,4 @@ register_socketio_events(socketio)
 
 # Run app
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5000)  # type: ignore     "allow_unsafe_werkzeug=True" für production
+    socketio.run(app, host="0.0.0.0", port=9000)  # type: ignore     "allow_unsafe_werkzeug=True" für production

@@ -104,7 +104,7 @@ export const electronAPI = {
     return await ipcRenderer.invoke('get-language');
   },
   send: (channel, data) => {
-    let validChannels = ['toggle-full-screen', 'minimize', 'close', 'set-ip', 'open-OLA'];
+    let validChannels = ['toggle-full-screen', 'minimize', 'close', 'set-ip', 'set-port', 'open-OLA'];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }

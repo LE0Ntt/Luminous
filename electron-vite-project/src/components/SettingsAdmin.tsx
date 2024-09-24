@@ -355,6 +355,13 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
               value={ip.split('.')[3]}
               onChange={(e) => handleOctetChange(4, e.target.value)}
             />
+            :
+            <input
+              className='SettingsIPBox'
+              maxLength={4}
+              value={port}
+              onChange={(e) => handlePortChange(e.target.value)}
+            />
           </div>
           <Button
             className='SettingsButton controlButton'

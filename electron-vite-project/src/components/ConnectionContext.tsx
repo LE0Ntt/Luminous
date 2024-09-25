@@ -64,8 +64,8 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
   const changeUrl = (newUrl: string) => {
     setUrl(newUrl);
     const url = new URL(newUrl);
-    const ip = url.hostname;
-    (window as any).electronAPI.send('set-ip', ip);
+    (window as any).electronAPI.send('set-ip', url.hostname);
+    (window as any).electronAPI.send('set-port', parseInt(url.port));
   };
 
   useEffect(() => {

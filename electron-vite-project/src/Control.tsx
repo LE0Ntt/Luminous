@@ -141,6 +141,7 @@ function Control() {
     setSelectedDevices(savedSelectedDevices);
     setUnselectedDevices(savedUnselectedDevices);
     setFirstLoad(true);
+    fetchDevices(true);
 
     // Prevent transition animation before height has loaded
     const timer = setTimeout(() => {

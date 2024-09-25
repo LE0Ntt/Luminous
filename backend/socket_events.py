@@ -379,17 +379,7 @@ def register_socketio_events(socketio):
                 ):
                     continue
 
-                # Since 'channel' is a list, find the channel by ID
-                device_channel = next(
-                    (
-                        ch
-                        for ch in device_obj["attributes"]["channel"]
-                        if ch["id"] == channel["id"]
-                    ),
-                    None,
-                )
-                if not device_channel:
-                    continue
+                device_channel = device_obj["attributes"]["channel"][channel["id"]]
 
                 start_value = device_channel["sliderValue"]
                 end_value = (

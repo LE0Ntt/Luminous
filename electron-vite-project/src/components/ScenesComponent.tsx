@@ -46,7 +46,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
 
   // Fetch scenes from the server when the component is mounted
   useLayoutEffect(() => {
-    if (connected && scenes.length === 0) fetchScenes();
+    if (connected) fetchScenes();
     setEmptyScenes(calculateEmptyScenes(scenes.length, repeatNumber));
   }, [connected, scenes.length, repeatNumber]);
 

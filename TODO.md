@@ -11,7 +11,7 @@
 - [ ] Prevent scene and solo overlaps
 - [ ] LightFX
   - [ ] "Mute" button
-  - [ ] Find a way to get full resolution
+  - [ ] Find a way to get full resolution Bi-color
 - [ ] Scenes
   - [ ] Visualisation of Scenes when specific fader is changed
   - [ ] If a fader is changed in a scene and the scene is turned off, the fader should reset to its pre-scene value

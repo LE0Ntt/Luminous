@@ -179,16 +179,6 @@ function Control() {
       setAnimation(true);
     }, 500);
 
-    // If a device is updated, reload the devices
-    const lightRespone = (data: any) => {
-      if (data.message === 'success') {
-        fetchDevices();
-      }
-    };
-    const lightDeleted = () => {
-      fetchDevices();
-    };
-
     // Listen for design changes
     const handleStorageChange = (event: CustomEvent<boolean>) => {
       if (event.type === 'designChange') {
@@ -197,13 +187,14 @@ function Control() {
     };
 
     window.addEventListener('designChange', handleStorageChange as EventListener);
-    on('light_response', lightRespone);
-    on('light_deleted', lightDeleted);
+    on('light_response', fetchDevices);
+    on('light_deleted', fetchDevices);
+
     return () => {
       clearTimeout(timer);
       window.removeEventListener('designChange', handleStorageChange as EventListener);
-      off('light_response', lightRespone);
-      off('light_deleted', lightDeleted);
+      off('light_response', fetchDevices);
+      off('light_deleted', fetchDevices);
     };
   }, [connected]);
 

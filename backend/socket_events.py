@@ -539,6 +539,12 @@ def register_socketio_events(socketio):
         db.session.add(device)
         db.session.commit()
 
+        # Set initial channel values
+        channels = device.set_channel_values(
+            device.attributes.get("channel", []), universe=device.universe
+        )
+        device.attributes["channel"] = channels
+
         # Add device to devices list to the right position based on the id
         insert_index = bisect.bisect_left(
             [device["id"] for device in routes.devices], int(data["number"])

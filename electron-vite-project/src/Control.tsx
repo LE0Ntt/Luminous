@@ -88,7 +88,7 @@ function Control() {
   const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
   const [isSolo, setIsSolo] = useState(false);
   const [height, setHeight] = useState(-3);
-  const [selected, setSelected] = useState(selectedDevices[0] && devices.length > 0);
+  const [selected, setSelected] = useState(false);
   const [deviceModified, setDeviceModified] = useState(false); // Device added or removed
   const [supportFlags, setSupportFlags] = useState({ supportsBiColor: false, supportsRGB: false });
   const [red, setRed] = useState(0);
@@ -104,44 +104,75 @@ function Control() {
   const greenFaderValue = useFaderValue(0, 4);
   const blueFaderValue = useFaderValue(0, 5);
 
-  // update selected state
+  // Update selected state
   useLayoutEffect(() => {
-    setSelected(selectedDevices[0] && devices.length > 0);
+    setSelected(selectedDevices.length > 0 && devices.length > 0);
   }, [selectedDevices, devices]);
 
-  // Before first render
+  // Function to fetch devices and synchronize lists
+  const fetchDevices = async () => {
+    try {
+      const response = await fetch(url + '/fader');
+      const data = await response.json();
+      const parsedData: DeviceConfig[] = JSON.parse(data);
+      parsedData.shift(); // Remove master
+      setDevices(parsedData);
+      syncDeviceLists(parsedData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Function to synchronize device lists with new data
+  const syncDeviceLists = (newDevices: DeviceConfig[]) => {
+    const savedSelectedDevices: DeviceConfig[] = JSON.parse(sessionStorage.getItem('selectedDevices') || '[]');
+    const savedUnselectedDevices: DeviceConfig[] = JSON.parse(sessionStorage.getItem('unselectedDevices') || '[]');
+
+    // Update selected devices based on new data
+    const updatedSelectedDevices = savedSelectedDevices
+      .filter((device) => newDevices.some((newDevice) => newDevice.id === device.id))
+      .map((device) => {
+        const updatedDevice = newDevices.find((newDevice) => newDevice.id === device.id);
+        return updatedDevice ? { ...device, ...updatedDevice } : device;
+      });
+
+    // Update unselected devices based on new data
+    const updatedUnselectedDevices = savedUnselectedDevices
+      .filter((device) => newDevices.some((newDevice) => newDevice.id === device.id))
+      .map((device) => {
+        const updatedDevice = newDevices.find((newDevice) => newDevice.id === device.id);
+        return updatedDevice ? { ...device, ...updatedDevice } : device;
+      });
+
+    // Add new devices to unselected devices list
+    const newUnselectedDevices = newDevices.filter(
+      (newDevice) => !updatedSelectedDevices.some((device) => device.id === newDevice.id) && !updatedUnselectedDevices.some((device) => device.id === newDevice.id)
+    );
+
+    setSelectedDevices(updatedSelectedDevices);
+    setUnselectedDevices([...updatedUnselectedDevices, ...newUnselectedDevices]);
+
+    // Save updated lists to session storage
+    sessionStorage.setItem('selectedDevices', JSON.stringify(updatedSelectedDevices));
+    sessionStorage.setItem('unselectedDevices', JSON.stringify([...updatedUnselectedDevices, ...newUnselectedDevices]));
+  };
+
+  // Load devices and saved selections on component mount
   useLayoutEffect(() => {
-    // Get devices from server
-    const fetchDevices = async (reset: boolean) => {
-      try {
-        const response = await fetch(url + '/fader');
-        const data = await response.json();
-        const parsedData = JSON.parse(data);
-        parsedData.shift(); // remove master
-        setDevices(parsedData);
-
-        if (reset || savedUnselectedDevices.length == 0) {
-          setUnselectedDevices(parsedData);
-          setSelectedDevices([]);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    if (connected) fetchDevices(false);
+    if (connected) {
+      fetchDevices();
+    }
 
     // Load saved solo state from session storage
     setIsSolo(sessionStorage.getItem('controlSolo') === 'true');
 
-    // Load saved selection from session storage
-    const savedSelectedDevices = JSON.parse(sessionStorage.getItem('selectedDevices') || '[]');
-    const savedUnselectedDevices = JSON.parse(sessionStorage.getItem('unselectedDevices') || '[]');
+    // Load saved device selections from session storage
+    const savedSelectedDevices: DeviceConfig[] = JSON.parse(sessionStorage.getItem('selectedDevices') || '[]');
+    const savedUnselectedDevices: DeviceConfig[] = JSON.parse(sessionStorage.getItem('unselectedDevices') || '[]');
 
     setSelectedDevices(savedSelectedDevices);
     setUnselectedDevices(savedUnselectedDevices);
     setFirstLoad(true);
-    fetchDevices(true);
 
     // Prevent transition animation before height has loaded
     const timer = setTimeout(() => {
@@ -151,11 +182,11 @@ function Control() {
     // If a device is updated, reload the devices
     const lightRespone = (data: any) => {
       if (data.message === 'success') {
-        fetchDevices(true); // reload devices
+        fetchDevices();
       }
     };
     const lightDeleted = () => {
-      fetchDevices(true);
+      fetchDevices();
     };
 
     // Listen for design changes
@@ -168,23 +199,22 @@ function Control() {
     window.addEventListener('designChange', handleStorageChange as EventListener);
     on('light_response', lightRespone);
     on('light_deleted', lightDeleted);
-
     return () => {
       clearTimeout(timer);
       window.removeEventListener('designChange', handleStorageChange as EventListener);
       off('light_response', lightRespone);
       off('light_deleted', lightDeleted);
     };
-  }, []);
+  }, [connected]);
 
-  // On any change of devices
+  // Save selections and update UI on devices change
   useEffect(() => {
     // Save selection in session storage
     if (firstLoad && devices.length > 0) {
-      sessionStorage.setItem('unselectedDevices', JSON.stringify(unselectedDevices));
       sessionStorage.setItem('selectedDevices', JSON.stringify(selectedDevices));
+      sessionStorage.setItem('unselectedDevices', JSON.stringify(unselectedDevices));
 
-      if (selectedDevices.length == 0) {
+      if (selectedDevices.length === 0) {
         setHeight(-3);
       } else {
         setHeight(Math.min(selectedDevices.length * 71 + 36, 462));
@@ -202,7 +232,7 @@ function Control() {
     }
 
     // Deactivate solo if no device is selected
-    if (selectedDevices.length == 0 && isSolo) {
+    if (selectedDevices.length === 0 && isSolo) {
       toggleSolo();
     }
   }, [selectedDevices, unselectedDevices, devices]);

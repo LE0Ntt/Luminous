@@ -213,6 +213,8 @@ def register_socketio_events(socketio):
                 else:
                     print(f"Unknown device_id: {device_id}")
 
+    # ------------------- Begin of Scene status (on/off) -------------------
+
     fade_threads = {}
 
     # Gradually changes the value of a device channel from start_value to end_value
@@ -403,6 +405,8 @@ def register_socketio_events(socketio):
             socketio.emit(
                 "scene_update", {"id": scene_id, "status": status}, namespace="/socket"
             )
+
+    # ------------------- End of Scene status (on/off) -------------------
 
     # Delete a scene and tell every client to update
     @socketio.on("scene_delete", namespace="/socket")

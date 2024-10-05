@@ -21,6 +21,7 @@
   justify-content: center;
   padding-top: 120px;
   backdrop-filter: var(--windowBackdrop);
+  z-index: 99999;
 }
 
 .noConnection,

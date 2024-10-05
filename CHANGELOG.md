@@ -15,6 +15,7 @@
 - Fixed HMI lights turning off with scenes (in DB)
 - Fixed LightFX list not always reloading when a device is edited and no longer reset the selected list
 - Fixed newly added device missing initial channel values
+- Fixed BigView overlaying the NoConnection screen
 
 ## [1.2.3] - 2024-06-26
 

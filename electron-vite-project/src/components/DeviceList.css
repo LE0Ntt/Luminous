@@ -104,8 +104,8 @@ hr {
 }
 
 .sync {
-  height: 22px;
-  width: 22px;
+  height: 35px;
+  width: 35px;
   mask: url(../assets/Sync.svg);
   mask-repeat: no-repeat;
   mask-position: center;
@@ -113,6 +113,7 @@ hr {
   align-self: center;
   position: relative;
   left: -5px;
+  top: 1px;
   cursor: pointer;
   transition: opacity 0.3s ease;
   opacity: 0;

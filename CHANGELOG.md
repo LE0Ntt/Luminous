@@ -6,11 +6,15 @@
 
 ### Changes
 
--
+- Scenes
+  -Display an icon if scene is 'out of sync'
 
 ### Fixes
 
--
+- Fixed scenes not reloading after server restart
+- Fixed HMI lights turning off with scenes (in DB)
+- Fixed LightFX list not always reloading when a device is edited and no longer reset the selected list
+- Fixed newly added device missing initial channel values
 
 ## [1.2.3] - 2024-06-26
 
@@ -58,7 +62,7 @@
 ### Fixes
 
 - Fixed scenes not fading in exact seconds as they were subject to server performance
-- MAYBE Fixed a bug where the master fader incorrectly adjusted the channels of scene devices
+- Fixed a bug where the master fader incorrectly adjusted the channels of scene devices
 - Fixed inability to access admin password protected settings when database is empty
 - MotorMix
   - Fixed blackout button crashing the driver

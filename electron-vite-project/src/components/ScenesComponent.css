@@ -156,6 +156,9 @@
   height: 166px;
   display: flex;
   border-radius: 3px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
 }
 
 .dragHover:hover {
@@ -165,4 +168,23 @@
 .sceneMiddleButton {
   width: 80%;
   height: 200%;
+}
+
+.sceneSync {
+  width: 100%;
+  height: 100%;
+  mask: url(../assets/Sync.svg);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background: var(--primary);
+  position: relative;
+  top: 0px;
+  left: 0px !important;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.sceneSync.visible {
+  opacity: 0.5;
 }

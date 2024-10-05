@@ -23,6 +23,7 @@ interface SceneConfig {
   name: string;
   status: boolean;
   saved: boolean;
+  out_of_sync: boolean;
 }
 
 interface ScenesComponentProps {
@@ -71,22 +72,50 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
     };
   }, [emit]);
 
-  // Listen for events to update the status of a scene
+  // Listen for events to update the status of a scene and sync state
   useEffect(() => {
     const sceneUpdate = (data: any) => {
       setScenes((prevScenes) => prevScenes.map((scene, index) => (index === data.id ? { ...scene, status: data.status } : scene)));
     };
 
+    const handleOutOfSync = (data: any) => {
+      setScenes((prevScenes) => prevScenes.map((scene) => (scene.id === data.scene_id ? { ...scene, out_of_sync: true } : scene)));
+    };
+
+    const handleInSync = (data: any) => {
+      setScenes((prevScenes) => prevScenes.map((scene) => (scene.id === data.scene_id ? { ...scene, out_of_sync: false } : scene)));
+    };
+
     const reloadScenes = () => fetchScenes();
 
     on('scene_update', sceneUpdate);
+    on('out_of_sync', handleOutOfSync);
+    on('in_sync', handleInSync);
     on('scene_reload', reloadScenes);
 
     return () => {
       off('scene_update', sceneUpdate);
+      off('out_of_sync', handleOutOfSync);
+      off('in_sync', handleInSync);
       off('scene_reload', reloadScenes);
     };
   }, [on, off]);
+
+  // Get all scenes from the server with an API call and update the out_of_sync status as well
+  const fetchScenes = async () => {
+    try {
+      const response = await fetch(url + '/scenes');
+      const data = await response.json();
+      const parsedData = JSON.parse(data).map((scene: any) => ({
+        ...scene,
+        out_of_sync: scene.out_of_sync || false, // Default to false if not provided
+      }));
+      setScenes(parsedData);
+      scenesFetched.current = true;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Change the appearance of the component depending on which page it is called from
   useLayoutEffect(() => {
@@ -116,18 +145,6 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
     const minRows = 4;
     const totalCells = Math.max(minRows * repeatNumber, Math.ceil((scenesLength + 1) / repeatNumber) * repeatNumber);
     return totalCells - scenesLength - 1;
-  };
-
-  // Get all scenes from the server with an API call
-  const fetchScenes = async () => {
-    try {
-      const response = await fetch(url + '/scenes');
-      const data = await response.json();
-      setScenes(JSON.parse(data));
-      scenesFetched.current = true;
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   // Toggle the status of a scene
@@ -195,6 +212,7 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
               onClick={() => toggleSceneStatus(scene.id)}
             >
               <h2>{scene.name}</h2>
+              <div className={`sceneSync ${scene.out_of_sync ? 'visible' : ''}`}></div>
             </button>
             {sideId === 1 && (
               <div className='sceneButtons'>

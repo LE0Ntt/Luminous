@@ -70,6 +70,7 @@ def load_scenes():
                 "name": scene.name,
                 "channel": scene.channel,
                 "saved": True,
+                "out_of_sync": False,
             }
             scenes_list.append(scene)
     return scenes_list

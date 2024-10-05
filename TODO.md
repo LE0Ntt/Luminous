@@ -3,19 +3,14 @@
 - [ ] Studio-Overview settings
 - [ ] Scenes
   - [ ] Prevent scene and solo overlaps
-  - [ ] Save as Array
-  - [ ] (?) If a fader is changed in a scene and the scene is turned off, the fader should reset to its pre-scene value
+  - [ ] Save as stack
+  - [ ] Display an icon if scene is out of sync
 
 ## Version 1.2.x TODOs
 
-- [ ] Prevent scene and solo overlaps
 - [ ] LightFX
-  - [ ] "Mute" button
   - [ ] Find a way to get full resolution Bi-color
-- [ ] Scenes
-  - [ ] Visualisation of Scenes when specific fader is changed
-  - [ ] If a fader is changed in a scene and the scene is turned off, the fader should reset to its pre-scene value
-- [ ] Studio-Overview settings
+  - [ ] Fix out of sync problems
 
 ## Known Issues
 
@@ -28,9 +23,11 @@
 - Studio-Overview just uses ID, not universe // not sure if this is a problem or not
 - Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
+- Solo does not work on non-device channels
 - LightFX
   - RGB and bi-color picker mismatch from cursor position when window is resized
   - Sync button wonky with multiple clients
+  - Sometimes the rgb channels are not adopted
   - Bi-color rounding down on page load
   - Bi-color resolution too low, no 50% possible
 

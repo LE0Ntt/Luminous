@@ -6,11 +6,13 @@
 
 ### Changes
 
+- Added the possibility to change the port of the server
 - Scenes
   -Display an icon if scene is 'out of sync'
 
 ### Fixes
 
+- Fixed a bug related to the startup of the server
 - Fixed scenes not reloading after server restart
 - Fixed HMI lights turning off with scenes (in DB)
 - Fixed LightFX list not always reloading when a device is edited and no longer reset the selected list

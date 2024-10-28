@@ -12,16 +12,22 @@
  *
  * @file SettingsStudioOverview.tsx
  */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import './Settings.css';
 import { TranslationContext } from './TranslationContext';
-import Button from './Button';
-import IconKey from '@/assets/IconKey';
 import { useConnectionContext } from './ConnectionContext';
+import StudioOverviewImage from '@/assets/StudioOverview.png';
+import Button from './Button';
 
 interface Setting3Props {
   studioRows: number;
   studioColumns: number;
+}
+
+interface DeviceConfig {
+  id: number;
+  name: string;
+  device_type: string;
 }
 
 const Setting3: React.FC<Setting3Props> = ({ studioRows, studioColumns }) => {
@@ -29,82 +35,209 @@ const Setting3: React.FC<Setting3Props> = ({ studioRows, studioColumns }) => {
 
   const [inputStudioRows, setInputStudioRows] = useState<number>(studioRows);
   const [inputStudioColumns, setInputStudioColumns] = useState<number>(studioColumns);
+  const [devices, setDevices] = useState<DeviceConfig[]>([]);
+  const { url, connected, on, off } = useConnectionContext();
 
-  // Next input on ENTER
-  const handleEnterNext = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      const form = event.currentTarget.form;
-      if (form) {
-        const inputs = Array.from(form.elements) as HTMLInputElement[];
-        const index = inputs.indexOf(event.currentTarget);
-        const nextInput = inputs[index + 1];
-        if (nextInput) {
-          nextInput.focus();
-          event.preventDefault();
-        }
-      }
+  const fetchDevices = async () => {
+    try {
+      const response = await fetch(url + '/fader');
+      const data = await response.json();
+      const parsedData: DeviceConfig[] = JSON.parse(data);
+      parsedData.shift(); // Entferne Master
+      setDevices(parsedData);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const handleInputStudioRows = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setInputStudioRows(Number(e.target.value));
+  useEffect(() => {
+    fetchDevices();
+  }, []);
+
+  const handleInputStudioRows = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputStudioRows(Math.max(1, Math.min(10, Number(e.target.value))));
   };
 
-  const handleInputStudioColumns = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setInputStudioColumns(Number(e.target.value));
+  const handleInputStudioColumns = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputStudioColumns(Math.max(1, Math.min(10, Number(e.target.value))));
+  };
+
+  const defaultGridValues = [
+    { id: 5, row: 0, col: 0, type: 'spot' },
+    { id: 5, row: 0, col: 1, type: 'fillLight' },
+    { id: 6, row: 0, col: 2, type: 'fillLight' },
+    { id: 6, row: 0, col: 3, type: 'spot' },
+    { id: 4, row: 1, col: 0, type: 'fillLight' },
+    { id: 4, row: 1, col: 1, type: 'fillLight' },
+    { id: 7, row: 1, col: 2, type: 'fillLight' },
+    { id: 7, row: 1, col: 3, type: 'fillLight' },
+    { id: 3, row: 2, col: 0, type: 'spot' },
+    { id: 3, row: 2, col: 1, type: 'fillLight' },
+    { id: 8, row: 2, col: 2, type: 'fillLight' },
+    { id: 8, row: 2, col: 3, type: 'spot' },
+    { id: 2, row: 3, col: 0, type: 'spot' },
+    { id: 2, row: 3, col: 1, type: 'spot' },
+    { id: 9, row: 3, col: 2, type: 'fillLight' },
+    { id: 9, row: 3, col: 3, type: 'spot' },
+    { id: 1, row: 4, col: 0, type: 'spot' },
+    { id: 1, row: 4, col: 1, type: 'fillLight' },
+    { id: 10, row: 4, col: 3, type: 'spot' },
+  ];
+
+  const [gridValues, setGridValues] = useState(defaultGridValues);
+
+  useEffect(() => {
+    setGridValues((prevValues) => {
+      return prevValues.filter((cell) => cell.row < inputStudioRows && cell.col < inputStudioColumns && cell.id !== null);
+    });
+  }, [inputStudioRows, inputStudioColumns]);
+
+  const handleSelectChange = (rowIndex: number, colIndex: number, value: string, field: 'id' | 'type') => {
+    setGridValues((prevValues) => {
+      let newValues = [...prevValues];
+
+      if (field === 'id') {
+        if (!value) {
+          newValues = prevValues.filter((cell) => !(cell.row === rowIndex && cell.col === colIndex));
+        } else {
+          const numericId = parseInt(value, 10);
+          const existingCell = newValues.find((cell) => cell.row === rowIndex && cell.col === colIndex);
+
+          if (existingCell) {
+            existingCell.id = numericId;
+            existingCell.type = existingCell.type || 'spot';
+          } else {
+            newValues.push({ id: numericId, row: rowIndex, col: colIndex, type: 'spot' });
+          }
+        }
+      } else if (field === 'type') {
+        newValues = prevValues.map((cell) => (cell.row === rowIndex && cell.col === colIndex ? { ...cell, type: value } : cell));
+      }
+
+      console.log(newValues);
+      return newValues;
+    });
+  };
+
+  const grid = useMemo(
+    () =>
+      Array.from({ length: inputStudioRows }, (_, rowIndex) =>
+        Array.from({ length: inputStudioColumns }, (_, colIndex) => {
+          const cell = gridValues.find((cell) => cell.row === rowIndex && cell.col === colIndex);
+          return (
+            <div
+              key={`${rowIndex}-${colIndex}`}
+              className='cell studioOverviewInfopanelTest'
+              style={{ display: 'flex', flexDirection: 'column', margin: '0 5px' }}
+            >
+              <select
+                value={cell && cell.id !== null ? cell.id : ''}
+                onChange={(e) => handleSelectChange(rowIndex, colIndex, e.target.value, 'id')}
+              >
+                <option value=''>None</option>
+                {devices.map((device) => (
+                  <option
+                    key={device.id}
+                    value={device.id}
+                  >
+                    {device.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={cell ? cell.type : ''}
+                onChange={(e) => handleSelectChange(rowIndex, colIndex, e.target.value, 'type')}
+                disabled={!cell || cell.id === null}
+              >
+                <option value='spot'>Spot</option>
+                <option value='fillLight'>Fill Light</option>
+              </select>
+            </div>
+          );
+        })
+      ).flat(), // Flache Struktur, um alle Elemente in einem Array zu halten
+    [devices, inputStudioRows, inputStudioColumns, gridValues]
+  );
+
+  const handleSave = async () => {
+    console.log('Saving studio configuration');
+    try {
+      const response = await fetch(url + '/studio', {
+        method: 'POST',
+        body: JSON.stringify(gridValues),
+      });
+
+      if (response.ok) {
+        console.log('Successfully saved studio configuration');
+      } else {
+        console.error('Failed to save studio configuration');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <div className='SettingsOption'>
-      <div className='SettingsTitle SettingsTitleInner'>
-        <span>{t('set_studio')}</span>
-      </div>
-      <hr style={{ marginTop: '45px' }} />
-      <div className='SettingContainer'>
-        <div className='SettingsSubTitle'>
-          {/* spaceholder */}
-          <IconKey
-            color={'var(--primary)'}
-            size='20px'
-          />
-          <span className='relative top-[-6px]'>{t('change_studio_layout')}</span>
-          Rows:
-          <select
-            className='LightSettingsTextBoxSmall textBox'
-            value={inputStudioRows}
-            onChange={handleInputStudioRows}
+      <div className='div1'>
+        <div className='div2'>
+          <div className='SettingsTitle SettingsTitleInner'>
+            <span>{t('set_studio')}</span>
+          </div>
+          <hr style={{ marginTop: '45px' }} />
+          <div className='SettingContainer'>
+            <div className='SettingsSubTitle h-[100%]'>
+              Rows:
+              <input
+                className='bg-gray-900'
+                type='number'
+                value={inputStudioRows}
+                onChange={handleInputStudioRows}
+                min='1'
+                max='10'
+              />
+              Columns:
+              <input
+                className='bg-gray-900'
+                type='number'
+                value={inputStudioColumns}
+                onChange={handleInputStudioColumns}
+                min='1'
+                max='10'
+              />
+            </div>
+          </div>
+          <Button
+            className='SettingsButton controlButton'
+            onClick={handleSave}
           >
-            <option value='1'>1</option>
-            <option value='2'>2</option>
-            <option value='3'>3</option>
-            <option value='4'>4</option>
-            <option value='5'>5</option>
-            <option value='6'>6</option>
-            <option value='7'>7</option>
-            <option value='8'>8</option>
-            <option value='9'>9</option>
-            <option value='10'>10</option>
-          </select>
-          Columns:
-          <select
-            className='LightSettingsTextBoxSmall textBox'
-            value={inputStudioColumns}
-            onChange={handleInputStudioColumns}
-          >
-            <option value='1'>1</option>
-            <option value='2'>2</option>
-            <option value='3'>3</option>
-            <option value='4'>4</option>
-            <option value='5'>5</option>
-            <option value='6'>6</option>
-            <option value='7'>7</option>
-            <option value='8'>8</option>
-            <option value='9'>9</option>
-            <option value='10'>10</option>
-          </select>
+            {t('as_save')}
+          </Button>
+        </div>
+        <div className='div3'>
+          <div className='grid-image-container'>
+            <div className='foreground'>
+              <div
+                className='grid-container'
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: `repeat(${inputStudioColumns}, 1fr)`, // Dynamische Spaltenanzahl
+                  gap: '10px', // Abstand zwischen den Zellen
+                }}
+              >
+                {grid}
+              </div>
+            </div>
+            <div>
+              <img
+                src={StudioOverviewImage}
+                alt='Studio Overview'
+                className='SettingsStudioImage'
+              />
+            </div>
+          </div>
         </div>
       </div>
-      <hr />
     </div>
   );
 };

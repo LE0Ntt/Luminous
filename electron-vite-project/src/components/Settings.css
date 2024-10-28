@@ -111,6 +111,70 @@
   margin: 0;
 }
 
+.SettingsStudioImage {
+  object-fit: contain;
+  display: flex;
+  height: 10%;
+  width: 90%;
+}
+
+.grid-image-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  height: 100%;
+}
+
+.studioOverviewInfopanelTest {
+  display: flex;
+  flex-shrink: 0;
+  margin-left: 5px;
+  border-radius: 5px;
+  border: 1px solid var(--onepStroke);
+  background-color: var(--fillThick);
+  -webkit-backdrop-filter: var(--windowBackdrop);
+  backdrop-filter: var(--windowBackdrop);
+  box-shadow: var(--shadowLight);
+  z-index: 1;
+}
+
+.foreground {
+  position: absolute;
+  width: 100%;
+  height: 90%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.div1 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  /* background-color: orchid; */
+}
+
+.div2 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 2;
+  /* background-color: lightblue; */
+}
+
+.div3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 3;
+  max-height: 100%;
+  /* background-color: lightgreen; */
+}
+
 .SettingsContent {
   flex-grow: 1;
   position: relative;
@@ -176,6 +240,7 @@
   position: relative;
   width: stretch;
   padding: 1px 10px 0px 0px;
+  height: 100%;
 }
 
 .SettingsLayer {

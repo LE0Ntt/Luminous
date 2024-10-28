@@ -98,7 +98,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                   <span>{t('set_admin')}</span>
                 </div>
               </Button>
-              {/* not for 1.2.x - exclude for release (maybe)????
+              {/* not for 1.2.x - exclude for release (maybe)???? */}
               <Button
                 className={selectedSetting === 'Setting3' ? 'active' : ''}
                 onClick={() => setSelectedSetting('Setting3')}
@@ -107,7 +107,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                   <IconAdmin color={selectedSetting === 'Setting3' ? 'var(--primarySwitched)' : 'var(--primary)'} />
                   <span>{t('set_studio')}</span>
                 </div>
-              </Button>*/}
+              </Button>
             </div>
             <div className='SettingContent innerWindow'>
               <div className='settingsContentContainer'>
@@ -117,7 +117,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                   <Setting2 connected={initialConnected} />
                 ) : selectedSetting === 'Setting3' ? (
                   <Setting3
-                    studioRows={6}
+                    studioRows={5}
                     studioColumns={4}
                   />
                 ) : selectedSetting === 'Setting4' ? (

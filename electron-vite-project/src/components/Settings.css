@@ -112,10 +112,11 @@
 }
 
 .SettingsStudioImage {
-  object-fit: contain;
+  object-fit: fill;
   display: flex;
-  height: 10%;
-  width: 90%;
+  height: 631px;
+  width: auto;
+  border-radius: 5px;
 }
 
 .grid-image-container {
@@ -128,6 +129,7 @@
 
 .studioOverviewInfopanelTest {
   display: flex;
+  width: 90px;
   flex-shrink: 0;
   margin-left: 5px;
   border-radius: 5px;
@@ -147,6 +149,7 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 .div1 {
@@ -154,7 +157,7 @@
   flex-direction: row;
   align-items: center;
   height: 100%;
-  /* background-color: orchid; */
+  gap: 20px;
 }
 
 .div2 {
@@ -162,7 +165,6 @@
   flex-direction: column;
   height: 100%;
   flex: 2;
-  /* background-color: lightblue; */
 }
 
 .div3 {
@@ -170,9 +172,8 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  flex: 3;
+  width: auto;
   max-height: 100%;
-  /* background-color: lightgreen; */
 }
 
 .SettingsContent {

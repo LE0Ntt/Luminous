@@ -221,20 +221,17 @@ const Setting3: React.FC<Setting3Props> = ({ studioRows, studioColumns }) => {
                 className='grid-container'
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: `repeat(${inputStudioColumns}, 1fr)`, // Dynamische Spaltenanzahl
-                  gap: '10px', // Abstand zwischen den Zellen
+                  gridTemplateColumns: `repeat(${inputStudioColumns}, 1fr)`,
                 }}
               >
                 {grid}
               </div>
             </div>
-            <div>
-              <img
-                src={StudioOverviewImage}
-                alt='Studio Overview'
-                className='SettingsStudioImage'
-              />
-            </div>
+            <img
+              src={StudioOverviewImage}
+              alt='Studio Overview'
+              className='SettingsStudioImage'
+            />
           </div>
         </div>
       </div>

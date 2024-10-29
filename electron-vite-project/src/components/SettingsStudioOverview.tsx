@@ -179,8 +179,8 @@ const Setting3: React.FC<Setting3Props> = ({ studioRows, studioColumns }) => {
 
   return (
     <div className='SettingsOption'>
-      <div className='div1'>
-        <div className='div2'>
+      <div className='SettingsOverview'>
+        <div className='SettingsOverviewButtons'>
           <div className='SettingsTitle SettingsTitleInner'>
             <span>{t('set_studio')}</span>
           </div>
@@ -214,24 +214,17 @@ const Setting3: React.FC<Setting3Props> = ({ studioRows, studioColumns }) => {
             {t('as_save')}
           </Button>
         </div>
-        <div className='div3'>
-          <div className='grid-image-container'>
-            <div className='foreground'>
-              <div
-                className='grid-container'
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: `repeat(${inputStudioColumns}, 1fr)`,
-                }}
-              >
-                {grid}
-              </div>
+        <div className='SettingsOverviewImage window'>
+          <div className='SettingsOverviewImageForeground'>
+            <div
+              className='grid-container'
+              style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${inputStudioColumns}, 1fr)`,
+              }}
+            >
+              {grid}
             </div>
-            <img
-              src={StudioOverviewImage}
-              alt='Studio Overview'
-              className='SettingsStudioImage'
-            />
           </div>
         </div>
       </div>

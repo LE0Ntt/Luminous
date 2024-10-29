@@ -34,6 +34,10 @@
   padding: 20px;
 }
 
+.SettingsContainer:has(.SettingsOverview) {
+  min-width: 1200px;
+}
+
 .settings {
   width: 200px;
   margin: 0;
@@ -111,20 +115,16 @@
   margin: 0;
 }
 
-.SettingsStudioImage {
-  object-fit: fill;
-  display: flex;
-  height: 631px;
-  width: auto;
-  border-radius: 5px;
-}
-
-.grid-image-container {
+.SettingsOverviewImage {
   display: flex;
   flex-direction: column;
   position: relative;
   align-items: center;
-  height: 100%;
+  height: 630px;
+  width: 584px;
+  background-image: url(/src/assets/StudioOverview.png);
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .studioOverviewInfopanelTest {
@@ -141,8 +141,7 @@
   z-index: 1;
 }
 
-.foreground {
-  position: absolute;
+.SettingsOverviewImageForeground {
   width: 100%;
   height: 90%;
   display: flex;
@@ -152,28 +151,18 @@
   overflow: hidden;
 }
 
-.div1 {
+.SettingsOverview {
   display: flex;
   flex-direction: row;
-  align-items: center;
   height: 100%;
   gap: 20px;
 }
 
-.div2 {
+.SettingsOverviewButtons {
   display: flex;
   flex-direction: column;
   height: 100%;
   flex: 2;
-}
-
-.div3 {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  width: auto;
-  max-height: 100%;
 }
 
 .SettingsContent {

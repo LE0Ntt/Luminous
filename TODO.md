@@ -1,10 +1,10 @@
 ## Version 1.2.4 (FINAL) TODOs
 
 - [ ] Studio-Overview settings
-- [ ] Scenes
-  - [ ] Prevent scene and solo overlaps
-  - [ ] Save as stack
-  - [ ] Display an icon if scene is out of sync
+- [x] Scenes
+  - [x] Prevent scene and solo overlaps
+  - [x] Save as stack
+  - [x] Display an icon if scene is out of sync
 
 ## Version 1.2.x TODOs
 

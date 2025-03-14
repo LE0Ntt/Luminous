@@ -8,7 +8,8 @@
 
 - Added the possibility to change the port of the server
 - Scenes
-  -Display an icon if scene is 'out of sync'
+  - Display an icon if scene is 'out of sync'
+  - Active scenes are saved as a stack to prevent overlaps
 
 ### Fixes
 

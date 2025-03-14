@@ -25,7 +25,6 @@ import bisect
 
 scenes_solo_state = False
 connections = 0
-last_send_time = 0
 reset = False
 
 try:
@@ -78,11 +77,10 @@ def send_dmx_direct(universe: int, value: int, channel: int) -> None:
 
 
 def register_socketio_events(socketio):
+    global scene_stack, fading_active, scenes_solo_state, device_original_values
+
     # Mutator method to get updates from driver
     def faderSend(index, value, channelId, sender_id=None):
-        global last_send_time
-        global last_change
-
         if sender_id:
             socketio.emit(
                 "variable_update",
@@ -96,6 +94,12 @@ def register_socketio_events(socketio):
                 {"deviceId": index, "value": value, "channelId": channelId},
                 namespace="/socket",
             )
+
+        if scene_stack:
+            print("Checking sync status")
+            threading.Thread(
+                target=check_sync_status, args=(index, value, channelId)
+            ).start()
 
         send_dmx(
             index,
@@ -125,29 +129,8 @@ def register_socketio_events(socketio):
     def sceneCallback(scene, value):
         for currentScene in routes.scenes:
             if currentScene["id"] == scene:
-                if value > 0:
-                    update_scene({"id": scene, "status": True})
-                else:
-                    update_scene({"id": scene, "status": False})
-                for device in currentScene["channel"]:
-                    device_id = device["id"]
-                    master_channel = device["attributes"]["channel"][0]
-
-                    master_channel["backupValue"] = master_channel["sliderValue"]
-                    if master_channel["backupValue"] <= 5:
-                        master_channel["backupValue"] = 0
-
-                    if value > 0:
-                        master_channel["sliderValue"] = value
-                        faderSend(device_id, value, master_channel["id"])
-
-                    else:
-                        master_channel["sliderValue"] = master_channel["backupValue"]
-                        faderSend(
-                            device_id,
-                            device["attributes"]["channel"][0]["backupValue"],
-                            master_channel["id"],
-                        )
+                update_scene({"id": scene, "status": value > 0})
+                break
 
     def blackoutCallback():
         # call reset function
@@ -194,6 +177,16 @@ def register_socketio_events(socketio):
                 driver.pushFader(device["id"], slider_value)
                 driver.devices = routes.devices
 
+        # Create a set of devices controlled by active scenes
+        scene_controlled_devices = set()
+        for scene in scene_stack:
+            scene_id = scene["scene_id"]
+            # Find the scene data
+            scene_data = next((s for s in routes.scenes if s["id"] == scene_id), None)
+            if scene_data and scene_data.get("status", False):
+                for device in scene_data.get("channel", []):
+                    scene_controlled_devices.add(device["id"])
+
         for device in routes.devices:
             device_id = device["id"]
             if device_id == 0:
@@ -204,14 +197,15 @@ def register_socketio_events(socketio):
             backup_value = channel_attrs.get("backupValue", 0)
 
             if solo and device_id not in selected_ids and slider_value > 0:
-                channel_attrs["sliderValue"] = 0
-                update_device(device, 0)
+                if device_id not in scene_controlled_devices:
+                    channel_attrs["backupValue"] = slider_value
+                    channel_attrs["sliderValue"] = 0
+                    update_device(device, 0)
             elif not solo and slider_value == 0:
-                if 0 <= device_id < len(routes.devices):
-                    channel_attrs["sliderValue"] = backup_value
-                    update_device(device, backup_value)
-                else:
-                    print(f"Unknown device_id: {device_id}")
+                if backup_value > 0:
+                    if device_id not in scene_controlled_devices:
+                        channel_attrs["sliderValue"] = backup_value
+                        update_device(device, backup_value)
 
     # ------------------- Begin of Scene status (on/off) -------------------
 
@@ -332,51 +326,85 @@ def register_socketio_events(socketio):
                         device_channel,
                     )
 
-    # Add scene to the stack with devices and channels as a map
-    def add_scene_to_stack(scene_id, scene_data):
-        if "channel" not in scene_data:
-            return  # Handle the case where no devices are found
-
-        scene_map = {
-            "scene_id": scene_id,
-            "devices": {device["id"]: device for device in scene_data["channel"]},
-        }
-        scene_stack.append(scene_map)
-
     # Remove scene from the stack by scene_id
     def remove_scene_from_stack(scene_id):
         scene_stack[:] = [
             scene for scene in scene_stack if scene["scene_id"] != scene_id
         ]
 
+    device_original_values = {}  # To store the pre-scene state of each device
+
     # Update status (on/off) of a scene
     @socketio.on("scene_update", namespace="/socket")
     def update_scene(data):
-        global scenes_solo_state
+        global scene_stack, scenes_solo_state
         try:
-            status = bool(data["status"])
             scene_id = int(data["id"])
+            status = bool(data["status"])
             solo = bool(data.get("solo", False))
             fade_time = int(data.get("fadeTime", 0))
         except (KeyError, ValueError, TypeError):
             return
 
-        interval = 0.02
-        steps = max(int(fade_time / interval), 1)
+        # Find the scene in our routes
+        scene_data = None
+        for scene in routes.scenes:
+            if scene["id"] == scene_id:
+                scene["status"] = status
 
-        if scene_id >= len(routes.scenes):
+                # Always reset out_of_sync flag when turning off a scene
+                if not status and scene.get("out_of_sync", False):
+                    scene["out_of_sync"] = False
+                    socketio.emit(
+                        "in_sync", {"scene_id": scene_id}, namespace="/socket"
+                    )
+
+                scene_data = scene
+                break
+
+        if not scene_data:
             return
 
-        scene = routes.scenes[scene_id]
-        scene_device_ids = {device["id"] for device in scene["channel"]}
+        interval = 0.02
+        steps = max(int(fade_time / interval), 1)
+        scene_device_ids = {device["id"] for device in scene_data.get("channel", [])}
 
-        # Add or remove scene from the stack
-        if status:  # Scene activated
-            add_scene_to_stack(scene_id, scene)
-        else:  # Scene deactivated
+        if status:  # Scene is being activated
+            existing_scene = next(
+                (s for s in scene_stack if s["scene_id"] == scene_id), None
+            )
+            if existing_scene:
+                scene_stack.remove(existing_scene)
+
+            scene_entry = {"scene_id": scene_id, "devices": {}, "out_of_sync": False}
+
+            # Store original device states for this scene
+            if "channel" in scene_data:
+                for device in scene_data["channel"]:
+                    device_id = device["id"]
+
+                    if device_id not in device_original_values:
+                        actual_device = next(
+                            (d for d in routes.devices if d["id"] == device_id), None
+                        )
+                        if actual_device:
+                            device_original_values[device_id] = {
+                                "sliderValue": actual_device["attributes"]["channel"][
+                                    0
+                                ]["sliderValue"]
+                            }
+
+                    scene_entry["devices"][device_id] = {
+                        "channels": [
+                            ch.copy() for ch in device["attributes"]["channel"]
+                        ],
+                        "original_state": True,
+                    }
+
+            scene_stack.append(scene_entry)
+
+        else:  # Scene is being deactivated
             remove_scene_from_stack(scene_id)
-            scene["out_of_sync"] = False
-            socketio.emit("in_sync", {"scene_id": scene_id}, namespace="/socket")
 
         if solo and status:
             scenes_solo_state = True
@@ -396,56 +424,142 @@ def register_socketio_events(socketio):
                 interval=interval,
             )
 
-        if driver and scene_id is not None:
-            driver.quickSceneButtonUpdate(scene_id, status)
+        if status:  # Scene activated
+            for device in scene_data.get("channel", []):
+                device_id = device["id"]
+                actual_device = next(
+                    (d for d in routes.devices if d["id"] == device_id), None
+                )
+                if actual_device:
+                    master_channel = actual_device["attributes"]["channel"][0]
+                    if len([s for s in scene_stack if device_id in s["devices"]]) <= 1:
+                        master_channel["backupValue"] = master_channel["sliderValue"]
 
-        scene["status"] = status
-        for device in scene["channel"]:
-            device_obj = next(
-                (d for d in routes.devices if d["id"] == device["id"]), None
-            )
-            if not device_obj:
-                continue
+                    scene_device_slider_value = device["attributes"]["channel"][0][
+                        "sliderValue"
+                    ]
 
-            for channel in device["attributes"]["channel"]:
-                # Skip turning off the power channel for HMI devices
-                if (
-                    not status
-                    and device_obj.get("device_type") == "HMI"
-                    and channel.get("channel_type") == "power"
-                ):
+                    start_value = master_channel["sliderValue"]
+                    end_value = scene_device_slider_value
+
+                    if start_value != end_value:
+                        start_fade_thread(
+                            actual_device,
+                            master_channel,
+                            start_value,
+                            end_value,
+                            steps,
+                            interval,
+                            master_channel,
+                        )
+                    else:
+                        master_channel["sliderValue"] = end_value
+                        faderSend(device_id, end_value, master_channel["id"])
+        else:  # Scene deactivated
+            devices_in_scene = set()
+            for device in scene_data.get("channel", []):
+                devices_in_scene.add(device["id"])
+
+            remove_scene_from_stack(scene_id)
+            device_states = {}  # Track highest priority state for each device
+
+            # Build device states from remaining active scenes
+            for active_scene in scene_stack:
+                active_scene_id = active_scene["scene_id"]
+                active_scene_data = None
+
+                for scene in routes.scenes:
+                    if scene["id"] == active_scene_id:
+                        active_scene_data = scene
+                        break
+
+                if active_scene_data and active_scene_data.get("status", False):
+                    for device in active_scene_data.get("channel", []):
+                        device_id = device["id"]
+                        scene_slider_value = device["attributes"]["channel"][0][
+                            "sliderValue"
+                        ]
+                        device_states[device_id] = {
+                            "value": scene_slider_value,
+                            "channel_id": 0, 
+                        }
+
+            for device_id in devices_in_scene:
+                actual_device = next(
+                    (d for d in routes.devices if d["id"] == device_id), None
+                )
+                if not actual_device:
                     continue
 
-                device_channel = device_obj["attributes"]["channel"][channel["id"]]
+                master_channel = actual_device["attributes"]["channel"][0]
+                start_value = master_channel["sliderValue"]
 
-                start_value = device_channel["sliderValue"]
-                end_value = (
-                    channel["sliderValue"]
-                    if status
-                    else device_channel.get("backupValue", 0)
-                )
+                if device_id in device_states:
+                    end_value = device_states[device_id]["value"]
+                else:
+                    end_value = master_channel.get("backupValue", 0)
 
                 if start_value != end_value:
                     start_fade_thread(
-                        device_obj,
-                        channel,
+                        actual_device,
+                        master_channel,
                         start_value,
                         end_value,
                         steps,
                         interval,
-                        device_channel,
+                        master_channel,
                     )
+                else:
+                    master_channel["sliderValue"] = end_value
+                    faderSend(device_id, end_value, master_channel["id"])
 
-                # Check if the scene is out of sync
-                if not fading_active:
-                    check_sync_status(device["id"], end_value, channel["id"])
+        # Update MotorMix controller if available
+        if driver and scene_id is not None:
+            driver.quickSceneButtonUpdate(scene_id, status)
 
+        # Notify all clients about the scene update
         if connections > 0:
             socketio.emit(
                 "scene_update", {"id": scene_id, "status": status}, namespace="/socket"
             )
+            
+    # Check if any active scene is out of sync with current device state
+    def check_sync_status(fader, fader_value, channelId):
+        if fading_active or not scene_stack:
+            return
+        
+        for scene in routes.scenes:
+            if not scene.get("status", False):
+                continue
+                
+            scene_device = next((d for d in scene.get("channel", []) if d["id"] == fader), None)
+            if not scene_device:
+                continue
+                
+            try:
+                expected_value = scene_device["attributes"]["channel"][channelId]["sliderValue"]
+            except (KeyError, IndexError):
+                continue  # Skip if channel not found
+                
+            was_out_of_sync = scene.get("out_of_sync", False)
+            is_out_of_sync = abs(expected_value - fader_value) > 5  # Threshold
+            
+            # Update scene status if it changed
+            if is_out_of_sync != was_out_of_sync:
+                scene["out_of_sync"] = is_out_of_sync
+                
+                for stack_scene in scene_stack:
+                    if stack_scene["scene_id"] == scene["id"]:
+                        stack_scene["out_of_sync"] = is_out_of_sync
+                        break
+                        
+                if is_out_of_sync:
+                    socketio.emit("out_of_sync", {"scene_id": scene["id"]}, namespace="/socket")
+                    print(f"Scene {scene['id']} is out of sync")
+                else:
+                    socketio.emit("in_sync", {"scene_id": scene["id"]}, namespace="/socket")
+                    print(f"Scene {scene['id']} is back in sync")
 
-    # ------------------- End of Scene status (on/off) -------------------
 
     # Delete a scene and tell every client to update
     @socketio.on("scene_delete", namespace="/socket")
@@ -628,61 +742,13 @@ def register_socketio_events(socketio):
 
         socketio.emit("light_response", {"message": "success"}, namespace="/socket")
 
-    # Check if a scene is out of sync or back in sync again
-    def check_sync_status(fader, fader_value, channel_id):
-        out_of_sync_scenes = []
-        in_sync_scenes = []
-
-        # Iterate over the scene stack and check if the fader is in sync
-        for scene in scene_stack:
-            devices = scene.get("devices", {})
-            if fader in devices:
-                device_channels = devices[fader]["attributes"]["channel"]
-
-                # Compare only the relevant channel
-                relevant_channel = next(
-                    (ch for ch in device_channels if ch["id"] == channel_id), None
-                )
-                if relevant_channel:
-                    slider_value = relevant_channel["sliderValue"]
-
-                    if slider_value != fader_value:
-                        # Scene is out of sync
-                        if not scene.get("out_of_sync", False):
-                            routes.scenes[scene["scene_id"]]["out_of_sync"] = True
-                            scene["out_of_sync"] = True
-                            out_of_sync_scenes.append(scene["scene_id"])
-                    else:
-                        # Scene is back in sync
-                        if scene.get("out_of_sync", False):
-                            routes.scenes[scene["scene_id"]]["out_of_sync"] = False
-                            scene["out_of_sync"] = False
-                            in_sync_scenes.append(scene["scene_id"])
-
-        # Send updates for out of sync scenes
-        for scene_id in out_of_sync_scenes:
-            socketio.emit("out_of_sync", {"scene_id": scene_id}, namespace="/socket")
-            print(f"Scene {scene_id} is out of sync")
-
-        # Send updates for scenes back in sync
-        for scene_id in in_sync_scenes:
-            socketio.emit("in_sync", {"scene_id": scene_id}, namespace="/socket")
-            print(f"Scene {scene_id} is back in sync")
-
-    # Fader value update
     @socketio.on("fader_value", namespace="/socket")
     def handle_fader_value(data):
         fader_value = int(data.get("value", 0))
         fader = int(data["deviceId"])
         channelId = int(data["channelId"])
         send_to_self = data.get("send", False)
-        client_id = request.sid  # type: ignore # Get the sending client's ID
-
-        # Check for out-of-sync scenes in a separate thread to avoid blocking
-        if not fading_active and scene_stack:
-            threading.Thread(
-                target=check_sync_status, args=(fader, fader_value, channelId)
-            ).start()
+        client_id = request.sid  # type: ignore
 
         device = routes.devices[fader] if 1 <= fader < len(routes.devices) else None
 
@@ -691,11 +757,26 @@ def register_socketio_events(socketio):
             channel = channels[channelId]
 
             if channel:
-                channel["sliderValue"] = channel["backupValue"] = fader_value
+                channel["sliderValue"] = fader_value
+
+                if not data.get("from_scene", False):
+                    channel["backupValue"] = fader_value
+
+                    if channelId == 0:
+                        device_id = device["id"]
+                        if device_id not in device_original_values:
+                            device_original_values[device_id] = {}
+                        device_original_values[device_id]["sliderValue"] = fader_value
+
                 send_dmx(fader, channelId, fader_value, device, channel)
                 if driver is not None and channel["channel_type"] == "main":
                     driver.pushFader(fader, fader_value)
                     driver.devices = routes.devices
+
+                if scene_stack and not fading_active:
+                    threading.Thread(
+                        target=check_sync_status, args=(fader, fader_value, channelId)
+                    ).start()
 
             if device.get("device_type", "") == "HMI":
                 if (

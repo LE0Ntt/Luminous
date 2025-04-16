@@ -164,6 +164,9 @@ const Setting3: React.FC<Setting3Props> = ({ studioRows, studioColumns }) => {
     try {
       const response = await fetch(url + '/studio', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(gridValues),
       });
 

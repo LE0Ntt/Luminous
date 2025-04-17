@@ -1,17 +1,3 @@
-/**
- * Luminous - A Web-Based Lighting Control System
- *
- * TH Köln - University of Applied Sciences, institute for media and imaging technology
- * Projekt Medienproduktionstechnik & Web-Engineering
- *
- * Authors:
- * - Leon Hölzel
- * - Darwin Pietas
- * - Marvin Plate
- * - Andree Tomek
- *
- * @file StudioOverview.tsx
- */
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import '../Studio.css';
 import schein from '../assets/schein3.png';
@@ -32,12 +18,12 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
   const masterValue = useFaderValue(0, 0);
   const memoizedMasterValue = useMemo(() => masterValue, [masterValue]);
 
-  const [studioRows, setStudioRows] = useState(6);
-  const [studioColumns, setStudioColumns] = useState(4);
+  const [studioRows] = useState(6);
+  const [studioColumns] = useState(4);
 
+  const gridHeight = 150;
   const greenScreen = 14;
 
-  // Define selected sliders with their properties
   const selectedSliders = useMemo(
     () => [
       { id: 5, row: 0, col: 0, type: spot },
@@ -63,7 +49,56 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
     []
   );
 
-  // Creates an array with the number of rows and columns to be displayed in the Studio Overview
+  const customLights = [
+    {
+      type: 'greenscreen',
+      groupId: greenScreen,
+      count: 6,
+      useSchein2: true,
+      imageSrc: biColor,
+      label: 'Greenscreen',
+      top: 60,
+      left: 0,
+    },
+    {
+      type: 'single',
+      groupId: 11,
+      flip: true,
+      imageSrc: spot,
+      label: t('testchart'),
+      top: 750,
+      left: 170,
+    },
+    {
+      type: 'single',
+      groupId: 12,
+      flip: true,
+      imageSrc: spot,
+      label: t('testchart'),
+      top: 750,
+      left: 270,
+    },
+    {
+      type: 'single',
+      groupId: 13,
+      flip: true,
+      imageSrc: spot,
+      label: 'HMI',
+      top: 50,
+      left: 500,
+    },
+  ];
+
+  const traversen = [
+    { top: 720, left: 74, groupId: 15 }, // T1
+    { top: 401, left: 74, groupId: 16 }, // T2
+    { top: 82, left: 74, groupId: 17 }, // T3
+    { top: 82, left: 731, groupId: 18 }, // T4
+    { top: 401, left: 731, groupId: 19 }, // T5
+    { top: 566, left: 731, groupId: 20 }, // T6
+    { top: 720, left: 614, groupId: 21 }, // T7
+  ];
+
   const grid = useMemo(
     () =>
       Array(studioRows)
@@ -72,7 +107,6 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
     []
   );
 
-  // Display the fader value with brightness calculation
   const FaderValueDisplay = useCallback(
     ({ groupId, faderId }: { groupId: number; faderId: number }) => {
       const value = useFaderValue(groupId, faderId);
@@ -83,7 +117,6 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
     [memoizedMasterValue, t]
   );
 
-  // Calculate the light opacity and determine which "schein" to use
   const LightOpacity = useCallback(
     ({ groupId, faderId, useSchein2, flip }: { groupId: number; faderId: number; useSchein2?: boolean; flip?: boolean }) => {
       const value = useFaderValue(groupId, faderId);
@@ -97,7 +130,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
           style={{
             opacity: opacity,
             filter: 'blur(5px)',
-            transform: flip ? 'rotate(180deg) translate(10px, -85px)' : groupId == greenScreen ? 'translate(0, 17px)' : 'none', // Flip the light beam if needed
+            transform: flip ? 'rotate(180deg) translate(10px, -85px)' : groupId === greenScreen ? 'translate(0, 17px)' : 'none',
           }}
         />
       );
@@ -105,7 +138,6 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
     [memoizedMasterValue]
   );
 
-  // Render the light component
   const renderLight = useCallback(
     (selectedSlider: any, isRightSide: boolean) => {
       return (
@@ -142,39 +174,84 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
   return (
     <div className='overview window'>
       <div className='studioOverview window'>
-        <div className='studioOverviewGreenscreen'>
-          <div
-            className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
-            onClick={() => handleGlowAndFocus(greenScreen)}
-            style={{ cursor: 'pointer' }}
-          >
-            <div className='studioOverviewInfopanelText'>Greenscreen</div>
-            <FaderValueDisplay
-              groupId={greenScreen}
-              faderId={0}
-            />
-          </div>
-          {[...Array(6)].map((_, index) => (
+        {customLights.map((light, idx) => {
+          if (light.type === 'greenscreen') {
+            const mirroredAfter = Math.ceil(light.count / 2);
+            return (
+              <div
+                className='studioOverviewGreenscreen'
+                key={`greenscreen-${idx}`}
+                style={{ position: 'absolute', top: light.top, left: light.left }}
+              >
+                <div
+                  className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
+                  onClick={() => handleGlowAndFocus(light.groupId)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className='studioOverviewInfopanelText'>{light.label}</div>
+                  <FaderValueDisplay
+                    groupId={light.groupId}
+                    faderId={0}
+                  />
+                </div>
+                {[...Array(light.count)].map((_, index) => (
+                  <div
+                    className='studioOverviewLight'
+                    key={`gs-light-${index}`}
+                  >
+                    <LightOpacity
+                      groupId={light.groupId}
+                      faderId={0}
+                      useSchein2={light.useSchein2}
+                    />
+                    <img
+                      src={light.imageSrc}
+                      alt='Lamp'
+                      className={`studioOverviewGreenscreenLamp studioOverviewLamp ${index >= mirroredAfter ? 'lampMirrored' : ''}`}
+                      onClick={() => handleGlowAndFocus(light.groupId)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </div>
+                ))}
+              </div>
+            );
+          }
+          return (
             <div
               className='studioOverviewLight'
-              key={index}
+              key={`custom-light-${light.groupId}`}
+              style={{ position: 'absolute', top: light.top, left: light.left }}
             >
               <LightOpacity
-                groupId={greenScreen}
+                groupId={light.groupId}
                 faderId={0}
-                useSchein2={true}
+                flip={light.flip}
               />
               <img
-                src={biColor}
+                src={light.imageSrc}
                 alt='Lamp'
-                className={`studioOverviewGreenscreenLamp studioOverviewLamp ${index >= 3 ? 'lampMirrored' : ''}`}
-                onClick={() => handleGlowAndFocus(greenScreen)}
+                className='studioOverviewTestchartLamp'
+                onClick={() => handleGlowAndFocus(light.groupId)}
                 style={{ cursor: 'pointer' }}
               />
+              <div
+                className='studioOverviewInfopanel studioOverviewInfopanelTestchart'
+                onClick={() => handleGlowAndFocus(light.groupId)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className='studioOverviewInfopanelText'>{light.label}</div>
+                <FaderValueDisplay
+                  groupId={light.groupId}
+                  faderId={0}
+                />
+              </div>
             </div>
-          ))}
-        </div>
-        <div className='studioOverviewLights'>
+          );
+        })}
+        <div
+          className='studioOverviewLights'
+          style={{ top: gridHeight }} // 140 default
+        >
           <div
             style={{
               display: 'grid',
@@ -199,102 +276,34 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
             )}
           </div>
         </div>
-        <div className='studioOverviewTestchart'>
-          {[11, 12].map((id) => (
+        <div className='studioOverviewTraversen'>
+          {traversen.map((traverse, index) => (
             <div
-              className='studioOverviewLight'
-              key={id}
+              key={index}
+              style={{ top: `${traverse.top}px`, left: `${traverse.left}px`, position: 'fixed' }}
             >
-              <LightOpacity
-                groupId={id}
-                faderId={0}
-                flip={true} // Flip the light beam
-              />
-              <img
-                src={spot}
-                alt='Lamp'
-                className='studioOverviewTestchartLamp'
-                onClick={() => handleGlowAndFocus(id)}
-                style={{ cursor: 'pointer' }}
-              />
+              <div style={{ top: `${traverse.top}px`, left: `${traverse.left}px`, position: 'fixed' }}>
+                <LightBeam
+                  master={memoizedMasterValue}
+                  main={useFaderValue(traverse.groupId, 0)}
+                  red={useFaderValue(traverse.groupId, 1)}
+                  green={useFaderValue(traverse.groupId, 2)}
+                  blue={useFaderValue(traverse.groupId, 3)}
+                />
+              </div>
               <div
-                className='studioOverviewInfopanel studioOverviewInfopanelTestchart'
-                onClick={() => handleGlowAndFocus(id)}
+                className={`studioOverviewInfopanel studioOverviewInfopanelTraverse${index}`}
+                onClick={() => handleGlowAndFocus(traverse.groupId)}
                 style={{ cursor: 'pointer' }}
               >
-                <div className='studioOverviewInfopanelText'>{t('testchart')}</div>
+                <div className='studioOverviewInfopanelText'>{t('Traverse ' + (index + 1))}</div>
                 <FaderValueDisplay
-                  groupId={id}
+                  groupId={traverse.groupId}
                   faderId={0}
                 />
               </div>
             </div>
           ))}
-        </div>
-        <div className='studioOverviewLight studioOverviewExtra'>
-          <LightOpacity
-            groupId={13}
-            faderId={0}
-            flip={true} // Flip the light beam
-          />
-          <img
-            src={spot}
-            alt='Lamp'
-            className='studioOverviewTestchartLamp'
-            onClick={() => handleGlowAndFocus(13)}
-            style={{ cursor: 'pointer' }}
-          />
-          <div
-            className='studioOverviewInfopanel studioOverviewInfopanelTestchart'
-            onClick={() => handleGlowAndFocus(13)}
-            style={{ cursor: 'pointer' }}
-          >
-            <div className='studioOverviewInfopanelText'>HMI</div>
-            <FaderValueDisplay
-              groupId={13}
-              faderId={0}
-            />
-          </div>
-        </div>
-        <div className='studioOverviewTraversen'>
-          {[
-            { top: 720, left: 74 }, // T1
-            { top: 401, left: 74 }, // T2
-            { top: 82, left: 74 }, // T3
-            { top: 82, left: 731 }, // T4
-            { top: 401, left: 731 }, // T5
-            { top: 566, left: 731 }, // T6
-            { top: 720, left: 614 }, // T7
-          ].map((position, index) => {
-            const baseIndex = 15 + index;
-            return (
-              <div
-                key={index}
-                style={{ top: `${position.top}px`, left: `${position.left}px`, position: 'fixed' }}
-              >
-                <div style={{ top: `${position.top}px`, left: `${position.left}px`, position: 'fixed' }}>
-                  <LightBeam
-                    master={memoizedMasterValue}
-                    main={useFaderValue(baseIndex, 0)}
-                    red={useFaderValue(baseIndex, 1)}
-                    green={useFaderValue(baseIndex, 2)}
-                    blue={useFaderValue(baseIndex, 3)}
-                  />
-                </div>
-                <div
-                  className={`studioOverviewInfopanel studioOverviewInfopanelTraverse${index}`}
-                  onClick={() => handleGlowAndFocus(baseIndex)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <div className='studioOverviewInfopanelText'>{t('Traverse ' + (index + 1))}</div>
-                  <FaderValueDisplay
-                    groupId={baseIndex}
-                    faderId={0}
-                  />
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
     </div>

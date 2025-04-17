@@ -1,3 +1,17 @@
+/**
+ * Luminous - A Web-Based Lighting Control System
+ *
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ *
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ *
+ * @file StudioOverview.tsx
+ */
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import '../Studio.css';
 import schein from '../assets/schein3.png';
@@ -176,7 +190,7 @@ const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) =
       <div className='studioOverview window'>
         {customLights.map((light, idx) => {
           if (light.type === 'greenscreen') {
-            const mirroredAfter = Math.ceil(light.count / 2);
+            const mirroredAfter = Math.ceil(light.count! / 2);
             return (
               <div
                 className='studioOverviewGreenscreen'

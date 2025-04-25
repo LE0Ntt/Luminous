@@ -5,12 +5,9 @@
   - [x] Prevent scene and solo overlaps
   - [x] Save as stack
   - [x] Display an icon if scene is out of sync
-
-## Version 1.2.x TODOs
-
 - [ ] LightFX
   - [ ] Find a way to get full resolution Bi-color
-  - [ ] Fix out of sync problems
+  - [x] Fix out of sync problems
 
 ## Known Issues
 
@@ -26,9 +23,7 @@
 - Solo does not work on non-device channels
 - LightFX
   - RGB and bi-color picker mismatch from cursor position when window is resized
-  - Sync button wonky with multiple clients
-  - Sometimes the rgb channels are not adopted
-  - Bi-color rounding down on page load
+  - Out-of-sync not checking for multiple clients
   - Bi-color resolution too low, no 50% possible
 
 ## Necessary Changes
@@ -179,8 +174,8 @@
     - [x] TranslationContext.tsx
   - [x] App.tsx
   - [ ] Color.css
-  - [ ] Control.css
-  - [ ] Control.tsx
+  - [x] Control.css
+  - [x] Control.tsx
   - [ ] index.css
   - [x] main.tsx
   - [x] Scenes.css

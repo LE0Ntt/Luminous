@@ -5,8 +5,8 @@
   - [x] Prevent scene and solo overlaps
   - [x] Save as stack
   - [x] Display an icon if scene is out of sync
-- [ ] LightFX
-  - [ ] Find a way to get full resolution Bi-color
+- [x] LightFX
+  - [x] Find a way to get full resolution Bi-color
   - [x] Fix out of sync problems
 
 ## Known Issues

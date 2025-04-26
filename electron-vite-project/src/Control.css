@@ -216,3 +216,41 @@
   background-color: var(--mainColor);
   color: var(--primaryDark);
 }
+
+.biRange {
+  width: 431px;
+  margin: 0;
+  padding: 0 10px;
+  height: 28px;
+  border-radius: 20px;
+  background: linear-gradient(
+    to right,
+    rgb(255, 180, 80),
+    rgb(255, 255, 255),
+    rgb(180, 220, 255)
+  );
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.biRange::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: none;
+  border: 2px solid #000000;
+  -webkit-box-shadow:inset 0px 0px 0px 2px #fff;
+  box-shadow:inset 0px 0px 0px 2px #fff;
+}
+.biRange::-moz-range-thumb {
+  -moz-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: none;
+  border: 2px solid #000000;
+  -moz-box-shadow:inset 0px 0px 0px 2px #fff;
+  box-shadow:inset 0px 0px 0px 2px #fff;
+}

@@ -25,6 +25,7 @@
   - Fixed OOS button flashing on every added device
   - Fixed unwanted fader synchronization
   - Fixed ugly corner of selection box flashing
+  - Fixed bi-color fader inaccuracy
 
 ## [1.2.3] - 2024-06-26
 

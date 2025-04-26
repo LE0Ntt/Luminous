@@ -22,7 +22,6 @@ import './Control.css';
 import Fader from './components/Fader';
 import DeviceList from './components/DeviceList';
 import Button from './components/Button';
-import ColorPicker from './components/ColorPicker';
 import AddScene from './components/AddScene';
 import AdminPassword from './components/AdminPassword';
 import iro from '@jaames/iro';
@@ -94,9 +93,10 @@ function Control() {
   const [green, setGreen] = useState(0);
   const [blue, setBlue] = useState(0);
   const [allEffectChannels, setAllEffectChannels] = useState<Channel[]>([]);
-  const [prevFaderValues, setPrevFaderValues] = useState<number[]>([0, 0, 0, 0, 0]);
+  const prevFaderRef = useRef<[number, number, number, number, number]>([0, 0, 0, 0, 0]);
+  const pickerRef = useRef<iro.ColorPicker | null>(null);
   const [, forceRender] = useState(false);
-
+  const isDraggingBi = useRef(false);
   const mainFaderValue = useFaderValue(0, 1);
   const biColorFaderValue = useFaderValue(0, 2);
   const redFaderValue = useFaderValue(0, 3);
@@ -211,6 +211,17 @@ function Control() {
     setIsSolo(!isSolo);
   };
 
+  const handleBiSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = Number(e.target.value); // 0–255
+    setFaderValue(0, 2, v);
+
+    const kelvin = (v / 255) * 8800 + 2200;
+    const rgb = iro.Color.kelvinToRgb(kelvin);
+    setFaderValue(0, 3, rgb.r);
+    setFaderValue(0, 4, rgb.g);
+    setFaderValue(0, 5, rgb.b);
+  };
+
   // Color Picker
   const handleColorChange = (r: number, g: number, b: number) => {
     setRed(r);
@@ -219,6 +230,7 @@ function Control() {
     setFaderValue(0, 3, r);
     setFaderValue(0, 4, g);
     setFaderValue(0, 5, b);
+    if (isDraggingBi.current) return;
     const kelvin = iro.Color.rgbToKelvin({ r, g, b });
     setFaderValue(0, 2, Math.min(255, Math.max(0, Math.round(((kelvin - 2200) / 8800) * 255))));
   };
@@ -227,6 +239,7 @@ function Control() {
     setRed(redFaderValue);
     setGreen(greenFaderValue);
     setBlue(blueFaderValue);
+    pickerRef.current?.color.set({ r: redFaderValue, g: greenFaderValue, b: blueFaderValue });
   }, [redFaderValue, greenFaderValue, blueFaderValue]);
 
   // Update fader values when selected devices change
@@ -236,25 +249,28 @@ function Control() {
       return;
     }
 
-    const mainChanged = prevFaderValues[0] !== mainFaderValue;
-    const rgbOrBiChanged = [1, 2, 3, 4].some((idx) => prevFaderValues[idx] !== [biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][idx - 1]);
-    setPrevFaderValues([mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue]);
+    const prev = prevFaderRef.current;
+    const curr: [number, number, number, number, number] = [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue];
+
+    const mainChanged = prev[0] !== curr[0];
+    const rgbOrBiChanged = [1, 2, 3, 4].some((i) => prev[i] !== curr[i]);
 
     if (!mainChanged && !rgbOrBiChanged) return;
 
-    selectedDevices.forEach((d) => {
-      d.attributes.channel
+    prevFaderRef.current = curr;
+
+    selectedDevices.forEach((device) => {
+      device.attributes.channel
         .filter((c) => (mainChanged && c.channel_type === 'main') || (rgbOrBiChanged && ['r', 'g', 'b', 'bi'].includes(c.channel_type)))
-        .forEach((c) => {
-          const idx = getControlIndex(c.channel_type);
+        .forEach((channel) => {
+          const idx = getControlIndex(channel.channel_type);
           if (idx === undefined) return;
-          const val = [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][idx];
-          setFaderValue(d.id, c.id, val);
-          sendDMXBuffered(emit, d.id, c.id, val);
+          const newVal = curr[idx];
+          setFaderValue(device.id, channel.id, newVal);
+          sendDMXBuffered(emit, device.id, channel.id, newVal);
         });
     });
-  }, [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue]);
-
+  }, [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue, selectedDevices, setFaderValue, emit]);
   // Check support for effects, bi-color and RGB
   useEffect(() => {
     let bi = false,
@@ -276,8 +292,7 @@ function Control() {
     setSupportFlags({ supportsBiColor: bi, supportsRGB: rgb });
   }, [selectedDevices]);
 
-  const getControlIndex = (type: string): number | undefined => (({ main: 0, bi: 1, r: 2, g: 3, b: 4 } as any)[type]);
-
+  const getControlIndex = useCallback((type: string): number | undefined => (({ main: 0, bi: 1, r: 2, g: 3, b: 4 } as any)[type]), []);
   // Update fader values for selected devices
   const updateFaderValuesForSelectedDevices = useCallback(() => {
     programmaticUpdateRef.current = true;
@@ -289,42 +304,50 @@ function Control() {
       gSet: false,
       bSet: false,
     };
-    const nextPrev = [...prevFaderValues];
+    const nextPrev: [number, number, number, number, number] = [...prevFaderRef.current]; // Use ref here
 
     selectedDevices.forEach((d) =>
       d.attributes.channel.forEach((c) => {
         const val = getFaderValue(d.id, c.id);
+        const idx = getControlIndex(c.channel_type);
 
         if (c.channel_type === 'main' && !flags.mainSet) {
           setFaderValue(0, 1, val);
-          nextPrev[0] = val;
+          if (idx !== undefined) nextPrev[idx] = val;
           flags.mainSet = true;
         } else if (['r', 'g', 'b'].includes(c.channel_type) && !flags[c.channel_type + 'Set']) {
           setFaderValue(0, c.channel_type === 'r' ? 3 : c.channel_type === 'g' ? 4 : 5, val);
-          nextPrev[getControlIndex(c.channel_type)!] = val;
+          if (idx !== undefined) nextPrev[idx] = val;
           flags[c.channel_type + 'Set'] = true;
           flags.biSet = true;
         } else if (c.channel_type === 'bi' && !flags.biSet) {
+          if (isDraggingBi.current) return;
           setFaderValue(0, 2, val);
-          nextPrev[1] = val;
-          flags.biSet = flags.rSet = flags.gSet = flags.bSet = true;
+          if (idx !== undefined) nextPrev[idx] = val;
+          flags.biSet = true;
         }
       })
     );
 
-    setPrevFaderValues(nextPrev);
-  }, [selectedDevices, getFaderValue, setFaderValue, prevFaderValues, setPrevFaderValues]);
+    prevFaderRef.current = nextPrev;
+  }, [selectedDevices, getFaderValue, setFaderValue, getControlIndex]);
 
-  // Update RGB values
+  const mountWheel = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!node || pickerRef.current) return;
+      pickerRef.current = iro.ColorPicker(node, {
+        width: 320,
+        layout: [{ component: iro.ui.Wheel, options: {} }],
+        color: { r: red, g: green, b: blue },
+      });
+      pickerRef.current!.on('color:change', (c: { rgb: { r: number; g: number; b: number } }) => handleColorChange(c.rgb.r, c.rgb.g, c.rgb.b));
+    },
+    [red, green, blue, selectedDevices]
+  );
+
   useEffect(() => {
-    if (!supportFlags.supportsBiColor || supportFlags.supportsRGB) return;
-
-    const kelvin = Math.round((biColorFaderValue / 255) * 8800 + 2200);
-    const rgb = iro.Color.kelvinToRgb(kelvin);
-    setFaderValue(0, 3, rgb.r);
-    setFaderValue(0, 4, rgb.g);
-    setFaderValue(0, 5, rgb.b);
-  }, [supportFlags]);
+    if (!selected) pickerRef.current = null;
+  }, [selected]);
 
   // Update fader values for selected devices when modified
   useEffect(() => {
@@ -386,14 +409,21 @@ function Control() {
   };
 
   const handleInputConfirm = () => {
+    if (isDraggingBi.current) return;
     let num = parseFloat(inputValue.toString().replace(',', '.'));
     if (!isNaN(num)) {
       num = Math.max(0, Math.min(100, num));
       setInputValue(Math.round(num));
-      const kelvin = Math.round((Math.round((num / 100) * 255) / 255) * 8800 + 2200);
+      const kelvin = (((num / 100) * 255) / 255) * 8800 + 2200;
       const rgb = iro.Color.kelvinToRgb(kelvin);
       setFaderValue(0, 3, rgb.r);
+      setFaderValue(0, 4, rgb.g);
       setFaderValue(0, 5, rgb.b);
+      setFaderValue(0, 2, Math.min(255, Math.max(0, Math.round(((kelvin - 2200) / 8800) * 255))));
+      isDraggingBi.current = true;
+      setTimeout(() => {
+        isDraggingBi.current = false;
+      }, 50);
     } else setInputValue(Math.round(scaledDisplay));
     setIsFocused(false);
   };
@@ -406,6 +436,12 @@ function Control() {
   const handleFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsFocused(true);
     setTimeout(() => e.target.select(), 50);
+  };
+
+  const resetIsDraggingBi = () => {
+    setTimeout(() => {
+      isDraggingBi.current = false;
+    }, 50);
   };
 
   /* ---------- initial reference sync ---------- */
@@ -464,12 +500,18 @@ function Control() {
                 <span style={{ marginTop: '-110px' }}>{t('noSupport')}</span>
               </div>
               <div className='controlKelvinPicker'>
-                <ColorPicker
-                  pickerType='kelvin'
-                  red={red}
-                  green={green}
-                  blue={blue}
-                  onColorChange={handleColorChange}
+                <input
+                  type='range'
+                  min={0}
+                  max={255}
+                  step={1}
+                  value={biColorFaderValue}
+                  onChange={handleBiSliderChange}
+                  className='biRange'
+                  onMouseDown={() => (isDraggingBi.current = true)}
+                  onMouseUp={resetIsDraggingBi}
+                  onTouchStart={() => (isDraggingBi.current = true)}
+                  onTouchEnd={resetIsDraggingBi}
                 />
               </div>
               <input
@@ -514,13 +556,7 @@ function Control() {
                 </div>
               </div>
               <div className='controlColorPicker'>
-                <ColorPicker
-                  pickerType='wheel'
-                  red={red}
-                  green={green}
-                  blue={blue}
-                  onColorChange={handleColorChange}
-                />
+                <div ref={mountWheel} />
               </div>
             </div>
             {/* Effects */}

@@ -42,7 +42,7 @@ function LightSettings({ onClose }: SettingsProps) {
   const [channelArray, setChannelArray] = useState<Array<{ id: number; dmx_channel: string; channel_type: string }>>([]);
   const [channelChangeArray, setChannelChangeArray] = useState<Array<{ id: number; dmx_channel: string; channel_type: string }>>([]);
   const [showAdminPassword, setShowAdminPassword] = useState(false);
-  const [istDelete, setIsDelete] = useState(false); // False = update/create device, true = delete device
+  const [isDelete, setIsDelete] = useState(false); // False = update/create device, true = delete device
 
   const LampTypeChannels: { [key: string]: string[] } = {
     RGBDim: ['main', 'r', 'g', 'b'],
@@ -195,16 +195,27 @@ function LightSettings({ onClose }: SettingsProps) {
     setInputUniverse(e.target.value);
   };
 
-  const handleInputType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    setInputType(value);
+    const handleInputType = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const value = e.target.value;
+      setInputType(value);
 
-    // Set the DMX range to the number of channels of the selected device type
-    const valueChannels = LampTypeChannels[value];
-    if (valueChannels && !rangeChanged) {
-      setInputDMXrange(valueChannels.length.toString());
-    }
-  };
+      // Update selectedDevice's type to reflect in icon
+      if (selectedDevice) {
+        setSelectedDevice((prevDevice) => {
+          if (!prevDevice) return undefined;
+          return {
+            ...prevDevice,
+            device_type: value,
+          };
+        });
+      }
+
+      // Set the DMX range to the number of channels of the selected device type
+      const valueChannels = LampTypeChannels[value];
+      if (valueChannels && !rangeChanged) {
+        setInputDMXrange(valueChannels.length.toString());
+      }
+    };
 
   const handleSelectDevice = (device: DeviceConfig) => {
     setSelectedDevice(device);
@@ -244,7 +255,7 @@ function LightSettings({ onClose }: SettingsProps) {
       deviceValue: 0,
       name: t('ls_newDevice'),
       attributes: undefined,
-      device_type: '',
+      device_type: 'RGBDim',
       universe: '',
     };
 
@@ -341,7 +352,7 @@ function LightSettings({ onClose }: SettingsProps) {
   const handleAdminPasswordConfirm = useCallback(
     (isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
       if (isConfirmed) {
-        if (istDelete) {
+        if (isDelete) {
           // send remove device request
           emit('light_delete', { id: selectedDevice?.id });
         } else {
@@ -360,7 +371,7 @@ function LightSettings({ onClose }: SettingsProps) {
         }
       }
     },
-    [istDelete, inputName, inputNumber, inputType, inputUniverse, channelArray, channelChangeArray, selectedDevice]
+    [isDelete, inputName, inputNumber, inputType, inputUniverse, channelArray, channelChangeArray, selectedDevice]
   );
 
   return (

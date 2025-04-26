@@ -22,9 +22,8 @@
 - Error if DMX channel exists multiple times
 - Solo does not work on non-device channels
 - LightFX
-  - RGB and bi-color picker mismatch from cursor position when window is resized
+  - RGB picker mismatch from cursor position when window is resized
   - Out-of-sync not checking for multiple clients
-  - Bi-color resolution too low, no 50% possible
 
 ## Necessary Changes
 
@@ -134,7 +133,6 @@
     - [x] BigView.tsx
     - [x] Button.css
     - [x] Button.tsx
-    - [x] ColorPicker.tsx
     - [x] ConnectionContext.tsx
     - [x] DeleteScene.tsx
     - [x] DeviceList.css
@@ -151,8 +149,8 @@
     - [x] Help.css
     - [x] Help.tsx
     - [x] LightBeam.tsx
-    - [ ] LightSettings.css
-    - [ ] LightSettings.tsx
+    - [x] LightSettings.css
+    - [x] LightSettings.tsx
     - [x] NoConnection.css
     - [x] NoConnection.tsx
     - [x] RecoverDialog.tsx

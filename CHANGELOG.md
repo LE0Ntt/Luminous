@@ -10,6 +10,9 @@
 - Scenes
   - Display an icon if scene is 'out of sync'
   - Active scenes are saved as a stack to prevent overlaps
+- LightSettings 
+  - Selected device now has the icon of the selected device type
+  - Brought back transition on selection
 - Code refactoring
 
 ### Fixes
@@ -20,6 +23,7 @@
 - Fixed LightFX list not always reloading when a device is edited and no longer reset the selected list
 - Fixed newly added device missing initial channel values
 - Fixed BigView overlaying the NoConnection screen
+- Fixed misc icon not showing up
 - LightFX
   - Fixed out-of-sync (OOS) button not working consistently 
   - Fixed OOS button flashing on every added device

@@ -128,13 +128,7 @@
   color: var(--primary);
 }
 
-.controlKelvinPicker {
-  position: relative;
-  top: 142px;
-  left: 60px;
-}
-
-.controlBiColor input {
+.controlBiColor .inputNum {
   margin-bottom: 57px;
   font-weight: 500;
 }
@@ -219,7 +213,6 @@
 
 .biRange {
   width: 431px;
-  margin: 0;
   padding: 0 10px;
   height: 28px;
   border-radius: 20px;
@@ -232,6 +225,9 @@
   outline: none;
   -webkit-appearance: none;
   appearance: none;
+  position: relative;
+  top: 142px;
+  left: 60px;
 }
 
 .biRange::-webkit-slider-thumb {

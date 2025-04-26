@@ -13,6 +13,9 @@
 - LightSettings 
   - Selected device now has the icon of the selected device type
   - Brought back transition on selection
+- LightFX
+  - Added a new bi-color slider with higher resolution
+    - Added support for scroll wheel and arrow keys
 - Code refactoring
 
 ### Fixes

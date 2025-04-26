@@ -17,15 +17,13 @@
   - Faders sometimes jump randomly
   - Scenes do not turn off correctly, maybe backup value?
   - Reset button kills unsafed scenes
-- Studio-Overview just uses ID, not universe // not sure if this is a problem or not
-- Wrong devices displayed after changing number in LightSettings (Resolved?)
 - Error if DMX channel exists multiple times
 - Solo does not work on non-device channels
 - LightFX
   - RGB picker mismatch from cursor position when window is resized
   - Out-of-sync not checking for multiple clients
 
-## Necessary Changes
+## High Priority
 
 - [ ] Code cleanup / comments
 - [x] Testing phase
@@ -42,13 +40,12 @@
 - [x] Guide / Implement Help
   - [x] Quick Start Guide
   - [x] Finetune Quick Start Guide
-- [ ] LightFX
+- [x] LightFX
   - [x] Change to current state of the first light
   - [x] Effects as misc faders for now
   - [x] Device list server updates
   - [x] Emit changes with buffer like other faders
-  - [ ] "Mute" button
-  - [ ] New bi-color slider with higher resolution
+  - [x] New bi-color slider with higher resolution
 - [ ] PI
   - [ ] Production server
   - [ ] Shutdown button
@@ -57,16 +54,15 @@
 - [x] Change admin password
 - [x] Input can be empty
 - [x] Use _ENTER_ to accept dialog
-- [ ] Rethink scene logic: Off after e.g. bi-color change?
 - [x] Add support for HMI lights and other devices with on/off channel
 - [x] Turn off all devices when closing app
 - [x] Input for faders with mousewheel or keyboard (arrow keys)
 - [x] BigView: Improve visualisation
   - [x] Device groups
   - [x] Faders for different channels
-- [ ] Minimalistic app version as vite export
+- [ ] (Minimalistic) web version as vite export
 
-## Nice to Have Features
+## Nice to Have
 
 - [ ] MotorMix
   - [ ] All channels of a device
@@ -94,6 +90,7 @@
   - [ ] Choose color
   - [ ] Fader for each scene and master scenes fader
 - [ ] LightFX
+  - [ ] "Mute" button
   - [ ] Group faders with same name
   - [ ] Save scene: only current group or everything choice
   - [ ] Bi-color presets

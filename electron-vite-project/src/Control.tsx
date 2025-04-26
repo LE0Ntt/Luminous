@@ -97,6 +97,7 @@ function Control() {
   const pickerRef = useRef<iro.ColorPicker | null>(null);
   const [, forceRender] = useState(false);
   const isDraggingBi = useRef(false);
+  const [isBiColorHovered, setIsBiColorHovered] = useState(false);
   const mainFaderValue = useFaderValue(0, 1);
   const biColorFaderValue = useFaderValue(0, 2);
   const redFaderValue = useFaderValue(0, 3);
@@ -421,9 +422,7 @@ function Control() {
       setFaderValue(0, 5, rgb.b);
       setFaderValue(0, 2, Math.min(255, Math.max(0, Math.round(((kelvin - 2200) / 8800) * 255))));
       isDraggingBi.current = true;
-      setTimeout(() => {
-        isDraggingBi.current = false;
-      }, 50);
+      resetIsDraggingBi();
     } else setInputValue(Math.round(scaledDisplay));
     setIsFocused(false);
   };
@@ -451,6 +450,47 @@ function Control() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstLoad]);
+
+  // Handle wheel and keyboard events for Bi-Color fader
+  useEffect(() => {
+    const updateBiColorValue = (delta: number) => {
+      const newValue = Math.max(0, Math.min(biColorFaderValue + delta, 255));
+      if (newValue === biColorFaderValue) return;
+      setFaderValue(0, 2, newValue);
+      const kelvin = (newValue / 255) * 8800 + 2200;
+      const rgb = iro.Color.kelvinToRgb(kelvin);
+      setFaderValue(0, 3, rgb.r);
+      setFaderValue(0, 4, rgb.g);
+      setFaderValue(0, 5, rgb.b);
+      isDraggingBi.current = true;
+      resetIsDraggingBi();
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      if (!isBiColorHovered) return;
+      event.preventDefault();
+      const step = event.ctrlKey ? 10 : 1;
+      updateBiColorValue(-Math.sign(event.deltaY) * step);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isBiColorHovered || ['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement).tagName)) return; // Ignore if input is focused
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+        event.preventDefault();
+        const step = event.ctrlKey ? 10 : 1;
+        const direction = event.key === 'ArrowUp' || event.key === 'ArrowRight' ? 1 : -1;
+        updateBiColorValue(direction * step);
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isBiColorHovered, biColorFaderValue, setFaderValue]);
 
   return (
     <>
@@ -494,12 +534,15 @@ function Control() {
               </Button>
             </div>
             {/* Bi-Color */}
-            <div className='controlBiColor innerWindow'>
+            <div
+              className='controlBiColor innerWindow'
+              onMouseEnter={() => setIsBiColorHovered(true)}
+              onMouseLeave={() => setIsBiColorHovered(false)}
+            >
               <span className='controlTitle'>Bi-Color</span>
               <div className={`noSupportText noSupport ${!supportFlags.supportsBiColor ? '' : 'noSupportHidden'}`}>
                 <span style={{ marginTop: '-110px' }}>{t('noSupport')}</span>
               </div>
-              <div className='controlKelvinPicker'>
                 <input
                   type='range'
                   min={0}
@@ -513,7 +556,6 @@ function Control() {
                   onTouchStart={() => (isDraggingBi.current = true)}
                   onTouchEnd={resetIsDraggingBi}
                 />
-              </div>
               <input
                 type='text'
                 value={inputValue}

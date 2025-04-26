@@ -197,7 +197,7 @@
 
 .defaultB .designContainer > div,
 .defaultB .LightSettingsSelected,
-.defaultB .IroSliderGradient,
+.defaultB .biRange,
 .defaultB .IroWheelBorder,
 .defaultB .noSupport {
   box-shadow: -4px -4px 10px var(--shadowBrightLightest), 4px 4px 10px var(--shadowDarkDarker) !important;

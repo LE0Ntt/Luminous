@@ -47,10 +47,8 @@ nav ul li button {
 .logo {
   height: 11px;
   width: 74px;
-  mask: url(../assets/Luminous_Logo.svg);
-  mask-repeat: no-repeat;
+  mask: url(../assets/Luminous_Logo.svg) no-repeat center;
   background: var(--secondary);
-  mask-position: center;
   top: 7px;
   position: relative;
   margin-right: 5px;

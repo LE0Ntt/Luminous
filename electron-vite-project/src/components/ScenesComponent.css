@@ -92,10 +92,7 @@
 .sceneBorder {
   width: 100%;
   height: 100%;
-  mask-repeat: no-repeat;
   background: var(--faderThumbBorder);
-  mask-position: center;
-  mask-size: cover;
 }
 
 .borderBig {
@@ -113,17 +110,14 @@
 .bookmark {
   height: 25px;
   width: 25px;
-  mask-repeat: no-repeat;
   background: var(--primary);
-  mask-position: center;
 }
 
 .delete {
   right: 0;
   height: 25px;
   width: 22px;
-  mask: url(../assets/delete.svg);
-  mask-repeat: no-repeat;
+  mask: url(../assets/delete.svg) no-repeat;
   background: var(--primary);
 }
 
@@ -132,11 +126,11 @@
 }
 
 .saved {
-  mask: url(../assets/bookmarkAdded.svg);
+  mask: url(../assets/bookmarkAdded.svg) no-repeat center;
 }
 
 .notSaved {
-  mask: url(../assets/bookmarkAdd.svg);
+  mask: url(../assets/bookmarkAdd.svg) no-repeat center;
 }
 
 .notSaved:hover {
@@ -152,13 +146,13 @@
 }
 
 .sceneButton {
+  position: relative;
   padding: 14px;
   height: 166px;
   display: flex;
-  border-radius: 3px;
-  text-align: left;
-  display: flex;
   flex-direction: column;
+  text-align: left;
+  border-radius: 3px;
 }
 
 .dragHover:hover {
@@ -171,20 +165,20 @@
 }
 
 .sceneSync {
-  width: 100%;
-  height: 100%;
-  mask: url(../assets/Sync.svg);
-  mask-repeat: no-repeat;
-  mask-position: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -8px) scale(0);
+  width: 50px;         
+  height: 50px;
+  mask: url(../assets/Sync.svg) no-repeat center;
   background: var(--primary);
-  position: relative;
-  top: 0px;
-  left: 0px !important;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
   opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
 }
 
 .sceneSync.visible {
   opacity: 0.5;
+  transform: translate(-50%, -8px) scale(1);
 }

@@ -94,8 +94,7 @@ hr {
 .addIcon {
   height: 22px;
   width: 22px;
-  mask: url(../assets/IconAdd.svg);
-  mask-repeat: no-repeat;
+  mask: url(../assets/IconAdd.svg) no-repeat center;
   background: var(--primary);
 }
 

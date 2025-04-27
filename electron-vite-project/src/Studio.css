@@ -282,10 +282,8 @@
   width: 20px;
   height: 100%;
   right: 0;
-  mask: url(./assets/Arrow.svg);
-  mask-repeat: no-repeat;
+  mask: url(./assets/Arrow.svg) no-repeat center;
   background: var(--tertiary);
-  mask-position: center;
 }
 
 .scrollButton:hover {

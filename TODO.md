@@ -18,7 +18,9 @@
   - Scenes do not turn off correctly, maybe backup value?
   - Reset button kills unsafed scenes
 - Error if DMX channel exists multiple times
-- Solo does not work on non-device channels
+- Non-device channels
+  - Solo does not work
+  - Value not loaded on startup
 - LightFX
   - RGB picker mismatch from cursor position when window is resized
   - Out-of-sync not checking for multiple clients

@@ -750,7 +750,7 @@ def register_socketio_events(socketio):
         send_to_self = data.get("send", False)
         client_id = request.sid  # type: ignore
 
-        device = routes.devices[fader] if 1 <= fader < len(routes.devices) else None
+        device = routes.devices[fader] if fader < len(routes.devices) else None
 
         if device:
             channels = device["attributes"]["channel"]

@@ -272,6 +272,7 @@ function Control() {
         });
     });
   }, [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue, selectedDevices, setFaderValue, emit]);
+
   // Check support for effects, bi-color and RGB
   useEffect(() => {
     let bi = false,
@@ -294,6 +295,7 @@ function Control() {
   }, [selectedDevices]);
 
   const getControlIndex = useCallback((type: string): number | undefined => (({ main: 0, bi: 1, r: 2, g: 3, b: 4 } as any)[type]), []);
+  
   // Update fader values for selected devices
   const updateFaderValuesForSelectedDevices = useCallback(() => {
     programmaticUpdateRef.current = true;

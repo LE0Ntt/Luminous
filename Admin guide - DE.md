@@ -6,13 +6,13 @@ Dieser Guide beschreibt die grundlegende Verwaltung der Luminous-App für Admini
 
 ## Problembehebung
 
-Die meisten ungewöhnlichen Probleme lassen sich durch einen Systemneustart lösen. Starte sowohl den Raspberry Pi als auch die Luminous-App neu. Sollte das Problem weiterhin bestehen, könnte es sich um einen Fehler im Code handeln. In diesem Fall kannst du die Entwickler per E-Mail kontaktieren: [dnine@outlook.de](mailto:dnine@outlook.de).
+Die meisten ungewöhnlichen Probleme lassen sich durch einen Systemneustart lösen. Starte sowohl den Raspberry Pi als auch die Luminous-App neu. Sollte das Problem weiterhin bestehen, könnte es sich um einen Fehler im Code handeln. In diesem Fall kannst du die Entwickler per E-Mail kontaktieren: [pietasdarwin@gmail.com, l.hoelzel@icloud.com](mailto:pietasdarwin@gmail.com,l.hoelzel@icloud.com).
 
 ---
 
 ## Allgemeine Verwaltung
 
-Die Verwaltungsfunktionen der Luminous-App findest du oben links über das Zahnrad-Icon. Besonders relevant sind die ersten beiden Menüpunkte:
+Die Verwaltungsfunktionen der Luminous-App findest du oben links über das Zahnrad-Icon. Besonders relevant sind die ersten beiden Menüpunkte Einstellungen und Geräte:
 
 ### Einstellungen
 
@@ -20,7 +20,7 @@ Im ersten Reiter findest du allgemeine Benutzereinstellungen:
 - Sprache ändern
 - Design anpassen
 
-#### Administrator-Reiter
+#### Administrator
 
 Der Administratorbereich erfordert ein Passwort. Aktuell lautet das Admin-Passwort "licht". Nach einem Datenbank-Reset ist das Passwort standardmäßig leer und kann danach geändert werden.
 
@@ -36,7 +36,7 @@ Weitere Funktionen:
 
 ---
 
-### Studio-Übersicht
+#### Studio-Übersicht
 
 Anpassungen der Lampenpositionen und Icons zur Aktualisierung der Studio-Ansicht:
 - Definiere das **Hauptgrid** über Zeilen und Spalten.
@@ -49,7 +49,7 @@ Speicheroptionen:
 
 ---
 
-## Geräteverwaltung
+### Geräteverwaltung
 
 Im Menü „Geräte“ kannst du Lampen hinzufügen oder bestehende Geräte konfigurieren:
 
@@ -59,15 +59,15 @@ Im Menü „Geräte“ kannst du Lampen hinzufügen oder bestehende Geräte konf
 - **Gerätename**
 - **Typ**:
   - **RGBDim**: RGB-Lampen (z.B. Traverse)
-  - **BiColor**: LEDs für Greenscreens
+  - **BiColor**: LEDs z.B. für Greenscreen
   - **Spot/Fill**: Gleiche Funktion, aber unterschiedliche Icons in der App
   - **HMI**: Automatisch bei Blendenöffnung aktiv; manuelles Ausschalten erforderlich
   - **Misc**: Sonstige Geräte
 
 Kanäle und Kanalnamen:
-- Jedes Gerät hat mindestens einen Hauptkanal (Hauptfader).
-- Zusätzliche Kanäle können benannt und frei gewählt werden.
-- Kanäle müssen nicht lückenlos folgen. Der **Startkanal** hilft beim Zuordnen.
+- Jedes Gerät hat mindestens einen "Main"-Kanal (Hauptfader).
+- Zusätzliche Kanäle können benannt und frei gewählt werden. (Inputfelder)
+- Kanäle müssen nicht lückenlos folgen. Der **Startkanal** hilft nur beim Zuordnen.
 
 Übersicht DMX-Belegung:
 - Graue Markierung: Aktuell ausgewähltes Gerät
@@ -78,7 +78,7 @@ Speichern und Löschen erfolgt nach Eingabe des Admin-Passworts.
 
 ---
 
-## Szenenverwaltung
+### Szenenverwaltung
 
 Szenen kannst du auf den Seiten „Studio“, „LightFX“ oder „Szenen“ speichern:
 - Es werden alle aktuell eingeschalteten Lampen mit deren Kanalwerten gespeichert. Der Masterfader wird aktuell nicht berücksichtigt.

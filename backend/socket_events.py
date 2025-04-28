@@ -95,7 +95,6 @@ def register_socketio_events(socketio):
             )
 
         if scene_stack:
-            print("Checking sync status")
             threading.Thread(
                 target=check_sync_status, args=(index, value, channelId)
             ).start()
@@ -749,7 +748,7 @@ def register_socketio_events(socketio):
         send_to_self = data.get("send", False)
         client_id = request.sid  # type: ignore
 
-        device = routes.devices[fader] if fader < len(routes.devices) else None
+        device = next((d for d in routes.devices if d["id"] == fader), None)
 
         if device:
             channels = device["attributes"]["channel"]

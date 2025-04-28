@@ -28,10 +28,9 @@ connections = 0
 reset = False
 
 try:
-    from ola_handler import ola_handler  # ola
-
-    ola = ola_handler()  # ola
-    ola.setup()  # ola
+    from ola_handler import ola_handler
+    ola = ola_handler()
+    ola.setup()
 except ModuleNotFoundError:
     print("OLA module not found. Running without OLA support.")
     ola = None
@@ -159,8 +158,8 @@ def register_socketio_events(socketio):
             )
 
     # Solo for control (LightFX) selection
-    @socketio.on("controlSolo", namespace="/socket")
-    def controlSolo(data):
+    @socketio.on("control_solo", namespace="/socket")
+    def control_solo(data):
         solo = bool(data["solo"])
         selected_ids = {dev["id"] for dev in data["devices"]}
 

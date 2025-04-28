@@ -67,7 +67,7 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
       setPasswordSuccess(false);
       setPasswordMessage(t('set_error_match'));
     } else {
-      fetch(url + '/changePassword', {
+      fetch(url + '/change_password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

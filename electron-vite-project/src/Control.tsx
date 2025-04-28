@@ -207,7 +207,7 @@ function Control() {
   );
 
   const toggleSolo = () => {
-    emit('controlSolo', { solo: !isSolo, devices: selectedDevices });
+    emit('control_solo', { solo: !isSolo, devices: selectedDevices });
     sessionStorage.setItem('controlSolo', `${!isSolo}`);
     setIsSolo(!isSolo);
   };

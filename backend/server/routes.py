@@ -23,7 +23,6 @@ from datetime import datetime
 
 
 # Load devices from database
-@app.route("/devices")
 def get_devices():
     device_list = []
 
@@ -94,7 +93,7 @@ def get_scenes():
 
 
 # Change the admin password
-@app.route("/changePassword", methods=["POST"])
+@app.route("/change_password", methods=["POST"])
 def change_password():
     data = request.get_json()
     current_password = data.get("currentPassword")
@@ -124,7 +123,7 @@ def change_password():
 
 
 # Check if the entered admin password is correct
-@app.route("/checkpassword", methods=["POST"])
+@app.route("/check_password", methods=["POST"])
 def check_password():
     data = request.get_json()
     password = data.get("password", "")

@@ -32,7 +32,7 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
 
   // Logic for checking the password
   const handleConfirm = () => {
-    fetch(url + '/checkpassword', {
+    fetch(url + '/check_password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

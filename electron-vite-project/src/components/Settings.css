@@ -163,6 +163,9 @@
   flex-direction: column;
   height: 100%;
   flex: 2;
+  width: 1px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .SettingsContent {
@@ -180,6 +183,7 @@
 
 .SettingContainer {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   margin: 40px 0; /* Height of a settings element*/
   position: relative;

@@ -12,14 +12,21 @@
  *
  * @file SettingsStudioOverview.tsx
  */
-import React, { useContext, useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import './Settings.css';
 import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
-import StudioOverviewImage from '@/assets/StudioOverview.png';
 import Button from './Button';
+import AdminPassword from './AdminPassword';
 
-interface Setting3Props {
+/*****************************
+ * Types & constants
+ *****************************/
+export type DeviceType = 'RGBDim' | 'BiColor' | 'Spot' | 'Fill' | 'HMI' | 'Misc';
+
+export type IconType = 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
+
+interface SettingProps {
   studioRows: number;
   studioColumns: number;
 }
@@ -27,212 +34,482 @@ interface Setting3Props {
 interface DeviceConfig {
   id: number;
   name: string;
-  device_type: string;
+  device_type: DeviceType;
 }
 
-const Setting3: React.FC<Setting3Props> = ({ studioRows, studioColumns }) => {
+interface GridCell {
+  id: number | null;
+  row: number;
+  col: number;
+  icon: IconType;
+}
+
+interface CustomLamp {
+  uuid: string;
+  deviceId: number | null;
+  icon: IconType;
+  left: number;
+  top: number;
+  flip: boolean;
+}
+
+interface TraverseLamp {
+  groupId: number;
+}
+
+const ICON_BY_DEVICE: Record<DeviceType, IconType> = {
+  RGBDim: 'RGB',
+  BiColor: 'LED',
+  Spot: 'Spot',
+  Fill: 'Fill',
+  HMI: 'Spot',
+  Misc: 'Spot',
+};
+
+const ICON_OPTIONS: IconType[] = ['RGB', 'LED', 'Spot', 'Fill', 'None'];
+
+/*****************************
+ * Component
+ *****************************/
+const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColumns }) => {
   const { t } = useContext(TranslationContext);
+  const { url } = useConnectionContext();
 
-  const [inputStudioRows, setInputStudioRows] = useState<number>(studioRows);
-  const [inputStudioColumns, setInputStudioColumns] = useState<number>(studioColumns);
+  /* basic state */
+  const [rows, setRows] = useState(studioRows);
+  const [cols, setCols] = useState(studioColumns);
+
+  /* data-driven state */
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
-  const { url, connected, on, off } = useConnectionContext();
+  const [grid, setGrid] = useState<GridCell[]>([]);
+  const [customLamps, setCustomLamps] = useState<CustomLamp[]>([]);
+  const [traversen, setTraversen] = useState<TraverseLamp[]>(Array(7).fill({ groupId: 0 }));
+  const [greenScreenId, setGreenScreenId] = useState<number | null>(null);
 
-  const fetchDevices = async () => {
+  /* UI helpers */
+  const [saveAdmin, setSaveAdmin] = useState(false);
+  const [saveTemporary, setSaveTemporary] = useState(false);
+  const [statusMsg, setStatusMsg] = useState('');
+
+  /*****************************
+   * Data fetch
+   *****************************/
+  const fetchDevices = useCallback(async () => {
     try {
-      const response = await fetch(url + '/fader');
-      const data = await response.json();
-      const parsedData: DeviceConfig[] = JSON.parse(data);
-      parsedData.shift(); // Entferne Master
-      setDevices(parsedData);
-    } catch (error) {
-      console.error(error);
+      const res = await fetch(`${url}/fader`);
+      if (!res.ok) throw new Error('Device fetch failed');
+      // Der Server liefert hier ein JSON-Objekt mit einem String-Payload
+      const raw = await res.json();
+      const arr: DeviceConfig[] = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      arr.shift();
+      setDevices(arr);
+    } catch (err) {
+      console.error(err);
     }
-  };
+  }, [url]);
+
+  const fetchStudioGrid = useCallback(async () => {
+    try {
+      const res = await fetch(`${url}/studio_grid`);
+      if (!res.ok) throw new Error('Grid fetch failed');
+      // Hier kann res.json() wieder ein String oder bereits geparstes Objekt sein
+      const raw = await res.json();
+      const data: any = typeof raw === 'string' ? JSON.parse(raw) : raw;
+
+      /* grid */
+      setGrid(
+        (data.grid ?? []).map((c: any) => ({
+          row: Number(c.row),
+          col: Number(c.col),
+          id: c.id != null ? Number(c.id) : null,
+          icon: (c.icon as IconType) ?? 'None',
+        }))
+      );
+
+      /* custom lamps */
+      setCustomLamps(
+        (data.custom ?? []).map((l: any) => ({
+          uuid: l.uuid ?? crypto.randomUUID(),
+          deviceId: l.deviceId != null ? Number(l.deviceId) : null,
+          icon: (l.icon as IconType) ?? 'None',
+          left: Number(l.left ?? 0),
+          top: Number(l.top ?? 0),
+          flip: !!l.flip,
+        }))
+      );
+
+      /* traversen & greenscreen */
+      if (Array.isArray(data.traversen)) {
+        setTraversen(data.traversen.map((t: any) => ({ groupId: Number(t.groupId) })));
+      }
+      setGreenScreenId(data.greenScreenId != null ? Number(data.greenScreenId) : null);
+
+      /* dimensions */
+      setRows(Number(data.meta?.rows ?? studioRows));
+      setCols(Number(data.meta?.cols ?? studioColumns));
+    } catch (err) {
+      console.error(err);
+    }
+  }, [url, studioRows, studioColumns]);
 
   useEffect(() => {
     fetchDevices();
-  }, []);
+    fetchStudioGrid();
+  }, [fetchDevices, fetchStudioGrid]);
 
-  const handleInputStudioRows = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputStudioRows(Math.max(1, Math.min(10, Number(e.target.value))));
-  };
+  /*****************************
+   * Helpers
+   *****************************/
+  const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
-  const handleInputStudioColumns = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputStudioColumns(Math.max(1, Math.min(10, Number(e.target.value))));
-  };
-
-  const defaultGridValues = [
-    { id: 5, row: 0, col: 0, type: 'spot' },
-    { id: 5, row: 0, col: 1, type: 'fillLight' },
-    { id: 6, row: 0, col: 2, type: 'fillLight' },
-    { id: 6, row: 0, col: 3, type: 'spot' },
-    { id: 4, row: 1, col: 0, type: 'fillLight' },
-    { id: 4, row: 1, col: 1, type: 'fillLight' },
-    { id: 7, row: 1, col: 2, type: 'fillLight' },
-    { id: 7, row: 1, col: 3, type: 'fillLight' },
-    { id: 3, row: 2, col: 0, type: 'spot' },
-    { id: 3, row: 2, col: 1, type: 'fillLight' },
-    { id: 8, row: 2, col: 2, type: 'fillLight' },
-    { id: 8, row: 2, col: 3, type: 'spot' },
-    { id: 2, row: 3, col: 0, type: 'spot' },
-    { id: 2, row: 3, col: 1, type: 'spot' },
-    { id: 9, row: 3, col: 2, type: 'fillLight' },
-    { id: 9, row: 3, col: 3, type: 'spot' },
-    { id: 1, row: 4, col: 0, type: 'spot' },
-    { id: 1, row: 4, col: 1, type: 'fillLight' },
-    { id: 10, row: 4, col: 3, type: 'spot' },
-  ];
-
-  const [gridValues, setGridValues] = useState(defaultGridValues);
-
-  useEffect(() => {
-    setGridValues((prevValues) => {
-      return prevValues.filter((cell) => cell.row < inputStudioRows && cell.col < inputStudioColumns && cell.id !== null);
-    });
-  }, [inputStudioRows, inputStudioColumns]);
-
-  const handleSelectChange = (rowIndex: number, colIndex: number, value: string, field: 'id' | 'type') => {
-    setGridValues((prevValues) => {
-      let newValues = [...prevValues];
+  /*****************************
+   * Grid handling
+   *****************************/
+  const updateGridCell = (row: number, col: number, field: keyof Pick<GridCell, 'id' | 'icon'>, value: string) => {
+    setGrid((prev) => {
+      const list = [...prev];
+      const idx = list.findIndex((c) => c.row === row && c.col === col);
+      if (idx === -1) list.push({ row, col, id: null, icon: 'None' });
+      const cell = list.find((c) => c.row === row && c.col === col)!;
 
       if (field === 'id') {
-        if (!value) {
-          newValues = prevValues.filter((cell) => !(cell.row === rowIndex && cell.col === colIndex));
-        } else {
-          const numericId = parseInt(value, 10);
-          const existingCell = newValues.find((cell) => cell.row === rowIndex && cell.col === colIndex);
-
-          if (existingCell) {
-            existingCell.id = numericId;
-            existingCell.type = existingCell.type || 'spot';
-          } else {
-            newValues.push({ id: numericId, row: rowIndex, col: colIndex, type: 'spot' });
-          }
-        }
-      } else if (field === 'type') {
-        newValues = prevValues.map((cell) => (cell.row === rowIndex && cell.col === colIndex ? { ...cell, type: value } : cell));
+        if (!value) return list.filter((c) => !(c.row === row && c.col === col));
+        cell.id = Number(value);
+        const dev = devices.find((d) => d.id === cell.id);
+        cell.icon = dev ? ICON_BY_DEVICE[dev.device_type] : 'None';
+      } else if (field === 'icon') {
+        cell.icon = value as IconType;
       }
-
-      console.log(newValues);
-      return newValues;
+      return list;
     });
   };
 
-  const grid = useMemo(
-    () =>
-      Array.from({ length: inputStudioRows }, (_, rowIndex) =>
-        Array.from({ length: inputStudioColumns }, (_, colIndex) => {
-          const cell = gridValues.find((cell) => cell.row === rowIndex && cell.col === colIndex);
-          return (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              className='cell studioOverviewInfopanelTest'
-              style={{ display: 'flex', flexDirection: 'column', margin: '0 5px' }}
-            >
-              <select
-                value={cell && cell.id !== null ? cell.id : ''}
-                onChange={(e) => handleSelectChange(rowIndex, colIndex, e.target.value, 'id')}
-              >
-                <option value=''>None</option>
-                {devices.map((device) => (
-                  <option
-                    key={device.id}
-                    value={device.id}
-                  >
-                    {device.name}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={cell ? cell.type : ''}
-                onChange={(e) => handleSelectChange(rowIndex, colIndex, e.target.value, 'type')}
-                disabled={!cell || cell.id === null}
-              >
-                <option value='spot'>Spot</option>
-                <option value='fillLight'>Fill Light</option>
-              </select>
-            </div>
-          );
-        })
-      ).flat(), // Flache Struktur, um alle Elemente in einem Array zu halten
-    [devices, inputStudioRows, inputStudioColumns, gridValues]
-  );
+  /*****************************
+   * Custom-lamp handling
+   *****************************/
+  const addCustomLamp = () => {
+    setCustomLamps((prev) => [
+      ...prev,
+      {
+        uuid: crypto.randomUUID(),
+        deviceId: null,
+        icon: 'None',
+        left: 0,
+        top: 0,
+        flip: false,
+      },
+    ]);
+  };
 
-  const handleSave = async () => {
-    console.log('Saving studio configuration');
+  const updateCustomLamp = (uuid: string, field: keyof CustomLamp, value: string | number | boolean) => setCustomLamps((prev) => prev.map((l) => (l.uuid === uuid ? { ...l, [field]: value } : l)));
+
+  const removeCustomLamp = (uuid: string) => setCustomLamps((prev) => prev.filter((l) => l.uuid !== uuid));
+
+  /*****************************
+   * Saving
+   *****************************/
+  const performSave = async (endpoint: string) => {
+    const payload = {
+      meta: { rows, cols },
+      grid,
+      custom: customLamps,
+      greenScreenId,
+      traversen,
+    };
     try {
-      const response = await fetch(url + '/studio', {
+      const res = await fetch(`${url}/${endpoint}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(gridValues),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
-
-      if (response.ok) {
-        console.log('Successfully saved studio configuration');
-      } else {
-        console.error('Failed to save studio configuration');
-      }
-    } catch (error) {
-      console.error(error);
+      if (!res.ok) throw new Error('Save failed');
+      setStatusMsg(t('saved_successfully'));
+    } catch (err) {
+      console.error(err);
+      setStatusMsg(t('save_failed'));
     }
   };
 
-  return (
-    <div className='SettingsOption'>
-      <div className='SettingsOverview'>
-        <div className='SettingsOverviewButtons'>
-          <div className='SettingsTitle SettingsTitleInner'>
-            <span>{t('set_studio')}</span>
-          </div>
-          <hr style={{ marginTop: '45px' }} />
-          <div className='SettingContainer'>
-            <div className='SettingsSubTitle h-[100%]'>
-              Rows:
-              <input
-                className='bg-gray-900'
-                type='number'
-                value={inputStudioRows}
-                onChange={handleInputStudioRows}
-                min='1'
-                max='10'
-              />
-              Columns:
-              <input
-                className='bg-gray-900'
-                type='number'
-                value={inputStudioColumns}
-                onChange={handleInputStudioColumns}
-                min='1'
-                max='10'
-              />
-            </div>
-          </div>
-          <Button
-            className='SettingsButton controlButton'
-            onClick={handleSave}
+  const handleAdminPasswordConfirm = useCallback(
+    async (ok: boolean) => {
+      setSaveAdmin(false);
+      if (ok) await performSave('save_studio_grid');
+    },
+    [grid, customLamps, traversen, greenScreenId, rows, cols]
+  );
+
+  const handleSave = () => (saveTemporary ? performSave('save_studio_grid_temp') : setSaveAdmin(true));
+
+  /*****************************
+   * Memoised preview content
+   *****************************/
+  const gridCells = useMemo(() => {
+    return Array.from({ length: rows }, (_, r) =>
+      Array.from({ length: cols }, (_, c) => {
+        const cell = grid.find((x) => x.row === r && x.col === c);
+        return (
+          <div
+            key={`${r}-${c}`}
+            className='cell studioOverviewInfopanelTest'
+            style={{ display: 'flex', flexDirection: 'column', margin: '0 4px' }}
           >
-            {t('as_save')}
-          </Button>
-        </div>
-        <div className='SettingsOverviewImage window'>
-          <div className='SettingsOverviewImageForeground'>
-            <div
-              className='grid-container'
-              style={{
-                display: 'grid',
-                gridTemplateColumns: `repeat(${inputStudioColumns}, 1fr)`,
-              }}
+            <select
+              value={cell?.id?.toString() ?? ''}
+              onChange={(e) => updateGridCell(r, c, 'id', e.target.value)}
             >
-              {grid}
+              <option value=''>None</option>
+              {devices.map((d) => (
+                <option
+                  key={d.id}
+                  value={d.id.toString()}
+                >
+                  {d.name}
+                </option>
+              ))}
+            </select>
+            <select
+              value={cell?.icon ?? 'None'}
+              onChange={(e) => updateGridCell(r, c, 'icon', e.target.value)}
+              disabled={!cell}
+            >
+              {ICON_OPTIONS.map((ico) => (
+                <option
+                  key={ico}
+                  value={ico}
+                >
+                  {ico}
+                </option>
+              ))}
+            </select>
+          </div>
+        );
+      })
+    ).flat();
+  }, [rows, cols, grid, devices]);
+
+  const customLampOverlays = useMemo(() => {
+    return customLamps.map((lamp) => (
+      <div
+        key={lamp.uuid}
+        style={{ position: 'absolute', top: lamp.top, left: lamp.left, display: 'flex', flexDirection: 'column' }}
+      >
+        <select
+          value={lamp.deviceId?.toString() ?? ''}
+          onChange={(e) => updateCustomLamp(lamp.uuid, 'deviceId', Number(e.target.value))}
+        >
+          <option value=''>None</option>
+          {devices.map((d) => (
+            <option
+              key={d.id}
+              value={d.id.toString()}
+            >
+              {d.name}
+            </option>
+          ))}
+        </select>
+        <select
+          value={lamp.icon}
+          onChange={(e) => updateCustomLamp(lamp.uuid, 'icon', e.target.value)}
+        >
+          {ICON_OPTIONS.map((ico) => (
+            <option
+              key={ico}
+              value={ico}
+            >
+              {ico}
+            </option>
+          ))}
+        </select>
+      </div>
+    ));
+  }, [customLamps, devices]);
+
+  /*****************************
+   * Render
+   *****************************/
+  return (
+    <>
+      {saveAdmin && (
+        <AdminPassword
+          onConfirm={handleAdminPasswordConfirm}
+          onClose={() => setSaveAdmin(false)}
+        />
+      )}
+      <div className='SettingsOption'>
+        <div className='SettingsOverview'>
+          {/* left column – controls */}
+          <div className='SettingsOverviewButtons'>
+            <div className='SettingsTitle SettingsTitleInner'>
+              <span>{t('set_studio')}</span>
+            </div>
+            <hr style={{ marginTop: 45 }} />
+
+            {/* grid size */}
+            <div className='SettingContainer'>
+              <div className='SettingsSubTitle'>Grid Größe</div>
+              <label>
+                Rows:
+                <input
+                  className='bg-gray-900'
+                  type='number'
+                  min={1}
+                  max={10}
+                  value={rows}
+                  onChange={(e) => setRows(clamp(Number(e.target.value), 1, 10))}
+                />
+              </label>
+              <label>
+                Columns:
+                <input
+                  className='bg-gray-900'
+                  type='number'
+                  min={1}
+                  max={10}
+                  value={cols}
+                  onChange={(e) => setCols(clamp(Number(e.target.value), 1, 10))}
+                />
+              </label>
+            </div>
+
+            {/* greenscreen */}
+            <div className='SettingContainer'>
+              <div className='SettingsSubTitle'>Greenscreen</div>
+              <select
+                value={greenScreenId ?? ''}
+                onChange={(e) => setGreenScreenId(Number(e.target.value))}
+              >
+                <option value=''>None</option>
+                {devices.map((d) => (
+                  <option
+                    key={d.id}
+                    value={d.id.toString()}
+                  >
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* traversen */}
+            <div className='SettingContainer'>
+              <div className='SettingsSubTitle'>Traversen</div>
+              <div className='traverse-grid'>
+                {traversen.map((tr, i) => (
+                  <div
+                    key={i}
+                    className='traverse-cell'
+                  >
+                    <label>Traverse {i + 1}</label>
+                    <select
+                      value={tr.groupId ? tr.groupId.toString() : ''}
+                      onChange={(e) => {
+                        const gid = Number(e.target.value);
+                        setTraversen((prev) => {
+                          const arr = [...prev];
+                          arr[i] = { groupId: gid };
+                          return arr;
+                        });
+                      }}
+                    >
+                      <option value=''>None</option>
+                      {devices.map((d) => (
+                        <option
+                          key={d.id}
+                          value={d.id.toString()}
+                        >
+                          {d.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* custom lamps */}
+            <div className='SettingContainer'>
+              <div className='SettingsSubTitle'>{t('custom_lamps')}</div>
+              <hr style={{ marginTop: 20 }} />
+              {customLamps.map((lamp) => (
+                <div
+                  key={lamp.uuid}
+                  className='custom-row'
+                >
+                  <input
+                    className='bg-gray-900'
+                    type='number'
+                    placeholder='X(px)'
+                    value={lamp.left}
+                    onChange={(e) => updateCustomLamp(lamp.uuid, 'left', Number(e.target.value))}
+                  />
+                  <input
+                    className='bg-gray-900'
+                    type='number'
+                    placeholder='Y(px)'
+                    value={lamp.top}
+                    onChange={(e) => updateCustomLamp(lamp.uuid, 'top', Number(e.target.value))}
+                  />
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    Flip
+                    <input
+                      type='checkbox'
+                      checked={lamp.flip}
+                      onChange={(e) => updateCustomLamp(lamp.uuid, 'flip', e.target.checked)}
+                    />
+                  </label>
+                  <Button
+                    className='SettingsButton danger'
+                    onClick={() => removeCustomLamp(lamp.uuid)}
+                  >
+                    ✕
+                  </Button>
+                </div>
+              ))}
+              <Button
+                className='SettingsButton controlButton'
+                onClick={addCustomLamp}
+              >
+                + Add Custom Lamp
+              </Button>
+            </div>
+
+            {/* save */}
+            <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <input
+                type='checkbox'
+                checked={saveTemporary}
+                onChange={(e) => setSaveTemporary(e.target.checked)}
+              />
+              {t('as_save_temp')}
+            </label>
+            <Button
+              className='SettingsButton controlButton'
+              onClick={handleSave}
+            >
+              {t('as_save')}
+            </Button>
+            {statusMsg && <p style={{ marginTop: 10 }}>{statusMsg}</p>}
+          </div>
+
+          {/* right column – preview */}
+          <div className='SettingsOverviewImage window'>
+            <div
+              className='SettingsOverviewImageForeground'
+              style={{ position: 'relative' }}
+            >
+              <div
+                className='grid-container'
+                style={{ display: 'grid', gridTemplateColumns: `repeat(${cols},1fr)` }}
+              >
+                {gridCells}
+              </div>
+              {customLampOverlays}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default Setting3;
+export default SettingsStudioOverview;

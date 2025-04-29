@@ -51,7 +51,7 @@ pip install -r requirements.txt
 python server.py
 
 # In a new terminal instance, activate the application
-npm start dev
+npm run dev
 ```
 
 The application is accessible via the Electron desktop application.

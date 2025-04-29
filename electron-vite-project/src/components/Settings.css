@@ -116,15 +116,12 @@
 }
 
 .SettingsOverviewImage {
-  display: flex;
-  flex-direction: column;
   position: relative;
-  align-items: center;
-  height: 630px;
-  width: 584px;
+  flex: 0 0 auto;               /* Platz im Flex-Layout wird per JS gesetzt */
   background-image: url(/src/assets/StudioOverview.png);
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: 100% 100%;    /* passt das Bild immer an die Container-Größe an */
+  overflow: hidden;              /* alles außerhalb ausblenden */
 }
 
 .studioOverviewInfopanelTest {
@@ -155,18 +152,24 @@
   display: flex;
   flex-direction: row;
   height: 100%;
-  gap: 20px;
+  gap: 10px;
+  align-content: space-between;
+  justify-content: space-between;
 }
 
 .SettingsOverviewButtons {
   display: flex;
   flex-direction: column;
   height: 100%;
-  flex: 2;
-  width: 1px;
+  flex: 1;
+  width: 100px;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
+  padding-right: 10px;  
+  scrollbar-gutter: auto;
+  position: relative !important;
 }
+
 
 .SettingsContent {
   flex-grow: 1;
@@ -183,7 +186,6 @@
 
 .SettingContainer {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
   margin: 40px 0; /* Height of a settings element*/
   position: relative;
@@ -308,6 +310,12 @@
   .PasswordMessage {
     top: 215px !important;
     right: 300px !important;
+  }
+
+  .buttonRight {
+    position: relative !important;
+    margin-left: 0px !important;
+    margin-top: 20px;
   }
 }
 
@@ -499,4 +507,59 @@
 .dropzone p {
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.traverse-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  position: relative;
+  margin-top: 20px;
+}
+
+.overviewInput {
+  width: 75px;
+  margin-left: 10px;
+}
+
+.traverseContainer {
+  min-height: fit-content;
+  flex-direction: column;
+}
+
+.customLampContainer {
+  flex-direction: column;
+  min-height: fit-content;
+}
+
+.custom-row {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.customRowContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  margin-top: 30px;
+  width: 100%;
+}
+
+.danger {
+  min-width: 50px !important;
+  max-width: 50px !important;
+  position: absolute;
+  right: 0px;
+}
+
+.buttonRight {
+  position: absolute;
+  right: 0px;
+}
+
+.overviewButton {
+  min-width: 180px !important;
+  max-width: 180px !important;
+  margin-left: 10px;
 }

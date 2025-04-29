@@ -208,7 +208,7 @@
   }
 
   .backgroundOverlay {
-    position: relative;
+    position: fixed;
     z-index: 9997;
     height: 10000vh;
     width: 10000vw;

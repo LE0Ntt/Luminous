@@ -19,11 +19,7 @@ import { useConnectionContext } from './ConnectionContext';
 import Button from './Button';
 import AdminPassword from './AdminPassword';
 
-/*****************************
- * Types & constants
- *****************************/
 export type DeviceType = 'RGBDim' | 'BiColor' | 'Spot' | 'Fill' | 'HMI' | 'Misc';
-
 export type IconType = 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
 
 interface SettingProps {
@@ -68,9 +64,6 @@ const ICON_BY_DEVICE: Record<DeviceType, IconType> = {
 
 const ICON_OPTIONS: IconType[] = ['RGB', 'LED', 'Spot', 'Fill', 'None'];
 
-/*****************************
- * Component
- *****************************/
 const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColumns }) => {
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
@@ -91,9 +84,6 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
   const [saveTemporary, setSaveTemporary] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
 
-  /*****************************
-   * Data fetch
-   *****************************/
   const fetchDevices = useCallback(async () => {
     try {
       const res = await fetch(`${url}/fader`);
@@ -157,14 +147,35 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
     fetchStudioGrid();
   }, [fetchDevices, fetchStudioGrid]);
 
-  /*****************************
-   * Helpers
-   *****************************/
+  // Scale the preview image to fit the window size
+  useEffect(() => {
+    const ORIG_W = 802;
+    const ORIG_H = 868;
+
+    const handleResize = () => {
+      const parent = document.querySelector('.SettingsOverview') as HTMLElement;
+      const preview = document.querySelector('.SettingsOverviewImage') as HTMLElement;
+      const overlay = preview?.querySelector('.SettingsOverviewImageForeground') as HTMLElement;
+      if (!parent || !preview || !overlay) return;
+
+      const scale = Math.min(parent.clientWidth / ORIG_W, parent.clientHeight / ORIG_H);
+
+      preview.style.flexBasis = `${ORIG_W * scale}px`;
+      preview.style.height = `${ORIG_H * scale}px`;
+
+      overlay.style.width = `${ORIG_W}px`;
+      overlay.style.height = `${ORIG_H}px`;
+      overlay.style.transform = `scale(${scale})`;
+      overlay.style.transformOrigin = 'top left';
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
-  /*****************************
-   * Grid handling
-   *****************************/
   const updateGridCell = (row: number, col: number, field: keyof Pick<GridCell, 'id' | 'icon'>, value: string) => {
     setGrid((prev) => {
       const list = [...prev];
@@ -184,9 +195,6 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
     });
   };
 
-  /*****************************
-   * Custom-lamp handling
-   *****************************/
   const addCustomLamp = () => {
     setCustomLamps((prev) => [
       ...prev,
@@ -202,12 +210,8 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
   };
 
   const updateCustomLamp = (uuid: string, field: keyof CustomLamp, value: string | number | boolean) => setCustomLamps((prev) => prev.map((l) => (l.uuid === uuid ? { ...l, [field]: value } : l)));
-
   const removeCustomLamp = (uuid: string) => setCustomLamps((prev) => prev.filter((l) => l.uuid !== uuid));
 
-  /*****************************
-   * Saving
-   *****************************/
   const performSave = async (endpoint: string) => {
     const payload = {
       meta: { rows, cols },
@@ -240,9 +244,6 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
 
   const handleSave = () => (saveTemporary ? performSave('save_studio_grid_temp') : setSaveAdmin(true));
 
-  /*****************************
-   * Memoised preview content
-   *****************************/
   const gridCells = useMemo(() => {
     return Array.from({ length: rows }, (_, r) =>
       Array.from({ length: cols }, (_, c) => {
@@ -290,6 +291,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
   const customLampOverlays = useMemo(() => {
     return customLamps.map((lamp) => (
       <div
+        className={'studioOverviewInfopanelTest'}
         key={lamp.uuid}
         style={{ position: 'absolute', top: lamp.top, left: lamp.left, display: 'flex', flexDirection: 'column' }}
       >
@@ -324,9 +326,6 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
     ));
   }, [customLamps, devices]);
 
-  /*****************************
-   * Render
-   *****************************/
   return (
     <>
       {saveAdmin && (
@@ -343,14 +342,15 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
               <span>{t('set_studio')}</span>
             </div>
             <hr style={{ marginTop: 45 }} />
-
             {/* grid size */}
             <div className='SettingContainer'>
-              <div className='SettingsSubTitle'>Grid Größe</div>
+              <div className='SettingsSubTitle'>
+                <span className='relative top-[-6px]'>Grid Größe</span>
+              </div>
               <label>
-                Rows:
+                <span className='overviewInput'>Rows:</span>
                 <input
-                  className='bg-gray-900'
+                  className='textBox overviewInput'
                   type='number'
                   min={1}
                   max={10}
@@ -359,9 +359,9 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                 />
               </label>
               <label>
-                Columns:
+                <span className='overviewInput'>Columns:</span>
                 <input
-                  className='bg-gray-900'
+                  className='textBox overviewInput'
                   type='number'
                   min={1}
                   max={10}
@@ -370,12 +370,15 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                 />
               </label>
             </div>
-
+            <hr />
             {/* greenscreen */}
             <div className='SettingContainer'>
-              <div className='SettingsSubTitle'>Greenscreen</div>
+              <div className='SettingsSubTitle'>
+                <span className='relative top-[-6px]'>Greenscreen</span>
+              </div>
               <select
                 value={greenScreenId ?? ''}
+                className='textBox'
                 onChange={(e) => setGreenScreenId(Number(e.target.value))}
               >
                 <option value=''>None</option>
@@ -389,18 +392,21 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                 ))}
               </select>
             </div>
-
+            <hr />
             {/* traversen */}
-            <div className='SettingContainer'>
-              <div className='SettingsSubTitle'>Traversen</div>
+            <div className='SettingContainer traverseContainer'>
+              <div className='SettingsSubTitle'>
+                <span className='relative top-[-6px]'>Traversen</span>
+              </div>
               <div className='traverse-grid'>
                 {traversen.map((tr, i) => (
                   <div
                     key={i}
                     className='traverse-cell'
                   >
-                    <label>Traverse {i + 1}</label>
+                    <label>Traverse {i + 1} </label>
                     <select
+                      className='textBox'
                       value={tr.groupId ? tr.groupId.toString() : ''}
                       onChange={(e) => {
                         const gid = Number(e.target.value);
@@ -425,72 +431,76 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                 ))}
               </div>
             </div>
-
+            <hr />
             {/* custom lamps */}
-            <div className='SettingContainer'>
-              <div className='SettingsSubTitle'>{t('custom_lamps')}</div>
-              <hr style={{ marginTop: 20 }} />
-              {customLamps.map((lamp) => (
-                <div
-                  key={lamp.uuid}
-                  className='custom-row'
-                >
-                  <input
-                    className='bg-gray-900'
-                    type='number'
-                    placeholder='X(px)'
-                    value={lamp.left}
-                    onChange={(e) => updateCustomLamp(lamp.uuid, 'left', Number(e.target.value))}
-                  />
-                  <input
-                    className='bg-gray-900'
-                    type='number'
-                    placeholder='Y(px)'
-                    value={lamp.top}
-                    onChange={(e) => updateCustomLamp(lamp.uuid, 'top', Number(e.target.value))}
-                  />
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    Flip
-                    <input
-                      type='checkbox'
-                      checked={lamp.flip}
-                      onChange={(e) => updateCustomLamp(lamp.uuid, 'flip', e.target.checked)}
-                    />
-                  </label>
-                  <Button
-                    className='SettingsButton danger'
-                    onClick={() => removeCustomLamp(lamp.uuid)}
-                  >
-                    ✕
-                  </Button>
-                </div>
-              ))}
+            <div className='SettingContainer customLampContainer'>
+              <div className='SettingsSubTitle'>
+                <span className='relative top-[-6px]'>{t('custom_lamps')}</span>
+              </div>
               <Button
-                className='SettingsButton controlButton'
+                className='SettingsButton controlButton buttonRight overviewButton'
                 onClick={addCustomLamp}
               >
-                + Add Custom Lamp
+                Add Lamp
               </Button>
+              <div className='customRowContainer'>
+                {customLamps.map((lamp) => (
+                  <div
+                    key={lamp.uuid}
+                    className='custom-row'
+                  >
+                    <input
+                      className='textBox overviewInput'
+                      type='number'
+                      placeholder='X(px)'
+                      value={lamp.left}
+                      onChange={(e) => updateCustomLamp(lamp.uuid, 'left', Number(e.target.value))}
+                    />
+                    <input
+                      className='textBox overviewInput'
+                      type='number'
+                      placeholder='Y(px)'
+                      value={lamp.top}
+                      onChange={(e) => updateCustomLamp(lamp.uuid, 'top', Number(e.target.value))}
+                    />
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      Flip
+                      <input
+                        type='checkbox'
+                        checked={lamp.flip}
+                        onChange={(e) => updateCustomLamp(lamp.uuid, 'flip', e.target.checked)}
+                      />
+                    </label>
+                    <Button
+                      className='SettingsButton controlButton danger'
+                      onClick={() => removeCustomLamp(lamp.uuid)}
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
-
+            <hr />
             {/* save */}
-            <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <input
-                type='checkbox'
-                checked={saveTemporary}
-                onChange={(e) => setSaveTemporary(e.target.checked)}
-              />
-              {t('as_save_temp')}
-            </label>
-            <Button
-              className='SettingsButton controlButton'
-              onClick={handleSave}
-            >
-              {t('as_save')}
-            </Button>
-            {statusMsg && <p style={{ marginTop: 10 }}>{statusMsg}</p>}
+            <div className='SettingContainer'>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <input
+                  type='checkbox'
+                  checked={saveTemporary}
+                  onChange={(e) => setSaveTemporary(e.target.checked)}
+                />
+                {t('as_save_temp')}
+              </label>
+              <Button
+                className='SettingsButton controlButton overviewButton'
+                onClick={handleSave}
+              >
+                {t('as_save')}
+              </Button>
+              {statusMsg && <p style={{ marginTop: 10 }}>{statusMsg}</p>}
+            </div>
           </div>
-
           {/* right column – preview */}
           <div className='SettingsOverviewImage window'>
             <div

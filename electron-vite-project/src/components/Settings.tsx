@@ -98,7 +98,6 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                   <span>{t('set_admin')}</span>
                 </div>
               </Button>
-              {/* not for 1.2.x - exclude for release (maybe)???? */}
               <Button
                 className={selectedSetting === 'Setting3' ? 'active' : ''}
                 onClick={() => setSelectedSetting('Setting3')}

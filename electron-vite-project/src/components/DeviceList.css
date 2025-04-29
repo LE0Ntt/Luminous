@@ -14,7 +14,7 @@
  */
 
 hr {
-  height: 1px;
+  min-height: 1px;
   background-color: var(--faderBorder);
   border: none;
 }

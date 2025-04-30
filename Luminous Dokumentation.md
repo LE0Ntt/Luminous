@@ -36,6 +36,7 @@
   - [Anwendung starten (Entwicklungsmodus)](#anwendung-starten-entwicklungsmodus)
   - [Anwendung bauen (Produktion)](#anwendung-bauen-produktion)
 - [Kontakt](#kontakt)
+<div style="page-break-after: always;"></div>
 
 ---
 
@@ -366,6 +367,7 @@ Wenn der Output so oder so ähnlich aussieht, können Sie den Server mit `STRG+C
 
     [Service]
     User=pi
+    # Pfad zu Python anpassen, falls manuell installiert (z.B. /usr/local/bin/python3.9)
     ExecStart=/usr/bin/python3 /home/pi/Luminous/backend/server.py
     WorkingDirectory=/home/pi/Luminous/backend/
     StandardOutput=journal+tty
@@ -414,8 +416,9 @@ Die Installation des Frontends ist im Vergleich zum Backend deutlich einfacher. 
 
 **Empfehlung:** Wenn der PC hauptsächlich für die Steuerung mit Luminous verwendet wird, empfiehlt es sich, die App zum Windows-Autostart hinzuzufügen.
 
----
+<div style="page-break-after: always;"></div>
 
+---
 
 # Admin-Handbuch
 
@@ -532,6 +535,8 @@ Szenen können auf den Seiten „Studio“, „LightFX“ oder „Szenen“ gesp
 > - Als neue Szene speichern
 > - Alte Szene löschen
 
+<div style="page-break-after: always;"></div>
+
 ---
 
 # Entwickler-Setup
@@ -621,6 +626,8 @@ npm run build
 Die gebauten Installationsdateien finden Sie anschließend im dafür vorgesehenen Ausgabeordner `release` innerhalb von `electron-vite-project`.
 
 > Diese Schritte sollten eine grundlegende Entwicklungsumgebung für Luminous bereitstellen.
+
+<div style="page-break-after: always;"></div>
 
 ---
 

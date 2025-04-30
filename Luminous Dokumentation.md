@@ -1,10 +1,9 @@
-
 # Luminous Dokumentation
 
 ## Inhalt
 
 - [Installationsanleitung](#installationsanleitung)
-  - [RaspberryPi](#raspberrypi)
+  - [Raspberry Pi](#raspberry-pi)
   - [OLA](#ola)
     - [Allgemeine Informationen](#allgemeine-informationen)
     - [Abhängigkeiten installieren](#abhängigkeiten-installieren)
@@ -16,6 +15,7 @@
     - [Abhängigkeiten installieren](#abhängigkeiten-installieren-1)
     - [Starten des Backend-Servers](#starten-des-backend-servers)
     - [Einrichtung des Autostarts](#einrichtung-des-autostarts)
+  - [Frontend (App) installieren](#frontend-app-installieren)
 - [Admin-Handbuch](#admin-handbuch)
   - [Problembehebung](#problembehebung)
   - [Allgemeine Verwaltung](#allgemeine-verwaltung)
@@ -43,7 +43,7 @@
 
 Dieser Leitfaden beschreibt die genaue Installation und Konfiguration des Luminous-Backends. Sie benötigen einen Linux-Server, in diesem Fall einen Raspberry Pi 4 B und möglicherweise weitere erforderliche Ressourcen.
 
-## RaspberryPi
+## Raspberry Pi
 
 1.  Beginnen Sie mit der Installation einer beliebigen Linux-Version auf Ihrem Raspberry Pi. In diesem Guide verwenden wir Raspberry Pi OS Lite 64-Bit, aber jede andere Linux-Version sollte ebenfalls funktionieren.
 2.  Sobald die Linux-Distribution erfolgreich installiert wurde, fahren Sie fort mit der Konfiguration des Raspberry Pi für Luminous.
@@ -63,10 +63,13 @@ Dieser Leitfaden beschreibt die genaue Installation und Konfiguration des Lumino
 
 6.  Sobald die Installation abgeschlossen ist, können Sie überprüfen, ob Git erfolgreich installiert wurde, indem Sie den Befehl `git --version` ausführen. Wenn Git erfolgreich installiert wurde, wird die installierte Version angezeigt.
 7.  Überprüfen Sie, ob Python 3.9.2 oder eine mit OLA kompatible Version installiert ist:
+
     ```bash
     python3 --version
     ```
+
     Wenn Python 3.9.2 installiert ist, wird die Version angezeigt. Falls nicht, installieren Sie Python 3.9.2 mit den folgenden Befehlen:
+
     ```bash
     cd /opt
     sudo wget https://www.python.org/ftp/python/3.9.2/Python-3.9.2.tgz
@@ -75,7 +78,8 @@ Dieser Leitfaden beschreibt die genaue Installation und Konfiguration des Lumino
     sudo ./configure --enable-optimizations
     sudo make altinstall
     ```
-    *(Hinweis: Der Befehl `make altinstall` wird verwendet, um die Standard-Python-Installation des Systems nicht zu überschreiben. Der Python-Interpreter heißt dann `python3.9`.)*
+
+    _(Hinweis: Der Befehl `make altinstall` wird verwendet, um die Standard-Python-Installation des Systems nicht zu überschreiben. Der Python-Interpreter heißt dann `python3.9`.)_
 
 8.  Überprüfen Sie die Installation von Python 3.9 ggf. erneut:
     ```bash
@@ -84,19 +88,20 @@ Dieser Leitfaden beschreibt die genaue Installation und Konfiguration des Lumino
     # Wenn über apt installiert oder bereits vorhanden:
     python3 --version
     ```
-    *(Passen Sie die Python-Befehle in den späteren Schritten ggf. auf `python3.9` an, falls Sie manuell installiert haben.)*
+    _(Passen Sie die Python-Befehle in den späteren Schritten ggf. auf `python3.9` an, falls Sie manuell installiert haben.)_
 
 Ihre Raspberry Pi-Umgebung ist jetzt vorbereitet, um mit der Installation von Luminous fortzufahren.
 
 ---
+
 ## OLA
 
 ### Allgemeine Informationen
 
 Wir werden hier eine umfassende Anleitung zur Installation von OLA bereitstellen. Sollten jedoch Schwierigkeiten auftreten, verweisen wir auf die folgenden Ressourcen, die ebenfalls erklären, wie man OLA installiert:
 
--   [The Newbie Guide for OLA on Ubuntu](http://opendmx.net/index.php/The_Newbie_Guide_for_OLA_on_Ubuntu)
--   [OLA - Linux install](https://www.openlighting.org/ola/linuxinstall/)
+- [The Newbie Guide for OLA on Ubuntu](http://opendmx.net/index.php/The_Newbie_Guide_for_OLA_on_Ubuntu)
+- [OLA - Linux install](https://www.openlighting.org/ola/linuxinstall/)
 
 Diese Anleitungen bieten zusätzliche Informationen und können bei Problemen hilfreich sein. Vieles in diesem Text basiert jedoch auf den beiden oben genannten Anleitungen und wurde für eine einfache Installation auf dem Raspberry Pi angepasst.
 
@@ -125,12 +130,13 @@ sudo apt-get install libcppunit-dev libcppunit-1.13-0 uuid-dev pkg-config libncu
 ```
 
 oder
+
 ```
 sudo apt install build-essential autoconf libtool pkg-config libcppunit-dev libmicrohttpd-dev zlib1g-dev libftdi-dev libusb-1.0-0-dev protobuf-compiler libprotobuf-dev python3-protobuf libprotoc-dev liblua5.3-dev
 
 ```
 
-Die obige Methode wird empfohlen, aber wenn sie nicht funktioniert (z. B. weil keine direkte Internetverbindung besteht), können Sie die Pakete auch manuell herunterladen und installieren. 
+Die obige Methode wird empfohlen, aber wenn sie nicht funktioniert (z. B. weil keine direkte Internetverbindung besteht), können Sie die Pakete auch manuell herunterladen und installieren.
 
 **ANMERKUNG:** Verwenden Sie für das manuelle Kompilieren ein geeignetes temporäres Verzeichnis, z. B. in Ihrem Home-Verzeichnis oder unter `/tmp`, anstelle des nicht standardmäßig vorhandenen "Documents"-Ordners.
 
@@ -161,7 +167,7 @@ Prüfen Sie das Git-Repositorium mit dem folgenden Befehl:
 ```bash
 git clone https://github.com/OpenLightingProject/ola.git ola
 cd ola
- ```
+```
 
 Stellen Sie sicher, dass Sie die Version 0.10.9 von OLA heruntergeladen haben, da dies für die Installation von entscheidender Bedeutung sein kann. (Ggf. mit `git checkout <version>` die Version wechseln).
 
@@ -244,7 +250,8 @@ Damit der Luminous-Backend-Server zuverlässig funktioniert und insbesondere der
     [Install]
     WantedBy=multi-user.target
     ```
-    *(Hinweis: Sie können Optionen zu `ExecStart=` hinzufügen, z.B. `ExecStart=/usr/local/bin/olad -l 3` für ein anderes Log-Level.)*
+
+    _(Hinweis: Sie können Optionen zu `ExecStart=` hinzufügen, z.B. `ExecStart=/usr/local/bin/olad -l 3` für ein anderes Log-Level.)_
 
 4.  **Speichern und schließen Sie die Datei** (in `nano`: `STRG+X`, dann `Y`, dann `Enter`).
 
@@ -272,13 +279,12 @@ Damit der Luminous-Backend-Server zuverlässig funktioniert und insbesondere der
     ```bash
     sudo systemctl status ola.service
     ```
+
     Es sollte angezeigt werden, dass der Dienst "active (running)" ist. Sie können die Logs auch mit `sudo journalctl -u ola.service` einsehen.
 
 Mit diesen Schritten ist sichergestellt, dass der OLA-Daemon automatisch startet und für das Luminous-Backend bereitsteht.
 
-
 ---
-
 
 ## Backend Server
 
@@ -341,6 +347,7 @@ Wenn der Output so oder so ähnlich aussieht, können Sie den Server mit `STRG+C
 ### Einrichtung des Autostarts
 
 1.  **Erstellen Sie das Log-Verzeichnis** (falls es nicht bereits existiert):
+
     ```bash
     mkdir -p /home/pi/Luminous/logs
     ```
@@ -397,6 +404,19 @@ Durch diese Schritte richten Sie den Autostart für den Luminous-Dienst ein und 
 
 ---
 
+## Frontend (App) installieren
+
+Die Installation des Frontends ist im Vergleich zum Backend deutlich einfacher. Es ist keine separate Konfiguration auf dem Client-PC notwendig.
+
+1.  Besuchen Sie die [Releases-Seite](https://github.com/LE0Ntt/Luminous/releases) des Projekts.
+2.  Laden Sie von der neuesten Version die `.exe`-Installationsdatei herunter (z.B. `luminous-setup-1.2.x.exe`).
+3.  Führen Sie die heruntergeladene Datei aus und folgen Sie den Anweisungen des Installationsassistenten.
+
+**Empfehlung:** Wenn der PC hauptsächlich für die Steuerung mit Luminous verwendet wird, empfiehlt es sich, die App zum Windows-Autostart hinzuzufügen.
+
+---
+
+
 # Admin-Handbuch
 
 Dieser Guide beschreibt die grundlegende Verwaltung der Luminous-App für Administratoren. Die folgenden Abschnitte führen durch die häufigsten administrativen Aufgaben und bieten Hilfestellungen bei auftretenden Problemen.
@@ -416,6 +436,7 @@ Die Verwaltungsfunktionen der Luminous-App befinden sich oben links über das Za
 ### Einstellungen
 
 Im ersten Reiter befinden sich allgemeine Benutzereinstellungen:
+
 - Sprache ändern
 - Design anpassen
 
@@ -426,6 +447,7 @@ Der Administratorbereich erfordert ein Passwort. Aktuell lautet das Admin-Passwo
 Sollten Sie das Passwort vergessen, ist der Zugriff nicht trivial, da das Passwort verschlüsselt in der Datenbank gespeichert ist. Als Notlösung können Sie per SSH auf den Raspberry Pi zugreifen und die Datenbank durch eine ältere Version ersetzen.
 
 Weitere Funktionen:
+
 - **OLA-Übersicht öffnen**: Hilfreich zum Debuggen von DMX-Signalen, da hier die aktuellen Channel-Werte angezeigt werden.
 - **Server URL und Port ändern**: Besonders nützlich, wenn sich die Netzwerkkonfiguration (z.B. WLAN) geändert hat.
 - **Datenbank verwalten**:
@@ -438,13 +460,16 @@ Weitere Funktionen:
 #### Studio-Übersicht
 
 Anpassungen der Lampenpositionen und Icons zur Aktualisierung der Studio-Ansicht:
+
 - Definieren Sie das **Hauptgrid** über Zeilen und Spalten.
 - Weisen Sie jeder Zelle rechts in der Übersicht Lampen mit passenden Icons oder „None“ zu, falls diese leer ist.
+- Greenscreen und Traversenleuchten sind im Erscheinungsbild vordefiniert. Hier ist die Zuordnung entscheidend oder „None“, um nichts anzuzeigen.
 - **Custom-Lampen** außerhalb des Grids platzieren Sie frei per Pixelkoordinaten (Abstand oben/links). Sie können sie auch „flippen“, falls sie nach unten zeigen sollen.
 
 Speicheroptionen:
+
 - **Temporär speichern**: Einstellungen gehen beim Neustart verloren.
-- **Speichern** (per Admin-Passwort): Einstellungen dauerhaft in der Datenbank sichern.
+- **Speichern** ohne den Haken für temporäres Speichern (per Admin-Passwort): Einstellungen dauerhaft in der Datenbank sichern.
 
 ---
 
@@ -453,6 +478,7 @@ Speicheroptionen:
 Im Menü „Geräte“ können Sie Lampen hinzufügen oder bestehende Geräte konfigurieren:
 
 #### Grundeinstellungen je Gerät:
+
 - **Universum**: DMX-Universum, dem das Gerät zugeordnet ist.
 - **Nummer**: Kennzeichnung im Studio; bestimmt auch die Reihenfolge in der App.
 - **Gerätename**
@@ -464,11 +490,13 @@ Im Menü „Geräte“ können Sie Lampen hinzufügen oder bestehende Geräte ko
   - **Misc**: Sonstige Geräte
 
 #### Kanäle und Kanalnamen:
+
 - Jedes Gerät hat mindestens einen „Main“-Kanal (Hauptfader).
 - Zusätzliche Kanäle können benannt und frei gewählt werden (Inputfelder).
 - Kanäle müssen nicht lückenlos folgen. Der **Startkanal** hilft nur beim Zuordnen.
 
 #### Übersicht DMX-Belegung:
+
 - Graue Markierung: Aktuell ausgewähltes Gerät
 - Farbig hinterlegt: Belegte Kanäle
 - Rot markiert: Kanalüberschneidungen
@@ -480,21 +508,25 @@ Speichern und Löschen erfolgt nach Eingabe des Admin-Passworts.
 ### Szenenverwaltung
 
 Szenen können auf den Seiten „Studio“, „LightFX“ oder „Szenen“ gespeichert werden:
+
 - Es werden alle aktuell eingeschalteten Lampen mit deren Kanalwerten gespeichert. Der Masterfader wird aktuell nicht berücksichtigt.
 - In LightFX empfiehlt sich das Aktivieren des „Solo“-Modus, um nur die Auswahl zu speichern.
 
 #### Speichern einer Szene
+
 - Namen vergeben
 - Die Option „Als Standard Szene setzen“ aktiviert die dauerhafte Speicherung nach Passworteingabe.
 - Ohne diese Option wird die Szene beim Neustart gelöscht.
 
 #### Szenenübersicht
+
 - Bookmark-Icon mit Haken: dauerhaft gespeichert
 - Bookmark-Icon mit Plus: Möglichkeit, mit Passwort dauerhaft zu speichern
 - Mülltonnen-Icon: Szene löschen
 
 > **Hinweis:**
 > Eine direkte Bearbeitung gespeicherter Szenen ist nicht möglich. Es empfiehlt sich folgendes Vorgehen:
+>
 > - Szene mit "Solo" aktivieren
 > - Änderungen an der Lichtstimmung vornehmen
 > - Als neue Szene speichern
@@ -516,9 +548,9 @@ Als Entwicklungsumgebung wird Visual Studio Code (VS Code) empfohlen.
 
 Stellen Sie sicher, dass die folgenden Werkzeuge auf Ihrem System installiert sind:
 
-*   **Node.js:** Version 18 oder höher.
-*   **Python:** Version 3.9 oder höher.
-*   **Git:** Zur Versionsverwaltung.
+- **Node.js:** Version 18 oder höher.
+- **Python:** Version 3.9 oder höher.
+- **Git:** Zur Versionsverwaltung.
 
 ## Einrichtung der Umgebung
 
@@ -528,6 +560,7 @@ Stellen Sie sicher, dass die folgenden Werkzeuge auf Ihrem System installiert si
 
 2.  **Repository Klonen:**
     Klonen Sie Ihren erstellten Fork auf Ihr lokales System. Öffnen Sie ein Terminal oder eine Git-Bash und führen Sie aus:
+
     ```bash
     git clone <URL-Ihres-Forks> Luminous-Dev
     cd Luminous-Dev
@@ -538,6 +571,7 @@ Stellen Sie sicher, dass die folgenden Werkzeuge auf Ihrem System installiert si
 
 4.  **Backend Abhängigkeiten installieren:**
     Navigieren Sie im integrierten Terminal von VS Code (oder einem separaten Terminal) in das `backend`-Verzeichnis. Installieren Sie die erforderlichen Python-Pakete:
+
     ```bash
     cd backend
     pip install -r requirements.txt
@@ -558,15 +592,17 @@ Um die Anwendung lokal für Entwicklungszwecke zu starten, benötigen Sie in der
 
 1.  **Backend starten:**
     Öffnen Sie ein Terminal im `backend`-Verzeichnis und starten Sie den Python-Server:
+
     ```bash
     # Im Verzeichnis 'backend'
     python server.py
     # Oder 'python3 server.py'
     ```
+
     Das Backend läuft nun und wartet auf Verbindungen (standardmäßig oft auf Port 5000).
 
 2.  **Frontend starten:**
-    Öffnen Sie ein *zweites* Terminal im `electron-vite-project`-Verzeichnis und starten Sie den Frontend-Entwicklungsserver mit Hot-Reloading:
+    Öffnen Sie ein _zweites_ Terminal im `electron-vite-project`-Verzeichnis und starten Sie den Frontend-Entwicklungsserver mit Hot-Reloading:
     ```bash
     # Im Verzeichnis 'electron-vite-project'
     npm run dev
@@ -584,7 +620,7 @@ npm run build
 
 Die gebauten Installationsdateien finden Sie anschließend im dafür vorgesehenen Ausgabeordner `release` innerhalb von `electron-vite-project`.
 
->Diese Schritte sollten eine grundlegende Entwicklungsumgebung für Luminous bereitstellen. 
+> Diese Schritte sollten eine grundlegende Entwicklungsumgebung für Luminous bereitstellen.
 
 ---
 

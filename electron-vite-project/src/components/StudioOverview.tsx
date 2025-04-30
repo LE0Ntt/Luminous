@@ -236,7 +236,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
           const img = imgByIcon(l.icon);
           if (!l.deviceId) return null;
           const mirrored = l.left > 802 / 2;
-          const useSchein2 = l.icon === 'Fill';
+          const useSchein2 = l.icon === 'Fill' || l.icon === 'LED';
           return (
             <div
               key={l.uuid}
@@ -312,7 +312,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
                       <ScheinImg
                         gid={cell.id}
                         max={master}
-                        use2={cell.icon === 'Fill'}
+                        use2={cell.icon === 'Fill' || cell.icon === 'LED'}
                       />
                     )}
                     {img && (

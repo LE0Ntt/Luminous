@@ -482,8 +482,11 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
             </div>
             <hr />
             {/* save */}
-            <div className='SettingContainer'>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div
+              className='SettingContainer'
+              style={{ display: 'flex', alignItems: 'center', gap: 10 }}
+            >
+              <label style={{ display: 'flex', gap: 4 }}>
                 <input
                   type='checkbox'
                   checked={saveTemporary}
@@ -497,7 +500,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
               >
                 {t('as_save')}
               </Button>
-              {statusMsg && <p style={{ marginTop: 10 }}>{statusMsg}</p>}
+              {statusMsg && <p>{statusMsg}</p>}
             </div>
           </div>
           {/* right column – preview */}

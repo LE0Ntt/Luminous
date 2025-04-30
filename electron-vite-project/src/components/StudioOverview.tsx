@@ -1,327 +1,357 @@
 /**
- * Luminous - A Web-Based Lighting Control System
- *
- * TH Köln - University of Applied Sciences, institute for media and imaging technology
- * Projekt Medienproduktionstechnik & Web-Engineering
- *
- * Authors:
- * - Leon Hölzel
- * - Darwin Pietas
- * - Marvin Plate
- * - Andree Tomek
- *
- * @file StudioOverview.tsx
+ * Luminous – StudioOverview.tsx
+ * Web-Based Lighting Control System
  */
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import '../Studio.css';
 import schein from '../assets/schein3.png';
 import schein2 from '../assets/schein2.png';
-import spot from '../assets/SpotTop.png';
-import fillLight from '../assets/FillTop.png';
+import spotImg from '../assets/SpotTop.png';
+import fillImg from '../assets/FillTop.png';
 import biColor from '../assets/BiColorTop.png';
+import rgbTop from '../assets/rgbTop.png';
 import LightBeam from './LightBeam';
 import { TranslationContext } from './TranslationContext';
+import { useConnectionContext } from './ConnectionContext';
 import { useFaderValue } from './FaderContext';
 
 interface StudioOverviewProps {
   handleGlowAndFocus: (id: number) => void;
 }
 
-const StudioOverview: React.FC<StudioOverviewProps> = ({ handleGlowAndFocus }) => {
+interface GridCell {
+  id: number;
+  row: number;
+  col: number;
+  icon: 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
+}
+interface CustomCfg {
+  uuid: string;
+  deviceId: number;
+  icon: 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
+  left: number;
+  top: number;
+  flip: boolean;
+  label?: string;
+}
+interface TraverseCfg {
+  groupId: number;
+}
+
+const GRID_W = 604;
+const GRID_H = 555;
+const GRID_TOP = 150;
+const GS_COUNT = 6;
+
+const traversePos = [
+  { top: 720, left: 74 },
+  { top: 401, left: 74 },
+  { top: 82, left: 74 },
+  { top: 82, left: 731 },
+  { top: 401, left: 731 },
+  { top: 566, left: 731 },
+  { top: 720, left: 614 },
+];
+
+// mappt Icon auf Bild
+const imgByIcon = (icon: string) => {
+  switch (icon) {
+    case 'RGB':
+      return rgbTop;
+    case 'LED':
+      return biColor;
+    case 'Spot':
+      return spotImg;
+    case 'Fill':
+      return fillImg;
+    default:
+      return null;
+  }
+};
+
+// Helligkeitsanzeige
+const FaderText: React.FC<{ gid: number; max: number }> = ({ gid, max }) => {
   const { t } = useContext(TranslationContext);
-  const masterValue = useFaderValue(0, 0);
-  const memoizedMasterValue = useMemo(() => masterValue, [masterValue]);
+  const v = useFaderValue(gid, 0);
+  if (v === 0) return <div className='studioOverviewInfopanelBrightness'>{t('Off')}</div>;
+  const pct = ((v * 10) / 255) * ((max * 10) / 255);
+  return <div className='studioOverviewInfopanelBrightness'>{pct.toFixed(0)}%</div>;
+};
 
-  const [studioRows] = useState(6);
-  const [studioColumns] = useState(4);
-
-  const gridHeight = 150;
-  const greenScreen = 14;
-
-  const selectedSliders = useMemo(
-    () => [
-      { id: 5, row: 0, col: 0, type: spot },
-      { id: 5, row: 0, col: 1, type: fillLight },
-      { id: 6, row: 0, col: 2, type: fillLight },
-      { id: 6, row: 0, col: 3, type: spot },
-      { id: 4, row: 1, col: 0, type: fillLight },
-      { id: 4, row: 1, col: 1, type: fillLight },
-      { id: 7, row: 1, col: 2, type: fillLight },
-      { id: 7, row: 1, col: 3, type: fillLight },
-      { id: 3, row: 2, col: 0, type: spot },
-      { id: 3, row: 2, col: 1, type: fillLight },
-      { id: 8, row: 2, col: 2, type: fillLight },
-      { id: 8, row: 2, col: 3, type: spot },
-      { id: 2, row: 3, col: 0, type: spot },
-      { id: 2, row: 3, col: 1, type: spot },
-      { id: 9, row: 3, col: 2, type: fillLight },
-      { id: 9, row: 3, col: 3, type: spot },
-      { id: 1, row: 4, col: 0, type: spot },
-      { id: 1, row: 4, col: 1, type: fillLight },
-      { id: 10, row: 4, col: 3, type: spot },
-    ],
-    []
-  );
-
-  const customLights = [
-    {
-      type: 'greenscreen',
-      groupId: greenScreen,
-      count: 6,
-      useSchein2: true,
-      imageSrc: biColor,
-      label: 'Greenscreen',
-      top: 60,
-      left: 0,
-    },
-    {
-      type: 'single',
-      groupId: 11,
-      flip: true,
-      imageSrc: spot,
-      label: t('testchart'),
-      top: 750,
-      left: 170,
-    },
-    {
-      type: 'single',
-      groupId: 12,
-      flip: true,
-      imageSrc: spot,
-      label: t('testchart'),
-      top: 750,
-      left: 270,
-    },
-    {
-      type: 'single',
-      groupId: 13,
-      flip: true,
-      imageSrc: spot,
-      label: 'HMI',
-      top: 50,
-      left: 500,
-    },
-  ];
-
-  const traversen = [
-    { top: 720, left: 74, groupId: 15 }, // T1
-    { top: 401, left: 74, groupId: 16 }, // T2
-    { top: 82, left: 74, groupId: 17 }, // T3
-    { top: 82, left: 731, groupId: 18 }, // T4
-    { top: 401, left: 731, groupId: 19 }, // T5
-    { top: 566, left: 731, groupId: 20 }, // T6
-    { top: 720, left: 614, groupId: 21 }, // T7
-  ];
-
-  const grid = useMemo(
-    () =>
-      Array(studioRows)
-        .fill(undefined)
-        .map(() => Array(studioColumns).fill(undefined)),
-    []
-  );
-
-  const FaderValueDisplay = useCallback(
-    ({ groupId, faderId }: { groupId: number; faderId: number }) => {
-      const value = useFaderValue(groupId, faderId);
-      if (value === 0) return <div className='studioOverviewInfopanelBrightness'>{t('Off')}</div>;
-      const brightness = ((value * 10) / 255) * ((memoizedMasterValue * 10) / 255);
-      return <div className='studioOverviewInfopanelBrightness'>{brightness.toFixed(0) === '0' ? t('Off') : brightness.toFixed(0) + '%'}</div>;
-    },
-    [memoizedMasterValue, t]
-  );
-
-  const LightOpacity = useCallback(
-    ({ groupId, faderId, useSchein2, flip }: { groupId: number; faderId: number; useSchein2?: boolean; flip?: boolean }) => {
-      const value = useFaderValue(groupId, faderId);
-      if (value === 0) return null;
-      const opacity = (value / 255) * (memoizedMasterValue / 255);
-      return (
-        <img
-          src={useSchein2 ? schein2 : schein}
-          alt='schein'
-          className='schein'
-          style={{
-            opacity: opacity,
-            filter: 'blur(5px)',
-            transform: flip ? 'rotate(180deg) translate(10px, -85px)' : groupId === greenScreen ? 'translate(0, 17px)' : 'none',
-          }}
-        />
-      );
-    },
-    [memoizedMasterValue]
-  );
-
-  const renderLight = useCallback(
-    (selectedSlider: any, isRightSide: boolean) => {
-      return (
-        <div className={`studioOverviewLight ${isRightSide ? 'marginLeft45' : 'marginRight45'}`}>
-          <LightOpacity
-            groupId={selectedSlider.id}
-            faderId={0}
-            useSchein2={selectedSlider.type === fillLight}
-          />
-          <img
-            src={selectedSlider.type}
-            alt='Lamp'
-            className={`studioOverviewLamp ${isRightSide ? 'lampMirrored' : ''}`}
-            onClick={() => handleGlowAndFocus(selectedSlider.id)}
-            style={{ cursor: 'pointer' }}
-          />
-          <div
-            className='studioOverviewInfopanel'
-            onClick={() => handleGlowAndFocus(selectedSlider.id)}
-            style={{ cursor: 'pointer' }}
-          >
-            <div className='studioOverviewInfopanelText'>#{selectedSlider.id}</div>
-            <FaderValueDisplay
-              groupId={selectedSlider.id}
-              faderId={0}
-            />
-          </div>
-        </div>
-      );
-    },
-    [handleGlowAndFocus, FaderValueDisplay, LightOpacity]
-  );
-
+// Schein-Effekt
+const ScheinImg: React.FC<{ gid: number; max: number; use2?: boolean; flip?: boolean; gs?: boolean; g?: boolean }> = ({ gid, max, use2, flip, gs, g }) => {
+  const v = useFaderValue(gid, 0);
+  if (v === 0) return null;
+  const op = (v / 255) * (max / 255);
   return (
-    <div className='overview window'>
-      <div className='studioOverview window'>
-        {customLights.map((light, idx) => {
-          if (light.type === 'greenscreen') {
-            const mirroredAfter = Math.ceil(light.count! / 2);
-            return (
-              <div
-                className='studioOverviewGreenscreen'
-                key={`greenscreen-${idx}`}
-                style={{ position: 'absolute', top: light.top, left: light.left }}
-              >
-                <div
-                  className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
-                  onClick={() => handleGlowAndFocus(light.groupId)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <div className='studioOverviewInfopanelText'>{light.label}</div>
-                  <FaderValueDisplay
-                    groupId={light.groupId}
-                    faderId={0}
-                  />
-                </div>
-                {[...Array(light.count)].map((_, index) => (
-                  <div
-                    className='studioOverviewLight'
-                    key={`gs-light-${index}`}
-                  >
-                    <LightOpacity
-                      groupId={light.groupId}
-                      faderId={0}
-                      useSchein2={light.useSchein2}
-                    />
-                    <img
-                      src={light.imageSrc}
-                      alt='Lamp'
-                      className={`studioOverviewGreenscreenLamp studioOverviewLamp ${index >= mirroredAfter ? 'lampMirrored' : ''}`}
-                      onClick={() => handleGlowAndFocus(light.groupId)}
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </div>
-                ))}
-              </div>
-            );
-          }
-          return (
-            <div
-              className='studioOverviewLight'
-              key={`custom-light-${light.groupId}`}
-              style={{ position: 'absolute', top: light.top, left: light.left }}
-            >
-              <LightOpacity
-                groupId={light.groupId}
-                faderId={0}
-                flip={light.flip}
-              />
-              <img
-                src={light.imageSrc}
-                alt='Lamp'
-                className='studioOverviewTestchartLamp'
-                onClick={() => handleGlowAndFocus(light.groupId)}
-                style={{ cursor: 'pointer' }}
-              />
-              <div
-                className='studioOverviewInfopanel studioOverviewInfopanelTestchart'
-                onClick={() => handleGlowAndFocus(light.groupId)}
-                style={{ cursor: 'pointer' }}
-              >
-                <div className='studioOverviewInfopanelText'>{light.label}</div>
-                <FaderValueDisplay
-                  groupId={light.groupId}
-                  faderId={0}
-                />
-              </div>
-            </div>
-          );
-        })}
-        <div
-          className='studioOverviewLights'
-          style={{ top: gridHeight }} // 140 default
-        >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateRows: `repeat(${studioRows}, 1fr)`,
-              gridTemplateColumns: `repeat(${studioColumns}, 1fr)`,
-              gap: '5px',
-              width: '604px',
-              height: '672px',
-              alignItems: 'center',
-              justifyItems: 'center',
-            }}
-          >
-            {grid.map((row, rowIndex) =>
-              row.map((_, colIndex) => {
-                const selectedSlider = selectedSliders.find((s) => s.row === rowIndex && s.col === colIndex);
-                if (selectedSlider) {
-                  const isRightSide = colIndex >= row.length / 2;
-                  return <React.Fragment key={`${rowIndex}-${colIndex}`}>{renderLight(selectedSlider, isRightSide)}</React.Fragment>;
-                }
-                return <div key={`${rowIndex}-${colIndex}`} />;
-              })
-            )}
-          </div>
-        </div>
-        <div className='studioOverviewTraversen'>
-          {traversen.map((traverse, index) => (
-            <div
-              key={index}
-              style={{ top: `${traverse.top}px`, left: `${traverse.left}px`, position: 'fixed' }}
-            >
-              <div style={{ top: `${traverse.top}px`, left: `${traverse.left}px`, position: 'fixed' }}>
-                <LightBeam
-                  master={memoizedMasterValue}
-                  main={useFaderValue(traverse.groupId, 0)}
-                  red={useFaderValue(traverse.groupId, 1)}
-                  green={useFaderValue(traverse.groupId, 2)}
-                  blue={useFaderValue(traverse.groupId, 3)}
-                />
-              </div>
-              <div
-                className={`studioOverviewInfopanel studioOverviewInfopanelTraverse${index}`}
-                onClick={() => handleGlowAndFocus(traverse.groupId)}
-                style={{ cursor: 'pointer' }}
-              >
-                <div className='studioOverviewInfopanelText'>{t('Traverse ' + (index + 1))}</div>
-                <FaderValueDisplay
-                  groupId={traverse.groupId}
-                  faderId={0}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+    <img
+      src={use2 ? schein2 : schein}
+      className='schein'
+      style={{
+        opacity: op,
+        filter: 'blur(5px)',
+        // Wenn flip=true: rotieren+verschieben. Wenn gs=true: leicht nach unten. Sonst (flip=false): nach oben verschieben.
+        transform: flip ? 'rotate(180deg) translate(10px,-85px)' : gs ? 'translate(0,-90px)' : g ? 'translateY(10px)' : 'translateY(-10px)',
+      }}
+      alt=''
+    />
+  );
+};
+
+// TraverseItem als separate Komponente
+interface TraverseItemProps {
+  groupId: number;
+  pos: { top: number; left: number };
+  index: number;
+  handleGlowAndFocus: (id: number) => void;
+  master: number;
+}
+const TraverseItem: React.FC<TraverseItemProps> = ({ groupId, pos, index, handleGlowAndFocus, master }) => {
+  const main = useFaderValue(groupId, 0);
+  const red = useFaderValue(groupId, 1);
+  const green = useFaderValue(groupId, 2);
+  const blue = useFaderValue(groupId, 3);
+  if (!groupId) return null;
+  return (
+    <div style={{ position: 'fixed', top: pos.top, left: pos.left }}>
+      <div style={{ position: 'fixed', top: pos.top, left: pos.left }}>
+        <LightBeam
+          master={master}
+          main={main}
+          red={red}
+          green={green}
+          blue={blue}
+        />
+      </div>
+      <div
+        className={`studioOverviewInfopanel studioOverviewInfopanelTraverse${index}`}
+        onClick={() => handleGlowAndFocus(groupId)}
+      >
+        <div className='studioOverviewInfopanelText'>{`${index + 1}. Traverse`}</div>
+        <FaderText
+          gid={groupId}
+          max={master}
+        />
       </div>
     </div>
   );
 };
 
-export default React.memo(StudioOverview);
+export default React.memo(function StudioOverview({ handleGlowAndFocus }: StudioOverviewProps) {
+  const { t } = useContext(TranslationContext);
+  const { url } = useConnectionContext();
+  const master = useFaderValue(0, 0);
+
+  const [rows, setRows] = useState(6);
+  const [cols, setCols] = useState(4);
+  const [gridCfg, setGridCfg] = useState<GridCell[]>([]);
+  const [customCfg, setCustomCfg] = useState<CustomCfg[]>([]);
+  const [travCfg, setTravCfg] = useState<TraverseCfg[]>([]);
+  const [greenId, setGreenId] = useState<number | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const res = await fetch(`${url}/studio_grid`);
+      const txt = await res.text();
+      if (txt.trim().startsWith('<')) return; // ignore HTML
+      let data: any = txt;
+      try {
+        data = JSON.parse(data);
+      } catch {}
+      if (typeof data === 'string') data = JSON.parse(data);
+      setRows(+data.meta?.rows || 6);
+      setCols(+data.meta?.cols || 4);
+      setGridCfg(data.grid || []);
+      setCustomCfg(data.custom || []);
+      setTravCfg(data.traversen || []);
+      setGreenId(data.greenScreenId ?? null);
+      console.log('Data fetched/reloaded');
+    } catch (error) {
+      console.error('Failed to fetch studio grid data:', error);
+    }
+  }, [url]);
+
+  useEffect(() => {
+    fetchData();
+
+    const handleReload = () => {
+      console.log('Reload event triggered');
+      fetchData();
+    };
+
+    window.addEventListener('reload', handleReload as EventListener);
+
+    return () => {
+      window.removeEventListener('reload', handleReload as EventListener);
+    };
+  }, [fetchData]);
+
+
+  return (
+    <div className='overview window'>
+      <div className='studioOverview window'>
+        {/* Greenscreen */}
+        {greenId && (
+          <div
+            className='studioOverviewGreenscreen'
+            style={{ position: 'absolute', top: 60, left: 0 }}
+          >
+            <div
+              className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
+              onClick={() => handleGlowAndFocus(greenId)}
+            >
+              <div className='studioOverviewInfopanelText'>{t('Greenscreen')}</div>
+              <FaderText
+                gid={greenId}
+                max={master}
+              />
+            </div>
+            {[...Array(GS_COUNT)].map((_, i) => (
+              <div
+                className='studioOverviewLight'
+                key={i}
+              >
+                <ScheinImg
+                  gid={greenId}
+                  max={master}
+                  use2
+                  g
+                />
+                <img
+                  src={biColor}
+                  alt=''
+                  className={`studioOverviewGreenscreenLamp studioOverviewLamp ${i >= GS_COUNT / 2 ? 'lampMirrored' : ''}`}
+                  onClick={() => handleGlowAndFocus(greenId)}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Custom Lamps */}
+        {customCfg.map((l) => {
+          const img = imgByIcon(l.icon);
+          if (!l.deviceId) return null;
+          const mirrored = l.left > 802 / 2;
+          const useSchein2 = l.icon === 'Fill';
+
+          return (
+            <div
+              key={l.uuid}
+              className='studioOverviewLight'
+              style={{ position: 'absolute', top: l.top, left: l.left }}
+            >
+              <ScheinImg
+                gid={l.deviceId}
+                max={master}
+                flip={l.flip}
+                use2={useSchein2}
+                gs
+              />
+              {img && (
+                <img
+                  src={img}
+                  alt=''
+                  className={`studioOverviewTestchartLamp ${mirrored ? 'lampMirrored' : ''}`}
+                  style={{
+                    cursor: 'pointer',
+                    position: 'relative', // Behalten wir vorerst bei, falls CSS darauf angewiesen ist
+                    zIndex: 1,
+                    // Wenn flip=true: rotieren. Wenn flip=false: nach oben verschieben.
+                    transform: l.flip ? 'rotate(180deg)' : 'translate(10px, -60px)',
+                  }}
+                  onClick={() => handleGlowAndFocus(l.deviceId)}
+                />
+              )}
+              <div
+                className='studioOverviewInfopanel studioOverviewInfopanelTestchart'
+                style={{ position: 'relative', zIndex: 0 }}
+                onClick={() => handleGlowAndFocus(l.deviceId)}
+              >
+                <div className='studioOverviewInfopanelText'>{l.label || `#${l.deviceId}`}</div>
+                <FaderText
+                  gid={l.deviceId}
+                  max={master}
+                />
+              </div>
+            </div>
+          );
+        })}
+
+        {/* Grid Lights */}
+        <div
+          className='studioOverviewLights'
+          style={{ top: GRID_TOP }}
+        >
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateRows: `repeat(${rows},1fr)`,
+              gridTemplateColumns: `repeat(${cols},1fr)`,
+              gap: 5,
+              width: GRID_W,
+              height: GRID_H,
+              alignItems: 'center',
+              justifyItems: 'center',
+            }}
+          >
+            {Array.from({ length: rows }).flatMap((_, r) =>
+              Array.from({ length: cols }).map((_, c) => {
+                const cell = gridCfg.find((g) => g.row === r && g.col === c);
+                if (!cell || !cell.id) {
+                  return <div key={`${r}-${c}`} />;
+                }
+                const img = imgByIcon(cell.icon);
+                const right = c >= cols / 2;
+                return (
+                  <div
+                    key={`${r}-${c}`}
+                    className={`studioOverviewLight ${right ? 'marginLeft45' : 'marginRight45'}`}
+                  >
+                    {img && (
+                      <ScheinImg
+                        gid={cell.id}
+                        max={master}
+                        use2={cell.icon === 'Fill'}
+                      />
+                    )}
+                    {img && (
+                      <img
+                        src={img}
+                        alt=''
+                        className={`studioOverviewLamp ${right ? 'lampMirrored' : ''}`}
+                        onClick={() => handleGlowAndFocus(cell.id)}
+                      />
+                    )}
+                    <div
+                      className='studioOverviewInfopanel'
+                      onClick={() => handleGlowAndFocus(cell.id)}
+                    >
+                      <div className='studioOverviewInfopanelText'>#{cell.id}</div>
+                      <FaderText
+                        gid={cell.id}
+                        max={master}
+                      />
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+        {/* Traversen */}
+        {travCfg.map((t, i) => (
+          <TraverseItem
+            key={i}
+            groupId={t.groupId}
+            pos={traversePos[i]}
+            index={i}
+            handleGlowAndFocus={handleGlowAndFocus}
+            master={master}
+          />
+        ))}
+      </div>
+    </div>
+  );
+});

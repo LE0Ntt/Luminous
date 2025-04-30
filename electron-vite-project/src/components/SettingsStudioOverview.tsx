@@ -232,6 +232,9 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
       console.error(err);
       setStatusMsg(t('save_failed'));
     }
+
+    // emit event to reload the studio grid
+    window.dispatchEvent(new Event('reload'));
   };
 
   const handleAdminPasswordConfirm = useCallback(
@@ -508,7 +511,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
               style={{ position: 'relative' }}
             >
               <div
-                className='grid-container'
+                className='SettingsOverviewImageGrid'
                 style={{ display: 'grid', gridTemplateColumns: `repeat(${cols},1fr)` }}
               >
                 {gridCells}

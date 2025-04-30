@@ -91,7 +91,6 @@ const ScheinImg: React.FC<{ gid: number; max: number; use2?: boolean; flip?: boo
       style={{
         opacity: op,
         filter: 'blur(5px)',
-        // Wenn flip=true: rotieren+verschieben. Wenn gs=true: leicht nach unten. Sonst (flip=false): nach oben verschieben.
         transform: flip ? 'rotate(180deg) translate(10px,-85px)' : gs ? 'translate(0,-90px)' : g ? 'translateY(10px)' : 'translateY(-10px)',
       }}
       alt=''
@@ -256,10 +255,9 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
                   className={`studioOverviewTestchartLamp ${mirrored ? 'lampMirrored' : ''}`}
                   style={{
                     cursor: 'pointer',
-                    position: 'relative', // Behalten wir vorerst bei, falls CSS darauf angewiesen ist
+                    position: 'relative',
                     zIndex: 1,
-                    // Wenn flip=true: rotieren. Wenn flip=false: nach oben verschieben.
-                    transform: l.flip ? 'rotate(180deg)' : 'translate(10px, -60px)',
+                    transform: l.flip ? (mirrored ? 'rotate(180deg)' : 'rotate(180deg)  rotateY(180deg)') : mirrored ? 'rotateY(180deg) translate(10px, -60px)' : 'translate(10px, -60px)',
                   }}
                   onClick={() => handleGlowAndFocus(l.deviceId)}
                 />

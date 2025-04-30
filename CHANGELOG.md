@@ -6,6 +6,7 @@
 
 ### Changes
 
+- Added Studio-Overview settings to customize the layout
 - Added the possibility to change the port of the server
 - Scenes
   - Display an icon if scene is 'out of sync'

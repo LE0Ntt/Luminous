@@ -1,8 +1,17 @@
 /**
- * Luminous – StudioOverview.tsx
- * Web-Based Lighting Control System
+ * Luminous - A Web-Based Lighting Control System
+ *
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ *
+ * Authors:
+ * - Leon Hölzel
+ * - Darwin Pietas
+ * - Marvin Plate
+ * - Andree Tomek
+ *
+ * @file StudioOverview.tsx
  */
-
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import '../Studio.css';
 import schein from '../assets/schein3.png';
@@ -54,7 +63,6 @@ const traversePos = [
   { top: 720, left: 614 },
 ];
 
-// mappt Icon auf Bild
 const imgByIcon = (icon: string) => {
   switch (icon) {
     case 'RGB':
@@ -70,7 +78,6 @@ const imgByIcon = (icon: string) => {
   }
 };
 
-// Helligkeitsanzeige
 const FaderText: React.FC<{ gid: number; max: number }> = ({ gid, max }) => {
   const { t } = useContext(TranslationContext);
   const v = useFaderValue(gid, 0);
@@ -79,7 +86,6 @@ const FaderText: React.FC<{ gid: number; max: number }> = ({ gid, max }) => {
   return <div className='studioOverviewInfopanelBrightness'>{pct.toFixed(0)}%</div>;
 };
 
-// Schein-Effekt
 const ScheinImg: React.FC<{ gid: number; max: number; use2?: boolean; flip?: boolean; gs?: boolean; g?: boolean }> = ({ gid, max, use2, flip, gs, g }) => {
   const v = useFaderValue(gid, 0);
   if (v === 0) return null;
@@ -98,7 +104,6 @@ const ScheinImg: React.FC<{ gid: number; max: number; use2?: boolean; flip?: boo
   );
 };
 
-// TraverseItem als separate Komponente
 interface TraverseItemProps {
   groupId: number;
   pos: { top: number; left: number };
@@ -186,7 +191,6 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
     };
   }, [fetchData]);
 
-
   return (
     <div className='overview window'>
       <div className='studioOverview window'>
@@ -227,14 +231,12 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
             ))}
           </div>
         )}
-
         {/* Custom Lamps */}
         {customCfg.map((l) => {
           const img = imgByIcon(l.icon);
           if (!l.deviceId) return null;
           const mirrored = l.left > 802 / 2;
           const useSchein2 = l.icon === 'Fill';
-
           return (
             <div
               key={l.uuid}
@@ -276,7 +278,6 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
             </div>
           );
         })}
-
         {/* Grid Lights */}
         <div
           className='studioOverviewLights'

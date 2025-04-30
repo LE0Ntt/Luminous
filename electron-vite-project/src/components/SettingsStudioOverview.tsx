@@ -67,19 +67,13 @@ const ICON_OPTIONS: IconType[] = ['RGB', 'LED', 'Spot', 'Fill', 'None'];
 const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColumns }) => {
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
-
-  /* basic state */
   const [rows, setRows] = useState(studioRows);
   const [cols, setCols] = useState(studioColumns);
-
-  /* data-driven state */
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [grid, setGrid] = useState<GridCell[]>([]);
   const [customLamps, setCustomLamps] = useState<CustomLamp[]>([]);
   const [traversen, setTraversen] = useState<TraverseLamp[]>(Array(7).fill({ groupId: 0 }));
   const [greenScreenId, setGreenScreenId] = useState<number | null>(null);
-
-  /* UI helpers */
   const [saveAdmin, setSaveAdmin] = useState(false);
   const [saveTemporary, setSaveTemporary] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
@@ -88,7 +82,6 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
     try {
       const res = await fetch(`${url}/fader`);
       if (!res.ok) throw new Error('Device fetch failed');
-      // Der Server liefert hier ein JSON-Objekt mit einem String-Payload
       const raw = await res.json();
       const arr: DeviceConfig[] = typeof raw === 'string' ? JSON.parse(raw) : raw;
       arr.shift();
@@ -102,7 +95,6 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
     try {
       const res = await fetch(`${url}/studio_grid`);
       if (!res.ok) throw new Error('Grid fetch failed');
-      // Hier kann res.json() wieder ein String oder bereits geparstes Objekt sein
       const raw = await res.json();
       const data: any = typeof raw === 'string' ? JSON.parse(raw) : raw;
 
@@ -454,6 +446,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                     key={lamp.uuid}
                     className='custom-row'
                   >
+                    <label>X:</label>
                     <input
                       className='textBox overviewInput'
                       type='number'
@@ -461,6 +454,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                       value={lamp.left}
                       onChange={(e) => updateCustomLamp(lamp.uuid, 'left', Number(e.target.value))}
                     />
+                    <label>Y:</label>
                     <input
                       className='textBox overviewInput'
                       type='number'

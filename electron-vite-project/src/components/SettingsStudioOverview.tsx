@@ -348,10 +348,10 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
             {/* grid size */}
             <div className='SettingContainer'>
               <div className='SettingsSubTitle'>
-                <span className='relative top-[-6px]'>Grid Größe</span>
+                <span className='relative top-[-6px]'>{t('set_gridSize')}</span>
               </div>
               <label>
-                <span className='overviewInput'>Rows:</span>
+                <span className='overviewInput'>{t('set_rows')}:</span>
                 <input
                   className='textBox overviewInput'
                   type='number'
@@ -362,7 +362,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                 />
               </label>
               <label>
-                <span className='overviewInput'>Columns:</span>
+                <span className='overviewInput'>{t('set_columns')}:</span>
                 <input
                   className='textBox overviewInput'
                   type='number'
@@ -399,7 +399,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
             {/* traversen */}
             <div className='SettingContainer traverseContainer'>
               <div className='SettingsSubTitle'>
-                <span className='relative top-[-6px]'>Traversen</span>
+                <span className='relative top-[-6px]'>{t('set_trusses')}</span>
               </div>
               <div className='traverse-grid'>
                 {traversen.map((tr, i) => (
@@ -407,7 +407,9 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                     key={i}
                     className='traverse-cell'
                   >
-                    <label>Traverse {i + 1} </label>
+                    <label>
+                      {t('set_truss')} {i + 1}{' '}
+                    </label>
                     <select
                       className='textBox'
                       value={tr.groupId ? tr.groupId.toString() : ''}
@@ -444,7 +446,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                 className='SettingsButton controlButton buttonRight overviewButton'
                 onClick={addCustomLamp}
               >
-                Add Lamp
+                {t('ls_addDevice')}
               </Button>
               <div className='customRowContainer'>
                 {customLamps.map((lamp) => (
@@ -493,7 +495,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                   checked={saveTemporary}
                   onChange={(e) => setSaveTemporary(e.target.checked)}
                 />
-                {t('as_save_temp')}
+                {t('set_save_temp')}
               </label>
               <Button
                 className='SettingsButton controlButton overviewButton'

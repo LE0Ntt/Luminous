@@ -47,7 +47,7 @@
   top: 320px;
   height: 140px;
   width: 140px;
-  mask: url(../assets/noConnection.svg) no-repeat center / contain;
+  mask: url(../assets/NoConnection.svg) no-repeat center / contain;
   background: var(--secondary);
 }
 

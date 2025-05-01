@@ -108,10 +108,9 @@
   - [x] server.py
   - [ ] socket_events.py
 - [ ] Frontend
-  - [ ] Assets
-    - [ ] Compress
-    - [ ] Check necessity
-    - [ ] Rename to PascalCase scheme
+  - [x] Assets
+    - [x] Check necessity
+    - [x] Rename to PascalCase scheme
   - [ ] Components
     - [x] About.css
     - [x] About.tsx

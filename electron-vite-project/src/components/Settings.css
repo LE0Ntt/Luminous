@@ -581,13 +581,14 @@
 
 .SettingsOverviewImageGrid {
   max-width: 604px;
-  width: 604px;
-  height: 558px;
+  width: 601px;
+  height: 553px;
   align-items: center;
   justify-items: center;
   display: grid;
   position: relative;
-  top: -30px;
+  top: -31px;
+  gap: 7px;
 }
 
 .SettingsOverviewImageGrid > div {

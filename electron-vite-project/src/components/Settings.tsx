@@ -22,6 +22,7 @@ import Setting2 from './SettingsAdmin';
 import Setting3 from './SettingsStudioOverview';
 import IconSettings from '@/assets/IconSettings';
 import IconAdmin from '@/assets/IconAdmin';
+import IconStudio from '@/assets/IconStudio';
 import { useConnectionContext } from './ConnectionContext';
 
 interface SettingsProps {
@@ -103,7 +104,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                 onClick={() => setSelectedSetting('Setting3')}
               >
                 <div className='settingsButtonContent'>
-                  <IconAdmin color={selectedSetting === 'Setting3' ? 'var(--primarySwitched)' : 'var(--primary)'} />
+                  <IconStudio color={selectedSetting === 'Setting3' ? 'var(--primarySwitched)' : 'var(--primary)'} />
                   <span>{t('set_studio')}</span>
                 </div>
               </Button>

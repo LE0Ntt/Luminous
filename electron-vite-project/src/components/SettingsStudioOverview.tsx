@@ -201,7 +201,36 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
     ]);
   };
 
-  const updateCustomLamp = (uuid: string, field: keyof CustomLamp, value: string | number | boolean) => setCustomLamps((prev) => prev.map((l) => (l.uuid === uuid ? { ...l, [field]: value } : l)));
+  const updateCustomLamp = (uuid: string, field: keyof CustomLamp, value: string | number | boolean) => {
+    setCustomLamps((prev) =>
+      prev.map((l) => {
+        if (l.uuid === uuid) {
+          const updatedLamp = { ...l, [field]: value };
+          if (field === 'deviceId') {
+            const newDeviceId = Number(value);
+            if (newDeviceId) {
+              const dev = devices.find((d) => d.id === newDeviceId);
+              updatedLamp.icon = dev ? ICON_BY_DEVICE[dev.device_type] : 'None';
+            } else {
+              updatedLamp.icon = 'None';
+            }
+          }
+          else if (field === 'icon') {
+            updatedLamp.icon = value as IconType;
+          }
+          else if (field === 'flip') {
+            updatedLamp.flip = !!value;
+          }
+          else if (field === 'left' || field === 'top') {
+            updatedLamp[field] = Number(value);
+          }
+          return updatedLamp;
+        }
+        return l;
+      })
+    );
+  };
+
   const removeCustomLamp = (uuid: string) => setCustomLamps((prev) => prev.filter((l) => l.uuid !== uuid));
 
   const performSave = async (endpoint: string) => {
@@ -238,6 +267,8 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
   );
 
   const handleSave = () => (saveTemporary ? performSave('save_studio_grid_temp') : setSaveAdmin(true));
+
+  const rgbDimDevices = useMemo(() => devices.filter(d => d.device_type === 'RGBDim'), [devices]);
 
   const gridCells = useMemo(() => {
     return Array.from({ length: rows }, (_, r) =>
@@ -292,7 +323,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
       >
         <select
           value={lamp.deviceId?.toString() ?? ''}
-          onChange={(e) => updateCustomLamp(lamp.uuid, 'deviceId', Number(e.target.value))}
+          onChange={(e) => updateCustomLamp(lamp.uuid, 'deviceId', e.target.value)} // Pass string value directly
         >
           <option value=''>None</option>
           {devices.map((d) => (
@@ -307,6 +338,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
         <select
           value={lamp.icon}
           onChange={(e) => updateCustomLamp(lamp.uuid, 'icon', e.target.value)}
+          disabled={!lamp.deviceId} // Disable icon select if no device is selected
         >
           {ICON_OPTIONS.map((ico) => (
             <option
@@ -319,7 +351,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
         </select>
       </div>
     ));
-  }, [customLamps, devices]);
+  }, [customLamps, devices, updateCustomLamp]); // Add updateCustomLamp to dependency array
 
   return (
     <>
@@ -415,7 +447,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                       }}
                     >
                       <option value=''>None</option>
-                      {devices.map((d) => (
+                      {rgbDimDevices.map((d) => (
                         <option
                           key={d.id}
                           value={d.id.toString()}

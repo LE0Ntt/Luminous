@@ -15,7 +15,7 @@
 import { useState, useContext, Fragment } from 'react';
 import './Help.css';
 import { TranslationContext } from './TranslationContext';
-import IconHelp from '@/assets/Icon_Help';
+import IconHelp from '@/assets/IconHelp';
 
 interface SettingsProps {
   onClose: () => void;

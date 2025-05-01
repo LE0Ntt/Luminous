@@ -170,7 +170,6 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
       setCustomCfg(data.custom || []);
       setTravCfg(data.traversen || []);
       setGreenId(data.greenScreenId ?? null);
-      console.log('Data fetched/reloaded');
     } catch (error) {
       console.error('Failed to fetch studio grid data:', error);
     }

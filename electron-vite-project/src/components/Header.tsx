@@ -16,6 +16,8 @@ import { useState, useEffect, useContext } from 'react';
 import './Header.css';
 import { Link, useLocation } from 'react-router-dom';
 import { TranslationContext } from './TranslationContext';
+import IconLightFX from '@/assets/IconLightFX';
+import IconStudio from '@/assets/IconStudio';
 
 function Header() {
   const location = useLocation();
@@ -53,15 +55,7 @@ function Header() {
               className={location.pathname === '/' || location.pathname === '/Studio' ? 'is-active' : ''}
             >
               <div className='headerButton'>
-                <svg
-                  className='headerIcon'
-                  xmlns='http://www.w3.org/2000/svg'
-                  height='24'
-                  viewBox='0 -960 960 960'
-                  width='24'
-                >
-                  <path d='M360-280h160q17 0 28.5-11.5T560-320v-40l51 27q10 5 19.5-1t9.5-17v-98q0-11-9.5-17t-19.5-1l-51 27v-40q0-17-11.5-28.5T520-520H360q-17 0-28.5 11.5T320-480v160q0 17 11.5 28.5T360-280Zm-200 80v-360q0-19 8.5-36t23.5-28l240-180q21-16 48-16t48 16l240 180q15 11 23.5 28t8.5 36v360q0 33-23.5 56.5T720-120H240q-33 0-56.5-23.5T160-200Zm80 0h480v-360L480-740 240-560v360Zm240-270Z' />
-                </svg>
+                <IconStudio className='headerIcon' />
                 {t('studio')}
               </div>
             </Link>
@@ -72,15 +66,7 @@ function Header() {
               className={location.pathname === '/Control' || location.state ? 'is-active' : ''}
             >
               <div className='headerButton'>
-                <svg
-                  className='headerIcon'
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='24'
-                  height='24'
-                  viewBox='0 0 24 24'
-                >
-                  <path d='m19,20c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v4Zm-12,0c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-8c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29c.19.19.29.43.29.71v8Zm14-8c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71c.19-.19.43-.29.71-.29h1V4c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v7h1c.28,0,.52.1.71.29.19.19.29.43.29.71Zm-6,4c0,.28-.1.52-.29.71s-.43.29-.71.29h-1v3c0,.28-.1.52-.29.71-.19.19-.43.29-.71.29s-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71v-3h-1c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h4c.28,0,.52.1.71.29s.29.43.29.71Zm-2-4c0,.28-.1.52-.29.71s-.43.29-.71.29-.52-.1-.71-.29c-.19-.19-.29-.43-.29-.71V4c0-.28.1-.52.29-.71.19-.19.43-.29.71-.29s.52.1.71.29.29.43.29.71v8Zm-4-4c0,.28-.1.52-.29.71s-.43.29-.71.29h-4c-.28,0-.52-.1-.71-.29s-.29-.43-.29-.71.1-.52.29-.71.43-.29.71-.29h1v-3c0-.28.1-.52.29-.71s.43-.29.71-.29.52.1.71.29.29.43.29.71v3h1c.28,0,.52.1.71.29s.29.43.29.71Z' />
-                </svg>
+                <IconLightFX className='headerIcon' />
                 {t('control')}
               </div>
             </Link>

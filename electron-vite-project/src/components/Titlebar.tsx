@@ -21,12 +21,12 @@ import DropDown from './DropDown';
 import LightSettings from './LightSettings';
 import Help from './Help';
 import About from './About';
-import IconSettings from '@/assets/Icon_Settings';
-import IconFullscreen from '@/assets/Icon_Fullscreen';
-import IconHelp from '@/assets/Icon_Help';
-import IconWindow from '@/assets/Icon_Window';
-import IconLight from '@/assets/Icon_Light';
-import IconAbout from '@/assets/Icon_About';
+import IconSettings from '@/assets/IconSettings';
+import IconFullscreen from '@/assets/IconFullscreen';
+import IconHelp from '@/assets/IconHelp';
+import IconWindow from '@/assets/IconWindow';
+import IconLight from '@/assets/IconLight';
+import IconAbout from '@/assets/IconAbout';
 import RecoverDialog from './RecoverDialog';
 
 enum Dialog {

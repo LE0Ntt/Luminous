@@ -20,8 +20,8 @@ import AdminPassword from './AdminPassword';
 import Setting1 from './SettingsGeneral';
 import Setting2 from './SettingsAdmin';
 import Setting3 from './SettingsStudioOverview';
-import IconSettings from '@/assets/Icon_Settings';
-import IconAdmin from '@/assets/Icon_Admin';
+import IconSettings from '@/assets/IconSettings';
+import IconAdmin from '@/assets/IconAdmin';
 import { useConnectionContext } from './ConnectionContext';
 
 interface SettingsProps {

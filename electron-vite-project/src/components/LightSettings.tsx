@@ -19,7 +19,7 @@ import { TranslationContext } from './TranslationContext';
 import DeviceList from './DeviceList';
 import { useConnectionContext } from './ConnectionContext';
 import AdminPassword from './AdminPassword';
-import IconLight from '@/assets/Icon_Light';
+import IconLight from '@/assets/IconLight';
 
 interface SettingsProps {
   onClose: () => void;

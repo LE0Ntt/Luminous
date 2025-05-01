@@ -243,30 +243,30 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
               className='studioOverviewLight'
               style={{ position: 'absolute', top: l.top, left: l.left }}
             >
-              <ScheinImg
-                gid={l.deviceId}
-                max={master}
-                flip={l.flip}
-                use2={useSchein2}
-                gs
-              />
+              {img && l.icon !== 'RGB' && (
+                <ScheinImg
+                  gid={l.deviceId}
+                  max={master}
+                  flip={l.flip}
+                  use2={useSchein2}
+                  gs
+                />
+              )}
               {img && (
                 <img
                   src={img}
                   alt=''
-                  className={`studioOverviewTestchartLamp ${mirrored ? 'lampMirrored' : ''}`}
+                  className={`studioOverviewCustomLamp ${mirrored ? 'lampMirrored' : ''}`}
                   style={{
-                    cursor: 'pointer',
                     position: 'relative',
-                    zIndex: 1,
-                    transform: l.flip ? (mirrored ? 'rotate(180deg)' : 'rotate(180deg)  rotateY(180deg)') : mirrored ? 'rotateY(180deg) translate(10px, -60px)' : 'translate(10px, -60px)',
+                    transform: l.flip ? (mirrored ? 'rotate(180deg)' : 'rotate(180deg)  rotateY(180deg)') : mirrored ? 'rotateY(180deg) translate(-10px, -60px)' : 'translate(10px, -60px)',
                   }}
                   onClick={() => handleGlowAndFocus(l.deviceId)}
                 />
               )}
+              {!img && <div style={{ height: 50 }}></div>}
               <div
-                className='studioOverviewInfopanel studioOverviewInfopanelTestchart'
-                style={{ position: 'relative', zIndex: 0 }}
+                className='studioOverviewInfopanel studioOverviewInfopanelCustom'
                 onClick={() => handleGlowAndFocus(l.deviceId)}
               >
                 <div className='studioOverviewInfopanelText'>{l.label || `#${l.deviceId}`}</div>
@@ -308,7 +308,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
                     key={`${r}-${c}`}
                     className={`studioOverviewLight ${right ? 'marginLeft45' : 'marginRight45'}`}
                   >
-                    {img && (
+                    {img && cell.icon !== 'RGB' && (
                       <ScheinImg
                         gid={cell.id}
                         max={master}

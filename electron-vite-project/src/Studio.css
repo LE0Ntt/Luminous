@@ -172,8 +172,8 @@
 .studioOverviewGreenscreen {
   height: 100px;
   width: calc(100% - 190px);
-  position: relative;
-  margin-left: 120px;
+  position: absolute;
+  left: 120px;
   top: 60px;
 }
 
@@ -194,11 +194,9 @@
 }
 
 .studioOverviewLights {
-  height: 565px;
   width: calc(100% - 200px);
   position: relative;
   margin-left: 100px;
-  top: 60px;
 }
 
 .studioOverviewCustomLamp {

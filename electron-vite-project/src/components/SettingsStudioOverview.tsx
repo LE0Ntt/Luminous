@@ -214,14 +214,11 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
             } else {
               updatedLamp.icon = 'None';
             }
-          }
-          else if (field === 'icon') {
+          } else if (field === 'icon') {
             updatedLamp.icon = value as IconType;
-          }
-          else if (field === 'flip') {
+          } else if (field === 'flip') {
             updatedLamp.flip = !!value;
-          }
-          else if (field === 'left' || field === 'top') {
+          } else if (field === 'left' || field === 'top') {
             updatedLamp[field] = Number(value);
           }
           return updatedLamp;
@@ -268,17 +265,19 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
 
   const handleSave = () => (saveTemporary ? performSave('save_studio_grid_temp') : setSaveAdmin(true));
 
-  const rgbDimDevices = useMemo(() => devices.filter(d => d.device_type === 'RGBDim'), [devices]);
+  const rgbDimDevices = useMemo(() => devices.filter((d) => d.device_type === 'RGBDim'), [devices]);
 
   const gridCells = useMemo(() => {
     return Array.from({ length: rows }, (_, r) =>
       Array.from({ length: cols }, (_, c) => {
         const cell = grid.find((x) => x.row === r && x.col === c);
+        const right = c >= cols / 2;
+        const center = cols % 2 === 1 && c === Math.floor(cols / 2);
         return (
           <div
             key={`${r}-${c}`}
-            className='cell studioOverviewInfopanelTest'
-            style={{ display: 'flex', flexDirection: 'column', margin: '0 4px' }}
+            className='studioOverviewInfopanelTest'
+            style={{ justifySelf: right ? 'flex-end' : center ? 'center' : 'flex-start' }}
           >
             <select
               value={cell?.id?.toString() ?? ''}
@@ -319,11 +318,11 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
       <div
         className={'studioOverviewInfopanelTest'}
         key={lamp.uuid}
-        style={{ position: 'absolute', top: lamp.top, left: lamp.left, display: 'flex', flexDirection: 'column' }}
+        style={{ position: 'absolute', top: lamp.top + 5, left: lamp.left }}
       >
         <select
           value={lamp.deviceId?.toString() ?? ''}
-          onChange={(e) => updateCustomLamp(lamp.uuid, 'deviceId', e.target.value)} // Pass string value directly
+          onChange={(e) => updateCustomLamp(lamp.uuid, 'deviceId', e.target.value)}
         >
           <option value=''>None</option>
           {devices.map((d) => (
@@ -338,7 +337,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
         <select
           value={lamp.icon}
           onChange={(e) => updateCustomLamp(lamp.uuid, 'icon', e.target.value)}
-          disabled={!lamp.deviceId} // Disable icon select if no device is selected
+          disabled={!lamp.deviceId}
         >
           {ICON_OPTIONS.map((ico) => (
             <option
@@ -351,7 +350,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
         </select>
       </div>
     ));
-  }, [customLamps, devices, updateCustomLamp]); // Add updateCustomLamp to dependency array
+  }, [customLamps, devices, updateCustomLamp]);
 
   return (
     <>
@@ -380,7 +379,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                   className='textBox overviewInput'
                   type='number'
                   min={1}
-                  max={10}
+                  max={8}
                   value={rows}
                   onChange={(e) => setRows(clamp(Number(e.target.value), 1, 10))}
                 />
@@ -391,7 +390,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                   className='textBox overviewInput'
                   type='number'
                   min={1}
-                  max={10}
+                  max={6}
                   value={cols}
                   onChange={(e) => setCols(clamp(Number(e.target.value), 1, 10))}
                 />
@@ -467,10 +466,10 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                 <span className='relative top-[-6px]'>{t('custom_lamps')}</span>
               </div>
               <Button
-                className='SettingsButton controlButton buttonRight overviewButton'
+                className='SettingsButton controlButton danger'
                 onClick={addCustomLamp}
               >
-                {t('ls_addDevice')}
+                <div className='removeIcon'>✕</div>
               </Button>
               <div className='customRowContainer'>
                 {customLamps.map((lamp) => (
@@ -537,13 +536,10 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
           </div>
           {/* right column – preview */}
           <div className='SettingsOverviewImage window'>
-            <div
-              className='SettingsOverviewImageForeground'
-              style={{ position: 'relative' }}
-            >
+            <div className='SettingsOverviewImageForeground'>
               <div
                 className='SettingsOverviewImageGrid'
-                style={{ display: 'grid', gridTemplateColumns: `repeat(${cols},1fr)` }}
+                style={{ gridTemplateColumns: `repeat(${cols},1fr)`, gridTemplateRows: `repeat(${rows},1fr)` }}
               >
                 {gridCells}
               </div>

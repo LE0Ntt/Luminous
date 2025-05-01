@@ -126,6 +126,8 @@
 
 .studioOverviewInfopanelTest {
   display: flex;
+  flex-direction: column;
+  margin: 0 5px;
   width: 90px;
   flex-shrink: 0;
   margin-left: 5px;
@@ -136,16 +138,20 @@
   backdrop-filter: var(--windowBackdrop);
   box-shadow: var(--shadowLight);
   z-index: 1;
+  position: relative;
+  top: 50px;
 }
 
 .SettingsOverviewImageForeground {
   width: 100%;
-  height: 90%;
+  height: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  position: absolute;
+  top: 0;
 }
 
 .SettingsOverview {
@@ -574,8 +580,14 @@
 }
 
 .SettingsOverviewImageGrid {
+  max-width: 604px;
   width: 604px;
-  height: 555px;
+  height: 558px;
+  align-items: center;
+  justify-items: center;
+  display: grid;
+  position: relative;
+  top: -30px;
 }
 
 .SettingsOverviewImageGrid > div {

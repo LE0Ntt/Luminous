@@ -48,9 +48,6 @@ interface TraverseCfg {
   groupId: number;
 }
 
-const GRID_W = 604;
-const GRID_H = 555;
-const GRID_TOP = 150;
 const GS_COUNT = 6;
 
 const traversePos = [
@@ -195,10 +192,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
       <div className='studioOverview window'>
         {/* Greenscreen */}
         {greenId && (
-          <div
-            className='studioOverviewGreenscreen'
-            style={{ position: 'absolute', top: 60, left: 0 }}
-          >
+          <div className='studioOverviewGreenscreen'>
             <div
               className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
               onClick={() => handleGlowAndFocus(greenId)}
@@ -240,7 +234,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
             <div
               key={l.uuid}
               className='studioOverviewLight'
-              style={{ position: 'absolute', top: l.top, left: l.left }}
+              style={{ position: 'absolute', top: l.top + 30, left: l.left }}
             >
               {img && l.icon !== 'RGB' && (
                 <ScheinImg
@@ -278,20 +272,12 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
           );
         })}
         {/* Grid Lights */}
-        <div
-          className='studioOverviewLights'
-          style={{ top: GRID_TOP }}
-        >
+        <div className='SettingsOverviewImageForeground'>
           <div
+            className='SettingsOverviewImageGrid'
             style={{
-              display: 'grid',
               gridTemplateRows: `repeat(${rows},1fr)`,
               gridTemplateColumns: `repeat(${cols},1fr)`,
-              gap: 5,
-              width: GRID_W,
-              height: GRID_H,
-              alignItems: 'center',
-              justifyItems: 'center',
             }}
           >
             {Array.from({ length: rows }).flatMap((_, r) =>
@@ -302,10 +288,12 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
                 }
                 const img = imgByIcon(cell.icon);
                 const right = c >= cols / 2;
+                const center = cols % 2 === 1 && c === Math.floor(cols / 2);
                 return (
                   <div
                     key={`${r}-${c}`}
-                    className={`studioOverviewLight ${right ? 'marginLeft45' : 'marginRight45'}`}
+                    className={`studioOverviewLight`}
+                    style={{ justifySelf: right ? 'flex-end' : center ? 'center' : 'flex-start' }}
                   >
                     {img && cell.icon !== 'RGB' && (
                       <ScheinImg

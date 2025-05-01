@@ -84,7 +84,7 @@
   --innerWindowOverlay: rgba(248, 248, 248, 0.8);
 
   --sceneOn: rgba(255, 255, 255, 0.8);
-  --backgroundImage: url('./assets/bgLight2.png') #e8e8e8;
+  --backgroundImage: url('./assets/BGLight.png') #e8e8e8;
 }
 
 .dark {
@@ -128,7 +128,7 @@
   --innerWindowOverlay: rgba(62, 62, 62, 0.8);
 
   --sceneOn: rgba(255, 255, 255, 0.5);
-  --backgroundImage: url('./assets/bgDark.png') #e8e8e8;
+  --backgroundImage: url('./assets/BGDark.png') #e8e8e8;
 }
 
 /* ----- Design B ----- */

@@ -14,12 +14,12 @@
  */
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import '../Studio.css';
-import schein from '../assets/schein3.png';
-import schein2 from '../assets/schein2.png';
+import glare from '../assets/GlareNarrow.png';
+import glareWide from '../assets/GlareWide.png';
 import spotImg from '../assets/SpotTop.png';
 import fillImg from '../assets/FillTop.png';
 import biColor from '../assets/BiColorTop.png';
-import rgbTop from '../assets/rgbTop.png';
+import rgbTop from '../assets/RGBTop.png';
 import LightBeam from './LightBeam';
 import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
@@ -86,14 +86,14 @@ const FaderText: React.FC<{ gid: number; max: number }> = ({ gid, max }) => {
   return <div className='studioOverviewInfopanelBrightness'>{pct.toFixed(0)}%</div>;
 };
 
-const ScheinImg: React.FC<{ gid: number; max: number; use2?: boolean; flip?: boolean; gs?: boolean; g?: boolean }> = ({ gid, max, use2, flip, gs, g }) => {
+const ScheinImg: React.FC<{ gid: number; max: number; useWide?: boolean; flip?: boolean; gs?: boolean; g?: boolean }> = ({ gid, max, useWide, flip, gs, g }) => {
   const v = useFaderValue(gid, 0);
   if (v === 0) return null;
   const op = (v / 255) * (max / 255);
   return (
     <img
-      src={use2 ? schein2 : schein}
-      className='schein'
+      src={useWide ? glareWide : glare}
+      className='glare'
       style={{
         opacity: op,
         filter: 'blur(5px)',
@@ -217,7 +217,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
                 <ScheinImg
                   gid={greenId}
                   max={master}
-                  use2
+                  useWide
                   g
                 />
                 <img
@@ -247,7 +247,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
                   gid={l.deviceId}
                   max={master}
                   flip={l.flip}
-                  use2={useSchein2}
+                  useWide={useSchein2}
                   gs
                 />
               )}
@@ -311,7 +311,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
                       <ScheinImg
                         gid={cell.id}
                         max={master}
-                        use2={cell.icon === 'Fill' || cell.icon === 'LED'}
+                        useWide={cell.icon === 'Fill' || cell.icon === 'LED'}
                       />
                     )}
                     {img && (

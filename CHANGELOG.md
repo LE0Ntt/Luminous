@@ -2,37 +2,40 @@
 
 > All notable changes to this project will be documented in this file.
 
-## [1.2.4] - Pre-Release
+## [1.2.4] - 2025-05-14
 
 ### Changes
 
-- Added Studio-Overview settings to customize the layout
-- Added the possibility to change the port of the server
+- Studio-Overview refactor
+  - Added settings to fully customise the layout
+  - Bi-color glare now roughly represents the temperature of the light
+- Added the ability to change the server port
 - Scenes
   - Display an icon if scene is 'out of sync'
-  - Active scenes are saved as a stack to prevent overlaps
+  - Active scenes are stored as a stack to prevent overlapping
 - LightSettings 
   - Selected device now has the icon of the selected device type
   - Brought back transition on selection
 - LightFX
   - Added a new bi-color slider with higher resolution
     - Added support for scroll wheel and arrow keys
-- Code refactoring
+- Code and assets refactoring
 
 ### Fixes
 
-- Fixed a bug related to the startup of the server
+- Fixed a server startup bug
 - Fixed scenes not reloading after server restart
 - Fixed HMI lights turning off with scenes (in DB)
-- Fixed LightFX list not always reloading when a device is edited and no longer reset the selected list
+- Fixed LightFX list not always reloading on device edit
+  - No longer resetting the selected list
 - Fixed newly added device missing initial channel values
 - Fixed BigView overlaying the NoConnection screen
-- Fixed misc icon not showing up
+- Fixed misc icon not displayed
 - LightFX
-  - Fixed out-of-sync (OOS) button not working consistently 
+  - Fixed Out-of-Sync (OOS) button not working consistently 
   - Fixed OOS button flashing on every added device
-  - Fixed unwanted fader synchronization
-  - Fixed ugly corner of selection box flashing
+  - Fixed unwanted fader synchronisation
+  - Fixed ugly selection box corner blinking
   - Fixed bi-color fader inaccuracy
 
 ## [1.2.3] - 2024-06-26

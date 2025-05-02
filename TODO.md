@@ -18,10 +18,10 @@
 
 - [ ] Code cleanup / comments
 - [x] Testing phase
-- [ ] Settings
+- [x] Settings
   - [x] Rework Layout
-  - [ ] Add various settings
-    - [ ] Studio-Overview
+  - [x] Add various settings
+    - [x] Studio-Overview
     - [x] Change IP
 - [ ] MotorMix
   - [ ] "Mute"

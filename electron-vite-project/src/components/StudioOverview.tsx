@@ -83,18 +83,35 @@ const FaderText: React.FC<{ gid: number; max: number }> = ({ gid, max }) => {
   return <div className='studioOverviewInfopanelBrightness'>{pct.toFixed(0)}%</div>;
 };
 
-const ScheinImg: React.FC<{ gid: number; max: number; useWide?: boolean; flip?: boolean; gs?: boolean; g?: boolean }> = ({ gid, max, useWide, flip, gs, g }) => {
+const GlareImg: React.FC<{ gid: number; max: number; useWide?: boolean; flip?: boolean; useCustomPosition?: boolean; useGreenscreenPosition?: boolean; isBiColor?: boolean }> = ({ gid, max, useWide, flip, useCustomPosition, useGreenscreenPosition, isBiColor }) => {
   const v = useFaderValue(gid, 0);
+  const biValRaw = useFaderValue(gid, 1);
   if (v === 0) return null;
+  const biVal = isBiColor ? biValRaw : 128;
   const op = (v / 255) * (max / 255);
+  let colorFilter = '';
+  if (isBiColor) {
+    const normBi = (biVal - 128) / 128;
+    if (normBi < 0) {
+      const warmth = -normBi;
+      colorFilter = `sepia(${(warmth * 0.8).toFixed(2)}) saturate(${(1 + warmth * 3).toFixed(2)}) hue-rotate(${(warmth * -40).toFixed(0)}deg) `;
+    } else {
+      colorFilter = `hue-rotate(${(normBi * 60).toFixed(0)}deg) `;
+    }
+  }
+  let transform = 'translateY(-10px)';
+  if (flip) transform = 'rotate(180deg) translate(10px,-85px)';
+  else if (useCustomPosition) transform = 'translate(0,-90px)';
+  else if (useGreenscreenPosition) transform = 'translateY(10px)';
+
   return (
     <img
       src={useWide ? glareWide : glare}
       className='glare'
       style={{
         opacity: op,
-        filter: 'blur(5px)',
-        transform: flip ? 'rotate(180deg) translate(10px,-85px)' : gs ? 'translate(0,-90px)' : g ? 'translateY(10px)' : 'translateY(-10px)',
+        filter: `${colorFilter}blur(5px)`,
+        transform: transform,
       }}
       alt=''
     />
@@ -143,7 +160,6 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const master = useFaderValue(0, 0);
-
   const [rows, setRows] = useState(6);
   const [cols, setCols] = useState(4);
   const [gridCfg, setGridCfg] = useState<GridCell[]>([]);
@@ -208,11 +224,12 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
                 className='studioOverviewLight'
                 key={i}
               >
-                <ScheinImg
+                <GlareImg
                   gid={greenId}
                   max={master}
                   useWide
-                  g
+                  useGreenscreenPosition
+                  isBiColor={true}
                 />
                 <img
                   src={biColor}
@@ -229,7 +246,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
           const img = imgByIcon(l.icon);
           if (!l.deviceId) return null;
           const mirrored = l.left > 802 / 2;
-          const useSchein2 = l.icon === 'Fill' || l.icon === 'LED';
+          const useWideGlare = l.icon === 'Fill' || l.icon === 'LED';
           return (
             <div
               key={l.uuid}
@@ -237,12 +254,13 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
               style={{ position: 'absolute', top: l.top + 30, left: l.left }}
             >
               {img && l.icon !== 'RGB' && (
-                <ScheinImg
+                <GlareImg
                   gid={l.deviceId}
                   max={master}
                   flip={l.flip}
-                  useWide={useSchein2}
-                  gs
+                  useWide={useWideGlare}
+                  useCustomPosition
+                  isBiColor={l.icon === 'LED'}
                 />
               )}
               {img && (
@@ -296,10 +314,11 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
                     style={{ justifySelf: right ? 'flex-end' : center ? 'center' : 'flex-start' }}
                   >
                     {img && cell.icon !== 'RGB' && (
-                      <ScheinImg
+                      <GlareImg
                         gid={cell.id}
                         max={master}
                         useWide={cell.icon === 'Fill' || cell.icon === 'LED'}
+                        isBiColor={cell.icon === 'LED'}
                       />
                     )}
                     {img && (
@@ -326,7 +345,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
             )}
           </div>
         </div>
-        {/* Traversen */}
+        {/* Trusses */}
         {travCfg.map((t, i) => (
           <TraverseItem
             key={i}

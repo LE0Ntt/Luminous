@@ -113,7 +113,8 @@ const Studio = () => {
   }, [connected, fetchSliders, on, off]);
 
   // Highlight fader of device selected in overview
-  const handleGlowAndFocus = useCallback((id: number) => {
+  const handleGlowAndFocus = useCallback((idRaw: number | string) => {
+    const id = Number(idRaw);
     setGlowId(id);
     setTimeout(() => setGlowId(null), 700);
     refsArray.current[id]?.focus();

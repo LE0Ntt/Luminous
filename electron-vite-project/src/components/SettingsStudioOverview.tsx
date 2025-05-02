@@ -77,6 +77,10 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
   const [saveAdmin, setSaveAdmin] = useState(false);
   const [saveTemporary, setSaveTemporary] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
+  const previewRef = React.useRef<HTMLDivElement>(null);
+  const scaleRef = React.useRef<number>(1);
+  const draggingUUIDRef = React.useRef<string | null>(null);
+  const dragOffsetRef = React.useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   const fetchDevices = useCallback(async () => {
     try {
@@ -146,15 +150,13 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
 
     const handleResize = () => {
       const parent = document.querySelector('.SettingsOverview') as HTMLElement;
-      const preview = document.querySelector('.SettingsOverviewImage') as HTMLElement;
+      const preview = previewRef.current;
       const overlay = preview?.querySelector('.SettingsOverviewImageForeground') as HTMLElement;
       if (!parent || !preview || !overlay) return;
-
       const scale = Math.min(parent.clientWidth / ORIG_W, parent.clientHeight / ORIG_H);
-
+      scaleRef.current = scale;
       preview.style.flexBasis = `${ORIG_W * scale}px`;
       preview.style.height = `${ORIG_H * scale}px`;
-
       overlay.style.width = `${ORIG_W}px`;
       overlay.style.height = `${ORIG_H}px`;
       overlay.style.transform = `scale(${scale})`;
@@ -314,15 +316,61 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
   }, [rows, cols, grid, devices]);
 
   const customLampOverlays = useMemo(() => {
+    const handleMouseDown = (e: React.MouseEvent, lamp: CustomLamp) => {
+      e.preventDefault();
+      draggingUUIDRef.current = lamp.uuid;
+      const previewRect = previewRef.current?.getBoundingClientRect();
+      const scale = scaleRef.current;
+      if (!previewRect || scale === 0) return;
+      dragOffsetRef.current = {
+        x: (e.clientX - previewRect.left) / scale - lamp.left,
+        y: (e.clientY - previewRect.top) / scale - lamp.top,
+      };
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('mouseleave', handleMouseUp);
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!draggingUUIDRef.current) return;
+      const previewRect = previewRef.current?.getBoundingClientRect();
+      const scale = scaleRef.current;
+      if (!previewRect || scale === 0) return;
+      const newLeft = (e.clientX - previewRect.left) / scale - dragOffsetRef.current.x;
+      const newTop = (e.clientY - previewRect.top) / scale - dragOffsetRef.current.y;
+      updateCustomLamp(draggingUUIDRef.current, 'left', Math.round(newLeft));
+      updateCustomLamp(draggingUUIDRef.current, 'top', Math.round(newTop));
+    };
+
+    const handleMouseUp = () => {
+      if (!draggingUUIDRef.current) return;
+      draggingUUIDRef.current = null;
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mouseleave', handleMouseUp);
+    };
+
     return customLamps.map((lamp) => (
       <div
-        className={'studioOverviewInfopanelTest'}
         key={lamp.uuid}
-        style={{ position: 'absolute', top: lamp.top + 5, left: lamp.left }}
+        className='studioOverviewInfopanelTest'
+        style={{
+          position: 'absolute',
+          top: lamp.top + 5,
+          left: lamp.left,
+        }}
+        onMouseDown={(e) => {
+          if ((e.target as HTMLElement).closest('select')) {
+            return;
+          }
+          handleMouseDown(e, lamp);
+        }}
+        title={t('drag_to_move') ?? 'Drag to move'}
       >
         <select
           value={lamp.deviceId?.toString() ?? ''}
           onChange={(e) => updateCustomLamp(lamp.uuid, 'deviceId', e.target.value)}
+          onMouseDown={(e) => e.stopPropagation()}
         >
           <option value=''>None</option>
           {devices.map((d) => (
@@ -338,6 +386,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
           value={lamp.icon}
           onChange={(e) => updateCustomLamp(lamp.uuid, 'icon', e.target.value)}
           disabled={!lamp.deviceId}
+          onMouseDown={(e) => e.stopPropagation()}
         >
           {ICON_OPTIONS.map((ico) => (
             <option
@@ -348,9 +397,25 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
             </option>
           ))}
         </select>
+        <div
+          style={{
+            cursor: 'grab',
+            fontSize: 23,
+            position: 'absolute',
+            right: -35,
+            top: -1,
+            width: 25,
+            height: 25,
+          }}
+          onMouseDown={(e) => handleMouseDown(e, lamp)}
+          title='Drag'
+          className='studioOverviewInfopanelTest'
+        >
+          <span style={{ position: 'relative', top: '-7px', left: '3px' }}>≡</span>
+        </div>
       </div>
     ));
-  }, [customLamps, devices, updateCustomLamp]);
+  }, [customLamps, devices, updateCustomLamp, t]);
 
   return (
     <>
@@ -535,7 +600,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
             </div>
           </div>
           {/* right column – preview */}
-          <div className='SettingsOverviewImage window'>
+          <div ref={previewRef} className='SettingsOverviewImage window'>
             <div className='SettingsOverviewImageForeground'>
               <div
                 className='SettingsOverviewImageGrid'

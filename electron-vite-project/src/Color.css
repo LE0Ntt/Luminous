@@ -26,6 +26,7 @@
   --fillLight: rgba(246, 246, 246, 0.48);
   --fillMedium: rgba(246, 246, 246, 0.6);
   --fillThick: rgba(246, 246, 246, 0.72);
+  --fillThickFull: rgb(246, 246, 246);
   --fillUltraThick: rgba(246, 246, 246, 0.84);
 
   /* --mainColor: #4F53B1; */
@@ -104,6 +105,7 @@
   --fillLight: rgba(246, 246, 246, 0.03);
   --fillMedium: rgba(63, 63, 63, 0.5);
   --fillThick: rgba(63, 63, 63, 0.6);
+  --fillThickFull: rgb(84, 84, 84);
   --fillUltraThick: rgba(40, 40, 40, 0.75);
 
   --blue: #65758e;

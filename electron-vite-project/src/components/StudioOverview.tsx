@@ -25,20 +25,20 @@ import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
 import { useFaderValue } from './FaderContext';
 
+// --- Interfaces ---
 interface StudioOverviewProps {
   handleGlowAndFocus: (id: number) => void;
 }
-
 interface GridCell {
   id: number;
   row: number;
   col: number;
-  icon: 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
+  icon: LampIconType;
 }
 interface CustomCfg {
   uuid: string;
   deviceId: number;
-  icon: 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
+  icon: LampIconType;
   left: number;
   top: number;
   flip: boolean;
@@ -47,9 +47,10 @@ interface CustomCfg {
 interface TraverseCfg {
   groupId: number;
 }
+type LampIconType = 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
 
+// --- Constants ---
 const GS_COUNT = 6;
-
 const traversePos = [
   { top: 720, left: 74 },
   { top: 401, left: 74 },
@@ -60,7 +61,8 @@ const traversePos = [
   { top: 720, left: 614 },
 ];
 
-const imgByIcon = (icon: string) => {
+// --- Helper Functions ---
+const imgByIcon = (icon: LampIconType): string | null => {
   switch (icon) {
     case 'RGB':
       return rgbTop;
@@ -75,15 +77,16 @@ const imgByIcon = (icon: string) => {
   }
 };
 
-const FaderText: React.FC<{ gid: number; max: number }> = ({ gid, max }) => {
+// --- Sub-Components ---
+const FaderText: React.FC<{ gid: number; max: number }> = React.memo(({ gid, max }) => {
   const { t } = useContext(TranslationContext);
   const v = useFaderValue(gid, 0);
   if (v === 0) return <div className='studioOverviewInfopanelBrightness'>{t('Off')}</div>;
   const pct = ((v * 10) / 255) * ((max * 10) / 255);
   return <div className='studioOverviewInfopanelBrightness'>{pct.toFixed(0)}%</div>;
-};
+});
 
-const GlareImg: React.FC<{ gid: number; max: number; useWide?: boolean; flip?: boolean; useCustomPosition?: boolean; useGreenscreenPosition?: boolean; isBiColor?: boolean }> = ({ gid, max, useWide, flip, useCustomPosition, useGreenscreenPosition, isBiColor }) => {
+const GlareImg: React.FC<{ gid: number; max: number; useWide?: boolean; flip?: boolean; useCustomPosition?: boolean; useGreenscreenPosition?: boolean; isBiColor?: boolean }> = React.memo(({ gid, max, useWide, flip, useCustomPosition, useGreenscreenPosition, isBiColor }) => {
   const v = useFaderValue(gid, 0);
   const biValRaw = useFaderValue(gid, 1);
   if (v === 0) return null;
@@ -92,12 +95,10 @@ const GlareImg: React.FC<{ gid: number; max: number; useWide?: boolean; flip?: b
   let colorFilter = '';
   if (isBiColor) {
     const normBi = (biVal - 128) / 128;
-    if (normBi < 0) {
-      const warmth = -normBi;
-      colorFilter = `sepia(${(warmth * 0.8).toFixed(2)}) saturate(${(1 + warmth * 3).toFixed(2)}) hue-rotate(${(warmth * -40).toFixed(0)}deg) `;
-    } else {
-      colorFilter = `hue-rotate(${(normBi * 60).toFixed(0)}deg) `;
-    }
+    colorFilter =
+      normBi < 0
+        ? `sepia(${(-normBi * 0.8).toFixed(2)}) saturate(${(1 + -normBi * 3).toFixed(2)}) hue-rotate(${(-normBi * -40).toFixed(0)}deg) `
+        : `hue-rotate(${(normBi * 60).toFixed(0)}deg) `;
   }
   let transform = 'translateY(-10px)';
   if (flip) transform = 'rotate(180deg) translate(10px,-85px)';
@@ -111,21 +112,14 @@ const GlareImg: React.FC<{ gid: number; max: number; useWide?: boolean; flip?: b
       style={{
         opacity: op,
         filter: `${colorFilter}blur(5px)`,
-        transform: transform,
+        transform,
       }}
       alt=''
     />
   );
-};
+});
 
-interface TraverseItemProps {
-  groupId: number;
-  pos: { top: number; left: number };
-  index: number;
-  handleGlowAndFocus: (id: number) => void;
-  master: number;
-}
-const TraverseItem: React.FC<TraverseItemProps> = ({ groupId, pos, index, handleGlowAndFocus, master }) => {
+const TraverseItem: React.FC<{ groupId: number; pos: { top: number; left: number }; index: number; handleGlowAndFocus: (id: number) => void; master: number }> = React.memo(({ groupId, pos, index, handleGlowAndFocus, master }) => {
   const main = useFaderValue(groupId, 0);
   const red = useFaderValue(groupId, 1);
   const green = useFaderValue(groupId, 2);
@@ -134,28 +128,78 @@ const TraverseItem: React.FC<TraverseItemProps> = ({ groupId, pos, index, handle
   return (
     <div style={{ position: 'fixed', top: pos.top, left: pos.left }}>
       <div style={{ position: 'fixed', top: pos.top, left: pos.left }}>
-        <LightBeam
-          master={master}
-          main={main}
-          red={red}
-          green={green}
-          blue={blue}
-        />
+        <LightBeam master={master} main={main} red={red} green={green} blue={blue} />
       </div>
-      <div
-        className={`studioOverviewInfopanel studioOverviewInfopanelTraverse${index}`}
-        onClick={() => handleGlowAndFocus(groupId)}
-      >
+      <div className={`studioOverviewInfopanel studioOverviewInfopanelTraverse${index}`} onClick={() => handleGlowAndFocus(groupId)}>
         <div className='studioOverviewInfopanelText'>{`${index + 1}. Traverse`}</div>
-        <FaderText
-          gid={groupId}
-          max={master}
-        />
+        <FaderText gid={groupId} max={master} />
       </div>
     </div>
   );
+});
+
+const RgbValues: React.FC<{ gid: number; children: (values: { main: number; red: number; green: number; blue: number }) => React.ReactNode }> = ({ gid, children }) => {
+  const main = useFaderValue(gid, 0);
+  const red = useFaderValue(gid, 1);
+  const green = useFaderValue(gid, 2);
+  const blue = useFaderValue(gid, 3);
+  return <>{children({ main, red, green, blue })}</>;
 };
 
+interface LampVisualProps {
+  gid: number;
+  icon: LampIconType;
+  master: number;
+  handleGlowAndFocus: (id: number) => void;
+  imgSrc: string | null;
+  label?: string;
+  mirrored?: boolean;
+  flip?: boolean;
+  useCustomPositioning?: boolean;
+  infoPanelClass?: string;
+  lampImageClass: string;
+  lampImageStyle?: React.CSSProperties;
+}
+
+const LampVisual: React.FC<LampVisualProps> = React.memo(
+  ({ gid, icon, master, handleGlowAndFocus, imgSrc, label, mirrored, flip, useCustomPositioning, infoPanelClass = 'studioOverviewInfopanel', lampImageClass, lampImageStyle }) => {
+    const isRgb = icon === 'RGB';
+    const useWideGlare = icon === 'Fill' || icon === 'LED';
+    const isBiColor = icon === 'LED';
+
+    return (
+      <RgbValues gid={gid}>
+        {({ main, red, green, blue }) => (
+          <>
+            <div className={isRgb ? 'rgbWrapper' : ''}>
+              {isRgb ? (
+                <LightBeam master={master} main={main} red={red} green={green} blue={blue} />
+              ) : (
+                imgSrc && <GlareImg gid={gid} max={master} flip={flip} useWide={useWideGlare} useCustomPosition={useCustomPositioning} isBiColor={isBiColor} />
+              )}
+              {imgSrc && (
+                <img
+                  src={imgSrc}
+                  alt={`${icon} Lamp`}
+                  className={`${lampImageClass} ${mirrored ? 'lampMirrored' : ''}`}
+                  style={lampImageStyle}
+                  onClick={() => handleGlowAndFocus(gid)}
+                />
+              )}
+            </div>
+            {!imgSrc && !isRgb && <div style={{ height: 50 }}></div>} {/* Placeholder for 'None' icon */}
+            <div className={infoPanelClass} onClick={() => handleGlowAndFocus(gid)}>
+              <div className='studioOverviewInfopanelText'>{label || `#${gid}`}</div>
+              <FaderText gid={gid} max={master} />
+            </div>
+          </>
+        )}
+      </RgbValues>
+    );
+  }
+);
+
+// --- Main Component ---
 export default React.memo(function StudioOverview({ handleGlowAndFocus }: StudioOverviewProps) {
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
@@ -170,13 +214,17 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
   const fetchData = useCallback(async () => {
     try {
       const res = await fetch(`${url}/studio_grid`);
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const txt = await res.text();
-      if (txt.trim().startsWith('<')) return; // ignore HTML
-      let data: any = txt;
+      if (txt.trim().startsWith('<')) return;
+      let data: any;
       try {
-        data = JSON.parse(data);
-      } catch {}
-      if (typeof data === 'string') data = JSON.parse(data);
+        data = JSON.parse(txt);
+        if (typeof data === 'string') data = JSON.parse(data);
+      } catch (parseError) {
+        console.error('Failed to parse studio grid data:', parseError, 'Raw text:', txt);
+        return;
+      }
       setRows(+data.meta?.rows || 6);
       setCols(+data.meta?.cols || 4);
       setGridCfg(data.grid || []);
@@ -190,17 +238,8 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
 
   useEffect(() => {
     fetchData();
-
-    const handleReload = () => {
-      console.log('Reload event triggered');
-      fetchData();
-    };
-
-    window.addEventListener('reload', handleReload as EventListener);
-
-    return () => {
-      window.removeEventListener('reload', handleReload as EventListener);
-    };
+    window.addEventListener('reload', fetchData as EventListener);
+    return () => window.removeEventListener('reload', fetchData as EventListener);
   }, [fetchData]);
 
   return (
@@ -243,49 +282,31 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
         )}
         {/* Custom Lamps */}
         {customCfg.map((l) => {
-          const img = imgByIcon(l.icon);
-          if (!l.deviceId) return null;
+          const deviceIdNum = Number(l.deviceId);
+          if (!deviceIdNum) return null;
+          const isRgb = l.icon === 'RGB';
           const mirrored = l.left > 802 / 2;
-          const useWideGlare = l.icon === 'Fill' || l.icon === 'LED';
+          const lampImageStyle = isRgb ? { transform: 'none' } : { transform: l.flip ? 'rotate(180deg) scaleX(-1)' : mirrored ? 'translate(-10px, -60px)' : 'translate(10px, -60px)' };
           return (
             <div
               key={l.uuid}
               className='studioOverviewLight'
               style={{ position: 'absolute', top: l.top + 30, left: l.left }}
             >
-              {img && l.icon !== 'RGB' && (
-                <GlareImg
-                  gid={l.deviceId}
-                  max={master}
-                  flip={l.flip}
-                  useWide={useWideGlare}
-                  useCustomPosition
-                  isBiColor={l.icon === 'LED'}
-                />
-              )}
-              {img && (
-                <img
-                  src={img}
-                  alt=''
-                  className={`studioOverviewCustomLamp ${mirrored ? 'lampMirrored' : ''}`}
-                  style={{
-                    position: 'relative',
-                    transform: l.flip ? (mirrored ? 'rotate(180deg)' : 'rotate(180deg)  rotateY(180deg)') : mirrored ? 'rotateY(180deg) translate(-10px, -60px)' : 'translate(10px, -60px)',
-                  }}
-                  onClick={() => handleGlowAndFocus(l.deviceId)}
-                />
-              )}
-              {!img && <div style={{ height: 50 }}></div>}
-              <div
-                className='studioOverviewInfopanel studioOverviewInfopanelCustom'
-                onClick={() => handleGlowAndFocus(l.deviceId)}
-              >
-                <div className='studioOverviewInfopanelText'>{l.label || `#${l.deviceId}`}</div>
-                <FaderText
-                  gid={l.deviceId}
-                  max={master}
-                />
-              </div>
+              <LampVisual
+                gid={deviceIdNum}
+                icon={l.icon}
+                master={master}
+                handleGlowAndFocus={handleGlowAndFocus}
+                imgSrc={imgByIcon(l.icon)}
+                label={l.label}
+                mirrored={mirrored}
+                flip={l.flip}
+                useCustomPositioning={true}
+                infoPanelClass='studioOverviewInfopanel studioOverviewInfopanelCustom'
+                lampImageClass='studioOverviewCustomLamp'
+                lampImageStyle={lampImageStyle}
+              />
             </div>
           );
         })}
@@ -293,18 +314,13 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
         <div className='SettingsOverviewImageForeground'>
           <div
             className='SettingsOverviewImageGrid'
-            style={{
-              gridTemplateRows: `repeat(${rows},1fr)`,
-              gridTemplateColumns: `repeat(${cols},1fr)`,
-            }}
+            style={{ gridTemplateRows: `repeat(${rows},1fr)`, gridTemplateColumns: `repeat(${cols},1fr)` }}
           >
             {Array.from({ length: rows }).flatMap((_, r) =>
               Array.from({ length: cols }).map((_, c) => {
                 const cell = gridCfg.find((g) => g.row === r && g.col === c);
-                if (!cell || !cell.id) {
-                  return <div key={`${r}-${c}`} />;
-                }
-                const img = imgByIcon(cell.icon);
+                if (!cell || !cell.id) return <div key={`${r}-${c}`} />;
+                const cellIdNum = Number(cell.id);
                 const right = c >= cols / 2;
                 const center = cols % 2 === 1 && c === Math.floor(cols / 2);
                 return (
@@ -313,32 +329,15 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
                     className={`studioOverviewLight`}
                     style={{ justifySelf: right ? 'flex-end' : center ? 'center' : 'flex-start' }}
                   >
-                    {img && cell.icon !== 'RGB' && (
-                      <GlareImg
-                        gid={cell.id}
-                        max={master}
-                        useWide={cell.icon === 'Fill' || cell.icon === 'LED'}
-                        isBiColor={cell.icon === 'LED'}
-                      />
-                    )}
-                    {img && (
-                      <img
-                        src={img}
-                        alt=''
-                        className={`studioOverviewLamp ${right ? 'lampMirrored' : ''}`}
-                        onClick={() => handleGlowAndFocus(cell.id)}
-                      />
-                    )}
-                    <div
-                      className='studioOverviewInfopanel'
-                      onClick={() => handleGlowAndFocus(cell.id)}
-                    >
-                      <div className='studioOverviewInfopanelText'>#{cell.id}</div>
-                      <FaderText
-                        gid={cell.id}
-                        max={master}
-                      />
-                    </div>
+                    <LampVisual
+                      gid={cellIdNum}
+                      icon={cell.icon}
+                      master={master}
+                      handleGlowAndFocus={handleGlowAndFocus}
+                      imgSrc={imgByIcon(cell.icon)}
+                      mirrored={right}
+                      lampImageClass='studioOverviewLamp'
+                    />
                   </div>
                 );
               })

@@ -190,7 +190,7 @@
 }
 
 .lampMirrored {
-  transform: rotateY(180deg);
+  scale: -1 1;
 }
 
 .studioOverviewLights {
@@ -200,7 +200,7 @@
 }
 
 .studioOverviewCustomLamp {
-  transform: rotateX(180deg);
+
   position: relative;
   display: inline;
   left: 15px;
@@ -260,4 +260,40 @@
 
 .scrollButton:hover {
   background: var(--primary);
+}
+
+.rgbWrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50px;
+  width: 100%;
+}
+
+.rgbWrapper .studioOverviewTraversenLight,
+.rgbWrapper .emitter  {
+  position: absolute;
+  top: -5px;
+  left: 5px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.rgbWrapper .studioOverviewTraversenLight {
+  z-index: 4;
+  scale: 1.8;
+  transform-origin: left top;
+}
+
+.rgbWrapper .studioOverviewLamp,
+.rgbWrapper .studioOverviewCustomLamp {
+  position: absolute;
+  z-index: 2;
+  top: -30px;
+  left: -20px;
+}
+
+.SettingsOverviewImageGrid .rgbWrapper {
+  top: 85px;
 }

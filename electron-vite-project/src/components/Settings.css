@@ -173,6 +173,8 @@
   scrollbar-gutter: auto;
   position: relative !important;
   container-type: inline-size;
+  min-width: 295px;
+
 }
 
 .SettingsContent {

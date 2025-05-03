@@ -53,6 +53,7 @@ type LampIconType = 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
 interface DeviceConfig {
   id: number;
   name: string;
+  device_type: string;
 }
 
 // --- Constants ---
@@ -165,23 +166,43 @@ interface LampVisualProps {
   infoPanelClass?: string;
   lampImageClass: string;
   lampImageStyle?: React.CSSProperties;
+  deviceType?: string;
 }
 
 const LampVisual: React.FC<LampVisualProps> = React.memo(
-  ({ gid, icon, master, handleGlowAndFocus, imgSrc, label, mirrored, flip, useCustomPositioning, infoPanelClass = 'studioOverviewInfopanel', lampImageClass, lampImageStyle }) => {
+  ({ gid, icon, master, handleGlowAndFocus, imgSrc, label, mirrored, flip, useCustomPositioning, infoPanelClass = 'studioOverviewInfopanel', lampImageClass, lampImageStyle, deviceType }) => {
     const isRgb = icon === 'RGB';
     const useWideGlare = icon === 'Fill' || icon === 'LED';
-    const isBiColor = icon === 'LED';
-
+    const isBiColor = deviceType === 'BiColor';
+    const isActualRgbDevice = deviceType === 'RGBDim';
     return (
       <RgbValues gid={gid}>
         {({ main, red, green, blue }) => (
           <>
             <div className={isRgb ? 'rgbWrapper' : ''}>
-              {isRgb ? (
-                <LightBeam master={master} main={main} red={red} green={green} blue={blue} />
+              {isRgb ? (  
+                <RgbValues gid={gid}>
+                  {({ main, red, green, blue }) => (
+                    <LightBeam
+                      master={master}
+                      main={main}
+                      red={isActualRgbDevice ? red : 255}
+                      green={isActualRgbDevice ? green : 255}
+                      blue={isActualRgbDevice ? blue : 255}
+                    />
+                  )}
+                </RgbValues>        
               ) : (
-                imgSrc && <GlareImg gid={gid} max={master} flip={flip} useWide={useWideGlare} useCustomPosition={useCustomPositioning} isBiColor={isBiColor} />
+                imgSrc && (
+                  <GlareImg
+                    gid={gid}
+                    max={master}
+                    flip={flip}
+                    useWide={useWideGlare}
+                    useCustomPosition={useCustomPositioning}
+                    isBiColor={isBiColor}
+                  />
+                )
               )}
               {imgSrc && (
                 <img
@@ -194,9 +215,15 @@ const LampVisual: React.FC<LampVisualProps> = React.memo(
               )}
             </div>
             {!imgSrc && !isRgb && <div style={{ height: 50 }}></div>} {/* Placeholder for 'None' icon */}
-            <div className={infoPanelClass} onClick={() => handleGlowAndFocus(gid)}>
+            <div
+              className={infoPanelClass}
+              onClick={() => handleGlowAndFocus(gid)}
+            >
               <div className='studioOverviewInfopanelText'>{label || `#${gid}`}</div>
-              <FaderText gid={gid} max={master} />
+              <FaderText
+                gid={gid}
+                max={master}
+              />
             </div>
           </>
         )}
@@ -285,7 +312,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus, devices 
                   max={master}
                   useWide
                   useGreenscreenPosition
-                  isBiColor={true}
+                  isBiColor={devices.find((d) => d.id === greenId)?.device_type === 'BiColor'}
                 />
                 <img
                   src={biColor}
@@ -304,18 +331,19 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus, devices 
           const isRgb = l.icon === 'RGB';
           const mirrored = l.left > 802 / 2;
           let displayLabel = `#${deviceIdNum}`;
-          if (l.showName) {
-            const device = devices.find((d) => d.id === deviceIdNum);
-            if (device) {
+          const device = devices.find((d) => d.id === deviceIdNum);
+          if (l.showName && device) {
               displayLabel = device.name;
-            }
-          }
-          if (l.label) {
+          } else if (l.label) {
             displayLabel = l.label;
           }
           const lampImageStyle = isRgb ? { transform: 'none' } : { transform: l.flip ? 'rotate(180deg) scaleX(-1)' : mirrored ? 'translate(-10px, -60px)' : 'translate(10px, -60px)' };
           return (
-            <div key={l.uuid} className='studioOverviewLight' style={{ position: 'absolute', top: l.top + 30, left: l.left }}>
+            <div
+              key={l.uuid}
+              className='studioOverviewLight'
+              style={{ position: 'absolute', top: l.top + 30, left: l.left }}
+            >
               <LampVisual
                 gid={deviceIdNum}
                 icon={l.icon}
@@ -329,6 +357,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus, devices 
                 infoPanelClass='studioOverviewInfopanel studioOverviewInfopanelCustom'
                 lampImageClass='studioOverviewCustomLamp'
                 lampImageStyle={lampImageStyle}
+                deviceType={device?.device_type}
               />
             </div>
           );
@@ -344,6 +373,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus, devices 
                 const cell = gridCfg.find((g) => g.row === r && g.col === c);
                 if (!cell || !cell.id) return <div key={`${r}-${c}`} />;
                 const cellIdNum = Number(cell.id);
+                const device = devices.find((d) => d.id === cellIdNum);
                 const right = c >= cols / 2;
                 const center = cols % 2 === 1 && c === Math.floor(cols / 2);
                 return (
@@ -360,6 +390,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus, devices 
                       imgSrc={imgByIcon(cell.icon)}
                       mirrored={right}
                       lampImageClass='studioOverviewLamp'
+                      deviceType={device?.device_type}
                     />
                   </div>
                 );

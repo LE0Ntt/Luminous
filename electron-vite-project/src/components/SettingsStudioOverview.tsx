@@ -81,6 +81,8 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
   const scaleRef = React.useRef<number>(1);
   const draggingUUIDRef = React.useRef<string | null>(null);
   const dragOffsetRef = React.useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [highlightedLampUUID, setHighlightedLampUUID] = useState<string | null>(null);
+  const settingsRowRefs = React.useRef<Record<string, HTMLDivElement>>({});
 
   const fetchDevices = useCallback(async () => {
     try {
@@ -167,6 +169,17 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Scroll to the highlighted lamp 
+  useEffect(() => {
+    if (highlightedLampUUID && settingsRowRefs.current[highlightedLampUUID]) {
+      settingsRowRefs.current[highlightedLampUUID].scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      });
+    }
+  }, [highlightedLampUUID]);
 
   const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
@@ -358,14 +371,17 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
           position: 'absolute',
           top: lamp.top + 5,
           left: lamp.left,
+          cursor: draggingUUIDRef.current === lamp.uuid ? 'grabbing' : 'default',
         }}
         onMouseDown={(e) => {
           if ((e.target as HTMLElement).closest('select')) {
             return;
           }
-          handleMouseDown(e, lamp);
+          if ((e.target as HTMLElement).closest('.drag-handle')) {
+            e.stopPropagation();
+            return;
+          }
         }}
-        title={t('drag_to_move') ?? 'Drag to move'}
       >
         <select
           value={lamp.deviceId?.toString() ?? ''}
@@ -407,7 +423,12 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
             width: 25,
             height: 25,
           }}
-          onMouseDown={(e) => handleMouseDown(e, lamp)}
+          onMouseDown={(e) => {
+            e.stopPropagation();
+            setHighlightedLampUUID(lamp.uuid);
+            handleMouseDown(e, lamp);
+            setTimeout(() => setHighlightedLampUUID(null), 700);
+          }}
           title='Drag'
           className='studioOverviewInfopanelTest'
         >
@@ -489,11 +510,11 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
               <div className='SettingsSubTitle'>
                 <span className='relative top-[-6px]'>{t('set_trusses')}</span>
               </div>
-              <div className='traverse-grid'>
+              <div className='traverseGrid'>
                 {traversen.map((tr, i) => (
                   <div
                     key={i}
-                    className='traverse-cell'
+                    className='traverseCell'
                   >
                     <label>
                       {t('set_truss')} {i + 1}{' '}
@@ -540,7 +561,11 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                 {customLamps.map((lamp) => (
                   <div
                     key={lamp.uuid}
-                    className='custom-row'
+                    ref={(el) => {
+                      if (el) settingsRowRefs.current[lamp.uuid] = el;
+                      else delete settingsRowRefs.current[lamp.uuid];
+                    }}
+                    className={`customRow ${lamp.uuid === highlightedLampUUID ? 'faderGlow' : ''}`}
                   >
                     <label>X:</label>
                     <input
@@ -600,7 +625,10 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
             </div>
           </div>
           {/* right column – preview */}
-          <div ref={previewRef} className='SettingsOverviewImage window'>
+          <div
+            ref={previewRef}
+            className='SettingsOverviewImage window'
+          >
             <div className='SettingsOverviewImageForeground'>
               <div
                 className='SettingsOverviewImageGrid'

@@ -512,7 +512,7 @@
   overflow: hidden;
 }
 
-.traverse-grid {
+.traverseGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 10px;
@@ -531,7 +531,7 @@
   flex-direction: column;
 }
 
-.traverse-cell > .textBox {
+.traverseCell > .textBox {
   width: 100%;
 }
 
@@ -540,11 +540,13 @@
   min-height: fit-content;
 }
 
-.custom-row {
+.customRow {
   display: flex;
   flex-direction: row;
   gap: 10px;
   align-items: center;
+  transition: transform 0.3s ease-in-out;
+  border-radius: 5px;
 }
 
 .customRowContainer {
@@ -555,7 +557,7 @@
   width: 100%;
 }
 
-.custom-row > * {
+.customRow > * {
   margin-left: 0 !important;
 }
 

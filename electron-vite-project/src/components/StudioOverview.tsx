@@ -28,6 +28,7 @@ import { useFaderValue } from './FaderContext';
 // --- Interfaces ---
 interface StudioOverviewProps {
   handleGlowAndFocus: (id: number) => void;
+  devices: DeviceConfig[];
 }
 interface GridCell {
   id: number;
@@ -43,11 +44,16 @@ interface CustomCfg {
   top: number;
   flip: boolean;
   label?: string;
+  showName?: boolean;
 }
 interface TraverseCfg {
   groupId: number;
 }
 type LampIconType = 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
+interface DeviceConfig {
+  id: number;
+  name: string;
+}
 
 // --- Constants ---
 const GS_COUNT = 6;
@@ -200,7 +206,7 @@ const LampVisual: React.FC<LampVisualProps> = React.memo(
 );
 
 // --- Main Component ---
-export default React.memo(function StudioOverview({ handleGlowAndFocus }: StudioOverviewProps) {
+export default React.memo(function StudioOverview({ handleGlowAndFocus, devices }: StudioOverviewProps) {
   const { t } = useContext(TranslationContext);
   const { url } = useConnectionContext();
   const master = useFaderValue(0, 0);
@@ -228,7 +234,18 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
       setRows(+data.meta?.rows || 6);
       setCols(+data.meta?.cols || 4);
       setGridCfg(data.grid || []);
-      setCustomCfg(data.custom || []);
+      setCustomCfg(
+        (data.custom || []).map((l: any) => ({
+          uuid: l.uuid ?? crypto.randomUUID(),
+          deviceId: Number(l.deviceId),
+          icon: l.icon as LampIconType,
+          left: Number(l.left ?? 0),
+          top: Number(l.top ?? 0),
+          flip: !!l.flip,
+          label: l.label,
+          showName: !!l.showName,
+        }))
+      );
       setTravCfg(data.traversen || []);
       setGreenId(data.greenScreenId ?? null);
     } catch (error) {
@@ -286,20 +303,26 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus }: Studio
           if (!deviceIdNum) return null;
           const isRgb = l.icon === 'RGB';
           const mirrored = l.left > 802 / 2;
+          let displayLabel = `#${deviceIdNum}`;
+          if (l.showName) {
+            const device = devices.find((d) => d.id === deviceIdNum);
+            if (device) {
+              displayLabel = device.name;
+            }
+          }
+          if (l.label) {
+            displayLabel = l.label;
+          }
           const lampImageStyle = isRgb ? { transform: 'none' } : { transform: l.flip ? 'rotate(180deg) scaleX(-1)' : mirrored ? 'translate(-10px, -60px)' : 'translate(10px, -60px)' };
           return (
-            <div
-              key={l.uuid}
-              className='studioOverviewLight'
-              style={{ position: 'absolute', top: l.top + 30, left: l.left }}
-            >
+            <div key={l.uuid} className='studioOverviewLight' style={{ position: 'absolute', top: l.top + 30, left: l.left }}>
               <LampVisual
                 gid={deviceIdNum}
                 icon={l.icon}
                 master={master}
                 handleGlowAndFocus={handleGlowAndFocus}
                 imgSrc={imgByIcon(l.icon)}
-                label={l.label}
+                label={displayLabel}
                 mirrored={mirrored}
                 flip={l.flip}
                 useCustomPositioning={true}

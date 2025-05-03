@@ -18,6 +18,7 @@ import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
 import Button from './Button';
 import AdminPassword from './AdminPassword';
+import Toggle from './Toggle';
 
 export type DeviceType = 'RGBDim' | 'BiColor' | 'Spot' | 'Fill' | 'HMI' | 'Misc';
 export type IconType = 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
@@ -47,6 +48,7 @@ interface CustomLamp {
   left: number;
   top: number;
   flip: boolean;
+  showName?: boolean;
 }
 
 interface TraverseLamp {
@@ -123,6 +125,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
           left: Number(l.left ?? 0),
           top: Number(l.top ?? 0),
           flip: !!l.flip,
+          showName: !!l.showName,
         }))
       );
 
@@ -235,6 +238,9 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
             updatedLamp.flip = !!value;
           } else if (field === 'left' || field === 'top') {
             updatedLamp[field] = Number(value);
+          }
+          if (field === 'showName') {
+            updatedLamp.showName = !!value;
           }
           return updatedLamp;
         }
@@ -438,6 +444,12 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
     ));
   }, [customLamps, devices, updateCustomLamp, t]);
 
+  function handleToggleChange(uuid: string): (checked: boolean) => void {
+    return (checked: boolean) => {
+      updateCustomLamp(uuid, 'showName', checked);
+    };
+  }
+
   return (
     <>
       {saveAdmin && (
@@ -584,13 +596,21 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                       onChange={(e) => updateCustomLamp(lamp.uuid, 'top', Number(e.target.value))}
                     />
                     <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      Flip
                       <input
                         type='checkbox'
                         checked={lamp.flip}
                         onChange={(e) => updateCustomLamp(lamp.uuid, 'flip', e.target.checked)}
                       />
+                      Flip
                     </label>
+                    <div className='toggleContainerSettings'>
+                      <span>ID</span>
+                      <Toggle
+                        onClick={handleToggleChange(lamp.uuid)}
+                        enabled={!!lamp.showName}
+                      />
+                      <span className='textRight'>Name</span>
+                    </div>
                     <Button
                       className='SettingsButton controlButton danger'
                       onClick={() => removeCustomLamp(lamp.uuid)}

@@ -172,6 +172,7 @@
   padding-right: 10px;
   scrollbar-gutter: auto;
   position: relative !important;
+  container-type: inline-size;
 }
 
 .SettingsContent {
@@ -521,7 +522,7 @@
 }
 
 .overviewInput {
-  width: 75px;
+  width: 55px;
   margin-left: 10px;
   margin-bottom: 0;
 }
@@ -547,6 +548,20 @@
   align-items: center;
   transition: transform 0.3s ease-in-out;
   border-radius: 5px;
+}
+
+@container (max-width: 410px) {
+  .customRow {
+    flex-wrap: wrap;
+  }
+  .customRowContainer {
+    gap: 20px !important;
+  }
+}
+@container (max-width: 280px) {
+  .customRow {
+    width: 215px;
+  }
 }
 
 .customRowContainer {
@@ -593,4 +608,14 @@
 
 .SettingsOverviewImageGrid > div {
   height: 48px;
+}
+
+.toggleContainerSettings {
+  display: flex;
+  gap: 10px;
+  margin-right: 100px;
+}
+
+.textRight {
+  margin-left: -5px;
 }

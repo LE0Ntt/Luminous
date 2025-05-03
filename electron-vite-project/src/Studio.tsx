@@ -44,6 +44,7 @@ const Studio = () => {
     id: number;
     sliderValue: number;
     name: string;
+    device_type: string;
   }
 
   // Open a device in the control (LightFX)

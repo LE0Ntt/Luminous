@@ -8,7 +8,7 @@
 
 - Studio-Overview refactor
   - Added settings to fully customise the layout
-  - Bi-color glare now roughly represents the temperature of the light
+  - Bi-color and RGB glare now roughly represents the color of the light
   - RGB lamps can now be placed anywhere in the studio
 - Added the ability to change the server port
 - Scenes

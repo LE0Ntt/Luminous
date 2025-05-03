@@ -93,7 +93,22 @@ const FaderText: React.FC<{ gid: number; max: number }> = React.memo(({ gid, max
   return <div className='studioOverviewInfopanelBrightness'>{pct.toFixed(0)}%</div>;
 });
 
-const GlareImg: React.FC<{ gid: number; max: number; useWide?: boolean; flip?: boolean; useCustomPosition?: boolean; useGreenscreenPosition?: boolean; isBiColor?: boolean }> = React.memo(({ gid, max, useWide, flip, useCustomPosition, useGreenscreenPosition, isBiColor }) => {
+const GlareImg: React.FC<{
+  gid: number;
+  max: number;
+  useWide?: boolean;
+  flip?: boolean;
+  useCustomPosition?: boolean;
+  useGreenscreenPosition?: boolean;
+  isBiColor?: boolean;
+  isRgbDevice?: boolean;
+  red?: number;
+  green?: number;
+  blue?: number;
+}> = React.memo(({
+  gid, max, useWide, flip, useCustomPosition, useGreenscreenPosition, isBiColor,
+  isRgbDevice, red = 0, green = 0, blue = 0
+}) => {
   const v = useFaderValue(gid, 0);
   const biValRaw = useFaderValue(gid, 1);
   if (v === 0) return null;
@@ -106,6 +121,9 @@ const GlareImg: React.FC<{ gid: number; max: number; useWide?: boolean; flip?: b
       normBi < 0
         ? `sepia(${(-normBi * 0.8).toFixed(2)}) saturate(${(1 + -normBi * 3).toFixed(2)}) hue-rotate(${(-normBi * -40).toFixed(0)}deg) `
         : `hue-rotate(${(normBi * 60).toFixed(0)}deg) `;
+  } else if (isRgbDevice) {
+    const transparency = 1 - (red + green + blue) / 255 / 3;
+    colorFilter = `grayscale(100%) drop-shadow(0 0 10px rgba(${red},${green},${blue}, ${transparency})) saturate(500%)`;
   }
   let transform = 'translateY(-10px)';
   if (flip) transform = 'rotate(180deg) translate(10px,-85px)';
@@ -171,63 +189,81 @@ interface LampVisualProps {
 
 const LampVisual: React.FC<LampVisualProps> = React.memo(
   ({ gid, icon, master, handleGlowAndFocus, imgSrc, label, mirrored, flip, useCustomPositioning, infoPanelClass = 'studioOverviewInfopanel', lampImageClass, lampImageStyle, deviceType }) => {
-    const isRgb = icon === 'RGB';
+    const isRgbIcon = icon === 'RGB';
+    const isActualRgbDevice = deviceType === 'RGBDim';
     const useWideGlare = icon === 'Fill' || icon === 'LED';
     const isBiColor = deviceType === 'BiColor';
-    const isActualRgbDevice = deviceType === 'RGBDim';
+    const mainValue = useFaderValue(gid, 0);
+    const handleClick = useCallback(() => {
+      handleGlowAndFocus(gid);
+    }, [gid, handleGlowAndFocus]);
     return (
-      <RgbValues gid={gid}>
-        {({ main, red, green, blue }) => (
-          <>
-            <div className={isRgb ? 'rgbWrapper' : ''}>
-              {isRgb ? (  
+      <>
+        <div className={isRgbIcon ? 'rgbWrapper' : ''}>
+          {isRgbIcon ? (
+            isActualRgbDevice ? (
+              <RgbValues gid={gid}>
+                {({ main, red, green, blue }) => (
+                  <LightBeam master={master} main={main} red={red} green={green} blue={blue} />
+                )}
+              </RgbValues>
+            ) : (
+              <LightBeam master={master} main={mainValue} red={255} green={255} blue={255} />
+            )
+          ) : (
+            imgSrc && (
+              isActualRgbDevice ? (
                 <RgbValues gid={gid}>
-                  {({ main, red, green, blue }) => (
-                    <LightBeam
-                      master={master}
-                      main={main}
-                      red={isActualRgbDevice ? red : 255}
-                      green={isActualRgbDevice ? green : 255}
-                      blue={isActualRgbDevice ? blue : 255}
+                  {({ red, green, blue }) => (
+                    <GlareImg
+                      gid={gid}
+                      max={master}
+                      flip={flip}
+                      useWide={useWideGlare}
+                      useCustomPosition={useCustomPositioning}
+                      isBiColor={false}
+                      isRgbDevice={true}
+                      red={red}
+                      green={green}
+                      blue={blue}
                     />
                   )}
-                </RgbValues>        
+                </RgbValues>
               ) : (
-                imgSrc && (
-                  <GlareImg
-                    gid={gid}
-                    max={master}
-                    flip={flip}
-                    useWide={useWideGlare}
-                    useCustomPosition={useCustomPositioning}
-                    isBiColor={isBiColor}
-                  />
-                )
-              )}
-              {imgSrc && (
-                <img
-                  src={imgSrc}
-                  alt={`${icon} Lamp`}
-                  className={`${lampImageClass} ${mirrored ? 'lampMirrored' : ''}`}
-                  style={lampImageStyle}
-                  onClick={() => handleGlowAndFocus(gid)}
+                <GlareImg
+                  gid={gid}
+                  max={master}
+                  flip={flip}
+                  useWide={useWideGlare}
+                  useCustomPosition={useCustomPositioning}
+                  isBiColor={isBiColor}
+                  isRgbDevice={false}
                 />
-              )}
-            </div>
-            {!imgSrc && !isRgb && <div style={{ height: 50 }}></div>} {/* Placeholder for 'None' icon */}
-            <div
-              className={infoPanelClass}
-              onClick={() => handleGlowAndFocus(gid)}
-            >
-              <div className='studioOverviewInfopanelText'>{label || `#${gid}`}</div>
-              <FaderText
-                gid={gid}
-                max={master}
-              />
-            </div>
-          </>
-        )}
-      </RgbValues>
+              )
+            )
+          )}
+          {imgSrc && (
+            <img
+              src={imgSrc}
+              alt={`${icon} Lamp`}
+              className={`${lampImageClass} ${mirrored ? 'lampMirrored' : ''}`}
+              style={lampImageStyle}
+              onClick={handleClick}
+            />
+          )}
+        </div>
+        {!imgSrc && !isRgbIcon && <div style={{ height: 50 }}></div>} {/* Placeholder for 'None' icon */}
+        <div
+          className={infoPanelClass}
+          onClick={handleClick}
+        >
+          <div className='studioOverviewInfopanelText'>{label || `#${gid}`}</div>
+          <FaderText
+            gid={gid}
+            max={master}
+          />
+        </div>
+      </>
     );
   }
 );

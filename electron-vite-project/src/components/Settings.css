@@ -621,3 +621,14 @@
 .textRight {
   margin-left: -5px;
 }
+
+.noSettings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  font-size: 20px;
+  color: var(--secondary);
+}

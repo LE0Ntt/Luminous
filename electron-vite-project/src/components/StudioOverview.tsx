@@ -271,7 +271,7 @@ const LampVisual: React.FC<LampVisualProps> = React.memo(
 // --- Main Component ---
 export default React.memo(function StudioOverview({ handleGlowAndFocus, devices }: StudioOverviewProps) {
   const { t } = useContext(TranslationContext);
-  const { url } = useConnectionContext();
+  const { url, connected } = useConnectionContext();
   const master = useFaderValue(0, 0);
   const [rows, setRows] = useState(6);
   const [cols, setCols] = useState(4);
@@ -317,10 +317,10 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus, devices 
   }, [url]);
 
   useEffect(() => {
-    fetchData();
+    if (connected) fetchData();
     window.addEventListener('reload', fetchData as EventListener);
     return () => window.removeEventListener('reload', fetchData as EventListener);
-  }, [fetchData]);
+  }, [fetchData, connected]);
 
   return (
     <div className='overview window'>

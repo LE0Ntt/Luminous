@@ -249,12 +249,12 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
 
   return (
     <div className='SettingsOption'>
+      <div className='SettingsTitle SettingsTitleInner'>
+        <span>{t('set_admin')}</span>
+      </div>
+      <hr style={{ marginTop: '45px' }} />
       {connected && (
         <>
-          <div className='SettingsTitle SettingsTitleInner'>
-            <span>{t('set_admin')}</span>
-          </div>
-          <hr style={{ marginTop: '45px' }} />
           <div className='SettingContainer'>
             <div className='SettingsSubTitle'>
               <IconKey

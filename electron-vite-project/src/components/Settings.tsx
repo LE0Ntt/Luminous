@@ -115,14 +115,18 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                   <Setting1 />
                 ) : selectedSetting === 'Setting2' && initialConnected !== null ? (
                   <Setting2 connected={initialConnected} />
-                ) : selectedSetting === 'Setting3' ? (
+                ) : selectedSetting === 'Setting3' && connected ? (
                   <Setting3
                     studioRows={5}
                     studioColumns={4}
                   />
-                ) : selectedSetting === 'Setting4' ? (
-                  <div className='SettingsOption'>not used</div>
-                ) : null}
+                ) : (
+                  <span
+                    className='noSettings'
+                    dangerouslySetInnerHTML={{ __html: t('set_noSettings') }}
+                  >
+                  </span>
+                )}
               </div>
             </div>
           </div>

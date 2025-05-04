@@ -122,13 +122,13 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
     if (sideId === 0) {
       // Studio
       setHeight(105);
-      setButtonText(t('SaveCurrentConfiguration'));
+      setButtonText(t('saveCurrentConfiguration'));
       setRepeatNumber(5);
       setButtonDisabled(false);
     } else if (sideId === 1) {
       // Scenes
       setHeight(202);
-      setButtonText(t('AddNewScene'));
+      setButtonText(t('addNewScene'));
       setRepeatNumber(6);
       setButtonDisabled(false);
     } else if (sideId === 2) {

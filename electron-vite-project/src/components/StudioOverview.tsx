@@ -88,7 +88,7 @@ const imgByIcon = (icon: LampIconType): string | null => {
 const FaderText: React.FC<{ gid: number; max: number }> = React.memo(({ gid, max }) => {
   const { t } = useContext(TranslationContext);
   const v = useFaderValue(gid, 0);
-  if (v === 0) return <div className='studioOverviewInfopanelBrightness'>{t('Off')}</div>;
+  if (v === 0) return <div className='studioOverviewInfopanelBrightness'>{t('off')}</div>;
   const pct = ((v * 10) / 255) * ((max * 10) / 255);
   return <div className='studioOverviewInfopanelBrightness'>{pct.toFixed(0)}%</div>;
 });

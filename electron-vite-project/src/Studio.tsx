@@ -25,6 +25,7 @@ import AddScene from './components/AddScene';
 import ScrollButton from './components/ScrollButton';
 import StudioOverview from './components/StudioOverview';
 import IconLightFX from '@/assets/IconLightFX';
+import IconExpand from './assets/IconExpand';
 
 const Studio = () => {
   const navigate = useNavigate();
@@ -203,15 +204,7 @@ const Studio = () => {
                   onClick={() => setBigView(true)}
                   className='buttonBigView'
                 >
-                  <svg
-                    className='centerIcon'
-                    xmlns='http://www.w3.org/2000/svg'
-                    height='24'
-                    viewBox='0 -960 960 960'
-                    width='24'
-                  >
-                    <path d='M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 28.5T440-760H200v560h560v-240q0-17 11.5-28.5T800-480q17 0 28.5 11.5T840-440v240q0 33-23.5 56.5T760-120H200Zm160-240q-11-11-11-28t11-28l344-344H600q-17 0-28.5-11.5T560-800q0-17 11.5-28.5T600-840h200q17 0 28.5 11.5T840-800v200q0 17-11.5 28.5T800-560q-17 0-28.5-11.5T760-600v-104L415-359q-11 11-27 11t-28-12Z' />
-                  </svg>
+                  <IconExpand />
                 </Button>
               </div>
             </>

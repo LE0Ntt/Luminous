@@ -16,7 +16,7 @@
 
 ## High Priority
 
-- [ ] Code cleanup / comments
+- [x] Code cleanup / comments
 - [x] Testing phase
 - [x] Settings
   - [x] Rework Layout
@@ -111,7 +111,7 @@
   - [x] Assets
     - [x] Check necessity
     - [x] Rename to PascalCase scheme
-  - [ ] Components
+  - [x] Components
     - [x] About.css
     - [x] About.tsx
     - [x] AddScene.tsx
@@ -146,10 +146,10 @@
     - [x] ScrollButton.tsx
     - [x] Settings.css
     - [x] Settings.tsx
-    - [ ] SettingsAdmin.tsx
-    - [ ] SettingsGeneral.tsx
-    - [ ] SettingsStudioOverview.tsx
-    - [ ] StudioOverview.tsx
+    - [x] SettingsAdmin.tsx
+    - [x] SettingsGeneral.tsx
+    - [x] SettingsStudioOverview.tsx
+    - [x] StudioOverview.tsx
     - [ ] Timeline.css
     - [ ] Timeline.tsx
     - [x] Titlebar.css
@@ -158,15 +158,15 @@
     - [x] Toggle.tsx
     - [x] TranslationContext.tsx
   - [x] App.tsx
-  - [ ] Color.css
+  - [x] Color.css
   - [x] Control.css
   - [x] Control.tsx
-  - [ ] index.css
+  - [x] index.css
   - [x] main.tsx
   - [x] Scenes.css
   - [x] Scenes.tsx
   - [ ] Show.css
   - [ ] Show.tsx
-  - [ ] Studio.css
-  - [ ] Studio.tsx
-  - [ ] translations.json
+  - [x] Studio.css
+  - [x] Studio.tsx
+  - [x] translations.json

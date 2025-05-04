@@ -2,6 +2,8 @@
 
 ## Inhalt
 
+- [Luminous Dokumentation](#luminous-dokumentation)
+  - [Inhalt](#inhalt)
 - [Installationsanleitung](#installationsanleitung)
   - [Raspberry Pi](#raspberry-pi)
   - [OLA](#ola)
@@ -624,6 +626,15 @@ npm run build
 ```
 
 Die gebauten Installationsdateien finden Sie anschließend im dafür vorgesehenen Ausgabeordner `release` innerhalb von `electron-vite-project`.
+
+Zusätzlich sollte die Web-Version der Anwendung erstellt werden, um die Benutzeroberfläche auch über einen Webbrowser zugänglich zu machen:
+
+```bash
+npm run build:web
+```
+
+Die dabei generierten Dateien werden automatisch in den `static`-Ordner des `backend`-Verzeichnisses kopiert. Der Python-Server liefert sie dann über den definierten Port aus (z. B. `http://localhost:5000/`).
+Für den Zugriff über andere Geräte im lokalen Netzwerk muss die IP-Adresse des Raspberry Pi bzw. Hosts verwendet werden.
 
 > Diese Schritte sollten eine grundlegende Entwicklungsumgebung für Luminous bereitstellen.
 

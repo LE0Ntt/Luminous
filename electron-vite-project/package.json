@@ -15,7 +15,9 @@
   },
   "scripts": {
     "dev": "vite dev",
+    "dev:web": "vite dev --mode web",
     "build": "tsc && vite build && electron-builder",
+    "build:web": "tsc && vite build --mode web",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
     "e2e": "playwright test"

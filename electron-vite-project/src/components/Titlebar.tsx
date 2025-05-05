@@ -47,12 +47,18 @@ function TitleBar() {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [displayResetDialog, setDisplayResetDialog] = useState(false);
+  const [isElectronApp, setIsElectronApp] = useState(false);
 
   // Effect for platform detection
   useEffect(() => {
     (async () => {
-      const platform = await (window as any).electronAPI.getPlatform();
-      setIsMac(platform === 'darwin');
+      if (window.electronAPI) {
+        const platform = await (window as any).electronAPI.getPlatform();
+        setIsMac(platform === 'darwin');
+        setIsElectronApp(true);
+      } else {
+        setIsElectronApp(false);
+      }
     })();
   }, []);
 
@@ -68,16 +74,29 @@ function TitleBar() {
   // Toggles the full screen mode
   useEffect(() => {
     const fetchFullScreenStatus = async () => {
-      const fullScreenStatus = await (window as any).electronAPI.getFullScreen();
-      setIsFullscreen(fullScreenStatus);
+      if (!isElectronApp) {
+        setIsFullscreen(false);
+      } else {
+        const fullScreenStatus = await (window as any).electronAPI.getFullScreen();
+        setIsFullscreen(fullScreenStatus);
+      }
     };
 
     fetchFullScreenStatus();
   }, []);
 
   const toggleFullScreen = async () => {
-    (window as any).electronAPI.send('toggle-full-screen');
-    setIsFullscreen(!isFullscreen);
+    if (!isElectronApp) {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+      setIsFullscreen(!isFullscreen);
+    } else {
+      (window as any).electronAPI.send('toggle-full-screen');
+      setIsFullscreen(!isFullscreen);
+    }
   };
 
   const handleMinimize = () => {
@@ -169,22 +188,24 @@ function TitleBar() {
           </li>
         </ul>
       </nav>
-      <div className='buttonContainer'>
-        <button
-          className={isMac ? 'hide' : 'titlebar-button minimize'}
-          onClick={handleMinimize}
-        >
-          <div className='min'></div>
-        </button>
-        <button
-          className={isMac ? 'hide' : 'titlebar-button close'}
-          onClick={closeWindow}
-        >
-          <div className='x'>
-            <div className='x xi'></div>
-          </div>
-        </button>
-      </div>
+      {isElectronApp && (
+        <div className='buttonContainer'>
+          <button
+            className={isMac ? 'hide' : 'titlebar-button minimize'}
+            onClick={handleMinimize}
+          >
+            <div className='min'></div>
+          </button>
+          <button
+            className={isMac ? 'hide' : 'titlebar-button close'}
+            onClick={closeWindow}
+          >
+            <div className='x'>
+              <div className='x xi'></div>
+            </div>
+          </button>
+        </div>
+      )}
       {currentDialog === Dialog.Settings && <Settings onClose={() => setCurrentDialog(Dialog.None)} />}
       {currentDialog === Dialog.LightSettings && connected && <LightSettings onClose={() => setCurrentDialog(Dialog.None)} />}
       {currentDialog === Dialog.Help && <Help onClose={() => setCurrentDialog(Dialog.None)} />}

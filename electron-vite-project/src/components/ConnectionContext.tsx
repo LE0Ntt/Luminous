@@ -51,11 +51,13 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
 
   useEffect(() => {
     async function fetchIpAndPort() {
-      const [data] = await Promise.all([window.electronAPI.getIp()]);
-      const { ip: fetchedIp, port: fetchedPort } = data;
-      setIp(fetchedIp);
-      setPort(fetchedPort);
-      setUrl(`http://${fetchedIp}:${fetchedPort}`);
+      if (window.electronAPI) {
+        const [data] = await Promise.all([window.electronAPI.getIp()]);
+        const { ip: fetchedIp, port: fetchedPort } = data;
+        setIp(fetchedIp);
+        setPort(fetchedPort);
+        setUrl(`http://${fetchedIp}:${fetchedPort}`);
+      }
     }
     fetchIpAndPort();
   }, []);

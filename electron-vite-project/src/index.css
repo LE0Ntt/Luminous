@@ -195,6 +195,13 @@
     background-color: rgba(0, 0, 0, 0.15) !important;
   }
 
+  @-moz-document url-prefix() {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.08) rgba(0, 0, 0, 0.03);
+    }
+  }
+
   .flex {
     display: flex;
   }

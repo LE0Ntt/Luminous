@@ -217,13 +217,14 @@ def register_socketio_events(socketio):
     ):
         device_id = device["id"]
         channel_id = channel["id"]
+        thread_key = (device_id, channel_id)
         change_per_step = (end_value - start_value) / steps
         start_time = time.time()
         global fading_active
-        fading_active = True  # Set flag to prevent checking
+        fading_active = True  # Set flag to prevent checking during fade
 
         for step in range(1, steps + 1):
-            thread_info = fade_threads.get((device_id, channel_id))
+            thread_info = fade_threads.get(thread_key)
             if thread_info and thread_info.get("stop"):
                 break
 
@@ -242,16 +243,22 @@ def register_socketio_events(socketio):
             if sleep_time > 0:
                 time.sleep(sleep_time)
 
-        # Set the final value if the fade was not stopped
-        if not (fade_threads.get((device_id, channel_id), {}).get("stop")):
+        final_value_set = False
+        # Set the final value only if the fade completed normally (wasn't stopped)
+        if not (fade_threads.get(thread_key, {}).get("stop")):
             device_channel["sliderValue"] = end_value
             faderSend(device_id, end_value, channel_id)
             send_dmx(device_id, channel_id, end_value, device, channel)
             if driver and getattr(driver, "light_mode", False):
                 driver.pushFader(device_id, end_value)
                 driver.devices = routes.devices
-
-        fading_active = False  # Reset flag after fading is done
+            final_value_set = True
+        if thread_key in fade_threads:
+            del fade_threads[thread_key]
+        if not fade_threads:
+            fading_active = False
+        if final_value_set:
+            check_sync_status(device_id, end_value, channel_id)
 
     # Stops the fade thread for the specified device and channel
     def stop_fade_thread(device_id, channel_id):
@@ -262,7 +269,6 @@ def register_socketio_events(socketio):
             thread = thread_info.get("thread")
             if thread and thread.is_alive():
                 thread.join()
-            del fade_threads[thread_key]
 
     # Starts a new fade thread for the specified device and channel and stops any existing fade thread for the same device and channel before starting
     def start_fade_thread(
@@ -270,6 +276,9 @@ def register_socketio_events(socketio):
     ):
         fade_thread_key = (device["id"], channel["id"])
         stop_fade_thread(*fade_thread_key)
+
+        if fade_thread_key in fade_threads:
+             print(f"Warning: Thread entry {fade_thread_key} still exists after stop_fade_thread. Overwriting.")
 
         thread = threading.Thread(
             target=fade_device,
@@ -402,7 +411,60 @@ def register_socketio_events(socketio):
             scene_stack.append(scene_entry)
 
         else:  # Scene is being deactivated
+            devices_in_scene = set()
+            for device_in_scene in scene_data.get("channel", []):
+                devices_in_scene.add(device_in_scene["id"])
             remove_scene_from_stack(scene_id)
+            target_channel_states = {}  # Structure: {device_id: {channel_id: value}}
+
+            # Determine target state from remaining active scenes (if any)
+            for active_scene_entry in reversed(scene_stack):
+                active_scene_id = active_scene_entry["scene_id"]
+                active_scene_data = next((s for s in routes.scenes if s["id"] == active_scene_id), None)
+
+                if active_scene_data and active_scene_data.get("status", False):
+                    for device_in_active_scene in active_scene_data.get("channel", []):
+                        device_id = device_in_active_scene["id"]
+                        if device_id in devices_in_scene:
+                            if device_id not in target_channel_states:
+                                target_channel_states[device_id] = {}
+
+                            for channel_data in device_in_active_scene["attributes"]["channel"]:
+                                channel_id = channel_data["id"]
+                                if channel_id not in target_channel_states[device_id]:
+                                    target_channel_states[device_id][channel_id] = channel_data["sliderValue"]
+
+            # Apply target states or fallback values
+            for device_id in devices_in_scene:
+                actual_device = next(
+                    (d for d in routes.devices if d["id"] == device_id), None
+                )
+                if not actual_device:
+                    continue
+                for actual_channel in actual_device["attributes"]["channel"]:
+                    channel_id = actual_channel["id"]
+                    start_value = actual_channel["sliderValue"]
+                    device_target_states = target_channel_states.get(device_id, {})
+
+                    if channel_id in device_target_states:
+                        end_value = device_target_states[channel_id]
+                    else:
+                        if scenes_solo_state and not scene_stack:
+                            end_value = 0
+                        else:
+                            end_value = actual_channel.get("backupValue", 0)
+                    if start_value != end_value:
+                        start_fade_thread(
+                            actual_device,
+                            actual_channel,
+                            start_value,
+                            end_value,
+                            steps,
+                            interval,
+                            actual_channel,
+                        )
+                    else:
+                        actual_channel["sliderValue"] = end_value
 
         if solo and status:
             scenes_solo_state = True
@@ -423,93 +485,39 @@ def register_socketio_events(socketio):
             )
 
         if status:  # Scene activated
-            for device in scene_data.get("channel", []):
-                device_id = device["id"]
+            for device_in_scene in scene_data.get("channel", []):
+                device_id = device_in_scene["id"]
                 actual_device = next(
                     (d for d in routes.devices if d["id"] == device_id), None
                 )
                 if actual_device:
-                    master_channel = actual_device["attributes"]["channel"][0]
-                    if len([s for s in scene_stack if device_id in s["devices"]]) <= 1:
-                        master_channel["backupValue"] = master_channel["sliderValue"]
+                    for scene_channel_data in device_in_scene["attributes"]["channel"]:
+                        channel_id = scene_channel_data["id"]
+                        actual_channel = next((ch for ch in actual_device["attributes"]["channel"] if ch["id"] == channel_id), None)
+                        if actual_channel:
+                            if channel_id == 0 and len([s for s in scene_stack if device_id in s["devices"]]) <= 1:
+                                if "backupValue" not in actual_channel:
+                                    actual_channel["backupValue"] = 0
+                                actual_channel["backupValue"] = actual_channel["sliderValue"]
 
-                    scene_device_slider_value = device["attributes"]["channel"][0][
-                        "sliderValue"
-                    ]
+                            start_value = actual_channel["sliderValue"]
+                            end_value = scene_channel_data["sliderValue"]
 
-                    start_value = master_channel["sliderValue"]
-                    end_value = scene_device_slider_value
-
-                    if start_value != end_value:
-                        start_fade_thread(
-                            actual_device,
-                            master_channel,
-                            start_value,
-                            end_value,
-                            steps,
-                            interval,
-                            master_channel,
-                        )
-                    else:
-                        master_channel["sliderValue"] = end_value
-                        faderSend(device_id, end_value, master_channel["id"])
-        else:  # Scene deactivated
-            devices_in_scene = set()
-            for device in scene_data.get("channel", []):
-                devices_in_scene.add(device["id"])
-
-            remove_scene_from_stack(scene_id)
-            device_states = {}  # Track highest priority state for each device
-
-            # Build device states from remaining active scenes
-            for active_scene in scene_stack:
-                active_scene_id = active_scene["scene_id"]
-                active_scene_data = None
-
-                for scene in routes.scenes:
-                    if scene["id"] == active_scene_id:
-                        active_scene_data = scene
-                        break
-
-                if active_scene_data and active_scene_data.get("status", False):
-                    for device in active_scene_data.get("channel", []):
-                        device_id = device["id"]
-                        scene_slider_value = device["attributes"]["channel"][0][
-                            "sliderValue"
-                        ]
-                        device_states[device_id] = {
-                            "value": scene_slider_value,
-                            "channel_id": 0, 
-                        }
-
-            for device_id in devices_in_scene:
-                actual_device = next(
-                    (d for d in routes.devices if d["id"] == device_id), None
-                )
-                if not actual_device:
-                    continue
-
-                master_channel = actual_device["attributes"]["channel"][0]
-                start_value = master_channel["sliderValue"]
-
-                if device_id in device_states:
-                    end_value = device_states[device_id]["value"]
-                else:
-                    end_value = master_channel.get("backupValue", 0)
-
-                if start_value != end_value:
-                    start_fade_thread(
-                        actual_device,
-                        master_channel,
-                        start_value,
-                        end_value,
-                        steps,
-                        interval,
-                        master_channel,
-                    )
-                else:
-                    master_channel["sliderValue"] = end_value
-                    faderSend(device_id, end_value, master_channel["id"])
+                            if start_value != end_value:
+                                start_fade_thread(
+                                    actual_device,
+                                    actual_channel,
+                                    start_value,
+                                    end_value,
+                                    steps,
+                                    interval,
+                                    actual_channel,
+                                )
+                            else:
+                                actual_channel["sliderValue"] = end_value
+                                faderSend(device_id, end_value, channel_id)
+                        else:
+                            print(f"Warning: Channel ID {channel_id} from scene {scene_id} not found in actual device {device_id}")
 
         # Update MotorMix controller if available
         if driver and scene_id is not None:

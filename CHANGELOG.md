@@ -6,6 +6,9 @@
 
 ### Changes
 
+- Web version
+  - Added a web version of the app that can be run in a browser
+  - To run it, enter the IP of the PI and port in a browser, e.g. `http://192.168.178.100:5000`
 - Studio-Overview refactor
   - Added settings to fully customise the layout
   - Bi-color and RGB glare now roughly represents the color of the light

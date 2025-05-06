@@ -51,7 +51,7 @@
 - [x] BigView: Improve visualisation
   - [x] Device groups
   - [x] Faders for different channels
-- [ ] (Minimalistic) web version as vite export
+- [x] Web version as vite export
 
 ## Nice to Have
 

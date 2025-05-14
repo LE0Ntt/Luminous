@@ -1,9 +1,30 @@
-# Luminous Dokumentation
+<style>
+.title-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.title-page img {
+  max-width: 50%;
+  height: auto;
+}
+.title-page h1 {
+  font-size: 2.5em;
+  margin-top: 1em;
+  text-decoration: none;
+}
+</style>
 
-## Inhalt
+<div class="title-page">
+  <img src="electron-vite-project/src/assets/LuminousLogoBackup.svg" alt="Luminous Logo" />
+  <h1>Dokumentation</h1>
+</div>
 
-- [Luminous Dokumentation](#luminous-dokumentation)
-  - [Inhalt](#inhalt)
+# Inhalt
+
 - [Installationsanleitung](#installationsanleitung)
   - [Raspberry Pi](#raspberry-pi)
   - [OLA](#ola)

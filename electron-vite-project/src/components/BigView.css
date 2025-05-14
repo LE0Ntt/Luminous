@@ -129,6 +129,9 @@
 .lastGroupFader {
   margin-right: 9px;
   border-radius: 0 5px 5px 0 !important;
+}
+
+body:not(.defaultC) .lastGroupFader{
   border: none;
 }
 

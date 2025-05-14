@@ -20,9 +20,11 @@ import IconLanguage from '@/assets/IconLanguage';
 import IconFlip from '@/assets/IconFlip';
 import IconDesign from '@/assets/IconDesign';
 
+type DesignType = 'default' | 'defaultB' | 'defaultC';
+
 const Setting1: React.FC = () => {
   const { t, language, setLanguage } = useContext(TranslationContext);
-  const [defaultDesign, setDefaultDesign] = useState(localStorage.getItem('defaultDesign') !== 'false');
+  const [activeDesign, setActiveDesign] = useState<DesignType>((localStorage.getItem('activeDesign') as DesignType) || 'default');
 
   const handleOrderChange = () => {
     const newSetting = localStorage.getItem('reverseOrder') !== 'true';
@@ -40,13 +42,17 @@ const Setting1: React.FC = () => {
     setLanguage(e.target.value as 'en' | 'de');
   };
 
-  // Toggle design
+  // Toggle design based on the activeDesign state
   useEffect(() => {
-    if (defaultDesign) document.body.classList.remove('defaultB');
-    else document.body.classList.add('defaultB');
-    localStorage.setItem('defaultDesign', `${defaultDesign}`);
-    window.dispatchEvent(new CustomEvent<boolean>('designChange', { detail: defaultDesign }));
-  }, [defaultDesign]);
+    document.body.classList.remove('defaultB', 'defaultC');
+    if (activeDesign === 'defaultB') {
+      document.body.classList.add('defaultB');
+    } else if (activeDesign === 'defaultC') {
+      document.body.classList.add('defaultC');
+    }
+    localStorage.setItem('activeDesign', activeDesign);
+    window.dispatchEvent(new CustomEvent<string>('designChange', { detail: activeDesign }));
+  }, [activeDesign]);
 
   return (
     <div className='SettingsOption'>
@@ -54,6 +60,7 @@ const Setting1: React.FC = () => {
         <span>{t('set_general')}</span>
       </div>
       <hr style={{ marginTop: '45px' }} />
+      {/* Language Setting */}
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
           <IconLanguage
@@ -72,6 +79,7 @@ const Setting1: React.FC = () => {
         </select>
       </div>
       <hr />
+      {/* Right-Hand Setting */}
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
           <IconFlip
@@ -88,37 +96,49 @@ const Setting1: React.FC = () => {
         </div>
       </div>
       <hr />
+      {/* Design Setting */}
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>
           <IconDesign color={'var(--primary)'} />
           <span className='relative top-[-6px]'>{t('set_design')}</span>
         </div>
         <div className='items-center designContainer'>
+          {/* Default Design */}
           <div
-            className='defaultDesign'
-            onClick={() => setDefaultDesign(!defaultDesign)}
-            style={{ pointerEvents: defaultDesign ? 'none' : 'auto' }}
+            className={'defaultDesign'}
+            onClick={() => setActiveDesign('default')}
           >
             <div className='redDiv'></div>
             <div className='blueDiv'></div>
             <div className='purpleDiv'></div>
-            <div className={`designBlur ${defaultDesign ? 'activeDesign' : ''}`}></div>
+            <div className={`designBlur ${activeDesign === 'default' ? 'activeDesign' : ''}`}></div>
             <span className='designDefaultSpan'>(Default)</span>
             <div className='designWindow defaultWindow '>
               <span className='designSpan'>Glassmorphism</span>
             </div>
           </div>
+          {/* Design B (Neumorphism) */}
           <div
-            className={`newDesign ${document.body.className.includes('dark') ? 'defaultB dark' : 'defaultB'} ${defaultDesign ? '' : 'activeDesign'} `}
-            onClick={() => setDefaultDesign(!defaultDesign)}
+            className={`newDesign ${document.body.className.includes('dark') ? 'defaultB dark' : 'defaultB'} ${activeDesign === 'defaultB' ? 'activeDesign' : ''} `}
+            onClick={() => setActiveDesign('defaultB')}
           >
             <div className='designWindow window'>
               <span className='designSpan'>Neumorphism</span>
             </div>
           </div>
+          {/* Design C (Minimal) */}
+          <div
+            className={`newDesign defaultC ${document.body.className.includes('dark') ? 'dark' : ''} ${activeDesign === 'defaultC' ? 'activeDesign' : ''} `}
+            onClick={() => setActiveDesign('defaultC')}
+          >
+            <div className='designWindow window'>
+              <span className='designSpan'>Minimal</span>
+            </div>
+          </div>
         </div>
       </div>
-      {/* Show page (in development) 
+      {/* Show page (in development) */}
+      {/*
       <hr />
       <div className='SettingContainer'>
         <div className='SettingsSubTitle'>

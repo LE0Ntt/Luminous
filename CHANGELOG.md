@@ -23,6 +23,7 @@
 - LightFX
   - Added a new bi-color slider with higher resolution
     - Added support for scroll wheel and arrow keys
+- Added a third new design for the app called 'Minimal'
 - Code and assets refactoring
 
 ### Fixes

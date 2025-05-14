@@ -19,6 +19,8 @@ import { TranslationContext } from './TranslationContext';
 import IconLightFX from '@/assets/IconLightFX';
 import IconStudio from '@/assets/IconStudio';
 
+type DesignType = 'default' | 'defaultB' | 'defaultC';
+
 function Header() {
   const location = useLocation();
   const { t } = useContext(TranslationContext);
@@ -27,8 +29,12 @@ function Header() {
 
   // Load mode from local storage
   useEffect(() => {
-    const defaultDesign = localStorage.getItem('defaultDesign') !== 'false';
-    if (!defaultDesign) document.body.classList.add('defaultB');
+    const design = localStorage.getItem('activeDesign') as DesignType;
+    if (design) {
+      document.body.classList.remove('defaultB', 'defaultC');
+      document.body.classList.add(design);
+    }
+
 
     // Listen for changes to the show page setting
     const handleStorageChange = (event: CustomEvent<boolean>) => {

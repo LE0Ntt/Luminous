@@ -545,19 +545,19 @@ function Control() {
               <div className={`noSupportText noSupport ${!supportFlags.supportsBiColor ? '' : 'noSupportHidden'}`}>
                 <span style={{ marginTop: '-110px' }}>{t('noSupport')}</span>
               </div>
-                <input
-                  type='range'
-                  min={0}
-                  max={255}
-                  step={1}
-                  value={biColorFaderValue}
-                  onChange={handleBiSliderChange}
-                  className='biRange'
-                  onMouseDown={() => (isDraggingBi.current = true)}
-                  onMouseUp={resetIsDraggingBi}
-                  onTouchStart={() => (isDraggingBi.current = true)}
-                  onTouchEnd={resetIsDraggingBi}
-                />
+              <input
+                type='range'
+                min={0}
+                max={255}
+                step={1}
+                value={biColorFaderValue}
+                onChange={handleBiSliderChange}
+                className='biRange'
+                onMouseDown={() => (isDraggingBi.current = true)}
+                onMouseUp={resetIsDraggingBi}
+                onTouchStart={() => (isDraggingBi.current = true)}
+                onTouchEnd={resetIsDraggingBi}
+              />
               <input
                 type='text'
                 value={inputValue}
@@ -641,7 +641,8 @@ function Control() {
           <ControlWindow
             className={'controlMain' + (animation ? ' mainAnimation' : '')}
             height={Math.max(height, 30)}
-            newDesign={document.body.className.includes('defaultB')}
+            defaultB={document.body.className.includes('defaultB')}
+            defaultC={document.body.className.includes('defaultC')}
           />
         </>
       ) : (

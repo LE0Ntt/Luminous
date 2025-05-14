@@ -346,6 +346,12 @@
   gap: 20px;
 }
 
+@media screen and (max-width: 1540px) {
+  .designContainer {
+    flex-direction: column;
+  }
+}
+
 .designContainer > div {
   width: 200px;
   height: 150px;
@@ -353,6 +359,7 @@
   color: var(--primary);
   cursor: pointer;
   background-color: var(--backgroundDesign);
+  position: relative;
 }
 
 .designDefaultSpan {
@@ -635,4 +642,8 @@
 .SettingsOverviewImage select {
   border-radius: 5px;
   padding-left: 1px;
+}
+
+.settingsContentContainer .backgroundOverlay {
+  position: fixed !important;
 }

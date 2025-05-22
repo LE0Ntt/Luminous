@@ -238,7 +238,7 @@ Besuchen Sie die OLA-Web-Oberfläche auf Ihrem Gerät unter folgender Adresse `h
 
 ### Einrichtung des Autostarts für OLA (ola.service)
 
-Damit der Luminous-Backend-Server zuverlässig funktioniert und insbesondere der Autostart von Luminous gelingt (der von einem laufenden OLA-Dienst abhängt), muss der OLA-Daemon (`olad`) ebenfalls automatisch beim Systemstart gestartet werden. Dies geschieht durch die Einrichtung eines Systemd-Dienstes.
+Damit der Luminous-Backend-Server zuverlässig funktioniert und insbesondere der Autostart von Luminous gelingt (der von einem laufenden OLA-Dienst abhängt), muss der OLA-Daemon (`olad`) ebenfalls automatisch beim Systemstart gestartet werden. Dies geschieht durch die Einrichtung eines Systemd-Dienstes. Je nach Installation kann das automatisch eingerichtet worden sein. Wenn nicht, folgen Sie diesen Schritten:
 
 1.  **Überprüfen Sie den Pfad zu `olad`:**
     Führen Sie `which olad` im Terminal aus. Die Ausgabe ist normalerweise `/usr/local/bin/olad` (wenn aus Quellen kompiliert) oder `/usr/bin/olad` (wenn über Paketmanager installiert). Merken Sie sich diesen Pfad.
@@ -654,7 +654,7 @@ Zusätzlich sollte die Web-Version der Anwendung erstellt werden, um die Benutze
 npm run build:web
 ```
 
-Die dabei generierten Dateien werden automatisch in den `static`-Ordner des `backend`-Verzeichnisses kopiert. Der Python-Server liefert sie dann über den definierten Port aus (z. B. `http://localhost:5000/`).
+Die dabei generierten Dateien werden automatisch in den `static`-Ordner des `backend`-Verzeichnisses kopiert. Der Python-Server liefert sie dann über den definierten Port aus (z. B. `http://192.168.2.119:5000/`).
 Für den Zugriff über andere Geräte im lokalen Netzwerk muss die IP-Adresse des Raspberry Pi bzw. Hosts verwendet werden.
 
 > Diese Schritte sollten eine grundlegende Entwicklungsumgebung für Luminous bereitstellen.

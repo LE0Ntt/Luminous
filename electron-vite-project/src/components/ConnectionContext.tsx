@@ -51,11 +51,13 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
 
   useEffect(() => {
     async function fetchIpAndPort() {
-      const [data] = await Promise.all([window.electronAPI.getIp()]);
-      const { ip: fetchedIp, port: fetchedPort } = data;
-      setIp(fetchedIp);
-      setPort(fetchedPort);
-      setUrl(`http://${fetchedIp}:${fetchedPort}`);
+      if (window.electronAPI) {
+        const [data] = await Promise.all([window.electronAPI.getIp()]);
+        const { ip: fetchedIp, port: fetchedPort } = data;
+        setIp(fetchedIp);
+        setPort(fetchedPort);
+        setUrl(`http://${fetchedIp}:${fetchedPort}`);
+      }
     }
     fetchIpAndPort();
   }, []);
@@ -64,8 +66,8 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
   const changeUrl = (newUrl: string) => {
     setUrl(newUrl);
     const url = new URL(newUrl);
-    const ip = url.hostname;
-    (window as any).electronAPI.send('set-ip', ip);
+    (window as any).electronAPI.send('set-ip', url.hostname);
+    (window as any).electronAPI.send('set-port', parseInt(url.port));
   };
 
   useEffect(() => {

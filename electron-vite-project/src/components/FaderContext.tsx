@@ -12,7 +12,7 @@
  *
  * @file FaderContext.tsx
  */
-import React, { createContext, useContext, useCallback, useSyncExternalStore, useEffect, useState } from 'react';
+import React, { createContext, useContext, useCallback, useSyncExternalStore, useEffect } from 'react';
 import { useConnectionContext } from './ConnectionContext';
 
 interface FaderState {

@@ -2,6 +2,47 @@
 
 > All notable changes to this project will be documented in this file.
 
+## [1.2.4] - 2025-05-14
+
+### Changes
+
+- Web version
+  - Added a web version of the app that can be run in a browser
+  - To run it, enter the IP of the PI and port in a browser, e.g. `http://192.168.178.100:5000`
+- Studio-Overview refactor
+  - Added settings to fully customise the layout
+  - Bi-color and RGB glare now roughly represents the color of the light
+  - RGB lamps can now be placed anywhere in the studio
+- Added the ability to change the server port
+- Scenes
+  - Display an icon if scene is 'out of sync'
+  - Active scenes are stored as a stack to prevent overlapping
+- LightSettings 
+  - Selected device now has the icon of the selected device type
+  - Brought back transition on selection
+- LightFX
+  - Added a new bi-color slider with higher resolution
+    - Added support for scroll wheel and arrow keys
+- Added a third new design for the app called 'Minimal'
+- Code and assets refactoring
+
+### Fixes
+
+- Fixed a server startup bug
+- Fixed scenes not reloading after server restart
+- Fixed HMI lights turning off with scenes (in DB)
+- Fixed LightFX list not always reloading on device edit
+  - No longer resetting the selected list
+- Fixed newly added device missing initial channel values
+- Fixed BigView overlaying the NoConnection screen
+- Fixed misc icon not displayed
+- LightFX
+  - Fixed Out-of-Sync (OOS) button not working consistently 
+  - Fixed OOS button flashing on every added device
+  - Fixed unwanted fader synchronisation
+  - Fixed ugly selection box corner blinking
+  - Fixed bi-color fader inaccuracy
+
 ## [1.2.3] - 2024-06-26
 
 ### Changes
@@ -48,7 +89,7 @@
 ### Fixes
 
 - Fixed scenes not fading in exact seconds as they were subject to server performance
-- MAYBE Fixed a bug where the master fader incorrectly adjusted the channels of scene devices
+- Fixed a bug where the master fader incorrectly adjusted the channels of scene devices
 - Fixed inability to access admin password protected settings when database is empty
 - MotorMix
   - Fixed blackout button crashing the driver

@@ -101,9 +101,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  height: stretch;
-  top: 36px;
-  margin-bottom: 40px;
+  height: auto;
+  top: 35px;
+  margin-bottom: 35px;
   bottom: 0;
   padding: 10px 20px 20px;
   overflow: hidden;
@@ -114,7 +114,13 @@
 }
 
 .LightSettingsWindowInvisible {
-  display: none;
+  flex-grow: 0;
+  width: 0;
+  opacity: 0;
+  padding: 10px 0 20px 0;
+  pointer-events: none; 
+  overflow: hidden;     
+  margin-left: -20px;
 }
 
 .LightSettingsWindowUpper {

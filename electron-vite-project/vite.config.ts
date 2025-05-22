@@ -6,11 +6,13 @@ import electron from 'vite-plugin-electron/simple';
 import pkg from './package.json';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => {
+export default defineConfig(({ command, mode }) => {
+  // clean Electron output on each run
   rmSync('dist-electron', { recursive: true, force: true });
 
   const isServe = command === 'serve';
   const isBuild = command === 'build';
+  const isWeb = mode === 'web';
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG;
 
   return {
@@ -21,49 +23,44 @@ export default defineConfig(({ command }) => {
     },
     plugins: [
       react(),
-      electron({
-        main: {
-          // Shortcut of `build.lib.entry`
-          entry: 'electron/main/index.ts',
-          onstart(args) {
-            if (process.env.VSCODE_DEBUG) {
-              console.log(/* For `.vscode/.debug.script.mjs` */ '[startup] Electron App');
-            } else {
-              args.startup();
-            }
-          },
-          vite: {
-            build: {
-              sourcemap,
-              minify: isBuild,
-              outDir: 'dist-electron/main',
-              rollupOptions: {
-                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
+      !isWeb &&
+        electron({
+          main: {
+            entry: 'electron/main/index.ts',
+            onstart(args) {
+              if (process.env.VSCODE_DEBUG) {
+                console.log('[startup] Electron App');
+              } else {
+                args.startup();
+              }
+            },
+            vite: {
+              build: {
+                sourcemap,
+                minify: isBuild,
+                outDir: 'dist-electron/main',
+                rollupOptions: {
+                  external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
+                },
               },
             },
           },
-        },
-        preload: {
-          // Shortcut of `build.rollupOptions.input`.
-          // Preload scripts may contain Web assets, so use the `build.rollupOptions.input` instead `build.lib.entry`.
-          input: 'electron/preload/index.ts',
-          vite: {
-            build: {
-              sourcemap: sourcemap ? 'inline' : undefined, // #332
-              minify: isBuild,
-              outDir: 'dist-electron/preload',
-              rollupOptions: {
-                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
+          preload: {
+            input: 'electron/preload/index.ts',
+            vite: {
+              build: {
+                sourcemap: sourcemap ? 'inline' : undefined,
+                minify: isBuild,
+                outDir: 'dist-electron/preload',
+                rollupOptions: {
+                  external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
+                },
               },
             },
           },
-        },
-        // Ployfill the Electron and Node.js API for Renderer process.
-        // If you want use Node.js in Renderer process, the `nodeIntegration` needs to be enabled in the Main process.
-        // See 👉 https://github.com/electron-vite/vite-plugin-electron-renderer
-        renderer: {},
-      }),
-    ],
+          renderer: {},
+        }),
+    ].filter(Boolean),
     server:
       process.env.VSCODE_DEBUG &&
       (() => {
@@ -73,6 +70,12 @@ export default defineConfig(({ command }) => {
           port: +url.port,
         };
       })(),
+    build: isWeb
+      ? {
+          outDir: path.resolve(__dirname, '..', 'backend', 'static'),
+          emptyOutDir: true,
+        }
+      : undefined,
     clearScreen: false,
   };
 });

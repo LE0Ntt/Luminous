@@ -11,9 +11,9 @@
  * - Andree Tomek
  *
  * @file Control.tsx
- * This is the LightFX component.
+ * LightFX component
  */
-import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { TranslationContext } from './components/TranslationContext';
 import { useConnectionContext } from './components/ConnectionContext';
 import { useLocation } from 'react-router-dom';
@@ -22,7 +22,6 @@ import './Control.css';
 import Fader from './components/Fader';
 import DeviceList from './components/DeviceList';
 import Button from './components/Button';
-import ColorPicker from './components/ColorPicker';
 import AddScene from './components/AddScene';
 import AdminPassword from './components/AdminPassword';
 import iro from '@jaames/iro';
@@ -39,9 +38,7 @@ interface DeviceConfig {
   id: number;
   deviceValue: number;
   name: string;
-  attributes: {
-    channel: Channel[];
-  };
+  attributes: { channel: Channel[] };
   device_type: string;
   universe: string;
   upToDate?: boolean;
@@ -79,6 +76,7 @@ function Control() {
   const { url, connected, emit, on, off } = useConnectionContext();
   const { setFaderValue, getFaderValue } = useFaderContext();
   const location = useLocation();
+  const programmaticUpdateRef = useRef(false);
   const [devices, setDevices] = useState<DeviceConfig[]>([]);
   const [selectedDevices, setSelectedDevices] = useState<DeviceConfig[]>([]);
   const [unselectedDevices, setUnselectedDevices] = useState<DeviceConfig[]>([]);
@@ -88,360 +86,413 @@ function Control() {
   const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
   const [isSolo, setIsSolo] = useState(false);
   const [height, setHeight] = useState(-3);
-  const [selected, setSelected] = useState(selectedDevices[0] && devices.length > 0);
-  const [deviceModified, setDeviceModified] = useState(false); // Device added or removed
+  const [selected, setSelected] = useState(false);
+  const [deviceModified, setDeviceModified] = useState(false);
   const [supportFlags, setSupportFlags] = useState({ supportsBiColor: false, supportsRGB: false });
   const [red, setRed] = useState(0);
   const [green, setGreen] = useState(0);
   const [blue, setBlue] = useState(0);
   const [allEffectChannels, setAllEffectChannels] = useState<Channel[]>([]);
-  const [prevFaderValues, setPrevFaderValues] = useState<number[]>([0, 0, 0, 0, 0]);
-  const [, forceRender] = useState(false); // Force rerender for design changes
-
+  const prevFaderRef = useRef<[number, number, number, number, number]>([0, 0, 0, 0, 0]);
+  const pickerRef = useRef<iro.ColorPicker | null>(null);
+  const [, forceRender] = useState(false);
+  const isDraggingBi = useRef(false);
+  const [isBiColorHovered, setIsBiColorHovered] = useState(false);
   const mainFaderValue = useFaderValue(0, 1);
   const biColorFaderValue = useFaderValue(0, 2);
   const redFaderValue = useFaderValue(0, 3);
   const greenFaderValue = useFaderValue(0, 4);
   const blueFaderValue = useFaderValue(0, 5);
 
-  // update selected state
+  // Update selected state
   useLayoutEffect(() => {
-    setSelected(selectedDevices[0] && devices.length > 0);
+    setSelected(selectedDevices.length > 0 && devices.length > 0);
   }, [selectedDevices, devices]);
 
-  // Before first render
+  // Fetch devices from the server
+  const fetchDevices = async () => {
+    try {
+      const response = await fetch(url + '/fader');
+      const data = await response.json();
+      const parsedData: DeviceConfig[] = JSON.parse(data);
+      parsedData.shift();
+      setDevices(parsedData);
+      syncDeviceLists(parsedData);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Sync selected and unselected devices with session storage
+  const syncDeviceLists = (newDevices: DeviceConfig[]) => {
+    const savedSel: DeviceConfig[] = JSON.parse(sessionStorage.getItem('selectedDevices') || '[]');
+    const savedUnsel: DeviceConfig[] = JSON.parse(sessionStorage.getItem('unselectedDevices') || '[]');
+
+    const updSel = savedSel.filter((d) => newDevices.some((n) => n.id === d.id)).map((d) => ({ ...d, ...newDevices.find((n) => n.id === d.id)! }));
+    const updUns = savedUnsel.filter((d) => newDevices.some((n) => n.id === d.id)).map((d) => ({ ...d, ...newDevices.find((n) => n.id === d.id)! }));
+
+    const fresh = newDevices.filter((n) => !updSel.concat(updUns).some((d) => d.id === n.id));
+
+    setSelectedDevices(updSel);
+    setUnselectedDevices([...updUns, ...fresh]);
+
+    sessionStorage.setItem('selectedDevices', JSON.stringify(updSel));
+    sessionStorage.setItem('unselectedDevices', JSON.stringify([...updUns, ...fresh]));
+  };
+
   useLayoutEffect(() => {
-    // Get devices from server
-    const fetchDevices = async (reset: boolean) => {
-      try {
-        const response = await fetch(url + '/fader');
-        const data = await response.json();
-        const parsedData = JSON.parse(data);
-        parsedData.shift(); // remove master
-        setDevices(parsedData);
+    if (connected) fetchDevices();
 
-        if (reset || savedUnselectedDevices.length == 0) {
-          setUnselectedDevices(parsedData);
-          setSelectedDevices([]);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    if (connected) fetchDevices(false);
-
-    // Load saved solo state from session storage
     setIsSolo(sessionStorage.getItem('controlSolo') === 'true');
 
-    // Load saved selection from session storage
-    const savedSelectedDevices = JSON.parse(sessionStorage.getItem('selectedDevices') || '[]');
-    const savedUnselectedDevices = JSON.parse(sessionStorage.getItem('unselectedDevices') || '[]');
-
-    setSelectedDevices(savedSelectedDevices);
-    setUnselectedDevices(savedUnselectedDevices);
+    setSelectedDevices(JSON.parse(sessionStorage.getItem('selectedDevices') || '[]'));
+    setUnselectedDevices(JSON.parse(sessionStorage.getItem('unselectedDevices') || '[]'));
     setFirstLoad(true);
 
-    // Prevent transition animation before height has loaded
-    const timer = setTimeout(() => {
-      setAnimation(true);
-    }, 500);
-
-    // If a device is updated, reload the devices
-    const lightRespone = (data: any) => {
-      if (data.message === 'success') {
-        fetchDevices(true); // reload devices
-      }
-    };
-    const lightDeleted = () => {
-      fetchDevices(true);
-    };
-
-    // Listen for design changes
-    const handleStorageChange = (event: CustomEvent<boolean>) => {
-      if (event.type === 'designChange') {
-        forceRender((prev) => !prev);
-      }
+    const timer = setTimeout(() => setAnimation(true), 500);
+    const handleStorageChange = (e: CustomEvent<boolean>) => {
+      if (e.type === 'designChange') forceRender((p) => !p);
     };
 
     window.addEventListener('designChange', handleStorageChange as EventListener);
-    on('light_response', lightRespone);
-    on('light_deleted', lightDeleted);
+    on('light_response', fetchDevices);
+    on('light_deleted', fetchDevices);
 
     return () => {
       clearTimeout(timer);
       window.removeEventListener('designChange', handleStorageChange as EventListener);
-      off('light_response', lightRespone);
-      off('light_deleted', lightDeleted);
+      off('light_response', fetchDevices);
+      off('light_deleted', fetchDevices);
     };
-  }, []);
+  }, [connected]);
 
-  // On any change of devices
+  // Sync sessionStorage + handle Studio-inserts + reset Solo
   useEffect(() => {
-    // Save selection in session storage
-    if (firstLoad && devices.length > 0) {
-      sessionStorage.setItem('unselectedDevices', JSON.stringify(unselectedDevices));
+    if (firstLoad && devices.length) {
       sessionStorage.setItem('selectedDevices', JSON.stringify(selectedDevices));
+      sessionStorage.setItem('unselectedDevices', JSON.stringify(unselectedDevices));
 
-      if (selectedDevices.length == 0) {
-        setHeight(-3);
-      } else {
-        setHeight(Math.min(selectedDevices.length * 71 + 36, 462));
-      }
+      setHeight(selectedDevices.length === 0 ? -3 : Math.min(selectedDevices.length * 71 + 36, 462));
     }
 
-    // Add a device if it was added from Studio
-    const id = location.state && location.state.id; // Device ID from Studio
+    const id = location.state && location.state.id;
     if (id && !animation) {
-      const foundDevice = unselectedDevices.find((device) => device.id === id);
-      if (foundDevice) {
-        setSelectedDevices([...selectedDevices, foundDevice]);
-        setUnselectedDevices(unselectedDevices.filter((item) => item.id !== foundDevice.id));
+      const found = unselectedDevices.find((d) => d.id === id);
+      if (found) {
+        setSelectedDevices([...selectedDevices, found]);
+        setUnselectedDevices(unselectedDevices.filter((i) => i.id !== found.id));
+        setDeviceModified(true);
       }
     }
 
-    // Deactivate solo if no device is selected
-    if (selectedDevices.length == 0 && isSolo) {
-      toggleSolo();
-    }
+    if (!selectedDevices.length && isSolo) toggleSolo();
   }, [selectedDevices, unselectedDevices, devices]);
 
-  // Add a device to the selected devices
   const handleAddDevice = useCallback(
-    (device: DeviceConfig) => {
-      setSelectedDevices((current) => [...current, device]);
-      setUnselectedDevices((current) => current.filter((item) => item.id !== device.id));
+    (d: DeviceConfig) => {
+      setSelectedDevices((c) => [...c, d]);
+      setUnselectedDevices((c) => c.filter((i) => i.id !== d.id));
       setDeviceModified(true);
     },
     [selectedDevices, unselectedDevices]
   );
 
-  // Remove a device from the selected devices
   const handleRemoveDevice = useCallback(
-    (device: DeviceConfig) => {
-      setSelectedDevices((current) => current.filter((s) => s.id !== device.id));
-      setUnselectedDevices((current) => [...current, device]);
+    (d: DeviceConfig) => {
+      setSelectedDevices((c) => c.filter((s) => s.id !== d.id));
+      setUnselectedDevices((c) => [...c, d]);
       setDeviceModified(true);
     },
     [selectedDevices, unselectedDevices]
   );
 
-  // Solo Button
   const toggleSolo = () => {
-    emit('controlSolo', { solo: !isSolo, devices: selectedDevices });
+    emit('control_solo', { solo: !isSolo, devices: selectedDevices });
     sessionStorage.setItem('controlSolo', `${!isSolo}`);
     setIsSolo(!isSolo);
   };
 
-  // Color Picker
-  const handleColorChange = (newRed: number, newGreen: number, newBlue: number) => {
-    setRed(newRed);
-    setGreen(newGreen);
-    setBlue(newBlue);
-    setFaderValue(0, 3, newRed);
-    setFaderValue(0, 4, newGreen);
-    setFaderValue(0, 5, newBlue);
-    let tempInKelvin = iro.Color.rgbToKelvin({ r: newRed, g: newGreen, b: newBlue });
-    setFaderValue(0, 2, Math.min(255, Math.max(0, Math.round(((tempInKelvin - 2200) / 8800) * 255))));
+  const handleBiSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = Number(e.target.value); // 0–255
+    setFaderValue(0, 2, v);
+
+    const kelvin = (v / 255) * 8800 + 2200;
+    const rgb = iro.Color.kelvinToRgb(kelvin);
+    setFaderValue(0, 3, rgb.r);
+    setFaderValue(0, 4, rgb.g);
+    setFaderValue(0, 5, rgb.b);
   };
 
-  // Make sure the fader values are up to date
+  // Color Picker
+  const handleColorChange = (r: number, g: number, b: number) => {
+    setRed(r);
+    setGreen(g);
+    setBlue(b);
+    setFaderValue(0, 3, r);
+    setFaderValue(0, 4, g);
+    setFaderValue(0, 5, b);
+    if (isDraggingBi.current) return;
+    const kelvin = iro.Color.rgbToKelvin({ r, g, b });
+    setFaderValue(0, 2, Math.min(255, Math.max(0, Math.round(((kelvin - 2200) / 8800) * 255))));
+  };
+
   useEffect(() => {
     setRed(redFaderValue);
     setGreen(greenFaderValue);
     setBlue(blueFaderValue);
+    pickerRef.current?.color.set({ r: redFaderValue, g: greenFaderValue, b: blueFaderValue });
   }, [redFaderValue, greenFaderValue, blueFaderValue]);
 
-  // Update and emit fader values for all affected devices based on control state (split into main, and RGBbi)
+  // Update fader values when selected devices change
   useEffect(() => {
-    const mainChanged = prevFaderValues[0] !== mainFaderValue;
-    const rgbOrBiChanged = [1, 2, 3, 4].some((index) => prevFaderValues[index] !== [biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][index - 1]);
-    setPrevFaderValues([mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue]);
+    if (programmaticUpdateRef.current) {
+      programmaticUpdateRef.current = false;
+      return;
+    }
+
+    const prev = prevFaderRef.current;
+    const curr: [number, number, number, number, number] = [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue];
+
+    const mainChanged = prev[0] !== curr[0];
+    const rgbOrBiChanged = [1, 2, 3, 4].some((i) => prev[i] !== curr[i]);
+
+    if (!mainChanged && !rgbOrBiChanged) return;
+
+    prevFaderRef.current = curr;
 
     selectedDevices.forEach((device) => {
       device.attributes.channel
-        .filter((channel) => (mainChanged && channel.channel_type === 'main') || (rgbOrBiChanged && ['r', 'g', 'b', 'bi'].includes(channel.channel_type)))
+        .filter((c) => (mainChanged && c.channel_type === 'main') || (rgbOrBiChanged && ['r', 'g', 'b', 'bi'].includes(c.channel_type)))
         .forEach((channel) => {
-          const controlIndex = getControlIndex(channel.channel_type);
-          if (controlIndex !== undefined) {
-            const newValue = [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][controlIndex];
-            setFaderValue(device.id, channel.id, newValue);
-            sendDMXBuffered(emit, device.id, channel.id, newValue);
-          }
+          const idx = getControlIndex(channel.channel_type);
+          if (idx === undefined) return;
+          const newVal = curr[idx];
+          setFaderValue(device.id, channel.id, newVal);
+          sendDMXBuffered(emit, device.id, channel.id, newVal);
         });
     });
-  }, [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue]);
+  }, [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue, selectedDevices, setFaderValue, emit]);
 
-  // Check if effects, bi-color or RGB are supported
+  // Check support for effects, bi-color and RGB
   useEffect(() => {
-    let biColorSupported = false;
-    let rgbSupported = false;
-    let allChannels = [];
+    let bi = false,
+      rgb = false;
+    let channels: Channel[] = [];
 
-    for (const device of selectedDevices) {
-      for (const channel of device.attributes.channel) {
-        if (channel.channel_type === 'bi') {
-          biColorSupported = true;
-        } else if (['r', 'g', 'b'].includes(channel.channel_type)) {
-          rgbSupported = true;
-          biColorSupported = true;
-        } else if (!['main', 'r', 'g', 'b', 'bi'].includes(channel.channel_type)) {
-          // Effects
-          allChannels.push({
-            ...channel,
-            deviceId: device.id,
-          });
-        }
-      }
-    }
+    selectedDevices.forEach((d) =>
+      d.attributes.channel.forEach((c) => {
+        if (c.channel_type === 'bi') bi = true;
+        else if (['r', 'g', 'b'].includes(c.channel_type)) {
+          rgb = true;
+          bi = true;
+        } else if (!['main', 'r', 'g', 'b', 'bi'].includes(c.channel_type)) channels.push({ ...c, deviceId: d.id });
+      })
+    );
 
-    allChannels = allChannels.sort((a, b) => a.deviceId - b.deviceId); // Sort by device ID
-    setAllEffectChannels(allChannels);
-    setSupportFlags({ supportsBiColor: biColorSupported, supportsRGB: rgbSupported });
+    channels = channels.sort((a, b) => a.deviceId - b.deviceId);
+    setAllEffectChannels(channels);
+    setSupportFlags({ supportsBiColor: bi, supportsRGB: rgb });
   }, [selectedDevices]);
 
-  // Get the control index (faderValues[0][x]) for the given channel type
-  const getControlIndex = (channelType: string): number | undefined => ({ main: 0, bi: 1, r: 2, g: 3, b: 4 }[channelType]);
-
-  // Update faderValues[0] for selected devices
+  const getControlIndex = useCallback((type: string): number | undefined => (({ main: 0, bi: 1, r: 2, g: 3, b: 4 } as any)[type]), []);
+  
+  // Update fader values for selected devices
   const updateFaderValuesForSelectedDevices = useCallback(() => {
-    const flags: { mainSet: boolean; biSet: boolean; rSet: boolean; gSet: boolean; bSet: boolean; [key: string]: boolean } = {
+    programmaticUpdateRef.current = true;
+
+    const flags: any = {
       mainSet: false,
       biSet: false,
       rSet: false,
       gSet: false,
       bSet: false,
     };
+    const nextPrev: [number, number, number, number, number] = [...prevFaderRef.current]; // Use ref here
 
-    selectedDevices.forEach((device) => {
-      device.attributes.channel.forEach((channel) => {
-        const channelValue = getFaderValue(device.id, channel.id);
+    selectedDevices.forEach((d) =>
+      d.attributes.channel.forEach((c) => {
+        const val = getFaderValue(d.id, c.id);
+        const idx = getControlIndex(c.channel_type);
 
-        if (channel.channel_type === 'main' && !flags.mainSet) {
-          setFaderValue(0, 1, channelValue);
+        if (c.channel_type === 'main' && !flags.mainSet) {
+          setFaderValue(0, 1, val);
+          if (idx !== undefined) nextPrev[idx] = val;
           flags.mainSet = true;
-        } else if (['r', 'g', 'b'].includes(channel.channel_type) && !flags[channel.channel_type + 'Set']) {
-          setFaderValue(0, channel.channel_type === 'r' ? 3 : channel.channel_type === 'g' ? 4 : 5, channelValue);
-          flags[channel.channel_type + 'Set'] = true;
+        } else if (['r', 'g', 'b'].includes(c.channel_type) && !flags[c.channel_type + 'Set']) {
+          setFaderValue(0, c.channel_type === 'r' ? 3 : c.channel_type === 'g' ? 4 : 5, val);
+          if (idx !== undefined) nextPrev[idx] = val;
+          flags[c.channel_type + 'Set'] = true;
           flags.biSet = true;
-        } else if (channel.channel_type === 'bi' && !flags.biSet) {
-          setFaderValue(0, 2, channelValue);
-          flags.biSet = flags.rSet = flags.gSet = flags.bSet = true;
+        } else if (c.channel_type === 'bi' && !flags.biSet) {
+          if (isDraggingBi.current) return;
+          setFaderValue(0, 2, val);
+          if (idx !== undefined) nextPrev[idx] = val;
+          flags.biSet = true;
         }
+      })
+    );
+
+    prevFaderRef.current = nextPrev;
+  }, [selectedDevices, getFaderValue, setFaderValue, getControlIndex]);
+
+  const mountWheel = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!node || pickerRef.current) return;
+      pickerRef.current = iro.ColorPicker(node, {
+        width: 320,
+        layout: [{ component: iro.ui.Wheel, options: {} }],
+        color: { r: red, g: green, b: blue },
       });
-    });
-  }, [selectedDevices, getFaderValue, setFaderValue]);
+      pickerRef.current!.on('color:change', (c: { rgb: { r: number; g: number; b: number } }) => handleColorChange(c.rgb.r, c.rgb.g, c.rgb.b));
+    },
+    [red, green, blue, selectedDevices]
+  );
 
-  // Calculate the RGB values from the Kelvin value on first load or when added
   useEffect(() => {
-    if (!supportFlags.supportsBiColor || supportFlags.supportsRGB) return;
+    if (!selected) pickerRef.current = null;
+  }, [selected]);
 
-    const kelvinValue = Math.round((biColorFaderValue / 255) * 8800 + 2200);
-    const rgb = iro.Color.kelvinToRgb(kelvinValue);
-
-    setFaderValue(0, 3, rgb.r);
-    setFaderValue(0, 4, rgb.g);
-    setFaderValue(0, 5, rgb.b);
-  }, [supportFlags]);
-
-  // Check if the selected devices channels are up to date with the corresponding fader values of the control
+  // Update fader values for selected devices when modified
   useEffect(() => {
     if (deviceModified) {
       updateFaderValuesForSelectedDevices();
       setDeviceModified(false);
     }
 
-    const updatedDevices = selectedDevices.map((device) => {
-      const isDeviceUpToDate = device.attributes.channel
-        .filter((channel) => ['main', 'bi', 'r', 'g', 'b'].includes(channel.channel_type))
-        .every((channel) => {
-          const controlIndex = getControlIndex(channel.channel_type);
-          if (controlIndex === undefined) return true;
-          const channelValue = getFaderValue(device.id, channel.id);
-          return channelValue === [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][controlIndex];
+    const updated = selectedDevices.map((d) => {
+      const up = d.attributes.channel
+        .filter((c) => ['main', 'bi', 'r', 'g', 'b'].includes(c.channel_type))
+        .every((c) => {
+          const idx = getControlIndex(c.channel_type);
+          if (idx === undefined) return true;
+          return getFaderValue(d.id, c.id) === [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][idx];
         });
-      return { ...device, upToDate: isDeviceUpToDate };
+      return { ...d, upToDate: up };
     });
 
-    if (JSON.stringify(updatedDevices) !== JSON.stringify(selectedDevices)) {
-      setSelectedDevices(updatedDevices);
-    }
+    if (JSON.stringify(updated) !== JSON.stringify(selectedDevices)) setSelectedDevices(updated);
   }, [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue, selectedDevices, deviceModified, updateFaderValuesForSelectedDevices, getFaderValue]);
 
-  // Sync the selected devices channels with the corresponding fader values of the control
   const handleSyncClick = useCallback(
     (deviceToSync: DeviceConfig) => {
-      const updatedDevices = selectedDevices.map((device) => {
-        if (device.id === deviceToSync.id) {
-          device.attributes.channel.forEach((channel) => {
-            const controlIndex = getControlIndex(channel.channel_type);
-            if (controlIndex !== undefined) {
-              const newValue = [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][controlIndex];
-              setFaderValue(device.id, channel.id, newValue);
-              emit('fader_value', { deviceId: device.id, value: newValue, channelId: channel.id });
-            }
+      const updated = selectedDevices.map((d) => {
+        if (d.id !== deviceToSync.id) return d;
+
+        d.attributes.channel.forEach((c) => {
+          const idx = getControlIndex(c.channel_type);
+          if (idx === undefined) return;
+          const val = [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue][idx];
+          setFaderValue(d.id, c.id, val);
+          emit('fader_value', {
+            deviceId: d.id,
+            value: val,
+            channelId: c.id,
           });
-          return { ...device, upToDate: true };
-        } else {
-          return device;
-        }
+        });
+        return { ...d, upToDate: true };
       });
 
-      setSelectedDevices(updatedDevices);
+      setSelectedDevices(updated);
     },
     [mainFaderValue, biColorFaderValue, redFaderValue, greenFaderValue, blueFaderValue, selectedDevices, emit, setFaderValue]
   );
 
-  // Bi-Color input field handling --- Does not fix low resolution though ---
-  const [isFocused, setIsFocused] = useState(false); // Focus on value input
-  const scaledDisplayValue = (biColorFaderValue / 255) * 100; // (0 to 100%)
-  const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplayValue) + '%');
+  const [isFocused, setIsFocused] = useState(false);
+  const scaledDisplay = (biColorFaderValue / 255) * 100;
+  const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplay) + '%');
 
   // Update input value when display value changes
   useEffect(() => {
-    const finalDisplayValue = isFocused ? scaledDisplayValue.toFixed(1) : Math.round(scaledDisplayValue) + '%';
-    setInputValue(finalDisplayValue);
-  }, [scaledDisplayValue, isFocused, deviceModified]);
+    setInputValue(isFocused ? scaledDisplay.toFixed(1) : Math.round(scaledDisplay) + '%');
+  }, [scaledDisplay, isFocused, deviceModified]);
 
-  // Check if the input value is a number
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    if (value.length <= 5) {
-      setInputValue(value.replace(/[^0-9.,]+/g, ''));
-    }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    if (value.length <= 5) setInputValue(value.replace(/[^0-9.,]+/g, ''));
   };
 
-  // Check if the input is valid and set the fader value
   const handleInputConfirm = () => {
-    let numericValue = parseFloat(inputValue.toString().replace(',', '.'));
-    if (!isNaN(numericValue)) {
-      numericValue = Math.max(0, Math.min(100, numericValue));
-      setInputValue(Math.round(numericValue));
-      // scaled value to kelvin and set fader values
-      const kelvin = Math.round((Math.round((numericValue / 100) * 255) / 255) * 8800 + 2200);
+    if (isDraggingBi.current) return;
+    let num = parseFloat(inputValue.toString().replace(',', '.'));
+    if (!isNaN(num)) {
+      num = Math.max(0, Math.min(100, num));
+      setInputValue(Math.round(num));
+      const kelvin = (((num / 100) * 255) / 255) * 8800 + 2200;
       const rgb = iro.Color.kelvinToRgb(kelvin);
       setFaderValue(0, 3, rgb.r);
+      setFaderValue(0, 4, rgb.g);
       setFaderValue(0, 5, rgb.b);
-    } else {
-      setInputValue(Math.round(scaledDisplayValue)); // Reset value if input is NaN
-    }
+      setFaderValue(0, 2, Math.min(255, Math.max(0, Math.round(((kelvin - 2200) / 8800) * 255))));
+      isDraggingBi.current = true;
+      resetIsDraggingBi();
+    } else setInputValue(Math.round(scaledDisplay));
     setIsFocused(false);
   };
 
   // Confirm with ENTER
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      event.currentTarget.blur(); // Remove focus from the input
-    }
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') e.currentTarget.blur();
   };
 
-  // On value input focus
-  const handleFocus = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsFocused(true);
+    setTimeout(() => e.target.select(), 50);
+  };
+
+  const resetIsDraggingBi = () => {
     setTimeout(() => {
-      event.target.select(); // Select the input text
+      isDraggingBi.current = false;
     }, 50);
   };
+
+  /* ---------- initial reference sync ---------- */
+  useEffect(() => {
+    if (firstLoad && selectedDevices.length) {
+      updateFaderValuesForSelectedDevices();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstLoad]);
+
+  // Handle wheel and keyboard events for Bi-Color fader
+  useEffect(() => {
+    const updateBiColorValue = (delta: number) => {
+      const newValue = Math.max(0, Math.min(biColorFaderValue + delta, 255));
+      if (newValue === biColorFaderValue) return;
+      setFaderValue(0, 2, newValue);
+      const kelvin = (newValue / 255) * 8800 + 2200;
+      const rgb = iro.Color.kelvinToRgb(kelvin);
+      setFaderValue(0, 3, rgb.r);
+      setFaderValue(0, 4, rgb.g);
+      setFaderValue(0, 5, rgb.b);
+      isDraggingBi.current = true;
+      resetIsDraggingBi();
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      if (!isBiColorHovered) return;
+      event.preventDefault();
+      const step = event.ctrlKey ? 10 : 1;
+      updateBiColorValue(-Math.sign(event.deltaY) * step);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isBiColorHovered || ['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement).tagName)) return; // Ignore if input is focused
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+        event.preventDefault();
+        const step = event.ctrlKey ? 10 : 1;
+        const direction = event.key === 'ArrowUp' || event.key === 'ArrowRight' ? 1 : -1;
+        updateBiColorValue(direction * step);
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isBiColorHovered, biColorFaderValue, setFaderValue]);
 
   return (
     <>
@@ -478,27 +529,35 @@ function Control() {
                 {t('saveAsScene')}
               </Button>
               <Button
-                onClick={() => toggleSolo()}
+                onClick={toggleSolo}
                 className={`controlButton ${isSolo ? 'isSolo' : ''}`}
               >
                 SOLO
               </Button>
             </div>
             {/* Bi-Color */}
-            <div className='controlBiColor innerWindow'>
+            <div
+              className='controlBiColor innerWindow'
+              onMouseEnter={() => setIsBiColorHovered(true)}
+              onMouseLeave={() => setIsBiColorHovered(false)}
+            >
               <span className='controlTitle'>Bi-Color</span>
               <div className={`noSupportText noSupport ${!supportFlags.supportsBiColor ? '' : 'noSupportHidden'}`}>
                 <span style={{ marginTop: '-110px' }}>{t('noSupport')}</span>
               </div>
-              <div className='controlKelvinPicker'>
-                <ColorPicker
-                  pickerType='kelvin'
-                  red={red}
-                  green={green}
-                  blue={blue}
-                  onColorChange={handleColorChange}
-                />
-              </div>
+              <input
+                type='range'
+                min={0}
+                max={255}
+                step={1}
+                value={biColorFaderValue}
+                onChange={handleBiSliderChange}
+                className='biRange'
+                onMouseDown={() => (isDraggingBi.current = true)}
+                onMouseUp={resetIsDraggingBi}
+                onTouchStart={() => (isDraggingBi.current = true)}
+                onTouchEnd={resetIsDraggingBi}
+              />
               <input
                 type='text'
                 value={inputValue}
@@ -541,13 +600,7 @@ function Control() {
                 </div>
               </div>
               <div className='controlColorPicker'>
-                <ColorPicker
-                  pickerType='wheel'
-                  red={red}
-                  green={green}
-                  blue={blue}
-                  onColorChange={handleColorChange}
-                />
+                <div ref={mountWheel} />
               </div>
             </div>
             {/* Effects */}
@@ -561,22 +614,22 @@ function Control() {
                 </>
               ) : (
                 <div className='sliders slidersEffects'>
-                  {allEffectChannels.map((channel, index) => (
+                  {allEffectChannels.map((ch, i) => (
                     <div
-                      key={channel.deviceId + '-' + channel.id}
+                      key={ch.deviceId + '-' + ch.id}
                       style={{
-                        marginLeft: index === 0 ? '-10px' : '',
-                        paddingLeft: index === allEffectChannels.length - 1 ? '10px' : '',
+                        marginLeft: i === 0 ? '-10px' : '',
+                        paddingLeft: i === allEffectChannels.length - 1 ? '10px' : '',
                         paddingBottom: '5px',
                       }}
                     >
                       <Fader
-                        key={channel.id}
-                        id={channel.id}
-                        sliderGroupId={channel.deviceId}
-                        name={channel.channel_type}
-                        number={channel.deviceId}
-                        className={index === allEffectChannels.length - 1 ? 'noBorder' : ''}
+                        key={ch.id}
+                        id={ch.id}
+                        sliderGroupId={ch.deviceId}
+                        name={ch.channel_type}
+                        number={ch.deviceId}
+                        className={i === allEffectChannels.length - 1 ? 'noBorder' : ''}
                         height={269}
                       />
                     </div>
@@ -587,8 +640,9 @@ function Control() {
           </div>
           <ControlWindow
             className={'controlMain' + (animation ? ' mainAnimation' : '')}
-            height={height}
-            newDesign={document.body.className.includes('defaultB')}
+            height={Math.max(height, 30)}
+            defaultB={document.body.className.includes('defaultB')}
+            defaultC={document.body.className.includes('defaultC')}
           />
         </>
       ) : (
@@ -617,7 +671,7 @@ function Control() {
       >
         <DeviceList
           devices={unselectedDevices}
-          isAddButton={true}
+          isAddButton
           onDeviceButtonClick={handleAddDevice}
         />
       </div>

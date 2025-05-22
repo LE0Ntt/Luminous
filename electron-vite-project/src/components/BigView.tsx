@@ -125,14 +125,14 @@ function BigView({ onClose }: BigViewProps) {
           </div>
         </button>
         <div className='BigViewLayer'>
-          <span className='text-right'>{t('bb_lights')}</span>
+          <span>{t('bb_lights')}</span>
           <div className='toggleUniverse'>
             <Toggle
               onClick={handleToggleChange}
               enabled={sessionStorage.getItem('dmx') === 'true'}
             />
           </div>
-          <span className='text-left'>DMX Channel</span>
+          <span>DMX Channel</span>
         </div>
         {universes.map((universe) => (
           <div

@@ -86,13 +86,10 @@
   transform: translate(-50%, -50%);
   width: 100px;
   aspect-ratio: 1;
-  mask: url(../assets/LightOff.svg);
-  mask-repeat: no-repeat;
+  mask: url(../assets/LightOff.svg) no-repeat center / contain;
   background: var(--tertiary);
-  mask-size: contain;
 }
 
 .DeleteIcon {
-  mask: url(../assets/delete.svg) !important;
-  mask-size: 100px !important;
+  mask: url(../assets/Delete.svg) no-repeat center / contain;
 }

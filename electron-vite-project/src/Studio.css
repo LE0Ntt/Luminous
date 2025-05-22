@@ -91,6 +91,7 @@
   position: absolute;
   top: 60px;
   z-index: 1;
+  cursor: pointer;
 }
 
 .studioOverviewInfopanelGreenscreen {
@@ -98,57 +99,41 @@
   top: 80%;
 }
 
-.studioOverviewInfopanelTestchart {
+.studioOverviewInfopanelCustom {
   position: relative;
   top: -75px;
 }
 
-/* ich weiß es ist sehr hässlich */
-.studioOverviewInfopanelTraverse0 {
-  position: relative;
-  top: 14px;
-  left: -77px;
-}
-
-.studioOverviewInfopanelTraverse1 {
-  position: relative;
-  top: 20px;
-  left: -77px;
-}
-
+.studioOverviewInfopanelTraverse0,
+.studioOverviewInfopanelTraverse1,
 .studioOverviewInfopanelTraverse2 {
-  position: relative;
-  top: 25px;
   left: -77px;
 }
 
-.studioOverviewInfopanelTraverse3 {
-  position: relative;
-  top: 25px;
-  left: -25px;
-}
-
-.studioOverviewInfopanelTraverse4 {
-  position: relative;
-  top: 20px;
-  left: -25px;
-}
-
+.studioOverviewInfopanelTraverse3,
+.studioOverviewInfopanelTraverse4,
 .studioOverviewInfopanelTraverse5 {
-  position: relative;
+  left: -26px;
+}
+
+.studioOverviewInfopanelTraverse0,
+.studioOverviewInfopanelTraverse6 {
+  top: 15px;
+}
+
+.studioOverviewInfopanelTraverse1,
+.studioOverviewInfopanelTraverse4,
+.studioOverviewInfopanelTraverse5 {
   top: 20px;
-  left: -25px;
+}
+
+.studioOverviewInfopanelTraverse2,
+.studioOverviewInfopanelTraverse3 {
+  top: 25px;
 }
 
 .studioOverviewInfopanelTraverse6 {
-  position: relative;
-  top: 14px;
-  left: -25px;
-}
-
-.studioOverviewExtra {
-  top: -640px;
-  left: 480px;
+  left: -23px;
 }
 
 .studioOverviewInfopanelText {
@@ -176,7 +161,7 @@
   height: 100px;
 }
 
-.schein {
+.glare {
   position: absolute;
   width: 100px;
   height: 100px;
@@ -187,8 +172,8 @@
 .studioOverviewGreenscreen {
   height: 100px;
   width: calc(100% - 190px);
-  position: relative;
-  margin-left: 120px;
+  position: absolute;
+  left: 120px;
   top: 60px;
 }
 
@@ -201,39 +186,26 @@
   z-index: 2;
   left: 25px;
   top: 25px;
+  cursor: pointer;
 }
 
 .lampMirrored {
-  transform: rotateY(180deg);
+  scale: -1 1;
 }
 
 .studioOverviewLights {
-  height: 565px;
   width: calc(100% - 200px);
   position: relative;
   margin-left: 100px;
-  top: 60px;
 }
 
-.studioOverviewTestchart {
-  height: 30px;
-  width: 200px;
-  position: relative;
-  margin-left: 150px;
-  display: flex;
-  top: 85px;
-}
+.studioOverviewCustomLamp {
 
-.studioOverviewTestchartLamp {
-  transform: rotateX(180deg);
   position: relative;
   display: inline;
   left: 15px;
   z-index: 2;
-}
-
-.studioOverviewTraversen {
-  position: relative;
+  cursor: pointer;
 }
 
 .studioOverviewTraversenLight {
@@ -282,12 +254,46 @@
   width: 20px;
   height: 100%;
   right: 0;
-  mask: url(./assets/Arrow.svg);
-  mask-repeat: no-repeat;
+  mask: url(./assets/Arrow.svg) no-repeat center;
   background: var(--tertiary);
-  mask-position: center;
 }
 
 .scrollButton:hover {
   background: var(--primary);
+}
+
+.rgbWrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50px;
+  width: 100%;
+}
+
+.rgbWrapper .studioOverviewTraversenLight,
+.rgbWrapper .emitter  {
+  position: absolute;
+  top: -5px;
+  left: 5px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.rgbWrapper .studioOverviewTraversenLight {
+  z-index: 4;
+  scale: 1.8;
+  transform-origin: left top;
+}
+
+.rgbWrapper .studioOverviewLamp,
+.rgbWrapper .studioOverviewCustomLamp {
+  position: absolute;
+  z-index: 2;
+  top: -30px;
+  left: -20px;
+}
+
+.SettingsOverviewImageGrid .rgbWrapper {
+  top: 85px;
 }

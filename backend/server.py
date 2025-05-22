@@ -12,6 +12,7 @@
  *
  * @file server.py
 """
+
 from server import app, led_control
 from socket_events import register_socketio_events, socketio
 
@@ -23,4 +24,6 @@ register_socketio_events(socketio)
 
 # Run app
 if __name__ == "__main__":
-    socketio.run(app, host="127.0.0.1", port=5000)  # type: ignore     "allow_unsafe_werkzeug=True" für production
+    print("Starting server on: http://localhost:5000")
+    socketio.run(app, host="0.0.0.0", port=5000)  # type: ignore     "allow_unsafe_werkzeug=True" für production
+

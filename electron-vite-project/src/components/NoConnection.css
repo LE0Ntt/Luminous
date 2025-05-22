@@ -21,6 +21,7 @@
   justify-content: center;
   padding-top: 120px;
   backdrop-filter: var(--windowBackdrop);
+  z-index: 99999;
 }
 
 .noConnection,
@@ -46,11 +47,8 @@
   top: 320px;
   height: 140px;
   width: 140px;
-  mask: url(../assets/noConnection.svg);
-  mask-repeat: no-repeat;
+  mask: url(../assets/NoConnection.svg) no-repeat center / contain;
   background: var(--secondary);
-  mask-position: center;
-  mask-size: contain;
 }
 
 .loader {

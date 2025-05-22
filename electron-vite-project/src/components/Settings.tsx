@@ -20,8 +20,9 @@ import AdminPassword from './AdminPassword';
 import Setting1 from './SettingsGeneral';
 import Setting2 from './SettingsAdmin';
 import Setting3 from './SettingsStudioOverview';
-import IconSettings from '@/assets/Icon_Settings';
-import IconAdmin from '@/assets/Icon_Admin';
+import IconSettings from '@/assets/IconSettings';
+import IconAdmin from '@/assets/IconAdmin';
+import IconStudio from '@/assets/IconStudio';
 import { useConnectionContext } from './ConnectionContext';
 
 interface SettingsProps {
@@ -98,16 +99,15 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                   <span>{t('set_admin')}</span>
                 </div>
               </Button>
-              {/* not for 1.2.x - exclude for release (maybe)????
               <Button
                 className={selectedSetting === 'Setting3' ? 'active' : ''}
                 onClick={() => setSelectedSetting('Setting3')}
               >
                 <div className='settingsButtonContent'>
-                  <IconAdmin color={selectedSetting === 'Setting3' ? 'var(--primarySwitched)' : 'var(--primary)'} />
+                  <IconStudio color={selectedSetting === 'Setting3' ? 'var(--primarySwitched)' : 'var(--primary)'} />
                   <span>{t('set_studio')}</span>
                 </div>
-              </Button>*/}
+              </Button>
             </div>
             <div className='SettingContent innerWindow'>
               <div className='settingsContentContainer'>
@@ -115,14 +115,18 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                   <Setting1 />
                 ) : selectedSetting === 'Setting2' && initialConnected !== null ? (
                   <Setting2 connected={initialConnected} />
-                ) : selectedSetting === 'Setting3' ? (
+                ) : selectedSetting === 'Setting3' && connected ? (
                   <Setting3
-                    studioRows={6}
+                    studioRows={5}
                     studioColumns={4}
                   />
-                ) : selectedSetting === 'Setting4' ? (
-                  <div className='SettingsOption'>not used</div>
-                ) : null}
+                ) : (
+                  <span
+                    className='noSettings'
+                    dangerouslySetInnerHTML={{ __html: t('set_noSettings') }}
+                  >
+                  </span>
+                )}
               </div>
             </div>
           </div>

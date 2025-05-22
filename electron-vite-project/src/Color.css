@@ -26,6 +26,7 @@
   --fillLight: rgba(246, 246, 246, 0.48);
   --fillMedium: rgba(246, 246, 246, 0.6);
   --fillThick: rgba(246, 246, 246, 0.72);
+  --fillThickFull: rgb(246, 246, 246);
   --fillUltraThick: rgba(246, 246, 246, 0.84);
 
   /* --mainColor: #4F53B1; */
@@ -84,7 +85,7 @@
   --innerWindowOverlay: rgba(248, 248, 248, 0.8);
 
   --sceneOn: rgba(255, 255, 255, 0.8);
-  --backgroundImage: url('./assets/bgLight2.png') #e8e8e8;
+  --backgroundImage: url('./assets/BGLight.png') #e8e8e8;
 }
 
 .dark {
@@ -104,6 +105,7 @@
   --fillLight: rgba(246, 246, 246, 0.03);
   --fillMedium: rgba(63, 63, 63, 0.5);
   --fillThick: rgba(63, 63, 63, 0.6);
+  --fillThickFull: rgb(84, 84, 84);
   --fillUltraThick: rgba(40, 40, 40, 0.75);
 
   --blue: #65758e;
@@ -128,7 +130,7 @@
   --innerWindowOverlay: rgba(62, 62, 62, 0.8);
 
   --sceneOn: rgba(255, 255, 255, 0.5);
-  --backgroundImage: url('./assets/bgDark.png') #e8e8e8;
+  --backgroundImage: url('./assets/BGDark.png') #e8e8e8;
 }
 
 /* ----- Design B ----- */
@@ -197,7 +199,7 @@
 
 .defaultB .designContainer > div,
 .defaultB .LightSettingsSelected,
-.defaultB .IroSliderGradient,
+.defaultB .biRange,
 .defaultB .IroWheelBorder,
 .defaultB .noSupport {
   box-shadow: -4px -4px 10px var(--shadowBrightLightest), 4px 4px 10px var(--shadowDarkDarker) !important;
@@ -381,4 +383,447 @@ body:not(.defaultB) .designContainer > div:hover .designWindow,
 
 .defaultB.dark .backgroundOverlay {
   background-color: var(--shadowDarkMid);
+}
+
+/* ----- Design C - Ultra Minimalist ----- */
+
+.defaultC {
+  --backgroundImage: #f4f4f7;
+  --backgroundAverage: #fff;
+  --fillMedium: #f2f2f4;
+  --fillLight: #ffffff;
+  --fillThick: #f5f5f5;
+  --fillThickFull: #e8e8e8;
+  --innerWindowOverlay: #ffffff;
+  --colorButton: #f4f4f7;
+  --colorButtonHover: #f7f7f7;
+  --headerButton: #ffffff;
+  --onepStroke: transparent;
+  --faderThumb: #d3d3d3;
+  --faderThumbHover: #c9c9c9;
+  --faderThumbBorder: transparent;
+  --borderButton: transparent;
+  --midLine: #e0e0e0;
+  --primary: #1a1a1a;
+  --secondary: #555555;
+  --tertiary: #888888;
+  --primarySwitched: #ffffff;
+  --mainColorTransparent: rgba(75, 78, 165, 0.2);
+  --faderBorder: #e0e0e0;
+
+  --windowShadow: none;
+  --windowBackdrop: none;
+  --shadowLight: none;
+  --shadowButton: none;
+  --shadowBrightFull: none;
+  --shadowBrightLightest: none;
+  --shadowBrightLighter: none;
+  --shadowBrightMid: none;
+  --shadowBrightDarkest: none;
+  --shadowDarkDarkest: none;
+  --shadowDarkDarker: none;
+  --shadowDarkMid: none;
+  text-shadow: none !important;
+  border: 1px solid transparent !important;
+  outline: none !important;
+}
+
+.defaultC,
+.defaultC body {
+  background: var(--backgroundImage);
+  border: none !important;
+}
+
+.defaultC .DialogButtons button:first-child {
+  color: var(--primaryDark) !important;
+  background-color: var(--mainColor) !important;
+}
+
+.defaultC .DialogButtons button:last-child {
+  background-color: var(--backgroundAverage) !important;
+}
+
+.defaultC .controlButtons .controlButton {
+  background-color: var(--backgroundAverage);
+}
+
+.defaultC .SettingsContent .settings .buttonDesign {
+  background-color: var(--backgroundAverage);
+}
+
+.defaultC .SettingsContent .buttonDesign:hover {
+  background-color: var(--mainColorTransparent);
+}
+
+.defaultC .LightSettingsSelectedButton {
+  background-color: var(--backgroundAverage) !important;
+}
+
+.defaultC .headerButton:hover,
+.defaultC .buttonTheme:hover,
+.defaultC .buttonDesign:hover,
+.defaultC .dropdown > p:hover,
+.defaultC .AddSceneButton:hover {
+  background-color: var(--colorButtonHover);
+  border-color: #b0b0b0;
+}
+
+.defaultC .slider::-webkit-slider-thumb {
+  background: var(--midLine);
+  box-shadow: none;
+}
+
+.defaultC .innerContainer .slider::-webkit-slider-thumb,
+.defaultC .grayBackground .slider::-webkit-slider-thumb {
+  background: var(--faderThumb);
+}
+
+.defaultC .slider::-webkit-slider-thumb:hover {
+  background: var(--faderThumbHover);
+}
+
+.defaultC .slider::-webkit-slider-runnable-track {
+  margin: 0 -2px;
+  box-shadow: none;
+}
+.defaultC .slider::-moz-range-track {
+  margin: 0 -2px;
+  box-shadow: none;
+}
+
+.defaultC .slider {
+  border: none !important;
+}
+
+.defaultC ::-webkit-scrollbar-track {
+  background: var(--fillMedium);
+  box-shadow: none;
+}
+
+.defaultC ::-webkit-scrollbar-thumb {
+  background: var(--faderThumb);
+  border: none;
+  box-shadow: none;
+}
+
+.defaultC ::-webkit-scrollbar-thumb:hover {
+  background: var(--faderThumbHover) !important;
+}
+
+.defaultC .controlTitle {
+  text-shadow: none;
+}
+
+.defaultC .noSelectWindow,
+.defaultC .noSupportShadow {
+  box-shadow: none;
+}
+
+.defaultC .designContainer > div.activeDesign {
+  outline: 2px solid var(--mainColor) !important;
+  background-color: #fff;
+}
+
+.defaultC .header {
+  box-shadow: none;
+  border: 1px solid transparent !important;
+  background-color: var(--fillLight);
+}
+
+.defaultC .innerContainer .innerWindow,
+.defaultC .inputNum,
+.defaultC .textBox,
+.defaultC .scenesEmpty,
+.defaultC .AddSceneButton,
+.defaultC .noSupport,
+.defaultC .designContainer > div {
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  background-color: var(--colorButton);
+  color: var(--primary);
+}
+
+.defaultC .dropdown,
+.defaultC .innerWindow,
+.defaultC .window,
+.defaultC .LightSettingsDMXBox,
+.defaultC .defaultToggle,
+.defaultC .designContainer > div {
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  background-color: var(--fillLight);
+  border: 1px solid transparent !important;
+  color: var(--primary);
+}
+
+.defaultC .inputNum,
+.defaultC .textBox {
+  box-shadow: none !important;
+  background-color: var(--fillMedium);
+  border: 1px solid var(--fillMedium);
+  color: var(--primary);
+}
+
+.defaultC .inputNum:hover,
+.defaultC .textBox:hover {
+  border-color: #dcdcdc;
+  background-color: #f5f5f5;
+}
+
+.defaultC .inputNum:focus,
+.defaultC .textBox:focus {
+  border-color: var(--mainColor);
+  background-color: #ffffff;
+}
+
+.defaultC .headerButton,
+.defaultC .buttonTheme,
+.defaultC .buttonDesign {
+  box-shadow: none !important;
+  background-color: var(--colorButton);
+  border: 1px solid transparent !important;
+  color: var(--primary) !important;
+}
+
+.defaultC .is-active .headerButton,
+.defaultC .buttonDesign.active,
+.defaultC .isSolo {
+  box-shadow: none !important;
+  background-color: var(--mainColor) !important;
+  color: var(--primarySwitched) !important;
+  border: 1px solid transparent !important;
+}
+
+.defaultC .is-active .headerIcon {
+  fill: var(--primarySwitched);
+}
+
+.defaultC .controlTitle,
+.defaultC .noSelectWindow,
+.defaultC .noSupportShadow {
+  text-shadow: none;
+  box-shadow: none;
+}
+
+.defaultC .DialogButtons button:first-child:hover,
+.defaultC .buttonDesign.active:hover,
+.defaultC .LightSettingsSaveButton:hover {
+  background-color: var(--mainColor);
+}
+
+.defaultC .LightSettingsDeleteButton:hover {
+  background-color: var(--colorButtonHover);
+}
+
+.defaultC .LightSettingsSaveButton {
+  color: var(--primarySwitched) !important;
+}
+
+.defaultC .LightSettingsDeleteButton {
+  color: var(--primary) !important;
+  background-color: var(--colorButton);
+}
+
+.defaultC .designContainer > div.activeDesign .designSpan {
+  color: var(--primary);
+}
+
+.defaultC .studioOverview {
+  border: none !important;
+}
+
+.defaultC .LightSettingsSelectedDevice span {
+  color: var(--primary) !important;
+}
+
+.defaultC .overviewButton {
+  background-color: var(--colorButton) !important;
+}
+
+.newDesign.defaultC {
+  --faderThumbBorder: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--faderThumbBorder) !important;
+}
+
+.defaultB .newDesign.defaultC {
+  --shadowBrightLightest: rgba(255, 255, 255, 0.9);
+  --shadowDarkDarker: rgba(0, 0, 0, 0.2);
+  border: 1px solid transparent !important;
+}
+
+.defaultB .designContainer > div:hover {
+  box-shadow: -2px -2px 5px var(--shadowBrightLightest), 2px 2px 5px var(--shadowDarkDarker) !important;
+}
+
+.newDesign.defaultC.activeDesign {
+  background-color: var(--backgroundAverage) !important;
+}
+
+.newDesign.defaultC.activeDesign > .designWindow {
+  background-color: var(--fillMedium) !important;
+}
+
+.defaultC .defaultB .window,
+.defaultC .defaultB .innerWindow {
+  box-shadow: inset -4px -4px 10px var(--shadowBrightMid), inset 4px 4px 10px var(--shadowDarkDarker) !important;
+}
+
+body:not(.defaultB) .designContainer > div:hover .designWindow {
+  box-shadow: inset -3px -3px 7px var(--shadowBrightMid), inset 3px 3px 7px var(--shadowDarkDarker) !important;
+}
+
+.defaultC .defaultToggle::before {
+  background-color: var(--fillLightDark);
+}
+
+.defaultC .toggleUniverse .defaultToggle {
+  background-color: var(--backgroundAverage) !important;
+}
+
+.defaultC .SettingContainer .defaultToggle,
+.defaultC .window .defaultToggle {
+  background-color: var(--fillMedium);
+}
+
+.defaultC input:hover + .defaultToggle {
+  background-color: var(--fillMedium);
+}
+
+.defaultC .toggleUniverse input:checked + .defaultToggle,
+.defaultC input:checked + .defaultToggle {
+  background-color: var(--mainColor) !important;
+}
+
+.defaultC input:hover + .defaultToggle::before {
+  background-color: var(--mainColor);
+}
+
+.defaultC .SettingsTextBox,
+.defaultC select,
+.defaultC input {
+  border: 1px solid transparent !important;
+}
+
+.defaultC select:focus,
+.defaultC input:focus {
+  background-color: var(--fillMedium) !important;
+}
+
+.defaultC .noSelectWindow .controlTitle {
+  visibility: hidden;
+}
+
+.defaultC .noSupportText {
+  color: var(--secondary) !important;
+}
+
+.defaultC .on {
+  box-shadow: 0 0 30px -13px var(--sceneOn), inset 0 0 175px -25px var(--sceneOn) !important;
+}
+
+.defaultC .studioOverviewInfopanelTest {
+  background: var(--backgroundAverage) !important;
+}
+
+.defaultC .innerWindow {
+  box-shadow: none !important;
+}
+
+.defaultC .grayBackground > .fader {
+  background-color: var(--colorButton) !important;
+}
+
+.defaultC .LightSettingsSelected {
+  background-color: var(--backgroundAverage) !important;
+}
+
+.defaultC .slider {
+  appearance: none;
+  width: 260px !important;
+  height: 13px;
+  border-radius: 50px;
+}
+.defaultC input {
+  border: none !important;
+}
+
+/* ----- Design C Dark Mode ----- */
+.defaultC.dark {
+  --backgroundImage: #242424;
+  --backgroundAverage: #2d2d2d;
+  --fillLight: #2d2d2d;
+  --fillMedium: #3a3a3a;
+  --fillThick: #414141;
+  --fillThickFull: #4a4a4a;
+  --innerWindowOverlay: rgba(40, 40, 40, 0.8);
+  --fillLightDark: #838383;
+
+  --colorButton: #3a3a3a;
+  --colorButtonHover: #4a4a4a;
+  --headerButton: #3a3a3a;
+  --borderButton: transparent;
+
+  --faderThumb: #555555;
+  --faderThumbHover: #666666;
+  --faderThumbBorder: rgba(255, 255, 255, 0);
+  --faderBorder: #444444;
+  --midLine: #555555;
+
+  --primary: rgba(255, 255, 255, 1);
+  --secondary: rgba(255, 255, 255, 0.6);
+  --tertiary: rgba(255, 255, 255, 0.3);
+  --primarySwitched: #1a1a1a;
+}
+
+.defaultB.dark .newDesign.defaultC {
+  --shadowBrightLightest: rgba(255, 255, 255, 0.14);
+  --shadowDarkDarker: rgba(0, 0, 0, 0.4);
+  border: 1px solid transparent !important;
+}
+
+.defaultC.dark .studioOverviewInfopanel,
+.defaultC.dark .studioOverviewInfopanelTest {
+  background: var(--colorButtonHover) !important;
+}
+
+.defaultC.dark .innerContainer .slider::-webkit-slider-thumb,
+.defaultC.dark .grayBackground .slider::-webkit-slider-thumb,
+.defaultC.dark .slider::-webkit-slider-thumb {
+  background: var(--tertiary);
+}
+
+.defaultC.dark .innerContainer .slider::-webkit-slider-thumb:hover,
+.defaultC.dark .grayBackground .slider::-webkit-slider-thumb:hover,
+.defaultC.dark .slider::-webkit-slider-thumb:hover {
+  background: var(--faderThumbHover);
+}
+
+.defaultC.dark .LightSettingsContainer,
+.defaultC.dark .SettingsContainer,
+.defaultC.dark .BigViewContainer {
+  background-color: var(--backgroundImage) !important;
+}
+
+.defaultC.dark .SettingContent  {
+  background-color: var(--backgroundAverage) !important;
+}
+
+.defaultC.dark .textBox:hover {
+  background-color: var(--colorButtonHover) !important;
+}
+
+.newDesign.defaultC.dark{
+  --faderThumbBorder: rgba(255, 255, 255, 0.25);
+  background-color: var(--backgroundImage) !important;
+}
+
+.defaultC.dark .LightSettingsDMXBoxRight {
+  background-color: var(--fillMedium) !important;
+}
+.defaultC.dark .LightSettingsDMXTable {
+  background-color: var(--fillMedium) !important;
+}
+
+.defaultC.dark .LightSettingsSelectedDevice span {
+  color: var(--primary) !important;
 }

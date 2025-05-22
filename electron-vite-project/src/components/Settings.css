@@ -34,15 +34,19 @@
   padding: 20px;
 }
 
+.SettingsContainer:has(.SettingsOverview) {
+  min-width: 1200px;
+}
+
 .settings {
   width: 200px;
-  margin: 0;
-  padding-right: 20px;
+  margin: 0 20px 0 0;
   position: relative;
 }
 
 .SettingContent {
-  flex: 1;
+  width: calc(100% - 40px);
+  height: 100%;
   padding-left: 20px;
   position: relative;
 }
@@ -111,12 +115,73 @@
   margin: 0;
 }
 
+.SettingsOverviewImage {
+  position: relative;
+  flex: 0 0 auto;
+  background-image: url(/src/assets/StudioOverview.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  overflow: hidden;
+}
+
+.studioOverviewInfopanelTest {
+  display: flex;
+  flex-direction: column;
+  margin: 0 5px;
+  width: 90px;
+  flex-shrink: 0;
+  margin-left: 5px;
+  border-radius: 5px;
+  border: 1px solid var(--onepStroke);
+  background-color: var(--fillThickFull);
+  box-shadow: var(--shadowLight);
+  z-index: 1;
+  position: relative;
+  top: 50px;
+}
+
+.SettingsOverviewImageForeground {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+}
+
+.SettingsOverview {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  gap: 10px;
+  align-content: space-between;
+  justify-content: space-between;
+}
+
+.SettingsOverviewButtons {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  width: 100px;
+  overflow-y: auto;
+  overflow-x: auto;
+  padding-right: 10px;
+  scrollbar-gutter: auto;
+  position: relative !important;
+  container-type: inline-size;
+  min-width: 295px;
+
+}
+
 .SettingsContent {
-  flex-grow: 1;
+  width: 100%;
   position: relative;
   display: flex;
   flex-direction: row;
-  height: stretch;
   top: 40px;
   margin-bottom: 40px;
   overflow: auto;
@@ -141,7 +206,7 @@
 }
 
 .SettingsIPBox {
-  width: 30px;
+  width: 40px;
   text-align: center;
   background-color: transparent;
   appearance: none; /* For Chrome, Safari, Edge */
@@ -176,6 +241,7 @@
   position: relative;
   width: stretch;
   padding: 1px 10px 0px 0px;
+  height: 100%;
 }
 
 .SettingsLayer {
@@ -250,6 +316,12 @@
     top: 215px !important;
     right: 300px !important;
   }
+
+  .buttonRight {
+    position: relative !important;
+    margin-left: 0px !important;
+    margin-top: 20px;
+  }
 }
 
 @media (max-width: 1375px) {
@@ -274,6 +346,12 @@
   gap: 20px;
 }
 
+@media screen and (max-width: 1540px) {
+  .designContainer {
+    flex-direction: column;
+  }
+}
+
 .designContainer > div {
   width: 200px;
   height: 150px;
@@ -281,6 +359,7 @@
   color: var(--primary);
   cursor: pointer;
   background-color: var(--backgroundDesign);
+  position: relative;
 }
 
 .designDefaultSpan {
@@ -440,4 +519,131 @@
 .dropzone p {
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.traverseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  position: relative;
+  margin-top: 20px;
+}
+
+.overviewInput {
+  width: 55px;
+  margin-left: 10px;
+  margin-bottom: 0;
+}
+
+.traverseContainer {
+  min-height: fit-content;
+  flex-direction: column;
+}
+
+.traverseCell > .textBox {
+  width: 100%;
+}
+
+.customLampContainer {
+  flex-direction: column;
+  min-height: fit-content;
+}
+
+.customRow {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  transition: transform 0.3s ease-in-out;
+  border-radius: 5px;
+}
+
+@container (max-width: 410px) {
+  .customRow {
+    flex-wrap: wrap;
+  }
+  .customRowContainer {
+    gap: 20px !important;
+  }
+}
+@container (max-width: 280px) {
+  .customRow {
+    width: 215px;
+  }
+}
+
+.customRowContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+  width: 100%;
+}
+
+.customRow > * {
+  margin-left: 0 !important;
+}
+
+.danger {
+  min-width: 50px !important;
+  max-width: 50px !important;
+  position: absolute;
+  right: 0px;
+}
+
+.buttonRight {
+  position: absolute;
+  right: 0px;
+}
+
+.overviewButton {
+  min-width: 180px !important;
+  max-width: 180px !important;
+  margin-left: 10px;
+}
+
+.SettingsOverviewImageGrid {
+  max-width: 604px;
+  width: 601px;
+  height: 553px;
+  align-items: center;
+  justify-items: center;
+  display: grid;
+  position: relative;
+  top: -31px;
+  gap: 7px;
+}
+
+.SettingsOverviewImageGrid > div {
+  height: 48px;
+}
+
+.toggleContainerSettings {
+  display: flex;
+  gap: 10px;
+  margin-right: 100px;
+}
+
+.textRight {
+  margin-left: -5px;
+}
+
+.noSettings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  font-size: 20px;
+  color: var(--secondary);
+}
+
+.SettingsOverviewImage select {
+  border-radius: 5px;
+  padding-left: 1px;
+}
+
+.settingsContentContainer .backgroundOverlay {
+  position: fixed !important;
 }

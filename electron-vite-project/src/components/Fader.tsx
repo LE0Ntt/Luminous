@@ -50,6 +50,7 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
   // Emit fader value to the server
   const emitValue = useCallback(
     (value: number) => {
+      if (sliderGroupId === 0 && id > 0) return; // Skip if a control fader
       emit('fader_value', { deviceId: sliderGroupId, value, channelId: id });
     },
     [emit, sliderGroupId, id]

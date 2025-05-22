@@ -126,19 +126,6 @@
   border-radius: 50px;
 }
 
-.slider::-ms-fill-lower {
-  /* Specific styling for Microsoft Edge track */
-  background-color: var(--mainColor);
-  height: 13px;
-  border-radius: 50px;
-}
-
-.slider::-ms-fill-upper {
-  /* Specific styling for Microsoft Edge track */
-  background-color: var(--mainColor);
-  height: 13px;
-  border-radius: 50px;
-}
 
 /* Slider Thumb - all Browsers */
 .slider::-webkit-slider-thumb {
@@ -155,6 +142,7 @@
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
   transform: rotateZ(90deg);
+  transition: background 0.2s ease;
 }
 
 .slider::-moz-range-thumb {
@@ -167,19 +155,8 @@
   background: var(--faderThumb);
   box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
   margin-top: -15px;
-}
-
-.slider::-ms-thumb {
-  /* Specific styling for Microsoft Edge */
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--faderThumbBorder);
-  border-radius: 50%;
-  cursor: pointer;
-  background: var(--faderThumb);
-  box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
-  height: 20px;
-  margin-top: -15px;
+  -webkit-backdrop-filter: blur(50px);
+  backdrop-filter: blur(50px);
 }
 
 .slider::-webkit-slider-thumb:hover {
@@ -190,12 +167,6 @@
 
 .slider.slider::-moz-range-thumb:hover {
   /* Specific styling for Firefox */
-  background: var(--faderThumbHover);
-  cursor: ns-resize;
-}
-
-.slider::-ms-thumb:hover {
-  /* Specific styling for Microsoft Edge */
   background: var(--faderThumbHover);
   cursor: ns-resize;
 }

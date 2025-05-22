@@ -67,7 +67,7 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
       setPasswordSuccess(false);
       setPasswordMessage(t('set_error_match'));
     } else {
-      fetch(url + '/changePassword', {
+      fetch(url + '/change_password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -249,12 +249,12 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
 
   return (
     <div className='SettingsOption'>
+      <div className='SettingsTitle SettingsTitleInner'>
+        <span>{t('set_admin')}</span>
+      </div>
+      <hr style={{ marginTop: '45px' }} />
       {connected && (
         <>
-          <div className='SettingsTitle SettingsTitleInner'>
-            <span>{t('set_admin')}</span>
-          </div>
-          <hr style={{ marginTop: '45px' }} />
           <div className='SettingContainer'>
             <div className='SettingsSubTitle'>
               <IconKey
@@ -354,6 +354,13 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
               maxLength={3}
               value={ip.split('.')[3]}
               onChange={(e) => handleOctetChange(4, e.target.value)}
+            />
+            :
+            <input
+              className='SettingsIPBox'
+              maxLength={4}
+              value={port}
+              onChange={(e) => handlePortChange(e.target.value)}
             />
           </div>
           <Button

@@ -47,10 +47,8 @@ nav ul li button {
 .logo {
   height: 11px;
   width: 74px;
-  mask: url(../assets/Luminous_Logo.svg);
-  mask-repeat: no-repeat;
+  mask: url(../assets/LuminousLogo.svg) no-repeat center;
   background: var(--secondary);
-  mask-position: center;
   top: 7px;
   position: relative;
   margin-right: 5px;
@@ -73,7 +71,7 @@ nav ul li button {
   align-items: center;
   border-radius: 0 0 3px 3px;
   -webkit-app-region: no-drag !important;
-  mask: url(../assets/rect.svg); /* Prevent weird pixel */
+  mask: url(../assets/Rect.svg); /* Prevent weird pixel */
 }
 
 .settingsButton:hover,

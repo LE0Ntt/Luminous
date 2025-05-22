@@ -93,12 +93,9 @@ class Show(db.Model):  # Not used yet
         return self.date.strftime("%d.%m.%y %H:%M")
 
 
-class Settings(db.Model):  # Not used yet
+class Settings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     studio_grid = db.Column(JSON, nullable=False)
-    language = db.Column(
-        db.String(2), default="en"
-    )  # Not used as language is handled client-side
 
 
 ## Clear db

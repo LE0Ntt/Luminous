@@ -16,14 +16,13 @@
 from flask import request, jsonify, send_file
 import json
 from server import app, db  # type: ignore
-from server.models import Device, Admin, Scene
+from server.models import Device, Admin, Scene, Settings
 import os
 import shutil
 from datetime import datetime
 
 
 # Load devices from database
-@app.route("/devices")
 def get_devices():
     device_list = []
 
@@ -70,6 +69,7 @@ def load_scenes():
                 "name": scene.name,
                 "channel": scene.channel,
                 "saved": True,
+                "out_of_sync": False,
             }
             scenes_list.append(scene)
     return scenes_list
@@ -93,7 +93,7 @@ def get_scenes():
 
 
 # Change the admin password
-@app.route("/changePassword", methods=["POST"])
+@app.route("/change_password", methods=["POST"])
 def change_password():
     data = request.get_json()
     current_password = data.get("currentPassword")
@@ -123,7 +123,7 @@ def change_password():
 
 
 # Check if the entered admin password is correct
-@app.route("/checkpassword", methods=["POST"])
+@app.route("/check_password", methods=["POST"])
 def check_password():
     data = request.get_json()
     password = data.get("password", "")
@@ -235,3 +235,51 @@ def upload_db():
             ),
             500,
         )
+
+
+# Load studio_grid from database
+def load_studio_grid():
+    with app.app_context():
+        settings = Settings.query.first()
+        if settings:
+            return settings.studio_grid
+        else:
+            return None
+        
+
+studio_grid = load_studio_grid() 
+
+
+# Access to studio_grid
+@app.route("/studio_grid")
+def get_studio_grid():
+    global studio_grid
+    return jsonify(json.dumps(studio_grid))
+
+
+# Save studio_grid to database
+@app.route("/save_studio_grid", methods=["POST"])
+def save_studio_grid():
+    data = request.get_json()
+    global studio_grid
+
+    with app.app_context():
+        settings = Settings.query.first()
+        if not settings:
+            settings = Settings(studio_grid=data)
+            db.session.add(settings)
+        else:
+            settings.studio_grid = data
+        db.session.commit()
+
+    studio_grid = data
+    return jsonify({"message": "Studio grid saved successfully"}), 200
+
+
+# Save studio_grid temporarily to the global variable
+@app.route("/save_studio_grid_temp", methods=["POST"])
+def save_studio_grid_temp():
+    data = request.get_json()
+    global studio_grid
+    studio_grid = data
+    return jsonify({"message": "Studio grid saved temporarily"}), 200

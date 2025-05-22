@@ -36,8 +36,12 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({ transl
 
   useEffect(() => {
     const fetchLanguage = async () => {
-      const data = await window.electronAPI.getLanguage();
-      setLanguage(data);
+      if (!window.electronAPI) {
+        setLanguage('de');
+      } else {
+        const data = await window.electronAPI.getLanguage();
+        setLanguage(data);
+      }     
     };
     fetchLanguage();
   }, []);

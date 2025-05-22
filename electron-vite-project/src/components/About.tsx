@@ -16,7 +16,7 @@ import { useContext } from 'react';
 import './About.css';
 import { TranslationContext } from './TranslationContext';
 import packageJson from '../../package.json';
-import IconAbout from '@/assets/Icon_About';
+import IconAbout from '@/assets/IconAbout';
 
 interface SettingsProps {
   onClose: () => void;

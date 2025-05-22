@@ -1,6 +1,6 @@
 {
   "name": "luminous",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "proxy": "http://127.0.0.1:5000",
   "main": "dist-electron/main/index.js",
   "description": "Luminous DMX light controll app.",
@@ -15,7 +15,9 @@
   },
   "scripts": {
     "dev": "vite dev",
+    "dev:web": "vite dev --mode web",
     "build": "tsc && vite build && electron-builder",
+    "build:web": "tsc && vite build --mode web",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
     "e2e": "playwright test"

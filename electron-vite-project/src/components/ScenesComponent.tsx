@@ -18,6 +18,7 @@ import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
 import { eventBus } from './EventBus';
 import { fetchServerJson } from '@/utils/api';
+import type { AdminTokenDetail } from './AdminPassword';
 
 interface SceneConfig {
   id: number;
@@ -81,14 +82,17 @@ const ScenesComponent: React.FC<ScenesComponentProps> = ({ sideId, setAddScene, 
 
   // Listen for events to delete or save a scene
   useEffect(() => {
-    const handleDeleteScene = () => {
+    // Saved scenes need the token from the password prompt, unsaved ones are deleted without it
+    const getToken = (event: Event) => (event as CustomEvent<AdminTokenDetail | undefined>).detail?.token;
+
+    const handleDeleteScene = (event: Event) => {
       const deleteID = sessionStorage.getItem('deleteID');
-      if (deleteID !== null) emit('scene_delete', { id: JSON.parse(deleteID) });
+      if (deleteID !== null) emit('scene_delete', { id: JSON.parse(deleteID), token: getToken(event) });
     };
 
-    const handleSaveScene = () => {
+    const handleSaveScene = (event: Event) => {
       const saveID = sessionStorage.getItem('saveID');
-      if (saveID !== null) emit('scene_save', { id: JSON.parse(saveID) });
+      if (saveID !== null) emit('scene_save', { id: JSON.parse(saveID), token: getToken(event) });
     };
 
     document.body.addEventListener('saveScene', handleSaveScene);

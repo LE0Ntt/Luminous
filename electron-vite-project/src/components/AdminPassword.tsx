@@ -19,8 +19,14 @@ import Button from './Button';
 import CloseButton from './CloseButton';
 import IconNote from '@/assets/IconNote';
 
+// Detail of the 'saveScene' and 'deleteScene' events dispatched without onConfirm
+export interface AdminTokenDetail {
+  token: string;
+}
+
 interface AdminPasswordProps {
-  onConfirm?: (isConfirmed: boolean) => void;
+  // Receives the token the server requires for admin-only requests and socket events
+  onConfirm?: (token: string) => void;
   onClose: () => void;
   isDelete?: boolean;
 }
@@ -57,10 +63,11 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
       const data = await response.json();
 
       if (data.match === 'true') {
+        const token: string = data.token ?? '';
         if (onConfirm !== undefined) {
-          onConfirm(true);
+          onConfirm(token);
         } else {
-          document.body.dispatchEvent(new Event(isDelete ? 'deleteScene' : 'saveScene'));
+          document.body.dispatchEvent(new CustomEvent<AdminTokenDetail>(isDelete ? 'deleteScene' : 'saveScene', { detail: { token } }));
         }
         onClose();
         return; // Keep the guard set, the dialog is closing

@@ -363,25 +363,24 @@ function LightSettings({ onClose }: SettingsProps) {
 
   // Callback function for the admin password component
   const handleAdminPasswordConfirm = useCallback(
-    (isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
-      if (isConfirmed) {
-        if (isDelete) {
-          // send remove device request
-          emit('light_delete', { id: selectedDevice?.id });
-        } else {
-          const commonBody = {
-            name: inputName,
-            number: inputNumber,
-            device_type: inputType,
-            universe: inputUniverse,
-            attributes: {
-              channel: channelArray.map(({ id, dmx_channel, channel_type }) => ({ id, dmx_channel, channel_type })),
-            },
-          };
-          const body = isNewDevice ? commonBody : { ...commonBody, id: selectedDevice?.id };
+    (token: string) => {
+      if (isDelete) {
+        // send remove device request
+        emit('light_delete', { id: selectedDevice?.id, token });
+      } else {
+        const commonBody = {
+          name: inputName,
+          number: inputNumber,
+          device_type: inputType,
+          universe: inputUniverse,
+          attributes: {
+            channel: channelArray.map(({ id, dmx_channel, channel_type }) => ({ id, dmx_channel, channel_type })),
+          },
+          token,
+        };
+        const body = isNewDevice ? commonBody : { ...commonBody, id: selectedDevice?.id };
 
-          emit(isNewDevice ? 'light_add' : 'light_update', body);
-        }
+        emit(isNewDevice ? 'light_add' : 'light_update', body);
       }
     },
     [isDelete, inputName, inputNumber, inputType, inputUniverse, channelArray, channelChangeArray, selectedDevice]

@@ -57,11 +57,9 @@ function AddScene({ onClose }: AddSceneProps) {
 
   // Callback function for the AdminPassword component
   const handleAdminPasswordConfirm = useCallback(
-    (isConfirmed: boolean) => {
-      if (isConfirmed) {
-        emit('scene_add', { scene: { name, saved: true } });
-        onClose();
-      }
+    (token: string) => {
+      emit('scene_add', { scene: { name, saved: true }, token });
+      onClose();
     },
     [name, emit, onClose]
   );

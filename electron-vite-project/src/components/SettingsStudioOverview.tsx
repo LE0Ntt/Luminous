@@ -20,7 +20,7 @@ import Button from './Button';
 import AdminPassword from './AdminPassword';
 import Toggle from './Toggle';
 import { createId } from '@/utils/helpers';
-import { fetchServerJson } from '@/utils/api';
+import { ADMIN_TOKEN_HEADER, fetchServerJson } from '@/utils/api';
 
 export type DeviceType = 'RGBDim' | 'BiColor' | 'Spot' | 'Fill' | 'HMI' | 'Misc';
 export type IconType = 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
@@ -247,7 +247,8 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
 
   const removeCustomLamp = (uuid: string) => setCustomLamps((prev) => prev.filter((l) => l.uuid !== uuid));
 
-  const performSave = async (endpoint: string) => {
+  // Only the permanent save is admin-only and needs the token from the password prompt
+  const performSave = async (endpoint: string, adminToken?: string) => {
     const payload = {
       meta: { rows, cols },
       grid,
@@ -258,7 +259,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
     try {
       const res = await fetch(`${url}/${endpoint}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(adminToken ? { [ADMIN_TOKEN_HEADER]: adminToken } : {}) },
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error('Save failed');
@@ -273,9 +274,9 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
   };
 
   const handleAdminPasswordConfirm = useCallback(
-    async (ok: boolean) => {
+    async (token: string) => {
       setSaveAdmin(false);
-      if (ok) await performSave('save_studio_grid');
+      await performSave('save_studio_grid', token);
     },
     [grid, customLamps, traversen, greenScreenId, rows, cols]
   );

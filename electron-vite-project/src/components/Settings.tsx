@@ -36,13 +36,13 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedSetting, setSelectedSetting] = useState<string>('Setting1');
   const [initialConnected, setInitialConnected] = useState<boolean | null>(null);
+  const [adminToken, setAdminToken] = useState<string | null>(null);
 
-  // Confirm the password to access the admin settings
-  const handleAdminPasswordConfirm = useCallback((isConfirmed: boolean) => {
-    if (isConfirmed) {
-      setSelectedSetting('Setting2');
-      setIsAdmin(false);
-    }
+  // Confirm the password to access the admin settings, the token authorizes the database actions
+  const handleAdminPasswordConfirm = useCallback((token: string) => {
+    setAdminToken(token);
+    setSelectedSetting('Setting2');
+    setIsAdmin(false);
   }, []);
 
   // Check that the client is connected so that the password can be confirmed or only the IP address can be set
@@ -113,7 +113,10 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                 {selectedSetting === 'Setting1' ? (
                   <Setting1 />
                 ) : selectedSetting === 'Setting2' && initialConnected !== null ? (
-                  <Setting2 connected={initialConnected} />
+                  <Setting2
+                    connected={initialConnected}
+                    adminToken={adminToken}
+                  />
                 ) : selectedSetting === 'Setting3' && connected ? (
                   <Setting3
                     studioRows={5}

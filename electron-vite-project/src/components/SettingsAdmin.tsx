@@ -22,12 +22,14 @@ import { useConnectionContext } from './ConnectionContext';
 import IconNetwork from '@/assets/IconNetwork';
 import { showAlert } from '@/utils/platform';
 import { isValidIpv4, isValidPort } from '@/utils/helpers';
+import { ADMIN_TOKEN_HEADER } from '@/utils/api';
 
 interface Setting2Props {
   connected: boolean;
+  adminToken: string | null; // From the password prompt, the server requires it for the database actions
 }
 
-const Setting2: React.FC<Setting2Props> = ({ connected }) => {
+const Setting2: React.FC<Setting2Props> = ({ connected, adminToken }) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
@@ -165,6 +167,7 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
 
   // ----- Database Settings -----
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const adminHeaders = { [ADMIN_TOKEN_HEADER]: adminToken ?? '' };
   const [isDragActive, setIsDragActive] = useState(false);
 
   // Check if the dropped file is a .db file
@@ -208,9 +211,11 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
     try {
       const response = await fetch(url + '/upload_db', {
         method: 'POST',
+        headers: adminHeaders,
         body: formData,
       });
-      showAlert(t(response.ok ? 'set_alertSuccess' : 'set_alertError'));
+      // 401: the token has expired or the server was restarted
+      showAlert(t(response.ok ? 'set_alertSuccess' : response.status === 401 ? 'ap_expired' : 'set_alertError'));
     } catch (error) {
       console.error('Error uploading the file:', error);
       showAlert(t('set_alertError'));
@@ -222,8 +227,13 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
     try {
       const response = await fetch(`${url}/download_db`, {
         method: 'GET',
+        headers: adminHeaders,
       });
 
+      if (response.status === 401) {
+        showAlert(t('ap_expired'));
+        return;
+      }
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
@@ -251,8 +261,13 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
     try {
       const response = await fetch(`${url}/reset_db`, {
         method: 'POST',
+        headers: adminHeaders,
       });
 
+      if (response.status === 401) {
+        showAlert(t('ap_expired'));
+        return;
+      }
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }

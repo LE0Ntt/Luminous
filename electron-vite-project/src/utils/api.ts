@@ -16,3 +16,6 @@ export async function fetchServerJson<T>(url: string, init?: RequestInit): Promi
   const data = await response.json();
   return typeof data === 'string' ? JSON.parse(data) : data;
 }
+
+// Admin-only routes expect the token from /check_password in this header (socket events in a 'token' field)
+export const ADMIN_TOKEN_HEADER = 'X-Admin-Token';

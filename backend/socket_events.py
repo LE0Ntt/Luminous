@@ -18,6 +18,7 @@ from flask_socketio import SocketIO  # type: ignore
 from server import app, routes, db
 from server.motorMix_driver import Driver
 from server.models import Scene, Device
+from server.auth import is_valid_admin_token
 import json
 import time
 import threading
@@ -133,6 +134,15 @@ def register_socketio_events(socketio):
     def blackoutCallback():
         # call reset function
         reset(True)
+
+    # Admin-only events need the token from /check_password in their payload.
+    # Internal callers (e.g. the MotorMix driver) don't go through these events
+    def admin_authorized(data, event):
+        token = data.get("token") if isinstance(data, dict) else None
+        if is_valid_admin_token(token):
+            return True
+        print(f"Rejected unauthorized '{event}' event from {request.sid}")  # type: ignore
+        return False
 
     try:
         driver = Driver()
@@ -571,13 +581,18 @@ def register_socketio_events(socketio):
     @socketio.on("scene_delete", namespace="/socket")
     def delete_scene(data):
         scene = int(data["id"])
+        scene_exists = 0 <= scene < len(routes.scenes)
+
+        # Saved scenes can only be deleted by an admin
+        if scene_exists and routes.scenes[scene].get("saved") and not admin_authorized(data, "scene_delete"):
+            return
 
         # update scenes on MotorMix
         if driver is not None:
             driver.scenes = routes.scenes
             driver.sceneMapping()
 
-        if scene < len(routes.scenes):  # Make sure scene exists
+        if scene_exists:
             routes.scenes.pop(scene)
             for entry in routes.scenes:  # Update ID of the following scenes
                 if entry["id"] > scene:
@@ -596,6 +611,11 @@ def register_socketio_events(socketio):
     @socketio.on("scene_add", namespace="/socket")
     def add_scene(data):
         scene = data["scene"]
+
+        # Saving the scene to the database is admin-only
+        if scene.get("saved") and not admin_authorized(data, "scene_add"):
+            return
+
         scene["id"] = len(routes.scenes)
 
         # Filter devices with sliderValue 0
@@ -610,11 +630,17 @@ def register_socketio_events(socketio):
         if not scene["saved"]:  # If scene is not saved, don't add to database
             socketio.emit("scene_reload", namespace="/socket")
         else:
-            save_scene(scene)
+            store_scene(scene)
 
-    # Save a scene to the database
+    # Save an existing scene to the database
     @socketio.on("scene_save", namespace="/socket")
     def save_scene(data):
+        if not admin_authorized(data, "scene_save"):
+            return
+        store_scene(data)
+
+    # Move the scene behind the other saved scenes and write it to the database
+    def store_scene(data):
         scene = int(data["id"])
 
         # update scenes on MotorMix
@@ -664,6 +690,8 @@ def register_socketio_events(socketio):
     # Delete a light from the database
     @socketio.on("light_delete", namespace="/socket")
     def delete_light(data):
+        if not admin_authorized(data, "light_delete"):
+            return
         deviceId = int(data["id"])
         # Remove from the database
         deleted_count = Device.query.filter_by(id=deviceId).delete()
@@ -678,6 +706,8 @@ def register_socketio_events(socketio):
     # Create a new light and save it to the database
     @socketio.on("light_add", namespace="/socket")
     def add_light(data):
+        if not admin_authorized(data, "light_add"):
+            return
         # Check if device number is already in use
         if Device.query.filter_by(number=data["number"]).first():
             socketio.emit(
@@ -715,6 +745,8 @@ def register_socketio_events(socketio):
     # Update an existing light and save it to the database
     @socketio.on("light_update", namespace="/socket")
     def update_light(data):
+        if not admin_authorized(data, "light_update"):
+            return
         deviceId = int(data["id"])
         newNumber = int(data["number"])
 

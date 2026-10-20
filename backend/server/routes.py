@@ -17,6 +17,7 @@ from flask import request, jsonify, send_file
 import json
 from server import app, db  # type: ignore
 from server.models import Device, Admin, Scene, Settings
+from server.auth import admin_required, create_admin_token
 import os
 import shutil
 from datetime import datetime
@@ -122,7 +123,7 @@ def change_password():
         return jsonify({"message": "currrent_wrong"})
 
 
-# Check if the entered admin password is correct
+# Check if the entered admin password is correct and hand out a token for the admin-only actions
 @app.route("/check_password", methods=["POST"])
 def check_password():
     data = request.get_json()
@@ -130,13 +131,18 @@ def check_password():
     admin = Admin.query.first()
 
     if admin:
-        return {"match": "true" if admin.check_password(password) else "false"}
+        match = admin.check_password(password)
     else:  # If no admin exists in DB, allow access for empty password
-        return {"match": "true" if password == "" else "false"}
+        match = password == ""
+
+    if match:
+        return {"match": "true", "token": create_admin_token()}
+    return {"match": "false"}
 
 
 # Send the database file to the client
 @app.route("/download_db", methods=["GET"])
+@admin_required
 def download_db():
     try:
         return send_file("database.db", as_attachment=True)
@@ -154,6 +160,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 # Create a backup and then reset the database
 @app.route("/reset_db", methods=["POST"])
+@admin_required
 def reset_db():
     try:
         if not os.path.exists(BACKUP_FOLDER):
@@ -180,6 +187,7 @@ def reset_db():
 
 # Upload a new database file, create a backup of the current database and replace it with the uploaded file
 @app.route("/upload_db", methods=["POST"])
+@admin_required
 def upload_db():
     try:
         # Backup the current database
@@ -259,6 +267,7 @@ def get_studio_grid():
 
 # Save studio_grid to database
 @app.route("/save_studio_grid", methods=["POST"])
+@admin_required
 def save_studio_grid():
     data = request.get_json()
     global studio_grid

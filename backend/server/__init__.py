@@ -14,6 +14,7 @@
 """
 
 import os
+import secrets
 from flask import Flask, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -22,7 +23,9 @@ from flask_cors import CORS
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "VerySecretKey"
+    # Signs the admin tokens, a fixed fallback would let anyone forge them.
+    # Without SECRET_KEY a new key is generated on every start (tokens are short-lived anyway)
+    SECRET_KEY = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL"
     ) or "sqlite:///" + os.path.join(basedir, "database.db")

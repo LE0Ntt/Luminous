@@ -13,6 +13,8 @@
  * @file server.py
 """
 
+import os
+
 from server import app, led_control
 from socket_events import register_socketio_events, socketio
 
@@ -24,6 +26,8 @@ register_socketio_events(socketio)
 
 # Run app
 if __name__ == "__main__":
-    print("Starting server on: http://localhost:5000")
-    socketio.run(app, host="0.0.0.0", port=5000)  # type: ignore     "allow_unsafe_werkzeug=True" für production
+    # Override with LUMINOUS_PORT, e.g. on macOS where AirPlay Receiver occupies port 5000
+    port = int(os.environ.get("LUMINOUS_PORT", 5000))
+    print(f"Starting server on: http://localhost:{port}")
+    socketio.run(app, host="0.0.0.0", port=port)  # type: ignore     "allow_unsafe_werkzeug=True" für production
 

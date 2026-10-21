@@ -2,6 +2,38 @@
 
 > All notable changes to this project will be documented in this file.
 
+## [1.2.5] - Unreleased
+
+### Changes
+
+- Security
+  - The admin password is now checked by the server, not only in the app
+    - Admin actions (database, lights, saved scenes, Studio-Overview) need a token that is valid for 30 minutes
+    - Restarting the server ends all admin sessions
+  - The OLA window no longer has access to Node.js
+  - Links only open http(s) addresses in the browser
+- Web version
+  - Database upload/reset, OLA and changing the server address work in the browser
+  - Adding custom lamps in the Studio-Overview settings no longer crashes
+- Accessibility
+  - Visible focus for keyboard navigation, labels for icon buttons and inputs
+  - Dialogs close with _ESC_, menu and FAQ entries can be used with the keyboard
+  - Animations are reduced if the system asks for it
+- The language setting is saved
+- Confirmation before resetting the database, validation of IP and port
+- Smaller images (WebP) and fewer requests when loading scenes
+- Updated to Electron 44, server port can be set with `LUMINOUS_PORT`
+- Unit tests for helper functions (`npm test`)
+
+### Fixes
+
+- Fixed scenes being added twice or the wrong scene being deleted after pressing _ENTER_ and clicking in the password dialog
+- Fixed the last fader position sometimes not being sent while dragging
+- Fixed fast scrolling on faders skipping steps
+- Fixed the fullscreen menu entry showing the wrong state on start
+- Fixed listeners piling up after opening "About" and on reconnects
+- Fixed the greenscreen showing a "0" when set to "None"
+
 ## [1.2.4] - 2025-05-14
 
 ### Changes

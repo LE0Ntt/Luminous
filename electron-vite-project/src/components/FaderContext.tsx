@@ -19,6 +19,12 @@ interface FaderState {
   [key: string]: number;
 }
 
+interface FaderUpdate {
+  deviceId: number;
+  channelId: number;
+  value: number;
+}
+
 interface FaderContextType {
   getFaderValue: (groupId: number, faderId: number) => number;
   setFaderValue: (groupId: number, faderId: number, value: number) => void;
@@ -81,14 +87,20 @@ export const FaderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const { on, off } = useConnectionContext();
 
   useEffect(() => {
-    const eventListener = (data: any) => {
+    const eventListener = (data: FaderUpdate) => {
       if (data.deviceId !== undefined) {
         faderStore.setFaderValue(data.deviceId, data.channelId, data.value);
       }
     };
+    // Scene fades send all values of one 20 ms step in a single message
+    const bulkListener = (updates: FaderUpdate[]) => updates.forEach(eventListener);
 
     on('variable_update', eventListener);
-    return () => off('variable_update', eventListener);
+    on('bulk_variable_update', bulkListener);
+    return () => {
+      off('variable_update', eventListener);
+      off('bulk_variable_update', bulkListener);
+    };
   }, [on, off]);
 
   return <FaderContext.Provider value={contextValue}>{children}</FaderContext.Provider>;

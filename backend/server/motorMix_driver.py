@@ -12,14 +12,20 @@
  *
  * @file motorMix_driver.py
 """
+import logging
 import threading
 import mido
 import time
+
+logger = logging.getLogger(__name__)
 
 
 class Driver:
     # -------------- Essential and Setup -----------------#
     def __init__(self):
+        # MIDI is sent from several threads (MotorMix input, socket events, fades). Messages that belong
+        # together, like the two halves of a fader position, must not be interleaved with other messages
+        self._send_lock = threading.Lock()
         self.fader_values = [0] * 8  # values of MotorMix faders
         self.devices = []
         self.scenes = []
@@ -74,7 +80,7 @@ class Driver:
         try:
             input_ports = mido.get_input_names()  # type: ignore
             for port in input_ports:
-                print(port)
+                logger.info("MIDI port: %s", port)
                 self.inport = mido.open_input(port)  # type: ignore
                 self.outport = mido.open_output(port)  # type: ignore
 
@@ -83,7 +89,7 @@ class Driver:
             # print(port)
             # self.outport = mido.open_output(port)  # type: ignore
         except:
-            print("ERROR: Could not open MIDI Ports!")
+            logger.error("Could not open MIDI ports")
 
         self.current_page = 1
 
@@ -102,8 +108,13 @@ class Driver:
         if self.inport is not None:
             threading.Thread(target=self.input).start()
             self.setup()
-            print("Driver Initiated")
+            logger.info("MotorMix driver initiated")
         # self.outport.send(mido.Message.from_hex('90 00 00')) # ping
+
+    def _send(self, *messages):
+        with self._send_lock:
+            for message in messages:
+                self.outport.send(message)
 
     def input(self):
         if self.inport is None:
@@ -132,8 +143,7 @@ class Driver:
                         value=lsb,
                         time=0,
                     )
-                    self.outport.send(msg1)
-                    self.outport.send(msg2)
+                    self._send(msg1, msg2)
 
             if (
                 hex_message.startswith("B00F0") and int(hex_message[5], 16) < 8
@@ -162,7 +172,7 @@ class Driver:
                     self.fader_values[fader] = int(hex_message[-2:], 16) * 2
                     self.fader_mapping(fader, self.fader_values[fader])
                 except:
-                    print("ERROR in sending value to fader: " + str(fader))
+                    logger.exception("Could not send the value of fader %s", fader)
 
                 # interpolation to simulate 7 to 8 bit
                 self.current_time[fader] = time.monotonic()
@@ -212,9 +222,7 @@ class Driver:
                     self.fader_mapping(self.current_flagged_channel, 0)
                     self.channel_flag = False
                 except Exception as e:
-                    print(
-                        f"ERROR: Could not push Fader: {self.current_flagged_channel} to Minimum! Error: {e}"
-                    )
+                    logger.error("Could not push fader %s to minimum: %s", self.current_flagged_channel, e)
 
             elif hex_message == "B00F08":  # left Button-Block
                 self.left_button_flag = True
@@ -241,29 +249,22 @@ class Driver:
                 self.right_button_flag = True
             elif self.right_button_flag:
                 if hex_message == "B02F40":
-                    print("Blackout")
+                    logger.info("MotorMix blackout")
                     self.blackout()
 
                 elif hex_message == "B02F41":
-                    print("MotorMix Scene 14")
                     self.toggleSceneQuickSelect(14)
                 elif hex_message == "B02F42":
-                    print("MotorMix Scene 13")
                     self.toggleSceneQuickSelect(13)
                 elif hex_message == "B02F43":
-                    print("MotorMix Scene 12")
                     self.toggleSceneQuickSelect(12)
                 elif hex_message == "B02F44":
-                    print("MotorMix Scene 11")
                     self.toggleSceneQuickSelect(11)
                 elif hex_message == "B02F45":
-                    print("MotorMix Scene 10")
                     self.toggleSceneQuickSelect(10)
                 elif hex_message == "B02F46":
-                    print("MotorMix Scene 9")
                     self.toggleSceneQuickSelect(9)
                 elif hex_message == "B02F47":
-                    print("MotorMix Scene 8")
                     self.toggleSceneQuickSelect(8)
                 self.right_button_flag = False
 
@@ -408,8 +409,7 @@ class Driver:
                 value=lsb,
                 time=0,
             )
-            self.outport.send(msg1)
-            self.outport.send(msg2)
+            self._send(msg1, msg2)
             self.displayFaderValues(index, value)
             return
         else:  # If any other fader is pushed
@@ -436,8 +436,7 @@ class Driver:
                         value=lsb,
                         time=0,
                     )
-                    self.outport.send(msg1)
-                    self.outport.send(msg2)
+                    self._send(msg1, msg2)
                     self.displayFaderValues(index, value)
                 else:
                     pass
@@ -528,7 +527,7 @@ class Driver:
         hex_string = f"{HEADER} 10 {ADDRESS:02X} {ascii_values} {END}"
 
         # Send the MIDI message
-        self.outport.send(mido.Message.from_hex(hex_string))
+        self._send(mido.Message.from_hex(hex_string))
 
     def displayASCII(self, channel, row, text):
         HEADER = "F0 00 01 0F 00 11 00"
@@ -544,7 +543,7 @@ class Driver:
         hex_string = f"{HEADER} 10 {ADDRESS:02X} {ascii_values} {END}"
 
         # Send the MIDI message
-        self.outport.send(mido.Message.from_hex(hex_string))
+        self._send(mido.Message.from_hex(hex_string))
 
     def clearDisplay(self):
         # Clear both rows by sending spaces to all character positions
@@ -580,7 +579,7 @@ class Driver:
             )
 
         hex_string += "F7"
-        self.outport.send(mido.Message.from_hex(hex_string))
+        self._send(mido.Message.from_hex(hex_string))
 
     # -------------------- page Display END --------------------
 
@@ -593,22 +592,18 @@ class Driver:
             prefix = "B0 0C 08"
             if state == 1:
                 message = syntax_on + str(buttonIndex)
-                self.outport.send(mido.Message.from_hex(prefix))
-                self.outport.send(mido.Message.from_hex(message))
+                self._send(mido.Message.from_hex(prefix), mido.Message.from_hex(message))
             if state == 0:
                 message = syntax_off + str(buttonIndex)
-                self.outport.send(mido.Message.from_hex(prefix))
-                self.outport.send(mido.Message.from_hex(message))
+                self._send(mido.Message.from_hex(prefix), mido.Message.from_hex(message))
         if buttonGroup == "RIGHT":
             prefix = "B0 0C 09"
             if state == 1:
                 message = syntax_on + str(buttonIndex)
-                self.outport.send(mido.Message.from_hex(prefix))
-                self.outport.send(mido.Message.from_hex(message))
+                self._send(mido.Message.from_hex(prefix), mido.Message.from_hex(message))
             if state == 0:
                 message = syntax_off + str(buttonIndex)
-                self.outport.send(mido.Message.from_hex(prefix))
-                self.outport.send(mido.Message.from_hex(message))
+                self._send(mido.Message.from_hex(prefix), mido.Message.from_hex(message))
 
     def channel_button_LED(self, channel, index, state):
         prefix = "B0 0C 0"
@@ -646,8 +641,7 @@ class Driver:
                     value=lsb,
                     time=0,
                 )
-                self.outport.send(msg1)
-                self.outport.send(msg2)
+                self._send(msg1, msg2)
 
     def getDeviceValues(self):
         if self.devices is not None:
@@ -712,8 +706,7 @@ class Driver:
                     value=lsb,
                     time=0,
                 )
-                self.outport.send(msg1)
-                self.outport.send(msg2)
+                self._send(msg1, msg2)
 
     def init_scene_routing(self):
         # Initialize sceneRouting with placeholders for integers (-1 if the scene is not set)
@@ -735,7 +728,7 @@ class Driver:
         return
 
     def getSceneValues(self):
-        print("getSceneValues")
+        pass  # Not implemented yet
 
     def generate_abbreviation(self, word):
         word = word.upper()

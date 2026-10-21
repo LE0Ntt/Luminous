@@ -18,9 +18,16 @@ import json
 from server import app, db  # type: ignore
 from server.models import Device, Admin, Scene, Settings
 from server.auth import admin_required, create_admin_token
+from server.helpers import AttemptLimiter
+import logging
 import os
 import shutil
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
+
+# Slows down guessing the admin password: 5 wrong attempts per client and minute
+password_attempts = AttemptLimiter(max_attempts=5, window_seconds=60)
 
 
 # Load devices from database
@@ -126,6 +133,11 @@ def change_password():
 # Check if the entered admin password is correct and hand out a token for the admin-only actions
 @app.route("/check_password", methods=["POST"])
 def check_password():
+    client = request.remote_addr
+    if password_attempts.is_blocked(client):
+        logger.warning("Too many wrong admin passwords from %s", client)
+        return jsonify({"match": "false", "message": "too_many_attempts"}), 429
+
     data = request.get_json()
     password = data.get("password", "")
     admin = Admin.query.first()
@@ -136,7 +148,9 @@ def check_password():
         match = password == ""
 
     if match:
+        password_attempts.reset(client)
         return {"match": "true", "token": create_admin_token()}
+    password_attempts.record_failure(client)
     return {"match": "false"}
 
 
@@ -201,7 +215,7 @@ def upload_db():
         db.session.remove()
 
         shutil.copy(DATABASE_PATH, backup_db_path)
-        print(f"Database backed up to: {backup_db_path}")
+        logger.info("Database backed up to: %s", backup_db_path)
 
         # Save the uploaded file
         if "file" not in request.files:
@@ -214,7 +228,7 @@ def upload_db():
         if file and file.filename.endswith(".db"):  # type: ignore
             uploaded_db_path = os.path.join(UPLOAD_FOLDER, "uploaded_database.db")
             file.save(uploaded_db_path)
-            print(f"Uploaded database path: {uploaded_db_path}")
+            logger.info("Uploaded database path: %s", uploaded_db_path)
 
             # Ensure the database session is removed before replacing
             db.session.remove()
@@ -236,7 +250,7 @@ def upload_db():
             )
 
     except Exception as e:
-        print(f"Error: {e}")
+        logger.exception("Uploading the database failed")
         return (
             jsonify(
                 {"message": "Error uploading and replacing database", "error": str(e)}

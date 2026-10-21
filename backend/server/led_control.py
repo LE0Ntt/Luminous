@@ -12,6 +12,10 @@
  *
  * @file led_control.py
 """
+import logging
+
+logger = logging.getLogger(__name__)
+
 try:
     import RPi.GPIO as GPIO  # type: ignore
 
@@ -33,11 +37,10 @@ try:
         GPIO.cleanup()
 
 except ModuleNotFoundError:
-    print("RPi.GPIO module not found. Running without LED support.")
+    logger.info("RPi.GPIO module not found. Running without LED support.")
 
     def setup():
         pass
 
     def cleanup():
-        print("Cleanup")
         pass

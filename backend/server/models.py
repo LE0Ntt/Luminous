@@ -17,9 +17,6 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from server import db
 
-ignored_channels = {1: [], 2: []}  # Channels ignored by the OLA master
-
-
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     password_hash = db.Column(db.String(128))
@@ -63,11 +60,7 @@ class Device(db.Model):
 
     # Initial values for channels
     def set_channel_values(self, channels, universe):
-        global ignored_channels
-        universe = int(universe[1:])  # Stripping the 'U' and converting to int
         for channel in channels:
-            if channel["channel_type"] != "main":
-                ignored_channels[universe].append(int(channel["dmx_channel"]))
             if channel["channel_type"] in ["r", "g", "b"]:
                 channel["sliderValue"] = 255
                 channel["backupValue"] = 255

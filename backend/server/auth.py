@@ -13,6 +13,7 @@
  * @file auth.py
 """
 
+import logging
 from functools import wraps
 from flask import request, jsonify
 from itsdangerous import URLSafeTimedSerializer, BadSignature
@@ -22,6 +23,8 @@ from server import app
 # admin-only HTTP routes expect in this header and socket events in "token"
 ADMIN_TOKEN_HEADER = "X-Admin-Token"
 ADMIN_TOKEN_MAX_AGE = 30 * 60  # Seconds, covers one visit of the admin settings
+
+logger = logging.getLogger(__name__)
 
 _serializer = URLSafeTimedSerializer(app.config["SECRET_KEY"], salt="admin-token")
 
@@ -46,7 +49,7 @@ def admin_required(view):
     @wraps(view)
     def wrapper(*args, **kwargs):
         if not is_valid_admin_token(request.headers.get(ADMIN_TOKEN_HEADER)):
-            print(f"Rejected unauthorized request to {request.path} from {request.remote_addr}")
+            logger.warning("Rejected unauthorized request to %s from %s", request.path, request.remote_addr)
             return jsonify({"message": "unauthorized"}), 401
         return view(*args, **kwargs)
 

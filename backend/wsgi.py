@@ -1,11 +1,24 @@
-from server import app, led_control
-from socket_events import register_socketio_events, socketio
+"""
+ * Luminous - A Web-Based Lighting Control System
+ *
+ * TH Köln - University of Applied Sciences, institute for media and imaging technology
+ * Projekt Medienproduktionstechnik & Web-Engineering
+ *
+ * @file wsgi.py
+ * Entry point for a WSGI server, the socket server runs in threading mode:
+ * gunicorn -w 1 --threads 100 -b 0.0.0.0:5000 wsgi:app
+"""
 
-if __name__ == "__main__":
-    app.run()
+import logging
+import os
 
+logging.basicConfig(
+    level=os.environ.get("LUMINOUS_LOG_LEVEL", "INFO").upper(),
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
 
-# gunicorn -k gevent -w 1 wsgi:app
-# /usr/local/bin/python3.9 /Library/Frameworks/Python.framework/Versions/3.9/bin/gunicorn -k gevent -w 1 -b 127.0.0.1:5000 server:app
-# /usr/local/bin/python3.9 /Library/Frameworks/Python.framework/Versions/3.9/bin/gunicorn -k gevent -w 1 -b 127.0.0.1:5000 wsgi:app
-# /usr/local/bin/python3.9 /Library/Frameworks/Python.framework/Versions/3.9/bin/gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 -b 127.0.0.1:5000 wsgi:app
+from server import app, led_control  # noqa: E402,F401
+from socket_events import register_socketio_events, socketio  # noqa: E402
+
+led_control.setup()
+register_socketio_events(socketio)

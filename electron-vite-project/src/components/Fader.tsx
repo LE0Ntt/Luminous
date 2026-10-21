@@ -12,10 +12,13 @@
  *
  * @file Fader.tsx
  */
-import React, { useState, ChangeEvent, useEffect, useCallback } from 'react';
+import React, { useState, ChangeEvent, useEffect, useCallback, useRef } from 'react';
 import './Fader.css';
 import { useConnectionContext } from './ConnectionContext';
 import { useFaderValue, useFaderContext } from './FaderContext';
+import { clamp, FADER_MAX, faderToPercent, parseDecimal, percentToFader, sanitizeDecimalInput } from '@/utils/helpers';
+
+const EMIT_INTERVAL_MS = 12; // Minimum time between two emits while dragging
 
 interface SliderProps {
   id: number;
@@ -30,15 +33,16 @@ interface SliderProps {
 const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, number, height, className, color }) => {
   // Initialize context
   const { emit } = useConnectionContext();
-  const { setFaderValue } = useFaderContext();
+  const { setFaderValue, getFaderValue } = useFaderContext();
   const faderValue = useFaderValue(sliderGroupId, id);
 
-  const [timerRunning, setTimerRunning] = useState<boolean>(false);
+  const lastEmitRef = useRef(0);
+  const trailingEmitRef = useRef<ReturnType<typeof setTimeout>>();
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   // Calculating the display value (0 to 100%) and update input value
-  const scaledDisplayValue = (faderValue / 255) * 100;
+  const scaledDisplayValue = faderToPercent(faderValue);
   const [inputValue, setInputValue] = useState<string>(Math.round(scaledDisplayValue) + '%');
 
   // Update input value when display value changes
@@ -56,42 +60,47 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
     [emit, sliderGroupId, id]
   );
 
-  // Update the fader value on slider change
+  // Cancel a pending emit when the fader unmounts
+  useEffect(() => () => clearTimeout(trailingEmitRef.current), []);
+
+  // Update the fader value on slider change, but send only at certain time intervals.
+  // The last value is always sent (trailing emit), so the server ends up with the final position.
   const handleSliderChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      const newValue = Math.min(Math.max(parseInt(event.target.value, 10), 0), 255);
+      const newValue = clamp(parseInt(event.target.value, 10), 0, FADER_MAX);
+      setFaderValue(sliderGroupId, id, newValue);
 
-      // Send only at certain time intervals
-      if (!timerRunning) {
-        setTimerRunning(true);
+      clearTimeout(trailingEmitRef.current);
+      const sendNow = () => {
+        lastEmitRef.current = Date.now();
         emitValue(newValue);
-        setFaderValue(sliderGroupId, id, newValue);
-
-        setTimeout(() => {
-          setTimerRunning(false);
-        }, 12); // Timeout in ms
+      };
+      const elapsed = Date.now() - lastEmitRef.current;
+      if (elapsed >= EMIT_INTERVAL_MS) {
+        sendNow();
+      } else {
+        trailingEmitRef.current = setTimeout(sendNow, EMIT_INTERVAL_MS - elapsed);
       }
     },
-    [sliderGroupId, id, timerRunning, emitValue, setFaderValue]
+    [sliderGroupId, id, emitValue, setFaderValue]
   );
 
   // Check if the input value is a number
   const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     if (value.length <= 5) {
-      setInputValue(value.replace(/[^0-9.,]+/g, ''));
+      setInputValue(sanitizeDecimalInput(value));
     }
   }, []);
 
   // Check if the input is valid and set the fader value
   const handleInputConfirm = useCallback(() => {
-    let numericValue = parseFloat(inputValue.replace(',', '.'));
+    const numericValue = parseDecimal(inputValue);
     if (!isNaN(numericValue)) {
-      numericValue = Math.max(0, Math.min(100, numericValue));
-      const scaledValue = Math.round((numericValue / 100) * 255);
+      const scaledValue = percentToFader(numericValue);
       setFaderValue(sliderGroupId, id, scaledValue);
       emitValue(scaledValue);
-      setInputValue(Math.round(numericValue) + '%');
+      setInputValue(Math.round(clamp(numericValue, 0, 100)) + '%');
     } else {
       setInputValue(Math.round(scaledDisplayValue) + '%'); // Reset value if input is NaN
     }
@@ -105,23 +114,24 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
     }
   }, []);
 
-  // Scroll wheel and arrow keys support
+  // Scroll wheel and arrow keys support, only registered for the hovered fader
   useEffect(() => {
+    if (!isHovered) return;
+
+    // Read the current value from the store, several wheel events can arrive before the next render
     const updateFaderValue = (delta: number) => {
-      const newValue = Math.max(0, Math.min(faderValue + delta, 255));
+      const newValue = clamp(getFaderValue(sliderGroupId, id) + delta, 0, FADER_MAX);
       setFaderValue(sliderGroupId, id, newValue);
       emitValue(newValue);
     };
 
     const handleWheel = (event: WheelEvent) => {
-      if (!isHovered) return;
       event.preventDefault();
       const step = event.ctrlKey ? 10 : 1; // If CTRL is pressed, increase/decrease by 10, otherwise by 1
       updateFaderValue(-Math.sign(event.deltaY) * step);
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (!isHovered) return;
       if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
         event.preventDefault();
         const step = event.ctrlKey ? 10 : 1;
@@ -136,7 +146,7 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isHovered, faderValue, sliderGroupId, id, emitValue, setFaderValue]);
+  }, [isHovered, sliderGroupId, id, emitValue, getFaderValue, setFaderValue]);
 
   // On value input focus
   const handleFocus = useCallback((event: React.FocusEvent<HTMLInputElement>) => {
@@ -153,6 +163,8 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
     background: `linear-gradient(to right, ${backgroundColor} 0%, ${backgroundColor} ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) ${scaledDisplayValue}%, rgba(40, 40, 40, 0.7) 100%)`,
   };
 
+  const label = number !== undefined ? `${number} ${name ?? ''}`.trim() : name;
+
   return (
     <div
       className={`fader ${height ? 'faderMaster' : ''} ${number ? 'numberAlign' : ''} ${className || ''}`}
@@ -160,7 +172,7 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
       onMouseLeave={() => setIsHovered(false)}
       style={{ '--sliderHeight': `${height}px` } as React.CSSProperties}
     >
-      {number && <h2 className='faderText'>{number}</h2>}
+      {number !== undefined && <h2 className='faderText'>{number}</h2>}
       <div className='midPoint'></div>
       <div className='value-slider'>
         <input
@@ -172,6 +184,8 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
           onChange={handleSliderChange}
           style={gradientStyle}
           className='slider'
+          aria-label={label}
+          aria-valuetext={`${Math.round(scaledDisplayValue)}%`}
         />
       </div>
       <input
@@ -182,6 +196,8 @@ const Fader: React.FC<SliderProps> = React.memo(({ id, sliderGroupId, name, numb
         onBlur={handleInputConfirm}
         onKeyDown={handleKeyDown}
         className='inputNum'
+        aria-label={label}
+        inputMode='decimal'
       />
       <span
         title={name}

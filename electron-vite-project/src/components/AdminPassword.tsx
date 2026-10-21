@@ -12,10 +12,11 @@
  *
  * @file AdminPassword.tsx
  */
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 import Button from './Button';
+import CloseButton from './CloseButton';
 import IconNote from '@/assets/IconNote';
 
 interface AdminPasswordProps {
@@ -29,53 +30,49 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
   const { t } = useContext(TranslationContext);
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
+  // Guards against double submits (ENTER + click), which would e.g. add a scene twice or delete the following scene
+  const pendingRef = useRef(false);
+
+  // Remove the red outline again after a few seconds
+  useEffect(() => {
+    if (!error) return;
+    const timer = setTimeout(() => setError(false), 4000);
+    return () => clearTimeout(timer);
+  }, [error]);
 
   // Logic for checking the password
-  const handleConfirm = () => {
-    fetch(url + '/check_password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ password: password }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.match === 'true') {
-          if (onConfirm !== undefined) {
-            onConfirm(true);
-          } else {
-            if (isDelete) {
-              document.body.dispatchEvent(new Event('deleteScene'));
-            } else {
-              document.body.dispatchEvent(new Event('saveScene'));
-            }
-          }
-          onClose();
-        } else {
-          // If the password is wrong, the text box will be highlighted in red
-          setError(true);
-          const timer = setTimeout(() => setError(false), 4000);
-          return () => clearTimeout(timer);
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
+  const handleConfirm = async () => {
+    if (pendingRef.current) return;
+    pendingRef.current = true;
+
+    try {
+      const response = await fetch(url + '/check_password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: password }),
       });
-  };
+      if (!response.ok) throw new Error(`Password check failed with status ${response.status}`);
+      const data = await response.json();
 
-  // Confirm with ENTER
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        () => handleConfirm();
+      if (data.match === 'true') {
+        if (onConfirm !== undefined) {
+          onConfirm(true);
+        } else {
+          document.body.dispatchEvent(new Event(isDelete ? 'deleteScene' : 'saveScene'));
+        }
+        onClose();
+        return; // Keep the guard set, the dialog is closing
       }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+      // If the password is wrong, the text box will be highlighted in red
+      setError(true);
+    } catch (error) {
+      console.error('Error:', error);
+      setError(true);
+    }
+    pendingRef.current = false;
+  };
 
   return (
     <>
@@ -83,21 +80,20 @@ function AdminPassword({ onConfirm, onClose, isDelete }: AdminPasswordProps) {
         className='backgroundOverlay'
         onClick={onClose}
       />
-      <div className='DialogContainer window'>
-        <button
-          className='buttonClose'
-          onClick={onClose}
+      <div
+          className='DialogContainer window'
+          role='dialog'
+          aria-modal='true'
+          aria-label={t('ap_title')}
         >
-          <div className='xClose'>
-            <div className='xClose xiClose'></div>
-          </div>
-        </button>
+        <CloseButton onClose={onClose} />
         <div className='DialogContent'>
           <span className='DialogTitle'>{t('ap_title')}</span>
           <input
             className={`textBox DialogTextBox ${error ? 'error-outline' : ''}`}
             type='password'
             placeholder={t('ap_password')}
+            aria-label={t('ap_password')}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             autoFocus

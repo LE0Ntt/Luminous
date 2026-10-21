@@ -51,7 +51,12 @@ function RecoverDialog({ onClose }: RecoverDialogProps) {
         className='backgroundOverlay'
         style={{ cursor: 'default' }}
       />
-      <div className='DialogContainer window'>
+      <div
+          className='DialogContainer window'
+          role='dialog'
+          aria-modal='true'
+          aria-label={t('rd_title')}
+        >
         <div className='DialogContent'>
           <span className='DialogTitle'>{t('rd_title')}</span>
           <div className='DialogIcon' />

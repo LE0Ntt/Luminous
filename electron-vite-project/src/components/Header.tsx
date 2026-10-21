@@ -53,7 +53,10 @@ function Header() {
 
   return (
     <div className='header'>
-      <div className='containerHeader'>
+      <div
+        className='containerHeader'
+        role='navigation'
+      >
         <ul className='unorderedList'>
           <li>
             <Link
@@ -123,6 +126,8 @@ function Header() {
         <button
           onClick={() => setIsDark(!isDark)}
           className='buttonTheme'
+          aria-label={t('toggleTheme')}
+          aria-pressed={isDark}
         >
           {!isDark ? (
             <svg

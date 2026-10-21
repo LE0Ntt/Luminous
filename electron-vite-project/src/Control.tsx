@@ -23,9 +23,10 @@ import Fader from './components/Fader';
 import DeviceList from './components/DeviceList';
 import Button from './components/Button';
 import AddScene from './components/AddScene';
-import AdminPassword from './components/AdminPassword';
 import iro from '@jaames/iro';
 import ControlWindow from './assets/ControlWindow';
+import { fetchServerJson } from './utils/api';
+import { clamp, faderToPercent, FaderUpdate, groupFaderUpdates, parseDecimal, sanitizeDecimalInput } from './utils/helpers';
 
 interface Channel {
   id: number;
@@ -44,26 +45,21 @@ interface DeviceConfig {
   upToDate?: boolean;
 }
 
-let sendBuffer: { [key: string]: { deviceId: number; channelId: number; value: number } } = {};
-let sendTimer: NodeJS.Timeout | null = null;
+// Index of each channel type in the control fader values [main, bi, r, g, b]
+const CONTROL_INDEX: Partial<Record<string, number>> = { main: 0, bi: 1, r: 2, g: 3, b: 4 };
+const getControlIndex = (type: string): number | undefined => CONTROL_INDEX[type];
+
+let sendBuffer: { [key: string]: FaderUpdate } = {};
+let sendTimer: ReturnType<typeof setTimeout> | null = null;
 
 // Buffer DMX values and send them in bulk
-function sendDMXBuffered(emit: any, deviceId: number, channelId: number, value: number) {
+function sendDMXBuffered(emit: (event: string, data?: any) => void, deviceId: number, channelId: number, value: number) {
   const key = `${deviceId}-${channelId}`;
   sendBuffer[key] = { deviceId, channelId, value };
 
   if (!sendTimer) {
     sendTimer = setTimeout(() => {
-      const deviceDataArray = Object.values(sendBuffer).reduce((acc: any, { deviceId, channelId, value }) => {
-        let device = acc.find((d: any) => d.deviceId === deviceId);
-        if (!device) {
-          device = { deviceId, channels: [] };
-          acc.push(device);
-        }
-        device.channels.push({ channelId, value });
-        return acc;
-      }, []);
-      emit('bulk_fader_values', deviceDataArray);
+      emit('bulk_fader_values', groupFaderUpdates(Object.values(sendBuffer)));
       sendBuffer = {};
       sendTimer = null;
     }, 20);
@@ -83,7 +79,6 @@ function Control() {
   const [firstLoad, setFirstLoad] = useState(false);
   const [animation, setAnimation] = useState(false);
   const [addScene, setAddScene] = useState(false);
-  const [saveSceneAdmin, setSaveSceneAdmin] = useState(false);
   const [isSolo, setIsSolo] = useState(false);
   const [height, setHeight] = useState(-3);
   const [selected, setSelected] = useState(false);
@@ -112,9 +107,7 @@ function Control() {
   // Fetch devices from the server
   const fetchDevices = async () => {
     try {
-      const response = await fetch(url + '/fader');
-      const data = await response.json();
-      const parsedData: DeviceConfig[] = JSON.parse(data);
+      const parsedData = await fetchServerJson<DeviceConfig[]>(url + '/fader');
       parsedData.shift();
       setDevices(parsedData);
       syncDeviceLists(parsedData);
@@ -188,23 +181,17 @@ function Control() {
     if (!selectedDevices.length && isSolo) toggleSolo();
   }, [selectedDevices, unselectedDevices, devices]);
 
-  const handleAddDevice = useCallback(
-    (d: DeviceConfig) => {
-      setSelectedDevices((c) => [...c, d]);
-      setUnselectedDevices((c) => c.filter((i) => i.id !== d.id));
-      setDeviceModified(true);
-    },
-    [selectedDevices, unselectedDevices]
-  );
+  const handleAddDevice = useCallback((d: DeviceConfig) => {
+    setSelectedDevices((c) => [...c, d]);
+    setUnselectedDevices((c) => c.filter((i) => i.id !== d.id));
+    setDeviceModified(true);
+  }, []);
 
-  const handleRemoveDevice = useCallback(
-    (d: DeviceConfig) => {
-      setSelectedDevices((c) => c.filter((s) => s.id !== d.id));
-      setUnselectedDevices((c) => [...c, d]);
-      setDeviceModified(true);
-    },
-    [selectedDevices, unselectedDevices]
-  );
+  const handleRemoveDevice = useCallback((d: DeviceConfig) => {
+    setSelectedDevices((c) => c.filter((s) => s.id !== d.id));
+    setUnselectedDevices((c) => [...c, d]);
+    setDeviceModified(true);
+  }, []);
 
   const toggleSolo = () => {
     emit('control_solo', { solo: !isSolo, devices: selectedDevices });
@@ -294,13 +281,11 @@ function Control() {
     setSupportFlags({ supportsBiColor: bi, supportsRGB: rgb });
   }, [selectedDevices]);
 
-  const getControlIndex = useCallback((type: string): number | undefined => (({ main: 0, bi: 1, r: 2, g: 3, b: 4 } as any)[type]), []);
-  
   // Update fader values for selected devices
   const updateFaderValuesForSelectedDevices = useCallback(() => {
     programmaticUpdateRef.current = true;
 
-    const flags: any = {
+    const flags: Record<string, boolean> = {
       mainSet: false,
       biSet: false,
       rSet: false,
@@ -333,7 +318,7 @@ function Control() {
     );
 
     prevFaderRef.current = nextPrev;
-  }, [selectedDevices, getFaderValue, setFaderValue, getControlIndex]);
+  }, [selectedDevices, getFaderValue, setFaderValue]);
 
   const mountWheel = useCallback(
     (node: HTMLDivElement | null) => {
@@ -398,8 +383,8 @@ function Control() {
   );
 
   const [isFocused, setIsFocused] = useState(false);
-  const scaledDisplay = (biColorFaderValue / 255) * 100;
-  const [inputValue, setInputValue] = useState<any>(Math.round(scaledDisplay) + '%');
+  const scaledDisplay = faderToPercent(biColorFaderValue);
+  const [inputValue, setInputValue] = useState<string>(Math.round(scaledDisplay) + '%');
 
   // Update input value when display value changes
   useEffect(() => {
@@ -408,15 +393,15 @@ function Control() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    if (value.length <= 5) setInputValue(value.replace(/[^0-9.,]+/g, ''));
+    if (value.length <= 5) setInputValue(sanitizeDecimalInput(value));
   };
 
   const handleInputConfirm = () => {
     if (isDraggingBi.current) return;
-    let num = parseFloat(inputValue.toString().replace(',', '.'));
+    let num = parseDecimal(inputValue);
     if (!isNaN(num)) {
-      num = Math.max(0, Math.min(100, num));
-      setInputValue(Math.round(num));
+      num = clamp(num, 0, 100);
+      setInputValue(`${Math.round(num)}`);
       const kelvin = (((num / 100) * 255) / 255) * 8800 + 2200;
       const rgb = iro.Color.kelvinToRgb(kelvin);
       setFaderValue(0, 3, rgb.r);
@@ -425,7 +410,7 @@ function Control() {
       setFaderValue(0, 2, Math.min(255, Math.max(0, Math.round(((kelvin - 2200) / 8800) * 255))));
       isDraggingBi.current = true;
       resetIsDraggingBi();
-    } else setInputValue(Math.round(scaledDisplay));
+    } else setInputValue(`${Math.round(scaledDisplay)}`);
     setIsFocused(false);
   };
 
@@ -453,11 +438,15 @@ function Control() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstLoad]);
 
-  // Handle wheel and keyboard events for Bi-Color fader
+  // Handle wheel and keyboard events for Bi-Color fader, only registered while it is hovered
   useEffect(() => {
+    if (!isBiColorHovered) return;
+
+    // Read the current value from the store, several wheel events can arrive before the next render
     const updateBiColorValue = (delta: number) => {
-      const newValue = Math.max(0, Math.min(biColorFaderValue + delta, 255));
-      if (newValue === biColorFaderValue) return;
+      const currentValue = getFaderValue(0, 2);
+      const newValue = clamp(currentValue + delta, 0, 255);
+      if (newValue === currentValue) return;
       setFaderValue(0, 2, newValue);
       const kelvin = (newValue / 255) * 8800 + 2200;
       const rgb = iro.Color.kelvinToRgb(kelvin);
@@ -469,14 +458,13 @@ function Control() {
     };
 
     const handleWheel = (event: WheelEvent) => {
-      if (!isBiColorHovered) return;
       event.preventDefault();
       const step = event.ctrlKey ? 10 : 1;
       updateBiColorValue(-Math.sign(event.deltaY) * step);
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (!isBiColorHovered || ['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement).tagName)) return; // Ignore if input is focused
+      if (['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement).tagName)) return; // Ignore if input is focused
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
         event.preventDefault();
         const step = event.ctrlKey ? 10 : 1;
@@ -492,7 +480,7 @@ function Control() {
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isBiColorHovered, biColorFaderValue, setFaderValue]);
+  }, [isBiColorHovered, getFaderValue, setFaderValue]);
 
   return (
     <>
@@ -553,6 +541,7 @@ function Control() {
                 value={biColorFaderValue}
                 onChange={handleBiSliderChange}
                 className='biRange'
+                aria-label='Bi-Color'
                 onMouseDown={() => (isDraggingBi.current = true)}
                 onMouseUp={resetIsDraggingBi}
                 onTouchStart={() => (isDraggingBi.current = true)}
@@ -566,6 +555,8 @@ function Control() {
                 onBlur={handleInputConfirm}
                 onKeyDown={handleKeyDown}
                 className='inputNum'
+                aria-label='Bi-Color'
+                inputMode='decimal'
               />
             </div>
             {/* RGB */}
@@ -649,7 +640,7 @@ function Control() {
         <>
           <div className='noSelectWindow'>
             <div className='noSupport noDevice noSupportText noSupportShadow'>
-              <p dangerouslySetInnerHTML={{ __html: t('noDevices') }}></p>
+              <p className='whitespace-pre-line'>{t('noDevices')}</p>
             </div>
             <div className='lightFader innerWindow'></div>
             <div className='controlButtons innerWindow'></div>
@@ -677,7 +668,6 @@ function Control() {
       </div>
       <div className={'noSelectWindow window' + (selected ? ' hide' : '')}></div>
       {addScene && <AddScene onClose={() => setAddScene(false)} />}
-      {saveSceneAdmin && <AdminPassword onClose={() => setSaveSceneAdmin(false)} />}
     </>
   );
 }

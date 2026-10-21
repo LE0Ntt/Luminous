@@ -12,7 +12,7 @@
  *
  * @file ConnectionContext.tsx
  */
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext, useCallback, useMemo } from 'react';
 import { io, Socket } from 'socket.io-client';
 
 type EmitFunction = (event: string, data?: any) => void;
@@ -45,32 +45,27 @@ interface ConnectionProviderProps {
 export function ConnectionProvider({ children }: ConnectionProviderProps) {
   const [connected, setConnected] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [url, setUrl] = useState<string>('');
-  const [ip, setIp] = useState<string>('');
-  const [port, setPort] = useState<string>('');
+  // The web version is served by the server itself (relative URLs), Electron loads the address from its store first
+  const [url, setUrl] = useState<string | null>(window.electronAPI ? null : '');
 
   useEffect(() => {
-    async function fetchIpAndPort() {
-      if (window.electronAPI) {
-        const [data] = await Promise.all([window.electronAPI.getIp()]);
-        const { ip: fetchedIp, port: fetchedPort } = data;
-        setIp(fetchedIp);
-        setPort(fetchedPort);
-        setUrl(`http://${fetchedIp}:${fetchedPort}`);
-      }
-    }
-    fetchIpAndPort();
+    window.electronAPI
+      ?.getIp()
+      .then(({ ip, port }) => setUrl(`http://${ip}:${port}`))
+      .catch((error) => console.error('Could not load the server address:', error));
   }, []);
 
   // change url to your server address
-  const changeUrl = (newUrl: string) => {
+  const changeUrl = useCallback((newUrl: string) => {
+    const { hostname, port } = new URL(newUrl); // Throws on invalid input before anything is changed
     setUrl(newUrl);
-    const url = new URL(newUrl);
-    (window as any).electronAPI.send('set-ip', url.hostname);
-    (window as any).electronAPI.send('set-port', parseInt(url.port));
-  };
+    window.electronAPI?.send('set-ip', hostname);
+    window.electronAPI?.send('set-port', port ? parseInt(port, 10) : 80); // URL omits the default port
+  }, []);
 
   useEffect(() => {
+    if (url === null) return;
+
     const socketInstance = io(`${url}/socket`);
     setSocket(socketInstance);
 
@@ -79,30 +74,25 @@ export function ConnectionProvider({ children }: ConnectionProviderProps) {
 
     socketInstance.on('connect', handleConnect);
     socketInstance.on('disconnect', handleDisconnect);
-    socketInstance.on('reconnect', handleConnect);
 
     return () => {
       socketInstance.off('connect', handleConnect);
       socketInstance.off('disconnect', handleDisconnect);
-      socketInstance.off('reconnect', handleConnect);
       socketInstance.disconnect();
       setSocket(null);
       setConnected(false);
     };
   }, [url]);
 
-  const emit: EmitFunction = (event, data) => socket?.emit(event, data);
-  const on: OnFunction = (event, callback) => socket?.on(event, callback);
-  const off: OffFunction = (event, callback) => socket?.off(event, callback);
+  // Stable while the socket stays the same, so consumers only resubscribe when the socket is replaced
+  const emit = useCallback<EmitFunction>((event, data) => socket?.emit(event, data), [socket]);
+  const on = useCallback<OnFunction>((event, callback) => socket?.on(event, callback), [socket]);
+  const off = useCallback<OffFunction>((event, callback) => socket?.off(event, callback), [socket]);
 
-  const contextValue: ConnectionContextType = {
-    connected,
-    emit,
-    on,
-    off,
-    url,
-    changeUrl,
-  };
+  const contextValue = useMemo<ConnectionContextType>(
+    () => ({ connected, emit, on, off, url: url ?? '', changeUrl }),
+    [connected, emit, on, off, url, changeUrl]
+  );
 
   return <ConnectionContext.Provider value={contextValue}>{children}</ConnectionContext.Provider>;
 }

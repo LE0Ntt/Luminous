@@ -63,7 +63,7 @@
   }
 }
 
-.dropdown > p {
+.dropdown > button {
   margin: 0;
   padding: 9px;
   /* border-bottom: 1px solid var(--onepStroke); */
@@ -74,11 +74,11 @@
   border-radius: 3px;
 }
 
-.dropdown > p:hover {
+.dropdown > button:hover {
   color: var(--primary);
   background: var(--colorButtonHover);
 }
 
-.dropdown > p:last-child {
+.dropdown > button:last-child {
   border-bottom: 0 none;
 }

@@ -20,6 +20,8 @@ import IconServer from '@/assets/IconServer';
 import IconKey from '@/assets/IconKey';
 import { useConnectionContext } from './ConnectionContext';
 import IconNetwork from '@/assets/IconNetwork';
+import { showAlert } from '@/utils/platform';
+import { isValidIpv4, isValidPort } from '@/utils/helpers';
 
 interface Setting2Props {
   connected: boolean;
@@ -34,6 +36,7 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
   const defaultIP = '0.0.0.0'; // placeholder ip to avoid empty string, and error inside the console
   const [ip, setIP] = useState<string>(defaultIP);
   const [port, setPort] = useState<string>('5000');
+  const [urlError, setUrlError] = useState(false);
   const { t } = useContext(TranslationContext);
   const { changeUrl, url } = useConnectionContext();
 
@@ -116,14 +119,14 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
     }
   }, [passwordMessage]);
 
-  // URL Settings
+  // URL Settings (the web version uses relative URLs, the page itself is served by the server)
   useEffect(() => {
-    const urlParts = url.split(':');
-    if (urlParts.length > 1) {
-      setIP(urlParts[1].substring(2).split('/')[0]); // Extract IP
-      if (urlParts[2]) {
-        setPort(urlParts[2].split('/')[0]); // Extract port if exists
-      }
+    try {
+      const { hostname, port: urlPort } = new URL(url || window.location.origin);
+      if (isValidIpv4(hostname)) setIP(hostname);
+      setPort(urlPort || '80');
+    } catch (error) {
+      console.error('Could not parse the server URL:', error);
     }
   }, [url]);
 
@@ -131,20 +134,33 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
     const octets = ip.split('.');
     if (index >= 1 && index <= 4) {
       // Ensure index is within the correct range
-      octets[index - 1] = value;
+      octets[index - 1] = value.replace(/\D/g, '');
       setIP(octets.join('.'));
+      setUrlError(false);
     }
   };
 
-  // not in use at the moment, port is hardcoded
   const handlePortChange = (value: string) => {
-    setPort(value);
+    setPort(value.replace(/\D/g, ''));
+    setUrlError(false);
   };
 
   const saveNewURL = () => {
-    const newURL = `http://${ip}:${port}`;
-    console.log('New URL:', newURL);
-    changeUrl(newURL);
+    if (!isValidIpv4(ip) || !isValidPort(port)) {
+      setUrlError(true);
+      return;
+    }
+    changeUrl(`http://${ip}:${port}`);
+  };
+
+  // The Electron app opens OLA in its own window, the browser in a new tab
+  const openOLA = () => {
+    if (window.electronAPI) {
+      window.electronAPI.send('open-OLA');
+    } else {
+      const { hostname } = new URL(url || window.location.origin);
+      window.open(`http://${hostname}:9090/`, '_blank', 'noopener,noreferrer');
+    }
   };
 
   // ----- Database Settings -----
@@ -162,7 +178,7 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
         setSelectedFile(files[0]);
         setIsDragActive(false);
       } else {
-        window.electronAPI.showAlert(t('set_alertWrongFile'));
+        showAlert(t('set_alertWrongFile'));
       }
     }
   };
@@ -182,7 +198,7 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
   // Upload the selected file
   const handleUpload = async () => {
     if (!selectedFile) {
-      window.electronAPI.showAlert(t('set_alertNoFile'));
+      showAlert(t('set_alertNoFile'));
       return;
     }
 
@@ -194,14 +210,10 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
         method: 'POST',
         body: formData,
       });
-      if (response.ok) {
-        window.electronAPI.showAlert(t('set_alertSuccess'));
-      } else {
-        window.electronAPI.showAlert(t('set_alertError'));
-      }
+      showAlert(t(response.ok ? 'set_alertSuccess' : 'set_alertError'));
     } catch (error) {
       console.error('Error uploading the file:', error);
-      window.electronAPI.showAlert(t('set_alertError'));
+      showAlert(t('set_alertError'));
     }
   };
 
@@ -224,14 +236,18 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
       a.download = 'database.db';
       document.body.appendChild(a);
       a.click();
+      a.remove();
       window.URL.revokeObjectURL(downloadUrl);
     } catch (error) {
       console.error('Error downloading the file:', error);
+      showAlert(t('set_downloadError'));
     }
   };
 
-  // Reset the database
+  // Reset the database (the server keeps a backup of the old one)
   const handleReset = async () => {
+    if (!window.confirm(t('set_resetConfirm'))) return;
+
     try {
       const response = await fetch(`${url}/reset_db`, {
         method: 'POST',
@@ -241,9 +257,10 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
         throw new Error(`Error: ${response.statusText}`);
       }
 
-      window.electronAPI.showAlert(t('set_resetSuccess'));
+      showAlert(t('set_resetSuccess'));
     } catch (error) {
       console.error('Error resetting the database:', error);
+      showAlert(t('set_resetError'));
     }
   };
 
@@ -310,7 +327,7 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
             </div>
             <Button
               className='SettingsButton controlButton'
-              onClick={() => (window as any).electronAPI.send('open-OLA', url.toString().slice(0, -5) + ':9090')}
+              onClick={openOLA}
             >
               {t('set_ola')}
             </Button>
@@ -327,33 +344,41 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
           <span className='relative top-[-6px]'>{t('change_URL')}</span>
         </div>
         <div className='SettingsTextBoxContainer2'>
-          <div className='SettingsTextBox textBox SettingsIPBoxContainer'>
+          <div className={`SettingsTextBox textBox SettingsIPBoxContainer ${urlError ? 'error-outline' : ''}`}>
             <input
               className='SettingsIPBox'
               maxLength={3}
-              value={ip.split('.')[0]}
+              value={ip.split('.')[0] ?? ''}
               onChange={(e) => handleOctetChange(1, e.target.value)}
+              aria-label={`IP ${t('set_octet')} 1`}
+              inputMode='numeric'
             />
             .
             <input
               className='SettingsIPBox'
               maxLength={3}
-              value={ip.split('.')[1]}
+              value={ip.split('.')[1] ?? ''}
               onChange={(e) => handleOctetChange(2, e.target.value)}
+              aria-label={`IP ${t('set_octet')} 2`}
+              inputMode='numeric'
             />
             .
             <input
               className='SettingsIPBox'
               maxLength={3}
-              value={ip.split('.')[2]}
+              value={ip.split('.')[2] ?? ''}
               onChange={(e) => handleOctetChange(3, e.target.value)}
+              aria-label={`IP ${t('set_octet')} 3`}
+              inputMode='numeric'
             />
             .
             <input
               className='SettingsIPBox'
               maxLength={3}
-              value={ip.split('.')[3]}
+              value={ip.split('.')[3] ?? ''}
               onChange={(e) => handleOctetChange(4, e.target.value)}
+              aria-label={`IP ${t('set_octet')} 4`}
+              inputMode='numeric'
             />
             :
             <input
@@ -361,6 +386,8 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
               maxLength={4}
               value={port}
               onChange={(e) => handlePortChange(e.target.value)}
+              aria-label='Port'
+              inputMode='numeric'
             />
           </div>
           <Button
@@ -369,6 +396,14 @@ const Setting2: React.FC<Setting2Props> = ({ connected }) => {
           >
             {t('as_saveURL')}
           </Button>
+          {urlError && (
+            <span
+              className='errorMessage self-center'
+              role='alert'
+            >
+              {t('set_invalidURL')}
+            </span>
+          )}
         </div>
       </div>
       {connected && (

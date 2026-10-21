@@ -156,9 +156,20 @@
     transform: rotate(90deg);
   }
 
-  button:focus,
-  input:focus {
+  /* No focus ring for mouse and touch, but a visible one for keyboard navigation */
+  button:focus:not(:focus-visible),
+  input:focus:not(:focus-visible) {
     outline: none;
+  }
+  /* Text fields already show a caret */
+  input:not([type='range']):not([type='checkbox']):focus {
+    outline: none;
+  }
+  /* Drawn inside the element, many containers clip overflowing content */
+  :focus-visible,
+  .toggle input:focus-visible + .defaultToggle {
+    outline: 2px solid var(--mainColor);
+    outline-offset: -2px;
   }
 
   .textBox {
@@ -235,5 +246,17 @@
       backdrop-filter: blur(2px);
       background-color: rgba(0, 0, 0, 0.25);
     }
+  }
+}
+
+/* Respect the system setting to reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

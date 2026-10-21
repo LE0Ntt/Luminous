@@ -17,7 +17,7 @@ import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
 import './Titlebar.css';
 import Settings from './Settings';
-import DropDown from './DropDown';
+import DropDown, { DropDownItem } from './DropDown';
 import LightSettings from './LightSettings';
 import Help from './Help';
 import About from './About';
@@ -41,114 +41,98 @@ function TitleBar() {
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const { t } = useContext(TranslationContext);
   const { connected, emit, on, off } = useConnectionContext();
-  const dropDownRef = useRef<HTMLButtonElement | null>(null);
-  const [isMac, setIsMac] = useState(false);
+  const dropDownRef = useRef<HTMLLIElement | null>(null);
+  const [platform, setPlatform] = useState<string | null>(null); // Only known in Electron
+  const isMac = platform === 'darwin';
   const [currentDialog, setCurrentDialog] = useState(Dialog.None);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [displayResetDialog, setDisplayResetDialog] = useState(false);
-  const [isElectronApp, setIsElectronApp] = useState(false);
 
-  // Effect for platform detection
+  // Platform detection and initial full screen state
   useEffect(() => {
-    (async () => {
-      if (window.electronAPI) {
-        const platform = await (window as any).electronAPI.getPlatform();
-        setIsMac(platform === 'darwin');
-        setIsElectronApp(true);
-      } else {
-        setIsElectronApp(false);
-      }
-    })();
+    if (window.electronAPI) {
+      window.electronAPI.getPlatform().then(setPlatform);
+      window.electronAPI.getFullScreen().then(setIsFullscreen);
+      return;
+    }
+
+    // In the browser full screen can also be left with ESC
+    const handleFullscreenChange = () => setIsFullscreen(document.fullscreenElement !== null);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
   // Effect for reset / recover dialog detection
   useEffect(() => {
-    on('recover_dialog', () => setDisplayResetDialog(true));
-
-    return () => {
-      off('recover_dialog', () => setDisplayResetDialog(false));
-    };
+    const showResetDialog = () => setDisplayResetDialog(true);
+    on('recover_dialog', showResetDialog);
+    return () => off('recover_dialog', showResetDialog);
   }, [on, off]);
 
-  // Toggles the full screen mode
-  useEffect(() => {
-    const fetchFullScreenStatus = async () => {
-      if (!isElectronApp) {
-        setIsFullscreen(false);
-      } else {
-        const fullScreenStatus = await (window as any).electronAPI.getFullScreen();
-        setIsFullscreen(fullScreenStatus);
-      }
-    };
-
-    fetchFullScreenStatus();
-  }, []);
-
   const toggleFullScreen = async () => {
-    if (!isElectronApp) {
-      if (!document.fullscreenElement) {
-        await document.documentElement.requestFullscreen();
-      } else {
-        await document.exitFullscreen();
-      }
-      setIsFullscreen(!isFullscreen);
+    if (window.electronAPI) {
+      window.electronAPI.send('toggle-full-screen');
+      setIsFullscreen((prev) => !prev);
+    } else if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
     } else {
-      (window as any).electronAPI.send('toggle-full-screen');
-      setIsFullscreen(!isFullscreen);
+      await document.exitFullscreen();
     }
   };
 
   const handleMinimize = () => {
-    (window as any).electronAPI.send('minimize');
+    window.electronAPI?.send('minimize');
   };
 
   const closeWindow = () => {
     emit('turn_off');
-    (window as any).electronAPI.send('close');
+    window.electronAPI?.send('close');
   };
 
-  const settings = [
-    { icon: IconSettings, text: t('dd_settings') },
-    { icon: IconLight, text: t('dd_lights') },
-    { icon: IconHelp, text: t('dd_help') },
-    { icon: IconAbout, text: t('dd_about') },
-    { icon: isFullscreen ? IconWindow : IconFullscreen, text: isFullscreen ? t('dd_window') : t('dd_fullscreen') },
+  const settings: DropDownItem[] = [
+    { icon: IconSettings, text: t('dd_settings'), onSelect: () => setCurrentDialog(Dialog.Settings) },
+    { icon: IconLight, text: t('dd_lights'), onSelect: () => setCurrentDialog(Dialog.LightSettings) },
+    { icon: IconHelp, text: t('dd_help'), onSelect: () => setCurrentDialog(Dialog.Help) },
+    { icon: IconAbout, text: t('dd_about'), onSelect: () => setCurrentDialog(Dialog.About) },
+    {
+      icon: isFullscreen ? IconWindow : IconFullscreen,
+      text: isFullscreen ? t('dd_window') : t('dd_fullscreen'),
+      onSelect: () => {
+        toggleFullScreen().catch((error) => console.error('Could not toggle full screen:', error));
+      },
+    },
   ];
 
-  // Closes the drop down if the user clicks outside of it
-  const handleClickOutside = (event: MouseEvent) => {
-    if (dropDownRef.current && !dropDownRef.current.contains(event.target as Node) && event.target !== dropDownRef.current) {
-      setShowDropDown(false);
-    }
+  const handleSettingSelection = (selectedSetting: DropDownItem) => {
+    setShowDropDown(false);
+    selectedSetting.onSelect();
   };
 
-  // Listens for clicks outside of the dropdown window
+  // Closes the drop down if the user clicks outside of it or presses ESC
   useEffect(() => {
-    if (showDropDown) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
+    if (!showDropDown) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
+        setShowDropDown(false);
+      }
+    };
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setShowDropDown(false);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
   }, [showDropDown]);
-
-  // The selected setting
-  const settingActions = {
-    [settings[0].text]: () => setCurrentDialog(Dialog.Settings),
-    [settings[1].text]: () => setCurrentDialog(Dialog.LightSettings),
-    [settings[2].text]: () => setCurrentDialog(Dialog.Help),
-    [settings[3].text]: () => setCurrentDialog(Dialog.About),
-    [settings[4].text]: toggleFullScreen,
-  };
-
-  const handleSettingSelection = (selectedSetting: { text: string; icon: React.ElementType }) => {
-    if (settingActions[selectedSetting.text]) {
-      settingActions[selectedSetting.text]();
-    }
-  };
 
   // Timeout for the dropdown animation
   useEffect(() => {
-    let timeout: string | number | NodeJS.Timeout | undefined;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
     if (!showDropDown && isDropdownVisible) {
       timeout = setTimeout(() => {
         setIsDropdownVisible(false);
@@ -160,45 +144,49 @@ function TitleBar() {
   }, [showDropDown, isDropdownVisible]);
 
   return (
-    <div className={`titlebarComp ${showDropDown && 'active'}`}>
+    <div className={`titlebarComp ${showDropDown ? 'active' : ''}`}>
       <nav>
         <ul>
           <li>
             <div className={isMac ? 'hiddenlogo' : 'logo'}></div>
           </li>
-          <li>
+          <li ref={dropDownRef}>
             <button
               onClick={() => setShowDropDown(!showDropDown)}
-              ref={dropDownRef}
+              aria-label={t('dd_settings')}
+              aria-haspopup='menu'
+              aria-expanded={showDropDown}
             >
-              <div className={`settingsButton ${showDropDown && 'active'}`}>
+              <div className={`settingsButton ${showDropDown ? 'active' : ''}`}>
                 <IconSettings
                   size='20px'
                   color='var(--secondary)'
                 />
               </div>
-              {isDropdownVisible && (
-                <DropDown
-                  settings={settings}
-                  settingSelection={handleSettingSelection}
-                  open={showDropDown}
-                />
-              )}
             </button>
+            {isDropdownVisible && (
+              <DropDown
+                settings={settings}
+                settingSelection={handleSettingSelection}
+                open={showDropDown}
+              />
+            )}
           </li>
         </ul>
       </nav>
-      {isElectronApp && (
+      {platform !== null && (
         <div className='buttonContainer'>
           <button
             className={isMac ? 'hide' : 'titlebar-button minimize'}
             onClick={handleMinimize}
+            aria-label={t('minimize')}
           >
             <div className='min'></div>
           </button>
           <button
             className={isMac ? 'hide' : 'titlebar-button close'}
             onClick={closeWindow}
+            aria-label={t('close')}
           >
             <div className='x'>
               <div className='x xi'></div>

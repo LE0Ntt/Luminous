@@ -19,6 +19,8 @@
     "build": "tsc && vite build && electron-builder",
     "build:web": "tsc && vite build --mode web",
     "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"src/**/*.test.ts\"",
     "pree2e": "vite build --mode=test",
     "e2e": "playwright test"
   },

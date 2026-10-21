@@ -20,6 +20,7 @@ import Toggle from './components/Toggle';
 import AddScene from './components/AddScene';
 import DeleteScene from './components/DeleteScene';
 import AdminPassword from './components/AdminPassword';
+import { clamp, parseDecimal, sanitizeDecimalInput } from './utils/helpers';
 
 function Scenes() {
   const [addScene, setAddScene] = useState(false);
@@ -45,7 +46,7 @@ function Scenes() {
   const handleFadeDuration = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     if (value.length <= 4) {
-      const numbersOnly = value.replace(/[^0-9.,]+/g, '');
+      const numbersOnly = sanitizeDecimalInput(value);
       setFadeDuration(numbersOnly);
       setFadeDisplayValue(numbersOnly);
     }
@@ -53,11 +54,11 @@ function Scenes() {
 
   // Only allow numbers between 0 and 60
   const handleFadeConfirm = useCallback(() => {
-    let numericValue = parseFloat(fadeDuration.replace(',', '.'));
+    let numericValue = parseDecimal(fadeDuration);
     if (isNaN(numericValue)) {
       numericValue = parseFloat(sessionStorage.getItem('fadeDuration') || '0');
     }
-    numericValue = Math.max(0, Math.min(60, numericValue));
+    numericValue = clamp(numericValue, 0, 60);
     setFadeDuration(numericValue.toString());
     sessionStorage.setItem('fadeDuration', numericValue.toString());
     setFadeDisplayValue(numericValue + ' s');
@@ -101,6 +102,7 @@ function Scenes() {
             <Toggle
               onClick={handleToggleChange}
               enabled={localStorage.getItem('sceneSolo') === 'true'}
+              label='Solo'
             />
           </div>
           <span>SOLO</span>
@@ -117,6 +119,8 @@ function Scenes() {
             onKeyDown={handleKeyDown}
             onBlur={handleFadeConfirm}
             onFocus={handleFocus}
+            aria-label='Fade'
+            inputMode='decimal'
           />
         </div>
       </div>

@@ -18,6 +18,7 @@ import './Dialog.css';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 import AdminPassword from './AdminPassword';
+import CloseButton from './CloseButton';
 import IconNote from '@/assets/IconNote';
 
 interface AddSceneProps {
@@ -35,7 +36,6 @@ function AddScene({ onClose }: AddSceneProps) {
   // Save the scene
   const handleSave = () => {
     if (name !== '') {
-      console.log('Save scene');
       if (!isChecked) {
         emit('scene_add', { scene: { name, saved: false } });
         onClose();
@@ -45,24 +45,31 @@ function AddScene({ onClose }: AddSceneProps) {
     } else {
       // If the name is empty, the text box will be highlighted in red
       setError(true);
-      const timer = setTimeout(() => setError(false), 4000);
-      return () => clearTimeout(timer);
     }
   };
 
+  // Remove the red outline again after a few seconds
+  useEffect(() => {
+    if (!error) return;
+    const timer = setTimeout(() => setError(false), 4000);
+    return () => clearTimeout(timer);
+  }, [error]);
+
   // Callback function for the AdminPassword component
   const handleAdminPasswordConfirm = useCallback(
-    (isConfirmed: boolean | ((prevState: boolean) => boolean)) => {
+    (isConfirmed: boolean) => {
       if (isConfirmed) {
         emit('scene_add', { scene: { name, saved: true } });
         onClose();
       }
     },
-    [name]
+    [name, emit, onClose]
   );
 
-  // Confirm with ENTER
+  // Confirm with ENTER (the password prompt handles ENTER itself)
   useEffect(() => {
+    if (showAdminPassword) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -73,7 +80,7 @@ function AddScene({ onClose }: AddSceneProps) {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [name, isChecked]);
+  }, [name, isChecked, showAdminPassword]);
 
   return (
     <>
@@ -87,21 +94,20 @@ function AddScene({ onClose }: AddSceneProps) {
           onClose={() => setShowAdminPassword(false)}
         />
       ) : (
-        <div className='DialogContainer window'>
-          <button
-            className='buttonClose'
-            onClick={onClose}
-          >
-            <div className='xClose'>
-              <div className='xClose xiClose'></div>
-            </div>
-          </button>
+        <div
+          className='DialogContainer window'
+          role='dialog'
+          aria-modal='true'
+          aria-label={t('as_title')}
+        >
+          <CloseButton onClose={onClose} />
           <div className='DialogContent'>
             <span className='DialogTitle'>{t('as_title')}</span>
             <input
               className={`textBox DialogTextBox ${error ? 'error-outline' : ''}`}
               type='text'
               placeholder='Name'
+              aria-label='Name'
               value={name}
               onChange={(event) => setName(event.target.value)}
               autoFocus // Activate autofocus

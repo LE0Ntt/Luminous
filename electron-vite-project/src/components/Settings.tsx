@@ -24,6 +24,7 @@ import IconSettings from '@/assets/IconSettings';
 import IconAdmin from '@/assets/IconAdmin';
 import IconStudio from '@/assets/IconStudio';
 import { useConnectionContext } from './ConnectionContext';
+import CloseButton from './CloseButton';
 
 interface SettingsProps {
   onClose: () => void;
@@ -66,15 +67,13 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
           onClose={() => setIsAdmin(false)}
         />
       ) : (
-        <div className='SettingsContainer'>
-          <button
-            className='buttonClose'
-            onClick={onClose}
-          >
-            <div className='xClose'>
-              <div className='xClose xiClose'></div>
-            </div>
-          </button>
+        <div
+          className='SettingsContainer'
+          role='dialog'
+          aria-modal='true'
+          aria-label={t('set_title')}
+        >
+          <CloseButton onClose={onClose} />
           <div className='SettingsTitle'>
             <IconSettings />
             <span className='SettingsTitleText'>{t('set_title')}</span>
@@ -121,11 +120,7 @@ const Settings: React.FC<SettingsProps> = ({ onClose }) => {
                     studioColumns={4}
                   />
                 ) : (
-                  <span
-                    className='noSettings'
-                    dangerouslySetInnerHTML={{ __html: t('set_noSettings') }}
-                  >
-                  </span>
+                  <span className='noSettings whitespace-pre-line'>{t('set_noSettings')}</span>
                 )}
               </div>
             </div>

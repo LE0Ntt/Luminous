@@ -14,23 +14,33 @@
  */
 import './DropDown.css';
 
+export interface DropDownItem {
+  text: string;
+  icon: React.ElementType;
+  onSelect: () => void;
+}
+
 type DropDownProps = {
-  settings: { text: string; icon: React.ElementType }[];
-  settingSelection: (selectedSetting: { text: string; icon: React.ElementType }) => void;
+  settings: DropDownItem[];
+  settingSelection: (selectedSetting: DropDownItem) => void;
   open: boolean;
 };
 
 const DropDown: React.FC<DropDownProps> = ({ settings, settingSelection, open }) => {
   return (
-    <div className={`dropdown ${open ? '' : 'closed'}`}>
-      {settings.map((setting, index) => (
-        <p
-          key={index}
+    <div
+      className={`dropdown ${open ? '' : 'closed'}`}
+      role='menu'
+    >
+      {settings.map((setting) => (
+        <button
+          role='menuitem'
+          key={setting.text}
           onClick={() => settingSelection(setting)}
         >
           <setting.icon />
           <span>{setting.text}</span>
-        </p>
+        </button>
       ))}
     </div>
   );

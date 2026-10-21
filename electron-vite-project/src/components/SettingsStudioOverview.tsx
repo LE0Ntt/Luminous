@@ -19,6 +19,8 @@ import { useConnectionContext } from './ConnectionContext';
 import Button from './Button';
 import AdminPassword from './AdminPassword';
 import Toggle from './Toggle';
+import { createId } from '@/utils/helpers';
+import { fetchServerJson } from '@/utils/api';
 
 export type DeviceType = 'RGBDim' | 'BiColor' | 'Spot' | 'Fill' | 'HMI' | 'Misc';
 export type IconType = 'RGB' | 'LED' | 'Spot' | 'Fill' | 'None';
@@ -88,10 +90,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
 
   const fetchDevices = useCallback(async () => {
     try {
-      const res = await fetch(`${url}/fader`);
-      if (!res.ok) throw new Error('Device fetch failed');
-      const raw = await res.json();
-      const arr: DeviceConfig[] = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      const arr = await fetchServerJson<DeviceConfig[]>(`${url}/fader`);
       arr.shift();
       setDevices(arr);
     } catch (err) {
@@ -101,10 +100,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
 
   const fetchStudioGrid = useCallback(async () => {
     try {
-      const res = await fetch(`${url}/studio_grid`);
-      if (!res.ok) throw new Error('Grid fetch failed');
-      const raw = await res.json();
-      const data: any = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      const data = await fetchServerJson<any>(`${url}/studio_grid`);
 
       /* grid */
       setGrid(
@@ -119,7 +115,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
       /* custom lamps */
       setCustomLamps(
         (data.custom ?? []).map((l: any) => ({
-          uuid: l.uuid ?? crypto.randomUUID(),
+          uuid: l.uuid ?? createId(),
           deviceId: l.deviceId != null ? Number(l.deviceId) : null,
           icon: (l.icon as IconType) ?? 'None',
           left: Number(l.left ?? 0),
@@ -209,7 +205,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
     setCustomLamps((prev) => [
       ...prev,
       {
-        uuid: crypto.randomUUID(),
+        uuid: createId(),
         deviceId: null,
         icon: 'None',
         left: 0,
@@ -503,7 +499,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
               <select
                 value={greenScreenId ?? ''}
                 className='textBox'
-                onChange={(e) => setGreenScreenId(Number(e.target.value))}
+                onChange={(e) => setGreenScreenId(e.target.value ? Number(e.target.value) : null)}
               >
                 <option value=''>None</option>
                 {devices.map((d) => (
@@ -608,6 +604,7 @@ const SettingsStudioOverview: React.FC<SettingProps> = ({ studioRows, studioColu
                       <Toggle
                         onClick={handleToggleChange(lamp.uuid)}
                         enabled={!!lamp.showName}
+                        label='ID / Name'
                       />
                       <span className='textRight'>Name</span>
                     </div>

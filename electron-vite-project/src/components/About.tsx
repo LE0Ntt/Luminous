@@ -12,10 +12,11 @@
  *
  * @file About.tsx
  */
-import { useContext } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import './About.css';
 import { TranslationContext } from './TranslationContext';
-import packageJson from '../../package.json';
+import { version } from '../../package.json';
+import CloseButton from './CloseButton';
 import IconAbout from '@/assets/IconAbout';
 
 interface SettingsProps {
@@ -26,27 +27,27 @@ const authors = 'Leon Hölzel, Darwin Pietas, Marvin Plate, Andree Tomek';
 
 function About({ onClose }: SettingsProps) {
   const { t } = useContext(TranslationContext);
-  const version: string = packageJson.version;
+  const reflectionRef = useRef<HTMLDivElement>(null);
 
   // Move the reflection of the logo to the mouse position
-  const handleMouseMove = (event: MouseEvent) => {
-    const logo = document.querySelector('.logoReflection') as HTMLElement;
-    if (!logo) return;
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      const logo = reflectionRef.current;
+      if (!logo) return;
 
-    const logoRect = logo.getBoundingClientRect();
-    const logoX = logoRect.left + logoRect.width / 2;
-    const logoY = logoRect.top + logoRect.height / 2;
+      const logoRect = logo.getBoundingClientRect();
+      const logoX = logoRect.left + logoRect.width / 2;
+      const logoY = logoRect.top + logoRect.height / 2;
 
-    const mouseX = event.clientX;
-    const mouseY = event.clientY;
+      let angleDeg = (Math.atan2(event.clientY - logoY, event.clientX - logoX) * 180) / Math.PI;
+      angleDeg += 135;
 
-    let angleDeg = (Math.atan2(mouseY - logoY, mouseX - logoX) * 180) / Math.PI;
-    angleDeg += 135;
+      logo.style.transform = `scale(0.31) rotate(${angleDeg}deg)`;
+    };
 
-    logo.style.transform = `scale(0.31) rotate(${angleDeg}deg)`;
-  };
-
-  document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   return (
     <>
@@ -54,15 +55,13 @@ function About({ onClose }: SettingsProps) {
         className='backgroundOverlay'
         onClick={onClose}
       />
-      <div className='LightSettingsContainer'>
-        <button
-          className='buttonClose'
-          onClick={onClose}
-        >
-          <div className='xClose'>
-            <div className='xClose xiClose'></div>
-          </div>
-        </button>
+      <div
+        className='LightSettingsContainer'
+        role='dialog'
+        aria-modal='true'
+        aria-label={t('dd_about')}
+      >
+        <CloseButton onClose={onClose} />
         <div className='SettingsTitle'>
           <IconAbout />
           <span className='SettingsTitleText'>{t('dd_about')}</span>
@@ -70,7 +69,10 @@ function About({ onClose }: SettingsProps) {
         <div className='AboutContainer'>
           <div className='AboutTextBoxContainer'>
             <div className='logoBig'></div>
-            <div className='logoReflection'></div>
+            <div
+              className='logoReflection'
+              ref={reflectionRef}
+            ></div>
             <small>
               <i>{t('catchphrase')}</i>
             </small>
@@ -81,6 +83,7 @@ function About({ onClose }: SettingsProps) {
               <a
                 href='https://github.com/LE0Ntt/Luminous/blob/main/CHANGELOG.md'
                 target='_blank'
+                rel='noopener noreferrer'
                 style={{
                   textDecoration: 'underline',
                   textUnderlineOffset: '2px',

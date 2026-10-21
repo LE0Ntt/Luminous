@@ -14,8 +14,8 @@
  */
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import '../Studio.css';
-import glare from '../assets/GlareNarrow.png';
-import glareWide from '../assets/GlareWide.png';
+import glare from '../assets/GlareNarrow.webp';
+import glareWide from '../assets/GlareWide.webp';
 import spotImg from '../assets/SpotTop.png';
 import fillImg from '../assets/FillTop.png';
 import biColor from '../assets/BiColorTop.png';
@@ -24,6 +24,7 @@ import LightBeam from './LightBeam';
 import { TranslationContext } from './TranslationContext';
 import { useConnectionContext } from './ConnectionContext';
 import { useFaderValue } from './FaderContext';
+import { createId } from '@/utils/helpers';
 
 // --- Interfaces ---
 interface StudioOverviewProps {
@@ -299,7 +300,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus, devices 
       setGridCfg(data.grid || []);
       setCustomCfg(
         (data.custom || []).map((l: any) => ({
-          uuid: l.uuid ?? crypto.randomUUID(),
+          uuid: l.uuid ?? createId(),
           deviceId: Number(l.deviceId),
           icon: l.icon as LampIconType,
           left: Number(l.left ?? 0),
@@ -326,7 +327,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus, devices 
     <div className='overview window'>
       <div className='studioOverview window'>
         {/* Greenscreen */}
-        {greenId && (
+        {!!greenId && ( // greenId 0 means 'None', which would otherwise render a literal 0
           <div className='studioOverviewGreenscreen'>
             <div
               className='studioOverviewInfopanel studioOverviewInfopanelGreenscreen'
@@ -435,7 +436,7 @@ export default React.memo(function StudioOverview({ handleGlowAndFocus, devices 
           </div>
         </div>
         {/* Trusses */}
-        {travCfg.map((t, i) => (
+        {travCfg.slice(0, traversePos.length).map((t, i) => (
           <TraverseItem
             key={i}
             groupId={t.groupId}

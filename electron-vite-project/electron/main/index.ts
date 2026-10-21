@@ -1,5 +1,4 @@
 import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
-import { release } from 'node:os';
 import Store from 'electron-store';
 
 import { dirname, join } from 'node:path';
@@ -79,14 +78,9 @@ async function createWindow() {
     win.setFullScreen(true);
   }
 
-  // Test actively push message to the Electron-Renderer
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', new Date().toLocaleString());
-  });
-
   // Make all links open with the browser, not with the application
   win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('https:')) shell.openExternal(url);
+    if (isWebUrl(url)) shell.openExternal(url);
     return { action: 'deny' };
   });
 
@@ -120,31 +114,25 @@ app.on('activate', () => {
   }
 });
 
-// New window example arg: new windows url
-ipcMain.handle('open-win', (_, arg) => {
-  const childWindow = new BrowserWindow({
-    webPreferences: {
-      preload,
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  });
-
-  if (process.env.VITE_DEV_SERVER_URL) {
-    childWindow.loadURL(`${url}#${arg}`);
-  } else {
-    childWindow.loadFile(indexHtml, { hash: arg });
+// Only http(s) URLs may be handed to the OS, other protocols (file:, smb:, ...) could launch local programs
+function isWebUrl(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+  try {
+    const { protocol } = new URL(value);
+    return protocol === 'http:' || protocol === 'https:';
+  } catch {
+    return false;
   }
-});
+}
 
 // Minimize
 ipcMain.on('minimize', () => {
-  win.minimize();
+  win?.minimize();
 });
 
 // Close
 ipcMain.on('close', () => {
-  win.close();
+  win?.close();
 });
 
 // Toggle Fullscreen
@@ -185,7 +173,7 @@ const schema = {
 
 interface StoreSchema {
   ip: string;
-  port: string;
+  port: number;
   language: string;
   theme: string;
 }
@@ -206,14 +194,21 @@ ipcMain.handle('get-ip', () => {
   return { ip, port };
 });
 
+// electron-store validates against the schema and throws on invalid values (e.g. a malformed IP)
 ipcMain.on('set-ip', (_, ip) => {
-  console.log('set-ip', ip);
-  typedStore.set('ip', ip);
+  try {
+    typedStore.set('ip', ip);
+  } catch (error) {
+    console.error('Rejected invalid IP:', ip, error);
+  }
 });
 
 ipcMain.on('set-port', (_, port) => {
-  console.log('set-port', port);
-  typedStore.set('port', port);
+  try {
+    typedStore.set('port', port);
+  } catch (error) {
+    console.error('Rejected invalid port:', port, error);
+  }
 });
 
 const ip = typedStore.get('ip');
@@ -227,7 +222,11 @@ ipcMain.handle('get-language', () => {
 });
 
 ipcMain.handle('set-language', (_, language) => {
-  typedStore.set('language', language);
+  try {
+    typedStore.set('language', language);
+  } catch (error) {
+    console.error('Rejected invalid language:', language, error);
+  }
 });
 
 const language = typedStore.get('language');
@@ -248,12 +247,13 @@ ipcMain.handle('get-platform', () => {
 });
 
 // Open External
-ipcMain.on('open-external', (event, url) => {
-  shell.openExternal(url);
+ipcMain.on('open-external', (_, url) => {
+  if (isWebUrl(url)) shell.openExternal(url);
 });
 
 // OLA
-let popupWindow = null;
+// The OLA web UI is a remote page served over plain HTTP, so it must never get Node.js access
+let popupWindow: BrowserWindow | null = null;
 function createPopupWindow() {
   if (popupWindow !== null) {
     popupWindow.focus();
@@ -264,24 +264,30 @@ function createPopupWindow() {
     width: 1024,
     height: 1024,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true,
     },
-    //titleBarStyle: 'hidden',
   });
 
-  popupWindow.loadURL(`http://${ip}:9090/`);
+  popupWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (isWebUrl(url)) shell.openExternal(url);
+    return { action: 'deny' };
+  });
+
+  // Read the IP on every open, it may have been changed in the settings since startup
+  popupWindow.loadURL(`http://${typedStore.get('ip')}:9090/`);
 
   popupWindow.on('closed', () => {
     popupWindow = null;
   });
 }
 
-ipcMain.on('open-OLA', (event, arg) => {
+ipcMain.on('open-OLA', () => {
   createPopupWindow();
 });
 
-ipcMain.handle('show-alert', async (event, message) => {
+ipcMain.handle('show-alert', async (_, message) => {
   await dialog.showMessageBox({
     type: 'info',
     buttons: ['OK'],

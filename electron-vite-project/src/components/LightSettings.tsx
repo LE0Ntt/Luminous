@@ -12,14 +12,32 @@
  *
  * @file LightSettings.tsx
  */
-import { useState, useContext, useEffect, useCallback } from 'react';
+import { useState, useContext, useEffect, useCallback, useMemo } from 'react';
 import './LightSettings.css';
 import Button from './Button';
 import { TranslationContext } from './TranslationContext';
 import DeviceList from './DeviceList';
 import { useConnectionContext } from './ConnectionContext';
 import AdminPassword from './AdminPassword';
+import CloseButton from './CloseButton';
 import IconLight from '@/assets/IconLight';
+import { fetchServerJson } from '@/utils/api';
+
+// Channel types of each device type, used for the default DMX range and channel names
+const LampTypeChannels: { [key: string]: string[] } = {
+  RGBDim: ['main', 'r', 'g', 'b'],
+  BiColor: ['main', 'bi'],
+  Spot: ['main'],
+  Fill: ['main'],
+  HMI: ['main', 'power'],
+  Misc: ['main'],
+};
+
+const DMX_CHANNELS = 512;
+const DMX_TABLE_COLUMNS = 32;
+
+// DMX channels used by the given channel list
+const toChannelSet = (channels: { dmx_channel: string }[] = []) => new Set(channels.map((ch) => parseInt(ch.dmx_channel)));
 
 interface SettingsProps {
   onClose: () => void;
@@ -44,15 +62,6 @@ function LightSettings({ onClose }: SettingsProps) {
   const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [isDelete, setIsDelete] = useState(false); // False = update/create device, true = delete device
 
-  const LampTypeChannels: { [key: string]: string[] } = {
-    RGBDim: ['main', 'r', 'g', 'b'],
-    BiColor: ['main', 'bi'],
-    Spot: ['main'],
-    Fill: ['main'],
-    HMI: ['main', 'power'],
-    Misc: ['main'],
-  };
-
   interface DeviceConfig {
     attributes: any;
     device_type: string;
@@ -64,14 +73,12 @@ function LightSettings({ onClose }: SettingsProps) {
 
   const fetchDevices = async () => {
     try {
-      const response = await fetch(url + '/fader');
-      const data = await response.json();
-      const parsedData = JSON.parse(data);
+      const parsedData = await fetchServerJson<DeviceConfig[]>(url + '/fader');
       parsedData.shift(); // remove master
       setDevices(parsedData);
       setUnselectedDevices(parsedData);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -87,9 +94,9 @@ function LightSettings({ onClose }: SettingsProps) {
     fetchDevices();
 
     // If a device is updated, reload the devices
-    const lightRespone = (data: any) => {
-      console.log(data.message === 'success' ? 'Device successfully updated' : `${data.message.replace('_', ' ')}!`);
+    const lightResponse = (data: { message: string }) => {
       if (data.message !== 'success') {
+        console.warn(`${data.message.replace('_', ' ')}!`);
         const textBox = document.getElementsByClassName('deviceNumber')[0] as HTMLInputElement;
         if (textBox) {
           textBox.classList.add('error-outline');
@@ -99,18 +106,18 @@ function LightSettings({ onClose }: SettingsProps) {
           }, 4000);
         }
       } else {
-        deselectDivice();
+        deselectDevice();
       }
     };
     const lightDeleted = () => {
-      deselectDivice();
+      deselectDevice();
     };
 
-    on('light_response', lightRespone);
+    on('light_response', lightResponse);
     on('light_deleted', lightDeleted);
 
     return () => {
-      off('light_response', lightRespone);
+      off('light_response', lightResponse);
       off('light_deleted', lightDeleted);
     };
   }, []);
@@ -231,13 +238,8 @@ function LightSettings({ onClose }: SettingsProps) {
     setChannelChangeArray([]);
   };
 
-  const handleDeselectDevice = (device: DeviceConfig) => {
-    deselectDivice();
-  };
-
-  const deselectDivice = () => {
+  const deselectDevice = () => {
     setSelectedDevice(undefined);
-    //!isNewDevice && setUnselectedDevices([...unselectedDevices, device]); // instead of fetching
     setIsNewDevice(false);
     setChannelChangeArray([]);
     setChannelArray([]);
@@ -326,6 +328,17 @@ function LightSettings({ onClose }: SettingsProps) {
     });
   };
 
+  // DMX occupancy for the overview table, computed once instead of for each of the 512 cells
+  const channelArraySet = useMemo(() => toChannelSet(channelArray), [channelArray]);
+  const occupiedChannelSet = useMemo(
+    () => toChannelSet(devices.filter((device) => device.universe === inputUniverse).flatMap((device) => device.attributes.channel)),
+    [devices, inputUniverse]
+  );
+  const selectedDeviceChannelSet = useMemo(
+    () => (!isNewDevice && selectedDevice ? toChannelSet(selectedDevice.attributes.channel) : new Set<number>()),
+    [isNewDevice, selectedDevice]
+  );
+
   const handleUpdateDevice = () => {
     setIsDelete(false);
     setShowAdminPassword(true);
@@ -386,15 +399,13 @@ function LightSettings({ onClose }: SettingsProps) {
           onClose={() => setShowAdminPassword(false)}
         />
       ) : (
-        <div className={'LightSettingsContainer'}>
-          <button
-            className='buttonClose'
-            onClick={onClose}
-          >
-            <div className='xClose'>
-              <div className='xClose xiClose'></div>
-            </div>
-          </button>
+        <div
+          className='LightSettingsContainer'
+          role='dialog'
+          aria-modal='true'
+          aria-label={t('ls_title')}
+        >
+          <CloseButton onClose={onClose} />
           <div className='SettingsTitle'>
             <IconLight />
             <span className='SettingsTitleText'>{t('ls_title')}</span>
@@ -412,7 +423,7 @@ function LightSettings({ onClose }: SettingsProps) {
                   <DeviceList
                     devices={[selectedDevice]}
                     isAddButton={false}
-                    onDeviceButtonClick={handleDeselectDevice}
+                    onDeviceButtonClick={deselectDevice}
                   />
                 </div>
               )}
@@ -432,9 +443,10 @@ function LightSettings({ onClose }: SettingsProps) {
               </div>
               <div className='LightSettingsTextBoxContainer'>
                 <div>
-                  <label>{t('ls_universe')}</label>
+                  <label htmlFor='ls-universe'>{t('ls_universe')}</label>
                   <br />
                   <select
+                    id='ls-universe'
                     className='LightSettingsTextBoxSmall textBox'
                     value={inputUniverse}
                     onChange={handleInputUniverse}
@@ -444,8 +456,9 @@ function LightSettings({ onClose }: SettingsProps) {
                   </select>
                 </div>
                 <div>
-                  <label>{t('ls_deviceNumber')}</label> <br />
+                  <label htmlFor='ls-device-number'>{t('ls_deviceNumber')}</label> <br />
                   <input
+                    id='ls-device-number'
                     className='LightSettingsTextBoxSmall deviceNumber textBox'
                     type='text'
                     value={inputNumber}
@@ -456,8 +469,9 @@ function LightSettings({ onClose }: SettingsProps) {
                   />
                 </div>
                 <div>
-                  <label>{t('ls_deviceName')}</label> <br />
+                  <label htmlFor='ls-device-name'>{t('ls_deviceName')}</label> <br />
                   <input
+                    id='ls-device-name'
                     className='textBox'
                     type='text'
                     value={inputName}
@@ -467,9 +481,10 @@ function LightSettings({ onClose }: SettingsProps) {
                   />
                 </div>
                 <div>
-                  <label>{t('ls_deviceType')}</label>
+                  <label htmlFor='ls-device-type'>{t('ls_deviceType')}</label>
                   <br />
                   <select
+                    id='ls-device-type'
                     className='textBox'
                     value={inputType}
                     onChange={handleInputType}
@@ -485,8 +500,9 @@ function LightSettings({ onClose }: SettingsProps) {
                   </select>
                 </div>
                 <div>
-                  <label>{t('ls_start')}</label> <br />
+                  <label htmlFor='ls-dmx-start'>{t('ls_start')}</label> <br />
                   <input
+                    id='ls-dmx-start'
                     className='LightSettingsTextBoxSmall textBox'
                     type='text'
                     value={inputDMXstart}
@@ -497,8 +513,9 @@ function LightSettings({ onClose }: SettingsProps) {
                   />
                 </div>
                 <div>
-                  <label>{t('ls_range')}</label> <br />
+                  <label htmlFor='ls-dmx-range'>{t('ls_range')}</label> <br />
                   <input
+                    id='ls-dmx-range'
                     className='LightSettingsTextBoxSmall textBox'
                     type='text'
                     value={inputDMXrange}
@@ -527,6 +544,7 @@ function LightSettings({ onClose }: SettingsProps) {
                         value={channelArray[index]?.dmx_channel || ''}
                         onChange={(e) => handleChannelChange(index, channelArray[index]?.channel_type, e.target.value)}
                         className='LightSettingsChannelInput'
+                        aria-label={`DMX ${index + 1}`}
                         onKeyUp={handleKeyDown}
                         onBlur={(e) => handleChannelConfirm(index, channelArray[index]?.channel_type, e.target.value)}
                         onFocus={handleFocus}
@@ -541,6 +559,7 @@ function LightSettings({ onClose }: SettingsProps) {
                           value={channelArray[index]?.channel_type || ''}
                           onChange={(e) => handleChannelChange(index, e.target.value, channelArray[index]?.dmx_channel)}
                           className='LightSettingsChannelInput'
+                          aria-label={`${t('ls_dmxSettings')} ${index + 1}`}
                           onKeyUp={handleKeyDown}
                           onFocus={handleFocus}
                         />
@@ -552,18 +571,13 @@ function LightSettings({ onClose }: SettingsProps) {
               <hr style={{ marginTop: '30px' }} />
               <table className='LightSettingsDMXTable'>
                 <tbody>
-                  {Array.from({ length: 16 }).map((_, rowIndex) => (
+                  {Array.from({ length: DMX_CHANNELS / DMX_TABLE_COLUMNS }).map((_, rowIndex) => (
                     <tr key={rowIndex}>
-                      {Array.from({ length: 32 }).map((_, cellIndex) => {
-                        const cellNumber = rowIndex * 32 + cellIndex + 1;
-                        const isInChannelArray = channelArray.some((ch) => parseInt(ch.dmx_channel) === cellNumber);
-                        const isDMXDevice = devices.some(
-                          (device) => device.universe === inputUniverse && device.attributes.channel.some((ch: { dmx_channel: string }) => parseInt(ch.dmx_channel) === cellNumber)
-                        );
-                        var isInSelectedDevice = false;
-                        if (!isNewDevice && selectedDevice) {
-                          isInSelectedDevice = selectedDevice.attributes.channel.some((ch: { dmx_channel: string }) => parseInt(ch.dmx_channel) === cellNumber);
-                        }
+                      {Array.from({ length: DMX_TABLE_COLUMNS }).map((_, cellIndex) => {
+                        const cellNumber = rowIndex * DMX_TABLE_COLUMNS + cellIndex + 1;
+                        const isInChannelArray = channelArraySet.has(cellNumber);
+                        const isDMXDevice = occupiedChannelSet.has(cellNumber);
+                        const isInSelectedDevice = selectedDeviceChannelSet.has(cellNumber);
                         let cellClass = 'LightSettingsDMXTableCell';
                         if (isDMXDevice && isInChannelArray && !isInSelectedDevice) {
                           cellClass += ' LightSettingsDMXTableCellOccupiedAndInChannel';

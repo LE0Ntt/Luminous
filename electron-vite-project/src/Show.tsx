@@ -12,16 +12,12 @@
  *
  * @file Show.tsx
  */
-import { useConnectionContext } from './components/ConnectionContext';
 import './Show.css';
 import Fader from './components/Fader';
 import ScenesComponent from './components/ScenesComponent';
 import Timeline from './components/Timeline';
-import { useFaderContext } from './components/FaderContext';
 
 function Show() {
-  const { emit, on } = useConnectionContext();
-
   return (
     <>
       <div className='window showScenes'>

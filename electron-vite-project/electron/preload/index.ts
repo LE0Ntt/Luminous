@@ -96,35 +96,24 @@ window.onmessage = (ev) => {
 
 import { ipcRenderer, contextBridge } from 'electron';
 
+const validSendChannels = ['toggle-full-screen', 'minimize', 'close', 'set-ip', 'set-port', 'open-OLA'];
+
+// Keep in sync with the ElectronAPI type in src/vite-env.d.ts
 export const electronAPI = {
-  getIp: async () => {
-    return await ipcRenderer.invoke('get-ip');
-  },
-  getLanguage: async () => {
-    return await ipcRenderer.invoke('get-language');
-  },
-  send: (channel, data) => {
-    let validChannels = ['toggle-full-screen', 'minimize', 'close', 'set-ip', 'set-port', 'open-OLA'];
-    if (validChannels.includes(channel)) {
+  getIp: () => ipcRenderer.invoke('get-ip'),
+  getLanguage: () => ipcRenderer.invoke('get-language'),
+  setLanguage: (language: string) => ipcRenderer.invoke('set-language', language),
+  send: (channel: string, data?: unknown) => {
+    if (validSendChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
   },
-  on: (channel, func) => {
-    let validChannels = [];
-    if (validChannels.includes(channel)) {
-      ipcRenderer.on(channel, (event, ...args) => func(...args));
-    }
-  },
-  getPlatform: async () => {
-    return await ipcRenderer.invoke('get-platform');
-  },
-  openExternal: (url) => {
+  getPlatform: () => ipcRenderer.invoke('get-platform'),
+  openExternal: (url: string) => {
     ipcRenderer.send('open-external', url);
   },
-  getFullScreen: async () => {
-    return await ipcRenderer.invoke('get-full-screen');
-  },
-  showAlert: (message: any) => ipcRenderer.invoke('show-alert', message),
+  getFullScreen: () => ipcRenderer.invoke('get-full-screen'),
+  showAlert: (message: string) => ipcRenderer.invoke('show-alert', message),
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

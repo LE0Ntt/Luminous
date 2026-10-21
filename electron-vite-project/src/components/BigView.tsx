@@ -12,25 +12,35 @@
  *
  * @file BigView.tsx
  */
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import './BigView.css';
 import Toggle from './Toggle';
 import Fader from './Fader';
 import { useConnectionContext } from './ConnectionContext';
 import { TranslationContext } from './TranslationContext';
 import ScrollButton from './ScrollButton';
+import CloseButton from './CloseButton';
+import { fetchServerJson } from '@/utils/api';
 
 interface BigViewProps {
   onClose: () => void;
 }
 
+interface ChannelConfig {
+  id: number;
+  channel_type: string;
+  dmx_channel: string;
+}
+
 interface SliderConfig {
-  attributes: any;
+  attributes: { channel: ChannelConfig[] };
   universe: string;
   id: number;
   sliderValue: number;
   name: string;
 }
+
+const universes = ['U1', 'U2'];
 
 function BigView({ onClose }: BigViewProps) {
   const { t } = useContext(TranslationContext);
@@ -39,7 +49,6 @@ function BigView({ onClose }: BigViewProps) {
   const [DMX, setDMX] = useState(() => sessionStorage.getItem('dmx') === 'true'); // DMX or Device channels
   const [renderedFaders, setRenderedFaders] = useState(20); // Number of DMX faders to render
 
-  const universes = ['U1', 'U2'];
   // Initialize refs for scroll buttons for each universe
   const scrollRefs = useRef(
     universes.reduce((acc, universe) => {
@@ -52,26 +61,36 @@ function BigView({ onClose }: BigViewProps) {
   useEffect(() => {
     const fetchSliders = async () => {
       try {
-        const response = await fetch(url + '/fader');
-        const data = await response.json();
-        setSliders(JSON.parse(data));
+        setSliders(await fetchServerJson<SliderConfig[]>(url + '/fader'));
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
     fetchSliders();
   }, []);
 
+  // Device and channel for each DMX address ('U1-12'), so the 2 x 512 DMX faders don't search all devices
+  const dmxChannelMap = useMemo(() => {
+    const map = new Map<string, { slider: SliderConfig; channel: ChannelConfig }>();
+    sliders.forEach((slider) =>
+      slider.attributes.channel.forEach((channel) => {
+        const key = `${slider.universe}-${parseInt(channel.dmx_channel)}`;
+        if (!map.has(key)) map.set(key, { slider, channel }); // Keep the first match like before
+      })
+    );
+    return map;
+  }, [sliders]);
+
   // Toggle between DMX and Device channels
-  const handleToggleChange = (status: boolean | ((prevState: boolean) => boolean)) => {
+  const handleToggleChange = (status: boolean) => {
     sessionStorage.setItem('dmx', `${status}`);
     setDMX(status);
   };
 
   // Render DMX faders in steps to prevent lag
   useEffect(() => {
-    let intervalId: string | number | NodeJS.Timeout | undefined;
+    let intervalId: ReturnType<typeof setInterval> | undefined;
 
     if (DMX) {
       intervalId = setInterval(() => {
@@ -115,21 +134,20 @@ function BigView({ onClose }: BigViewProps) {
         onClick={onClose}
       />
       <div className='BigViewContainer BigViewBackdrop' />
-      <div className='BigViewContainer'>
-        <button
-          className='buttonClose'
-          onClick={onClose}
-        >
-          <div className='xClose'>
-            <div className='xClose xiClose'></div>
-          </div>
-        </button>
+      <div
+        className='BigViewContainer'
+        role='dialog'
+        aria-modal='true'
+        aria-label={t('bb_lights')}
+      >
+        <CloseButton onClose={onClose} />
         <div className='BigViewLayer'>
           <span>{t('bb_lights')}</span>
           <div className='toggleUniverse'>
             <Toggle
               onClick={handleToggleChange}
               enabled={sessionStorage.getItem('dmx') === 'true'}
+              label='DMX Channel'
             />
           </div>
           <span>DMX Channel</span>
@@ -159,10 +177,9 @@ function BigView({ onClose }: BigViewProps) {
               {DMX
                 ? Array.from({ length: renderedFaders }).map((_, index) => {
                     const mappedIndex = index + 1;
-                    const matchedSlider = sliders.find(
-                      (slider) => slider.universe === universe && slider.attributes.channel.some((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex)
-                    );
-                    const matchedChannel = matchedSlider ? matchedSlider.attributes.channel.find((channel: { dmx_channel: string }) => parseInt(channel.dmx_channel) === mappedIndex) : null;
+                    const match = dmxChannelMap.get(`${universe}-${mappedIndex}`);
+                    const matchedSlider = match?.slider;
+                    const matchedChannel = match?.channel;
                     return (
                       <div
                         key={index}
@@ -175,7 +192,7 @@ function BigView({ onClose }: BigViewProps) {
                           key={index}
                           id={matchedChannel ? matchedChannel.id : mappedIndex}
                           sliderGroupId={matchedSlider ? matchedSlider.id : universe === 'U1' ? 692 : 693}
-                          name={matchedSlider ? matchedSlider.name + ' ' + matchedChannel.channel_type : 'Channel'}
+                          name={match ? match.slider.name + ' ' + match.channel.channel_type : 'Channel'}
                           number={mappedIndex}
                           className={index === 511 ? 'noBorder' : ''}
                         />
@@ -191,7 +208,7 @@ function BigView({ onClose }: BigViewProps) {
                         className={slider.attributes.channel.length > 1 ? 'faderGroup' : ''}
                         style={{ marginLeft: sliderIndex === 0 && slider.attributes.channel.length > 1 ? '-9px' : '' }}
                       >
-                        {slider.attributes.channel.map((channel: { id: number; channel_type: string }, channelIndex: number) => (
+                        {slider.attributes.channel.map((channel, channelIndex) => (
                           <div
                             key={slider.id + '-' + channel.id}
                             className={`${channel.id !== 0 ? 'grayBackground' : ''}`}

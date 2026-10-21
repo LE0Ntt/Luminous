@@ -12,7 +12,8 @@
  *
  * @file ScrollButton.tsx
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { TranslationContext } from './TranslationContext';
 
 interface ScrollButtonProps {
   scrollRef: React.RefObject<HTMLElement>;
@@ -22,6 +23,7 @@ interface ScrollButtonProps {
 }
 
 const ScrollButton: React.FC<ScrollButtonProps> = ({ scrollRef, elementWidth, elementsInView, direction }) => {
+  const { t } = useContext(TranslationContext);
   const [canScroll, setCanScroll] = useState(direction === 'next');
 
   const updateCanScroll = () => {
@@ -67,6 +69,7 @@ const ScrollButton: React.FC<ScrollButtonProps> = ({ scrollRef, elementWidth, el
     <button
       onClick={calculateScroll}
       className='scrollButton'
+      aria-label={t(direction === 'next' ? 'scrollNext' : 'scrollPrev')}
       style={direction === 'prev' ? { transform: 'rotateY(180deg)', left: '0' } : {}}
     />
   );

@@ -12,7 +12,7 @@
  *
  * @file Studio.tsx
  */
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import './Studio.css';
 import Button from './components/Button';
 import Fader from './components/Fader';
@@ -26,9 +26,12 @@ import ScrollButton from './components/ScrollButton';
 import StudioOverview from './components/StudioOverview';
 import IconLightFX from '@/assets/IconLightFX';
 import IconExpand from './assets/IconExpand';
+import { TranslationContext } from './components/TranslationContext';
+import { fetchServerJson } from './utils/api';
 
 const Studio = () => {
   const navigate = useNavigate();
+  const { t } = useContext(TranslationContext);
   const { url, connected, on, off } = useConnectionContext();
   const { setFaderValue } = useFaderContext();
   const [bigView, setBigView] = useState(false);
@@ -38,6 +41,7 @@ const Studio = () => {
   const [glowId, setGlowId] = useState<number | null>(null);
   const refsArray = useRef<(HTMLDivElement | null)[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const glowTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   interface SliderConfig {
     attributes: any;
@@ -56,29 +60,31 @@ const Studio = () => {
     [navigate]
   );
 
+  const loadFaderValues = useCallback(
+    (sliders: SliderConfig[]) => {
+      sliders.forEach((item) => {
+        const { id } = item;
+        if (item.attributes && item.attributes.channel) {
+          item.attributes.channel.forEach((channelItem: any) => {
+            const channelId = parseInt(channelItem.id, 10);
+            const sliderValue = channelItem.sliderValue !== undefined ? channelItem.sliderValue : 0;
+            setFaderValue(id, channelId, sliderValue);
+          });
+        }
+      });
+    },
+    [setFaderValue]
+  );
+
   const fetchSliders = useCallback(async () => {
     try {
-      const response = await fetch(url + '/fader');
-      const data = await response.json();
-      setSliders(JSON.parse(data));
-      loadFaderValues(JSON.parse(data));
+      const data = await fetchServerJson<SliderConfig[]>(url + '/fader');
+      setSliders(data);
+      loadFaderValues(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
-  }, [url]);
-
-  const loadFaderValues = useCallback((sliders: SliderConfig[]) => {
-    sliders.forEach((item) => {
-      const { id } = item;
-      if (item.attributes && item.attributes.channel) {
-        item.attributes.channel.forEach((channelItem: any) => {
-          const channelId = parseInt(channelItem.id, 10);
-          const sliderValue = channelItem.sliderValue !== undefined ? channelItem.sliderValue : 0;
-          setFaderValue(id, channelId, sliderValue);
-        });
-      }
-    });
-  }, []);
+  }, [url, loadFaderValues]);
 
   // Fetch sliders on connection
   useEffect(() => {
@@ -118,9 +124,12 @@ const Studio = () => {
   const handleGlowAndFocus = useCallback((idRaw: number | string) => {
     const id = Number(idRaw);
     setGlowId(id);
-    setTimeout(() => setGlowId(null), 700);
+    clearTimeout(glowTimerRef.current);
+    glowTimerRef.current = setTimeout(() => setGlowId(null), 700);
     refsArray.current[id]?.focus();
   }, []);
+
+  useEffect(() => () => clearTimeout(glowTimerRef.current), []);
 
   return (
     <>
@@ -194,6 +203,7 @@ const Studio = () => {
                       <Button
                         onClick={() => handleOpenControl(slider.id)}
                         className='buttonOpenControl'
+                        aria-label={`${t('openLightFX')}: ${slider.name}`}
                       >
                         <IconLightFX className='centerIcon' />
                       </Button>
@@ -203,6 +213,7 @@ const Studio = () => {
                 <Button
                   onClick={() => setBigView(true)}
                   className='buttonBigView'
+                  aria-label={t('showAllFaders')}
                 >
                   <IconExpand />
                 </Button>

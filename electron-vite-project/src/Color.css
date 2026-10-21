@@ -85,7 +85,7 @@
   --innerWindowOverlay: rgba(248, 248, 248, 0.8);
 
   --sceneOn: rgba(255, 255, 255, 0.8);
-  --backgroundImage: url('./assets/BGLight.png') #e8e8e8;
+  --backgroundImage: url('./assets/BGLight.webp') #e8e8e8;
 }
 
 .dark {
@@ -130,7 +130,7 @@
   --innerWindowOverlay: rgba(62, 62, 62, 0.8);
 
   --sceneOn: rgba(255, 255, 255, 0.5);
-  --backgroundImage: url('./assets/BGDark.png') #e8e8e8;
+  --backgroundImage: url('./assets/BGDark.webp') #e8e8e8;
 }
 
 /* ----- Design B ----- */
@@ -315,7 +315,7 @@ body:not(.defaultB) .designContainer > div:hover .designWindow,
   border: none;
 }
 
-.defaultB .dropdown > p:hover,
+.defaultB .dropdown > button:hover,
 .defaultB .isSolo,
 .defaultB .settingsButton.active,
 .defaultB .buttonDesign.active {
@@ -462,7 +462,7 @@ body:not(.defaultB) .designContainer > div:hover .designWindow,
 .defaultC .headerButton:hover,
 .defaultC .buttonTheme:hover,
 .defaultC .buttonDesign:hover,
-.defaultC .dropdown > p:hover,
+.defaultC .dropdown > button:hover,
 .defaultC .AddSceneButton:hover {
   background-color: var(--colorButtonHover);
   border-color: #b0b0b0;

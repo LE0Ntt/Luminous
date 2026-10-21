@@ -15,6 +15,7 @@
 import { useContext, useEffect } from 'react';
 import { TranslationContext } from './TranslationContext';
 import Button from './Button';
+import CloseButton from './CloseButton';
 import IconNote from '@/assets/IconNote';
 
 interface DeleteSceneProps {
@@ -50,15 +51,13 @@ function DeleteScene({ onClose }: DeleteSceneProps) {
         className='backgroundOverlay'
         onClick={onClose}
       />
-      <div className='DialogContainer window'>
-        <button
-          className='buttonClose'
-          onClick={onClose}
+      <div
+          className='DialogContainer window'
+          role='dialog'
+          aria-modal='true'
+          aria-label={t('ds_title')}
         >
-          <div className='xClose'>
-            <div className='xClose xiClose'></div>
-          </div>
-        </button>
+        <CloseButton onClose={onClose} />
         <div className='DialogContent'>
           <span className='DialogTitle'>{t('ds_title')}</span>
           <div className='DialogIcon DeleteIcon' />

@@ -15,6 +15,7 @@
 import { useState, useContext, Fragment } from 'react';
 import './Help.css';
 import { TranslationContext } from './TranslationContext';
+import CloseButton from './CloseButton';
 import IconHelp from '@/assets/IconHelp';
 
 interface SettingsProps {
@@ -23,11 +24,11 @@ interface SettingsProps {
 
 function Help({ onClose }: SettingsProps) {
   const { t } = useContext(TranslationContext);
-  const [openFaqs, setOpenFaqs] = useState({});
+  const [openFaqs, setOpenFaqs] = useState<Record<string, boolean>>({});
 
   // Toggle the open state of a FAQ
   const toggleFaq = (faqKey: string) => {
-    setOpenFaqs((prevOpenFaqs: { [key: string]: boolean }) => ({
+    setOpenFaqs((prevOpenFaqs) => ({
       ...prevOpenFaqs,
       [faqKey]: !prevOpenFaqs[faqKey],
     }));
@@ -60,15 +61,13 @@ function Help({ onClose }: SettingsProps) {
         className='backgroundOverlay'
         onClick={onClose}
       />
-      <div className='LightSettingsContainer'>
-        <button
-          className='buttonClose'
-          onClick={onClose}
-        >
-          <div className='xClose'>
-            <div className='xClose xiClose'></div>
-          </div>
-        </button>
+      <div
+        className='LightSettingsContainer'
+        role='dialog'
+        aria-modal='true'
+        aria-label={t('help')}
+      >
+        <CloseButton onClose={onClose} />
         <div className='SettingsTitle'>
           <IconHelp />
           <span className='SettingsTitleText'>{t('help')}</span>
@@ -79,14 +78,24 @@ function Help({ onClose }: SettingsProps) {
               <div className='faqScroll'>
                 {faqs.map((faq) => (
                   <div key={faq.key}>
-                    <div
+                    <button
                       className='faqQuestion'
                       onClick={() => toggleFaq(faq.key)}
+                      aria-expanded={!!openFaqs[faq.key]}
+                      aria-controls={`${faq.key}-answer`}
                     >
-                      <span className={`arrow ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>➜</span>
+                      <span
+                        className={`arrow ${openFaqs[faq.key] ? 'open' : ''}`}
+                        aria-hidden='true'
+                      >
+                        ➜
+                      </span>
                       {faq.question}
-                    </div>
-                    <div className={`faqAnswer ${openFaqs[faq.key as keyof typeof openFaqs] && 'open'}`}>
+                    </button>
+                    <div
+                      id={`${faq.key}-answer`}
+                      className={`faqAnswer ${openFaqs[faq.key] ? 'open' : ''}`}
+                    >
                       <div className='faqAnswerInner'>{renderAnswer(faq.answer)}</div>
                     </div>
                     <hr />

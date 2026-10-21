@@ -118,7 +118,7 @@
 .SettingsOverviewImage {
   position: relative;
   flex: 0 0 auto;
-  background-image: url(/src/assets/StudioOverview.png);
+  background-image: url(../assets/StudioOverview.webp);
   background-repeat: no-repeat;
   background-size: 100% 100%;
   overflow: hidden;

@@ -42,6 +42,21 @@ const Setting1: React.FC = () => {
     setLanguage(e.target.value as 'en' | 'de');
   };
 
+  // The design previews are styled divs, make them usable like buttons with the keyboard
+  const designOptionProps = (design: DesignType, label: string) => ({
+    role: 'button',
+    tabIndex: 0,
+    'aria-label': label,
+    'aria-pressed': activeDesign === design,
+    onClick: () => setActiveDesign(design),
+    onKeyDown: (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        setActiveDesign(design);
+      }
+    },
+  });
+
   // Toggle design based on the activeDesign state
   useEffect(() => {
     document.body.classList.remove('defaultB', 'defaultC');
@@ -71,6 +86,7 @@ const Setting1: React.FC = () => {
         </div>
         <select
           className='SettingsLanguageSelection textBox'
+          aria-label={t('set_language')}
           value={language}
           onChange={handleLanguageChange}
         >
@@ -92,6 +108,7 @@ const Setting1: React.FC = () => {
           <Toggle
             onClick={handleOrderChange}
             enabled={localStorage.getItem('reverseOrder') === 'true'}
+            label={t('cl_righthand')}
           />
         </div>
       </div>
@@ -106,7 +123,7 @@ const Setting1: React.FC = () => {
           {/* Default Design */}
           <div
             className={'defaultDesign'}
-            onClick={() => setActiveDesign('default')}
+            {...designOptionProps('default', 'Glassmorphism')}
           >
             <div className='redDiv'></div>
             <div className='blueDiv'></div>
@@ -120,7 +137,7 @@ const Setting1: React.FC = () => {
           {/* Design B (Neumorphism) */}
           <div
             className={`newDesign ${document.body.className.includes('dark') ? 'defaultB dark' : 'defaultB'} ${activeDesign === 'defaultB' ? 'activeDesign' : ''} `}
-            onClick={() => setActiveDesign('defaultB')}
+            {...designOptionProps('defaultB', 'Neumorphism')}
           >
             <div className='designWindow window'>
               <span className='designSpan'>Neumorphism</span>
@@ -129,7 +146,7 @@ const Setting1: React.FC = () => {
           {/* Design C (Minimal) */}
           <div
             className={`newDesign defaultC ${document.body.className.includes('dark') ? 'dark' : ''} ${activeDesign === 'defaultC' ? 'activeDesign' : ''} `}
-            onClick={() => setActiveDesign('defaultC')}
+            {...designOptionProps('defaultC', 'Minimal')}
           >
             <div className='designWindow window'>
               <span className='designSpan'>Minimal</span>

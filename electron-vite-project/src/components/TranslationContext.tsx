@@ -12,7 +12,7 @@
  *
  * @file TranslationContext.tsx
  */
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 
 interface TranslationProviderProps {
   translations: Record<string, Record<string, string>>;
@@ -31,22 +31,35 @@ export const TranslationContext = createContext<TranslationContextType>({
   setLanguage: () => {},
 });
 
-export const TranslationProvider: React.FC<TranslationProviderProps> = ({ translations, children }) => {
-  const [language, setLanguage] = useState('en');
+const LANGUAGE_KEY = 'language';
 
+export const TranslationProvider: React.FC<TranslationProviderProps> = ({ translations, children }) => {
+  const [language, setLanguageState] = useState('en');
+
+  // Electron keeps the language in its store, the web version in localStorage
   useEffect(() => {
-    const fetchLanguage = async () => {
-      if (!window.electronAPI) {
-        setLanguage('de');
-      } else {
-        const data = await window.electronAPI.getLanguage();
-        setLanguage(data);
-      }     
-    };
-    fetchLanguage();
+    if (!window.electronAPI) {
+      setLanguageState(localStorage.getItem(LANGUAGE_KEY) || 'de');
+      return;
+    }
+    window.electronAPI
+      .getLanguage()
+      .then(setLanguageState)
+      .catch((error) => console.error('Could not load the language:', error));
   }, []);
 
-  const t = (key: string) => translations[language]?.[key] || key;
+  const setLanguage = useCallback((newLanguage: string) => {
+    setLanguageState(newLanguage);
+    if (window.electronAPI) {
+      window.electronAPI.setLanguage(newLanguage);
+    } else {
+      localStorage.setItem(LANGUAGE_KEY, newLanguage);
+    }
+  }, []);
 
-  return <TranslationContext.Provider value={{ t, language, setLanguage }}>{children}</TranslationContext.Provider>;
+  const t = useCallback((key: string) => translations[language]?.[key] || key, [translations, language]);
+
+  const value = useMemo(() => ({ t, language, setLanguage }), [t, language, setLanguage]);
+
+  return <TranslationContext.Provider value={value}>{children}</TranslationContext.Provider>;
 };

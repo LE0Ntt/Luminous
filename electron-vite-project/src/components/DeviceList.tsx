@@ -12,9 +12,10 @@
  *
  * @file DeviceList.tsx
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import './DeviceList.css';
 import Button from './Button';
+import { TranslationContext } from './TranslationContext';
 
 type DeviceConfig = {
   id: number;
@@ -33,24 +34,27 @@ type DeviceListProps = {
   isAddButton: boolean;
 };
 
+// Class names for the device type icon
+const deviceTypeClassMap: Record<string, string> = {
+  RGBDim: 'rgbIcon',
+  BiColor: 'biIcon',
+  Spot: 'spotIcon',
+  Fill: 'fillIcon',
+  HMI: 'spotIcon',
+  Misc: 'miscIcon',
+};
+
 const DeviceList: React.FC<DeviceListProps> = ({ devices, onDeviceButtonClick, onSyncClick, isAddButton }) => {
+  const { t } = useContext(TranslationContext);
+  const canSync = onSyncClick !== undefined && !isAddButton;
+
   // No scrollbar for selected list until devices exceed max height
-  var deviceListClass = 'deviceList';
+  let deviceListClass: string;
   if (isAddButton) {
     deviceListClass = 'deviceList overflow-scroll';
   } else {
     deviceListClass = devices.length > 6 ? 'deviceList overflow-scroll' : 'deviceList overflow-hidden right-padding';
   }
-
-  // Class names for the device type icon
-  const deviceTypeClassMap: Record<string, string> = {
-    RGBDim: 'rgbIcon',
-    BiColor: 'biIcon',
-    Spot: 'spotIcon',
-    Fill: 'fillIcon',
-    HMI: 'spotIcon',
-    Misc: 'miscIcon',
-  };
 
   // Sort list by ID
   const sortedDevices = [...devices].sort((a, b) => a.id - b.id);
@@ -81,14 +85,22 @@ const DeviceList: React.FC<DeviceListProps> = ({ devices, onDeviceButtonClick, o
                   {device.name}
                 </span>
               </div>
-              <div
-                className={`sync ${!device.upToDate && !isAddButton && onSyncClick ? 'visible' : ''}`}
-                title='Out of sync'
-                onClick={() => (onSyncClick ? onSyncClick(device) : console.log('No onSyncClick provided'))}
-              ></div>
+              {canSync ? (
+                <button
+                  className={`sync ${!device.upToDate ? 'visible' : ''}`}
+                  title={t('dl_sync')}
+                  aria-label={`${t('dl_sync')}: ${device.name}`}
+                  aria-hidden={device.upToDate}
+                  tabIndex={device.upToDate ? -1 : undefined}
+                  onClick={() => onSyncClick(device)}
+                ></button>
+              ) : (
+                <div className='sync'></div> // Keeps the layout identical to lists with sync button
+              )}
               <Button
                 onClick={() => onDeviceButtonClick(device)}
                 className='addremoveButton'
+                aria-label={`${t(isAddButton ? 'dl_add' : 'dl_remove')}: ${device.name}`}
               >
                 <div className={`centerIcon addIcon ${isAddButton ? '' : 'removeIcon'}`}></div>
               </Button>

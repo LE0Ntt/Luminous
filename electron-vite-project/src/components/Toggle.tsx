@@ -19,9 +19,10 @@ interface ToggleProps {
   onClick?: (checked: boolean) => void;
   enabled?: boolean;
   className?: string;
+  label?: string; // Accessible name, the visible labels are usually next to the toggle
 }
 
-const Toggle: React.FC<ToggleProps> = ({ onClick = () => {}, enabled = false, className = '' }) => {
+const Toggle: React.FC<ToggleProps> = ({ onClick = () => {}, enabled = false, className = '', label }) => {
   const [checked, setChecked] = useState(enabled);
 
   // Update checked state if enabled prop changes
@@ -42,6 +43,7 @@ const Toggle: React.FC<ToggleProps> = ({ onClick = () => {}, enabled = false, cl
         type='checkbox'
         checked={checked}
         onChange={handleChange}
+        aria-label={label}
       />
       <span className='defaultToggle round'></span>
     </label>

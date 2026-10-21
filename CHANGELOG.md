@@ -22,8 +22,16 @@
 - The language setting is saved
 - Confirmation before resetting the database, validation of IP and port
 - Smaller images (WebP) and fewer requests when loading scenes
+- Server
+  - Scene fades run in one loop and are sent as one message per step, about 100 instead of 4000 messages per 2-second fade and client
+  - The MotorMix only follows the brightness of a fading light
+  - DMX is sent from OLA's own event loop instead of a new thread every 20 ms
+  - Always runs in threading mode, before the mode depended on the installed packages
+  - Log messages with time and level, more details with `LUMINOUS_LOG_LEVEL=DEBUG`
+  - At most 5 wrong admin passwords per minute and client
+  - Cleaned up `requirements.txt`
 - Updated to Electron 44, server port can be set with `LUMINOUS_PORT`
-- Unit tests for helper functions (`npm test`)
+- Tests for the server and the app's helper functions
 
 ### Fixes
 
@@ -33,6 +41,12 @@
 - Fixed the fullscreen menu entry showing the wrong state on start
 - Fixed listeners piling up after opening "About" and on reconnects
 - Fixed the greenscreen showing a "0" when set to "None"
+- Fixed the master fader not dimming some lights (e.g. greenscreen and trusses) but dimming bi-color temperature and HMI on/off channels instead
+- Fixed fades, the MotorMix and other clients changing the wrong light once device numbers have gaps
+- Fixed an error when moving DMX channel faders while several clients are connected
+- Fixed saving a scene storing the name of another scene and the current light values instead of the scene's
+- Fixed the active scenes getting mixed up after deleting or saving a scene
+- Fixed the server not starting without gevent installed
 
 ## [1.2.4] - 2025-05-14
 

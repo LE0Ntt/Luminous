@@ -56,6 +56,17 @@ npm run dev
 
 The application is accessible via the Electron desktop application.
 
+#### Tests
+
+```bash
+# Server (in the backend folder, uses a temporary copy of the database)
+python -m unittest discover -s tests -t .
+
+# App (in the electron-vite-project folder, Node.js 22.6 or newer)
+npm run typecheck
+npm test
+```
+
 ## Contribution Guidelines
 
 Originally developed for academic objectives, Luminous has evolved beyond its initial scope. With version 1.0 serving academic purposes, the project is now actively under development for practical application in the studio. We invite contributions, especially those that support its ongoing use and enhancement in the studio setting. The codebase is open for both educational exploration and active development contributions.

@@ -1,3 +1,4 @@
+import tests  # noqa: F401  Sets up the temporary database and the fake OLA client first
 import unittest
 
 from server.helpers import AttemptLimiter, master_exempt_channels, remap_scene_stack, scene_id_changes

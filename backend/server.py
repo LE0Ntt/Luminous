@@ -15,6 +15,7 @@
 
 import logging
 import os
+from importlib.metadata import version
 
 # Configured before the other imports, they already log while loading. LUMINOUS_LOG_LEVEL=DEBUG for more details
 logging.basicConfig(
@@ -36,6 +37,10 @@ if __name__ == "__main__":
     # Override with LUMINOUS_PORT, e.g. on macOS where AirPlay Receiver occupies port 5000
     port = int(os.environ.get("LUMINOUS_PORT", 5000))
     logging.getLogger(__name__).info("Starting server on: http://localhost:%d", port)
-    # Werkzeug serves the few clients of the studio fine, Flask-SocketIO refuses to start it without this flag
-    socketio.run(app, host="0.0.0.0", port=port, allow_unsafe_werkzeug=True)  # type: ignore
+    # Werkzeug serves the few clients of the studio fine. Since 5.3 Flask-SocketIO refuses to start it
+    # without a terminal (e.g. as systemd service) unless this flag is set, older versions don't know it
+    options = {}
+    if tuple(int(part) for part in version("Flask-SocketIO").split(".")[:2]) >= (5, 3):
+        options["allow_unsafe_werkzeug"] = True
+    socketio.run(app, host="0.0.0.0", port=port, **options)  # type: ignore
 

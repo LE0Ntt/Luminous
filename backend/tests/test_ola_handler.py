@@ -1,3 +1,4 @@
+import tests  # noqa: F401  Sets up the temporary database and the fake OLA client first
 import unittest
 
 from ola_handler import ola_handler

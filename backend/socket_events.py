@@ -101,6 +101,8 @@ def get_channel(device, channel_id):
 
 
 def register_socketio_events(socketio):
+    driver = None  # MotorMix, connected at the end of this function
+
     # Send a changed value to all clients (except skip_sid)
     def broadcast_value(device_id, value, channel_id, skip_sid=None):
         socketio.emit(
@@ -161,21 +163,6 @@ def register_socketio_events(socketio):
             return True
         logger.warning("Rejected unauthorized '%s' event from %s", event, request.sid)  # type: ignore
         return False
-
-    try:
-        driver = Driver()
-        driver.set_callback(callback)
-        driver.set_sceneQuickCallback(quickSceneCallback)
-        driver.set_sceneCallback(sceneCallback)
-        driver.set_blackoutCallback(blackoutCallback)
-        driver.devices = routes.devices
-        driver.scenes = routes.scenes
-        driver.deviceMapping()
-        driver.sceneMapping()
-        driver.socketio = socketio
-    except OSError as e:
-        logger.warning("Possibly the MIDI interface is not connected. %s", e)
-        driver = None
 
     # send every channel of each device to ola on startup
     update_master_exempt_channels()
@@ -531,11 +518,11 @@ def register_socketio_events(socketio):
             scene["status"] = True
             routes.scenes.append(scene)
 
-        if not scene["saved"]:  # If scene is not saved, don't add to database
-            sync_driver(scene_mapping=True)
-            socketio.emit("scene_reload", namespace="/socket")
-        else:
-            store_scene(scene)
+            if not scene["saved"]:  # If scene is not saved, don't add to database
+                sync_driver(scene_mapping=True)
+                socketio.emit("scene_reload", namespace="/socket")
+            else:
+                store_scene(scene)
 
     # Save an existing scene to the database
     @socketio.on("scene_save", namespace="/socket")
@@ -806,3 +793,19 @@ def register_socketio_events(socketio):
         with state_lock:
             connections = max(connections - 1, 0)
             logger.info("Client disconnected (%d)", connections)
+
+    # Created last: the MIDI input thread starts right away and calls the functions defined above
+    try:
+        driver = Driver()
+        driver.set_callback(callback)
+        driver.set_sceneQuickCallback(quickSceneCallback)
+        driver.set_sceneCallback(sceneCallback)
+        driver.set_blackoutCallback(blackoutCallback)
+        driver.devices = routes.devices
+        driver.scenes = routes.scenes
+        driver.deviceMapping()
+        driver.sceneMapping()
+        driver.socketio = socketio
+    except OSError as e:
+        logger.warning("Possibly the MIDI interface is not connected. %s", e)
+        driver = None
